@@ -68,14 +68,20 @@ body{
     margin-right: auto; /* auto đẩy logo sang trái */
 }
 
-.cart i{
-    margin-left: auto; /* auto đẩy cart sang phải */
-    font-size: 20px;
-    color: #fff;
-    cursor: pointer;
+
+.header-icons {
+    margin-left: auto; /* auto đẩy logo sang phải */
+    display: flex;
+    align-items: center;
+    gap: 15px; /* khoảng cách giữa cart và profile */
 }
 
-.cart i:hover{
+.header-icons a {
+    color: #ffffff;
+    font-size: 20px;
+    text-decoration: none;
+}
+.header-icons a:hover{
     color:#ff9f4a;
     transition: color 0.3s ease;
 }
@@ -112,7 +118,8 @@ body{
     content: "";
     position: absolute;
     background-color: #ff9f4a;
-    left: 0;
+    left: 50%;
+    transform: translateX(-50%);
     bottom: -2px;
     width: 0%; /* ẩn đi underline */
     height: 1px;
