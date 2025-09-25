@@ -36,9 +36,9 @@ h6{
 }
 
 p{
-    font-size: 16px;
+    font-size: 15px;
     color: #465b52;
-    margin: 15px 0 20px 0;
+    margin: 5px 0 20px 0;
 }
 
 .section-p1{
@@ -54,20 +54,41 @@ body{
 }
 
 /* Header styles */
-
-#header{
+#header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 10px 80px;
-    background-color:#222;
-    box-shadow: 0 5px 15px rgba(0,0,0,0);
+    padding: 5px 80px;
+    background-color: transparent;
+    backdrop-filter: blur(10px);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 100;
+    transition: top 0.3s ease;
+    border-bottom: 1px solid #ffffff29;
 }
+
+/* Shadow gradient phía trên */
+#header::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 50px; /* chiều cao shadow */
+    background: linear-gradient(to bottom, rgba(0,0,0,0.8), rgba(255, 255, 255, 0)); 
+    pointer-events: none; /* không che click */
+    z-index: -1;
+}
+
+
 
 #header .logo {
     margin-right: auto; /* auto đẩy logo sang trái */
+    margin-bottom: -5px;
 }
-
 
 .header-icons {
     margin-left: auto; /* auto đẩy logo sang phải */
@@ -111,7 +132,7 @@ body{
     font-size: 20px;
     font-weight: 400;
     color: #fff;
-    transition: color 0.3s ease, transform 0.3s ease;
+    transition: color 0.1s ease, transform 0.1s ease;
 }
 
 #navbar li a::after{
@@ -129,3 +150,57 @@ body{
 #navbar li a:hover::after{
     width: 100%; /* sau khi hover thì sẽ xuất hiện underline */
 }
+
+/* Home page */
+
+#hero{
+    background-image: url(/img/hero/header_bg.png);
+    height: 100vh;
+    width: 100%;
+    background-size: cover;
+    background-position: top 25% right 0;
+    padding: 0 80px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    flex-direction: column;
+}
+#hero h1{
+    color: white;
+    font-size: 85px;
+    line-height: 100px;
+    font-weight: 600;
+    font-family:sans-serif;
+}
+#hero p{
+    color: white;
+    font-size: 18px;
+    font-weight: 30px;
+}
+
+#hero .button {
+    display: inline-block;
+    padding: 12px 25px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #ffff;               
+    background-color: #ff8519; 
+    border: 2px solid #ff8519;
+    border-radius: 5px;       
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+#hero .button:hover {
+    background-color: #ffb777;
+    color: #b55d00;  
+    border-color: #b55d00;
+    transform: scale(1.03);     /* phóng to nhẹ */
+}
+
+#hero .caption .highlight{
+    color:rgb(255, 145, 0);
+}
+
+
+
