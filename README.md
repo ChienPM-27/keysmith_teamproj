@@ -17,10 +17,15 @@ Dự án thực hiện trong khuôn khổ học kỳ tại **Saigon University (
 ## 📂 Cấu trúc dự án  
 
 keysmith_teamproj/
+
 ├── img/ # Hình ảnh, assets (keycap, banner, icon…)
+
 ├── index.html # Trang chủ (front-end)
+
 ├── style.css # CSS chính
+
 ├── script.js # JavaScript front-end
+
 └── lythuyet.docx # Tài liệu lý thuyết / báo cáo
 
 
