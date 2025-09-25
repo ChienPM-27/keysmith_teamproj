@@ -1,4 +1,4 @@
-# KeySmith – Artisan Keycap Ecommerce 🎹  
+# KeySmith – Artisan Keycap Ecommerce 
 
 **KeySmith** là dự án web thương mại điện tử bán **keycap artisan** – các phím trang trí, mỹ nghệ, dành cho cộng đồng đam mê bàn phím cơ.  
 Dự án thực hiện trong khuôn khổ học kỳ tại **Saigon University (SGU)**.  
