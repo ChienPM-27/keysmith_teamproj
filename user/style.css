@@ -91,7 +91,7 @@ body{
     margin-bottom: -5px;
 }
 
-.header-icons {
+.header-icons { 
     margin-left: auto; /* auto đẩy logo sang phải */
     display: flex;
     align-items: center;
@@ -171,7 +171,7 @@ body{
     font-size: 85px;
     line-height: 100px;
     font-weight: 600;
-    font-family:sans-serif;
+    font-family:sans-serif; 
 }
 #hero p{
     color: white;
@@ -203,48 +203,80 @@ body{
     color:rgb(255, 145, 0);
 }
 
-/* feature section*/
-#feature{
+/* feature product section */
+
+#product1 {
+    text-align: center;
+}
+
+#product .pro-container{
     display: flex;
-    padding: 0 10px;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    background-color: #34343F;
+    justify-content: space-between;
+    padding-top: 20px;
+    flex-wrap: wrap;
 }
-#feature .fe-keycap .keycap{
-    cursor: pointer;
-    font-size: 0px;
+
+#product1 .pro {
+    width: 23%;
+    min-width: 250px;
+    padding: 10px 12px;
+    border: 1px solid #e1f5fe;
+    border-radius: 8px;
     overflow: hidden;
-    white-space: nowrap;
-    scroll-behavior: smooth;
+    text-align: center;
+    cursor: pointer;
+    box-shadow: 20px 20px 30px rgba(0,0,0,0.02);
+    margin: 15px 0;
+    transition: 0.2s ease;
+    position: relative;
+    background: white;
 }
 
-#feature .fe-keycap{
-    max-width: 1200px;
-    margin: 0 30px;
+#product1 .pro:hover{
+    box-shadow: 20px 20px 30px rgba(102, 126, 234, 0.1);
+    border: 1px solid #ffad66;
 }
 
-#feature .keycap img{
-    height: 400px;
-    margin-left: 14px;
-    object-fit: cover;
-    width: calc(100% / 3);
+#product1 .pro img {
+    width: 100%;
+    border-radius: 8px;
 }
 
-#feature .keycap img:first-child{
-    margin-left: 0px;
+#product1 .pro .des{
+    text-align: start;
+    padding: 5px 0;   
 }
 
-@media screen and (max-width: 900px) {
-    #feature .keycap img{
-        width: calc(100% / 2);
-    }
-
-}
-@media screen and (max-width: 550px) {
-    #feature .keycap img{
-        width: 100%;
-    }
+#product1 .pro .des span{
+    color: #78909c;
+    font-size: 12px;
+    margin: 0;
 }
 
+#product1 .pro .des h5{
+    padding-top: 3px;
+    color: #ff8519;
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0;
+}
+
+#product1 .pro .buy{
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    border-radius: 50px;
+    background: linear-gradient(45deg, #ffad66, #ff6b35);
+    font-weight: 500;
+    color: white;
+    border: 1px solid transparent;
+    position: absolute;
+    bottom: 20px;
+    right: 10px;
+    transition: 0.2s ease;
+}
+
+#product1 .pro .buy:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(255, 133, 25, 0.3);
+}
