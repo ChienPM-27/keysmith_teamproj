@@ -152,7 +152,9 @@ body{
 }
 
 /* ========================= Home page ======================*/
+
 /* hero section */
+
 #hero{
     background-image: url(/img/hero/header_bg.png);
     height: 100vh;
@@ -280,21 +282,30 @@ body{
 }
 
 /* Footer Section */
+
 footer {
     background: #1a1a1a;
     color: white;
     padding: 40px 80px;
+    display: flex;
+    gap: 20px;
+    align-items: stretch;
+}
+
+footer .About {
+    flex: 6;
+    display: flex;
 }
 
 footer .About table {
     background-color: #a5a5a5;
     border-collapse: collapse;
     width: 100%;
+    height: 100%;
 }
 
 footer .About table td {
     padding: 5px 15px;
-    border: 1px solid #000000;
     color: rgb(0, 0, 0);
     font-family: 'Bebas Neue';
     text-align: center;
@@ -312,6 +323,85 @@ footer .About table a:hover {
     color: #ff6b35;
 }
 
-footer i{
+footer i {
     font-size: 20px;
+}
+
+footer .form {
+    flex: 3;
+    background: #a5a5a5;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    background: #ff8519;
+}
+
+footer .form .subcribe{
+    padding-top: 15px;
+    padding-left: 15px;
+    padding-right: 15px ;
+}
+
+footer .form h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    color: #000;
+    letter-spacing: 1px;
+}
+
+footer .form p {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    color: #000;
+}
+
+footer .form .bonus {
+    background: #ff8519;
+    font-weight: bold;
+    color: #000000;
+    font-size: 14px;
+    padding: 15px;
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+}
+
+footer .form .input-group {
+    display: flex;
+    margin-top: auto;
+}
+
+footer .form .input-group input[type="email"] {
+    flex: 1;
+    padding: 12px 15px;
+    font-size: 14px;
+    border: none;
+    transition: border-color 0.3s;
+    background: #fff;
+}
+
+footer .form .input-group input[type="email"]::placeholder {
+    font-weight: 500;
+}
+
+footer .form .input-group input[type="email"]:focus {
+    border-color: #333;
+    outline: none;
+    box-shadow: none;
+}
+
+footer .form .input-group button {
+    padding: 12px 30px;
+    background: #333;
+    color: #fff;
+    border: none;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 25px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+footer .form .input-group button:hover {
+    background: #555;
 }
