@@ -13,7 +13,8 @@
         <a href="#"><img src="/img/logo/logo_full.png" class="logo" alt="logo" style="width: 150px; height: 75px;"></a>
 
         <ul id="navbar">
-            <li><a href="index.html">Home</a></li>
+            <a href="#" id="close"><i class="fa-solid fa-times"></i></a>
+            <li><a href="#" id="scrollToTop">Home</a></li>
             <li><a href="Store.html">Store</a></li>
             <li><a href="Category.html">Category</a></li>
             <li><a href="Collections.html">Collections</a></li>
@@ -21,10 +22,12 @@
         </ul>
 
         <div class="header-icons">
-            <a href="#" class="cart"><i class="fa-solid fa-magnifying-glass"></i></a>
+            <a href="#" class="search"><i class="fa-solid fa-magnifying-glass"></i></a>
             <a href="Cart.html" class="cart"><i class="fa-solid fa-cart-shopping"></i></a>
             <a href="Profile.html" class="profile"><i class="fa-solid fa-circle-user"></i></a>
-            
+            <div id="mobile">
+                <i id="bar" class="fas fa-bars"></i>
+            </div>
         </div>
     </section>
 
@@ -37,16 +40,18 @@
     </section>
 
     <section id="product1" class="section-p1">
-        <h2>Feature Products</h2>
-        <span style="color: #ff8c28; font-weight: 500;">Keycap Collections</span>
+        <div class="title">
+            <h2>Feature</h2>
+            <span>Keycap Collections</span>
+        </div>
         
         <div class="pro-container">
             <div class="pro">
                 <img src="../img/keycap/AttackOnTitan/Eren.jpg" alt="">
                 <div class="des">
                     <span>Attack On Titan</span>
-                    <h4>Attack Titan keycap</h4>
-                    <h5>100$</h5>
+                    <h4>Attack Titan</h4>
+                    <h5>50$</h5>
                 </div>
                 <a href="#" class="buy"><i class="fa-solid fa-cart-shopping"></i></a>
             </div>
@@ -54,8 +59,8 @@
                 <img src="../img/keycap/AttackOnTitan/Reiner.jpg" alt="">
                 <div class="des">
                     <span>Attack On Titan</span>
-                    <h4>Attack Titan keycap</h4>
-                    <h5>100$</h5>
+                    <h4>Armored Titan</h4>
+                    <h5>40$</h5>
                 </div>
                 <a href="#" class="buy"><i class="fa-solid fa-cart-shopping"></i></a>
             </div>
@@ -64,8 +69,8 @@
                 <img src="../img/keycap/AttackOnTitan/Scout.jpg" alt="">
                 <div class="des">
                     <span>Attack On Titan</span>
-                    <h4>Attack Titan keycap</h4>
-                    <h5>100$</h5>
+                    <h4>Scout Regiment</h4>
+                    <h5>45$</h5>
                 </div>
                 <a href="#" class="buy"><i class="fa-solid fa-cart-shopping"></i></a>
             </div>
@@ -74,86 +79,96 @@
                 <img src="../img/keycap/AttackOnTitan/spacebar.jpg" alt="">
                 <div class="des">
                     <span>Attack On Titan</span>
-                    <h4>Attack Titan keycap</h4>
-                    <h5>100$</h5>
+                    <h4>Wings of Freedom</h4>
+                    <h5>90$</h5>
                 </div>
                 <a href="#" class="buy"><i class="fa-solid fa-cart-shopping"></i></a>
             </div>
         </div>
     </section>
 
-    <footer class="section-p1" style="display: flex">
-        <div class="About">
-            <table border="1" cellspacing="0" cellpadding="8">
-                <tr>
-                    
-                    <td rowspan="4" style="width:20%; text-align: center;"><a href="#" style="font-family: Bebas Neue; font-size: 30px; font-weight: 700;">ABOUT US</a></td>
-                    <td style="width:30%;">HELP CENTER</td>
-                    <td rowspan="2" style="width: 30%;">SHIPPING &<br>RETURN POLICY</td>
-                    <td rowspan="5" style="width:40%;">
-                    <img src="/img/logo/logo_full.png" alt="Logo" style=" justify-content: center; max-width: 250px ; height:auto;
-                        filter:
-                        drop-shadow(0 0 1px black)
-                        drop-shadow(0 0 1px black)
-                        drop-shadow(0 0 1px black)">
-                    </td>
-                    
-                </tr>
-
-                <tr>
-                    <td>BLOG & NEWS</td>
-                </tr>
-
-                <tr>
-                    <td colspan="2" style="text-align: left;">DISCORD
-                        <a href="https://discord.com" target="_blank"
-                        style="float:right"><i class="fa-brands fa-discord"></i></a>
-                    </td>
-
-                </tr>
-
-                <tr>
-                    <td colspan="2" style="text-align: left;">SOCIAL MEDIA
-                        <div style="float: right">
-                            <a href="https://www.instagram.com" target="_blank"><i class="fa-brands fa-square-instagram"></i></a>
-                            <a href="https://www.facebook.com" target="_blank"><i class="fa-brands fa-square-facebook"></i></a>
-                            <a href="https://www.tiktok.com" target="_blank"><i class="fa-brands fa-tiktok"></i></a>
-                            <a href="https://www.youtube.com" target="_blank"><i class="fa-brands fa-youtube"></i></a>
-                            <a href="https://twitter.com" target="_blank"><i class="fa-brands fa-square-x-twitter"></i></a>
-                        </div>
-                    </td>
-                </tr>
-
-                <tr>
-                    <td colspan="3" style="text-align:left;">
-                    SUPPORT:
-                    <span style="float:right; font-family:Bebas Neue; ">SUPPORT@KEYSMITH.COM</span>
-                    </td>
-                </tr>
-                
-            </table>
-        </div>
-
-        <div class="form">
-            <div class="subcribe">
-                <h3>SUBSCRIBE & GET INCENTIVES</h3>
-                <p>
-                    Sign up and get the latest news about new design, group buy, straight to your inbox.
-                </p>
+    <footer class="section-p1">
+        <div class="footer-container">
+            <div class="title">
+                <h5>ARE YOU ENJOYING?</h2>
+                <span>CONTINUE EXPLORE</span>
             </div>
+            <div class="footer-content">
+                <!-- Table Section -->
+                <div class="About">
+                    <table border="1" cellspacing="0" cellpadding="8">
+                        <tr>
+                            <td rowspan="4" style="width:20%; text-align: center;">
+                                <a href="#" style="font-family: Bebas Neue; font-size: 30px; font-weight: 700;">ABOUT US</a>
+                            </td>
+                            <td style="width:30%;">HELP CENTER</td>
+                            <td rowspan="2" style="width: 30%;">SHIPPING &<br>RETURN POLICY</td>
+                            <td rowspan="5" style="width:40%;">
+                                <img src="/img/logo/logo_full.png" alt="Logo" style="justify-content: center; max-width: 250px; height:auto;
+                                    filter:
+                                    drop-shadow(0 0 1px black)
+                                    drop-shadow(0 0 1px black)
+                                    drop-shadow(0 0 1px black)">
+                            </td>
+                        </tr>
 
-            <div class="bonus">Bonus: Many hot offers and giveaway await!</div>
+                        <tr>
+                            <td>BLOG & NEWS</td>
+                        </tr>
 
-            <div class="input-group">
-                <input type="email" placeholder="YOUR E-MAIL:" />
-                <button>SIGN UP</button>
+                        <tr>
+                            <td colspan="2" style="text-align: left;">
+                                DISCORD
+                                <a href="https://discord.com" target="_blank" style="float:right">
+                                    <i class="fa-brands fa-discord"></i>
+                                </a>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="2" style="text-align: left;">
+                                SOCIAL MEDIA
+                                <div style="float: right">
+                                    <a href="https://www.instagram.com" target="_blank"><i class="fa-brands fa-square-instagram"></i></a>
+                                    <a href="https://www.facebook.com" target="_blank"><i class="fa-brands fa-square-facebook"></i></a>
+                                    <a href="https://www.tiktok.com" target="_blank"><i class="fa-brands fa-tiktok"></i></a>
+                                    <a href="https://www.youtube.com" target="_blank"><i class="fa-brands fa-youtube"></i></a>
+                                    <a href="https://twitter.com" target="_blank"><i class="fa-brands fa-square-x-twitter"></i></a>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="3" style="text-align:left;">
+                                SUPPORT:
+                                <span style="float:right; font-family:Bebas Neue;">SUPPORT@KEYSMITH.COM</span>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <!-- Form Section -->
+                <div class="form">
+                    <div class="subcribe">
+                        <h3>SUBSCRIBE & GET INCENTIVES</h3>
+                        <p>
+                            Sign up and get the latest news about new design, group buy, straight to your inbox.
+                        </p>
+                    </div>
+
+                    <div class="bonus">Bonus: Many hot offers and giveaway await!</div>
+
+                    <div class="input-group">
+                        <input type="email" placeholder="YOUR E-MAIL:" />
+                        <button>SIGN UP</button>
+                    </div>
+                </div>
             </div>
+            
         </div>
-
     </footer>
-    <script>
-
-    </script>
+    
+    <script src="./script.js"></script>
 
 </body>
 </html>
