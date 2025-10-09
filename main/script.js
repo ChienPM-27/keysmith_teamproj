@@ -16,6 +16,8 @@ window.addEventListener('scroll', () => {
     lastScroll = currentScroll <= 0 ? 0 : currentScroll;
 });
 
+
+
 // ------------------- MOBILE MENU TOGGLE -------------------
 const bar = document.getElementById('bar');
 const close = document.getElementById('close');

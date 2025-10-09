@@ -24,7 +24,7 @@
         <div class="header-icons">
             <a href="#" class="search"><i class="fa-solid fa-magnifying-glass"></i></a>
             <a href="Cart.html" class="cart"><i class="fa-solid fa-cart-shopping"></i></a>
-            <a href="Profile.html" class="profile"><i class="fa-solid fa-circle-user"></i></a>
+            <a href="./login/index.html" class="profile"><i class="fa-solid fa-circle-user"></i></a>
             <div id="mobile">
                 <i id="bar" class="fas fa-bars"></i>
             </div>
@@ -54,7 +54,7 @@
                     <h5>50$</h5>
                 </div>
                 <a href="#" class="buy"><i class="fa-solid fa-cart-shopping"></i></a>
-            </div>
+            </div>`
             <div class="pro">
                 <img src="../img/keycap/AttackOnTitan/Reiner.jpg" alt="">
                 <div class="des">
@@ -158,10 +158,15 @@
 
                     <div class="bonus">Bonus: Many hot offers and giveaway await!</div>
 
-                    <div class="input-group">
-                        <input type="email" placeholder="YOUR E-MAIL:" />
-                        <button>SIGN UP</button>
-                    </div>
+                    <form action="https://api.web3forms.com/submit" method="POST" class="input-group">
+                    <input type="hidden" name="access_key" value="99d8b320-570c-4fc2-8d03-bbc2c67403dc">
+                    <input type="hidden" name="from_name" value="KeySmith Website">
+                    <input type="hidden" name="subject" value="New Subscription from KeySmith">
+                    <input type="hidden" name="recipients" value="pmc.test2702@gmail.com">
+                    <input type="email" name="email" placeholder="YOUR E-MAIL:" required>
+                    <button type="submit">SIGN UP</button>
+                    </form>
+
                 </div>
             </div>
             

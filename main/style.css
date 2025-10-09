@@ -111,6 +111,7 @@ body{
     display: flex;
     align-items: center;
     justify-content: center;
+    letter-spacing: 1px;
 }
 
 #navbar .cart{
@@ -312,6 +313,8 @@ body{
     transition: 0.2s ease;
 }
 
+
+
 #product1 .pro .buy:hover {
     transform: scale(1.05);
     box-shadow: 0 4px 12px rgba(255, 133, 25, 0.3);
@@ -323,7 +326,6 @@ footer {
     background: #1a1a1a;
     color: white;
     padding: 40px 80px;
-    /* BỎ display: flex ở đây */
 }
 
 footer .footer-container {
@@ -340,6 +342,8 @@ footer .title {
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
     padding-bottom: 20px;
     border-bottom: 2px solid #ff8519;
+    width: 50%;
+    margin: 0 auto;
 }
 
 footer .title h5{
@@ -479,6 +483,14 @@ footer .form .input-group button:hover {
 
 
 @media (max-width: 1024px) {
+
+    #product1 .title{
+        text-align: left;
+    }
+    #product1 .title span{
+        margin-left: 12px;
+    }
+
     footer {
         padding: 30px 40px;
     }
@@ -499,6 +511,10 @@ footer .form .input-group button:hover {
 }
 
 @media (max-width: 768px) {
+
+
+
+
     footer {
         padding: 20px;
     }
@@ -568,6 +584,15 @@ footer .form .input-group button:hover {
     footer {
         padding: 30px 40px;
         flex-direction: column;
+    }
+
+    footer .title h5{
+        font-size: 40px;
+    }
+
+    footer .title span{
+        font-size: 40px;
+        color: #ff6b35;
     }
     
     footer .About,
@@ -688,6 +713,15 @@ footer .form .input-group button:hover {
     
     footer .form h3 {
         font-size: 24px;
+    }
+
+    footer .title h5{
+        font-size: 30px;
+    }
+
+    footer .title span{
+        font-size: 30px;
+        color: #ff6b35;
     }
     
     footer .form p {
