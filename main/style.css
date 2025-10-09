@@ -222,13 +222,109 @@ body{
 
 #product1 {
     text-align: center;
-    background: url(/img/bg/blueprint.png);
-    background-size: cover;
+    background: url(/img/bg/blueprint_rotate.png);
+    background-size: 100% 100%;
     background-position: center;
     background-repeat: no-repeat;
     width: 100%;
-    min-height: 1000px;
+    height: 1800px;
     padding-top: 180px;
+}
+
+#product1 .item-slide {
+    background: url(/img/bg/the-making-of-slide-1.jpg);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    margin-left: auto;
+    margin-right: auto;
+    width: 90%;
+    height: 700px;
+    padding: 0 80px;
+    position: relative;
+    margin-bottom: 140px;
+}
+
+#product1 .item-slide::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.4);
+}
+
+#product1 .item-slide h2 {
+    position: relative;
+    z-index: 1;
+    font-size: 50px;
+    font-weight: 700;
+    color: #ff6600;
+    text-transform: uppercase;
+    margin: 0;
+    line-height: 0.9;
+    text-align: left;
+    margin-top: auto;
+    padding-bottom: 40px;
+
+}
+
+#product1 .item-slide h2::after {
+    content: '';
+    display: block;
+    width: 120px;
+    height: 5px;
+    background: linear-gradient(to right, #ff6600 0%, #ff6600 25%, #888 25%, #888 45%, #666 45%, #666 65%, #444 65%, #444 85%, #333 85%);
+    margin-top: 20px;
+}
+
+#product1 .item-slide .content-right {
+    position: relative;
+    z-index: 1;
+    max-width: 600px;
+    text-align: left;
+    margin-top: auto;
+    padding-bottom: 40px;
+
+}
+
+#product1 .item-slide p {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #ffffff;
+    margin: 0 0 30px 0;
+    font-weight: 300;
+}
+
+#product1 .item-slide .explore {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 15px 40px;
+    background: #ff6600;
+    color: #ffffff;
+    text-transform: uppercase;
+    font-weight: 700;
+    font-size: 16px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+    clip-path: polygon(0 0, calc(100% - 15px) 0, 100% 15px, 100% 100%, 15px 100%, 0 calc(100% - 15px));
+}
+
+#product1 .item-slide .explore::after {
+    content: '▶';
+    font-size: 12px;    
+}
+
+#product1 .item-slide .explore:hover {
+    background: #ff7722;
+    transform: scale(1.05);
 }
 
 #product1 .title{
@@ -348,13 +444,13 @@ footer .title {
 
 footer .title h5{
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 60px;
+    font-size: 70px;
 }
 
 footer .title span{
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 60px;
-    color: #ff6b35;
+    font-size: 70px;
+    color: #ff8519;
 }
 
 footer .footer-content {
