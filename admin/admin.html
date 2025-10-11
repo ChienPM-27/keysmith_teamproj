@@ -8,54 +8,109 @@
     <link rel="stylesheet" href="./assets/fonts/fontawesome-free-7.1.0-web/fontawesome-free-7.1.0-web/css/all.min.css">
 </head>
 <body>
-    <div id="main">
-        <div id="header">
-            <div class="row">
-                <div class="logo"><img src="/img/logo/logo_full.png" alt=""></div>
-                <div class="search-bar">
-                    <div class="search">
-                        <input type="text" placeholder="Tìm kiếm sản phẩm..." class="search-bar-input">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                    </div>
-                    <div class="contact-phone">
-                        <div>
-                            <i class="fa-solid fa-phone-volume"></i>
-                        </div>
-                        <div>
-                            <p>Hotline | Tổng đài</p>
-                            <a href="">0382000619</a>
-                        </div>
-                        <div class="account">
-                            <i class="fa-solid fa-user"></i>
-                            <p>Xin chào!</p>
-                            <a href="">Đăng Nhập</a>
-                        </div>
-                        <div>
-                            <ul class="group-account">
-                                <li>
-                                    <i class="fa-sharp fa-thin fa-heart"></i>
-                                </li>
-                                <li>
-                                    <i class="fa-thin fa-bag-shopping"></i>
-                                </li>
-                                <li>
-                                    <i class="fa-thin fa-shuffle"></i>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="account-order"></div>
-            </div>
-        </div>
+    <section id="header"> 
+        <a href="#"><img src="/img/logo/logo_full.png" class="logo" alt="logo" style="width: 150px; height: 75px;"></a>
 
-        <div id="content">
+        <ul id="navbar">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="Store.html">Store</a></li>
+            <li><a href="Category.html">Category</a></li>
+            <li><a href="Collections.html">Collections</a></li>
+            <li><a href="Contact.html">Contact</a></li>
+        </ul>
 
+        <div class="header-icons">
+            <a href="#" class="cart"><i class="fa-solid fa-magnifying-glass"></i></a>
+            <a href="Cart.html" class="cart"><i class="fa-solid fa-cart-shopping"></i></a>
+            <a href="Profile.html" class="profile"><i class="fa-solid fa-circle-user"></i></a>
+            
         </div>
-        
-        <div id="footer">
+    </section>
+
+    <div class="main">
+        <div class="sidebar">
+            <h2>Admin Panel</h2>
+            <ul>
+                <li><a href="#">Dashboard</a></li>
+                <li><a href="#">Users</a></li>
+                <li><a href="#">Products</a></li>
+                <li><a href="#">Orders</a></li>
+                <li><a href="#">Settings</a></li>
+            </ul>
+        </div>
+        <div class="main-content">
 
         </div>
     </div>
+
+    <footer class="section-p1" style="display: flex">
+        <div class="About">
+            <table border="1" cellspacing="0" cellpadding="8">
+                <tr>
+                    
+                    <td rowspan="4" style="width:20%; text-align: center;"><a href="#" style="font-family: Bebas Neue; font-size: 30px; font-weight: 700;">ABOUT US</a></td>
+                    <td style="width:30%;">HELP CENTER</td>
+                    <td rowspan="2" style="width: 30%;">SHIPPING &<br>RETURN POLICY</td>
+                    <td rowspan="5" style="width:40%;">
+                    <img src="/img/logo/logo_full.png" alt="Logo" style=" justify-content: center; max-width: 250px ; height:auto;
+                        filter:
+                        drop-shadow(0 0 1px black)
+                        drop-shadow(0 0 1px black)
+                        drop-shadow(0 0 1px black)">
+                    </td>
+                    
+                </tr>
+
+                <tr>
+                    <td>BLOG & NEWS</td>
+                </tr>
+
+                <tr>
+                    <td colspan="2" style="text-align: left;">DISCORD
+                        <a href="https://discord.com" target="_blank"
+                        style="float:right"><i class="fa-brands fa-discord"></i></a>
+                    </td>
+
+                </tr>
+
+                <tr>
+                    <td colspan="2" style="text-align: left;">SOCIAL MEDIA
+                        <div style="float: right">
+                            <a href="https://www.instagram.com" target="_blank"><i class="fa-brands fa-square-instagram"></i></a>
+                            <a href="https://www.facebook.com" target="_blank"><i class="fa-brands fa-square-facebook"></i></a>
+                            <a href="https://www.tiktok.com" target="_blank"><i class="fa-brands fa-tiktok"></i></a>
+                            <a href="https://www.youtube.com" target="_blank"><i class="fa-brands fa-youtube"></i></a>
+                            <a href="https://twitter.com" target="_blank"><i class="fa-brands fa-square-x-twitter"></i></a>
+                        </div>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td colspan="3" style="text-align:left;">
+                    SUPPORT:
+                    <span style="float:right; font-family:Bebas Neue; ">SUPPORT@KEYSMITH.COM</span>
+                    </td>
+                </tr>
+                
+            </table>
+        </div>
+
+        <div class="form">
+            <div class="subcribe">
+                <h3>SUBSCRIBE & GET INCENTIVES</h3>
+                <p>
+                    Sign up and get the latest news about new design, group buy, straight to your inbox.
+                </p>
+            </div>
+
+            <div class="bonus">Bonus: Many hot offers and giveaway await!</div>
+
+            <div class="input-group">
+                <input type="email" placeholder="YOUR E-MAIL:" />
+                <button>SIGN UP</button>
+            </div>
+        </div>
+
+    </footer>
 </body>
 </html>
