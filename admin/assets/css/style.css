@@ -62,294 +62,93 @@ p{
 
 body{
     width: 100%;
-    background-color: var(--color-background);
-}
-/* header */
-#header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 5px 80px;
-    background-color: transparent;
-    backdrop-filter: blur(10px);
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 100;
-    transition: top 0.3s ease;
-    border-bottom: 1px solid #ffffff29;
 }
 
-#header::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 50px; /* chiều cao shadow */
-    background: linear-gradient(to bottom, rgba(0,0,0,0.8), rgba(255, 255, 255, 0)); 
-    pointer-events: none; /* không che click */
-    z-index: -1;
+/* container Section */
+
+.container {
+display: flex;
+height: 100vh;
 }
 
-
-
-#header .logo {
-    margin-right: auto; /* auto đẩy logo sang trái */
-    margin-bottom: -5px;
-}
-
-.header-icons { 
-    margin-left: auto; /* auto đẩy logo sang phải */
-    display: flex;
-    align-items: center;
-    gap: 15px; /* khoảng cách giữa cart và profile */
-}
-
-.header-icons a {
-    color: #ffffff;
-    font-size: 20px;
-    text-decoration: none;
-}
-.header-icons a:hover{
-    color:#ff9f4a;
-    transition: color 0.3s ease;
-}
-
-#navbar{
-    flex: 1; /* chiếm hết phần còn lại !!! */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-#navbar .cart{
-    margin-left: 30px;
-}
-
-#navbar li{
-    /* nếu để position: relative ở đây thì underline sẽ bị tràn */
-    list-style: none;
-    padding: 0 20px;
-}
-
-#navbar li a{
-    /* để relative ở đây chỉ underline chữ thôi */
-    font-family: 'Bebas Neue';
-    position: relative;
-    text-decoration: none;
-    font-size: 20px;
-    font-weight: 400;
-    color: #fff;
-    transition: color 0.1s ease, transform 0.1s ease;
-}
-
-#navbar li a::after{
-    content: "";
-    position: absolute;
-    background-color: #ff9f4a;
-    left: 50%;
-    transform: translateX(-50%);
-    bottom: -2px;
-    width: 0%; /* ẩn đi underline */
-    height: 1px;
-    transition: width 0.3s ease;
-}
-
-#navbar li a:hover::after{
-    width: 100%; /* sau khi hover thì sẽ xuất hiện underline */
-}
-
-/* Main Section */
-
-.main {
-    margin-top: 8%;
-    height: 100vh;
-    background-color: var(--color-background);
-    display: flex;
-    
-}
-.sidebar {
-    flex: 2.5;
-    border-right: 1px solid var(--color-secondary);
-    font-size: 1.24rem;
-}
-
-.sidebar h2 {
-    padding: 0 6px;
-    text-transform: uppercase;
+.sidebar  {
+width: 300px;
+height: 100vh;
+display: flex;
+flex-direction: column;
+justify-content: stretch;
+align-items: center;
+padding-top: 2rem;
+background-color: var(--color-background);
 }
 
 .sidebar ul {
-    height: 100%;
+    list-style: none;
 }
 
-.sidebar li {
-    height: 14%;
-    text-transform: uppercase;
+.top-sidebar {
+height: 150px;
+
+}
+.top-sidebar img {
+    width: 200px;
     position: relative;
-    transition: background-color 0.4s ease-in-out;
+    top: 25px;
+    left: 0px;
+    cursor: pointer;
 }
 
-
-.sidebar a {
-    color: var(--color-text-white);
-    text-decoration: none;
-    height: 100%;
+.middle-sidebar {
+margin: 1rem;
+flex-grow: 1;
+width: 100%;
 }
 
-.sidebar li a {
-    padding: 0 60px;
-    line-height: 100px;
-}
-
-.sidebar li:hover {
-    transition: color 500 ease-in-out;
-    background-color: #333;
-}
-
-.sidebar li:hover a {
-    color: var(--color-text-white);
-}
-
-.main-content {
-    flex: 7.5;
-}
-
-@keyframes sidebarhover {
-    from {
-        opacity: 0;
-        transition: translateX(100px);
-    }
-    to {
-        opacity: 1;
-        transition: translateX(0);
-    }
-}
-
-
-/* Footer Section */
-
-footer {
-    background: #1a1a1a;
-    color: white;
-    padding: 40px 80px;
-    display: flex;
-    gap: 20px;
-    align-items: stretch;
-}
-
-footer .About {
-    flex: 6;
-    display: flex;
-}
-
-footer .About table {
-    background-color: #a5a5a5;
-    border-collapse: collapse;
-    width: 100%;
-    height: 100%;
-}
-
-footer .About table td {
-    padding: 5px 15px;
-    color: rgb(0, 0, 0);
-    font-family: 'Bebas Neue';
-    text-align: center;
-    font-size: larger;
-}
-
-footer .About table a {
-    color: #000000;
-    text-decoration: none;
-    font-size: 14px;
-    transition: color 0.3s ease;
-}
-
-footer .About table a:hover {
-    color: #ff6b35;
-}
-
-footer i {
-    font-size: 20px;
-}
-
-footer .form {
-    flex: 3;
-    background: #a5a5a5;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+.sidebar-list {
     display: flex;
     flex-direction: column;
-    background: #ff8519;
+    align-items: center;
+    width: 100%;
+    list-style: none;
 }
 
-footer .form .subcribe{
-    padding-top: 15px;
-    padding-left: 15px;
-    padding-right: 15px ;
+.sidebar-list-item {
+    position: relative;
+    width: 100%;
+    transition: background-color 0.25s ease-in;
 }
 
-footer .form h3 {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 32px;
-    color: #000;
-    letter-spacing: 1px;
-}
-
-footer .form p {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 16px;
-    line-height: 1.6;
-    color: #000;
-}
-
-footer .form .bonus {
-    background: #ff8519;
-    font-weight: bold;
-    color: #000000;
-    font-size: 14px;
-    padding: 15px;
-    border-top: 1px solid black;
-    border-bottom: 1px solid black;
-}
-
-footer .form .input-group {
+.sidebar-link {
     display: flex;
-    margin-top: auto;
+    width: 100%;
+    padding: 1rem 0;
+    text-decoration: none;
+    align-items: center;
+    color: var(--color-text-white);
 }
 
-footer .form .input-group input[type="email"] {
-    flex: 1;
-    padding: 12px 15px;
-    font-size: 14px;
-    border: none;
-    transition: border-color 0.3s;
-    background: #fff;
+.sidebar-icon {
+    font-size: 24px;
+    flex-shrink: 0;
+    margin-left: 24px;
 }
 
-footer .form .input-group input[type="email"]::placeholder {
-    font-weight: 500;
+.sidebar-hidden {
+    margin-left: 1.5rem;
 }
 
-footer .form .input-group input[type="email"]:focus {
-    border-color: #333;
-    outline: none;
-    box-shadow: none;
+.sidebar-list-item:hover {
+    background-color: var(--color-primary-hover);
+}
+.sidebar-link:hover {
+    color: var(--color-text-dark);
+
 }
 
-footer .form .input-group button {
-    padding: 12px 30px;
-    background: #333;
-    color: #fff;
-    border: none;
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 25px;
-    letter-spacing: 1px;
-    cursor: pointer;
-    transition: background 0.2s;
+.bottom-sidebar {
+
 }
 
-footer .form .input-group button:hover {
-    background: #555;
+.container main {
+    width: 100%;
 }
