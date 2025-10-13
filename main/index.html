@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="./style.css">
     <link rel="icon" type="image/png" href="/img/logo/logo_favicon.png" sizes="32x32">
     <script src="https://kit.fontawesome.com/da0c4cdc9f.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css" integrity="sha512-tS3S5qG0BlhnQROyJXvNjeEM4UpMXHrQfTGmbQ1gKmelCxlSEBUaxhRBj/EFTzpbP4RVSrpEikbmdJobCvhE3g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css" integrity="sha512-sMXtMNL1zRzolHYKEujM2AqCLUR9F2C4/05cdbxjjLSRvMQIciEPCQZo++nk7go3BtSuK9kfa/s+a4f4i5pLkw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
     <section id="header"> 
@@ -42,13 +44,27 @@
     <section id="product1" class="section-p1">
 
         <div class="item-slide">
-            <h2>THE<br>MAKING OF</h2>
-            
-            <div class="content-right">
-                <p>Producing thousands of keycaps with the highest standard of crafting, and finalizing is indeed an achievement. Come and join with us this making session to explore unexpected things!</p>
-                <div class="explore">PLAY VIDEO</div>
+            <div class="owl-carousel owl-theme">
+                <div class="item"><img src="/img/bg/about/the-making-of-slide-1.jpg" alt=""></div>
+                <div class="item"><img src="/img/bg/about/the-making-of-slide-2.jpg" alt=""></div>
+                <div class="item"><img src="/img/bg/about/the-making-of-slide-3.jpg" alt=""></div>
+                <div class="item"><img src="/img/bg/about/the-making-of-slide-4_mobile.jpg" alt=""></div>
+            </div>
+
+            <div class="making-of-content">
+                <div class="left-content">
+                    <h2>THE<br>MAKING OF</h2>
+                    <!-- Custom dots nằm ngay dưới h2 -->
+                    <div class="custom-dots"></div>
+                </div>
+                
+                <div class="content-right">
+                    <p>Producing thousands of keycaps with the highest standard of crafting, and finalizing is indeed an achievement. Come and join with us this making session to explore unexpected things!</p>
+                    <div class="explore">READ MORE</div>
+                </div>
             </div>
         </div>
+
 
         <div class="title">
             <h2>Feature</h2>
@@ -184,8 +200,34 @@
             </div>
         </div>
     </div>
+
+
 </footer>
-    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js" integrity="sha512-bPs7Ae6pVvhOSiIcyUClR7/q2OAsRiovw4vAkX+zJbw3ShAeeqezq50RIIcIURq7Oa20rW2n2q+fyXBNcU9lrw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        var owl = $('.owl-carousel');
+        owl.owlCarousel({
+            loop: true,
+            nav:false,
+            dotsContainer: '.custom-dots',
+            autoplay: true,
+            autoplayTimeout: 3000,
+            responsive:{
+                0:{ 
+                    items:1
+                },
+                600:{
+                    items:1
+                },
+                1000:{
+                    items:1
+                }
+            }
+        });
+
+    </script>
+
     <script src="./script.js"></script>
     <script src="./js/subscription-form.js"></script>
 
