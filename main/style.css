@@ -142,7 +142,7 @@ body{
     transform: translateX(-50%);
     bottom: -2px;
     width: 0%;
-    height: 1px;
+    height: 2px;
     transition: width 0.3s ease;
 }
 
@@ -219,7 +219,7 @@ body{
     color:rgb(255, 145, 0);
 }
 
-/* feature product section */
+/* ========== PRODUCT1 BASE STYLES ========== */
 
 #product1 {
     text-align: center;
@@ -228,18 +228,17 @@ body{
     background-position: center;
     background-repeat: no-repeat;
     width: 100%;
-    height: 1800px;
-    padding-top: 180px;
+    height: auto;
+    min-height: 1650px;
+    padding: 180px 0 80px;
 }
 
 #product1 .item-slide {
     position: relative;
-    margin-left: auto;
-    margin-right: auto;
+    margin: 0 auto 140px;
     width: 90%;
     max-width: 1200px;
     height: 600px;
-    margin-bottom: 140px;
 }
 
 /* Owl Carousel */
@@ -262,13 +261,12 @@ body{
 }
 
 #product1 .item-slide .owl-carousel .item img {
-    width: 70%;
-    height: 70%;
+    width: 100%;
+    height: 100%;
     object-fit: contain;
     object-position: center;
 }
 
-/* Making of content */
 #product1 .item-slide .making-of-content {
     position: absolute;
     bottom: 0;
@@ -284,7 +282,7 @@ body{
 #product1 .item-slide .making-of-content .left-content {
     display: flex;
     flex-direction: column;
-    gap: 15px; /* Khoảng cách giữa h2 và dots */
+    gap: 15px;
 }
 
 #product1 .item-slide h2 {
@@ -337,10 +335,10 @@ body{
     transform: scale(1.05);
 }
 
-/* Custom dots - Nằm trong left-content, dưới h2 */
+/* Custom Dots */
 .custom-dots {
     display: flex;
-    justify-content: flex-start; /* Căn trái như h2 */
+    justify-content: flex-start;
     align-items: center;
     gap: 8px;
     z-index: 10;
@@ -374,63 +372,51 @@ body{
     display: none;
 }
 
-#product1 .title{
-    padding-bottom: 20px;
+/* Title Section */
+#product1 .title {
+    padding: 0 80px 60px;
+    margin-top: 0;
 }
 
-#product1 .pro-container{
+#product1 .title h2 {
+    color: #e2e2e2;
+    font-size: 80px;
+    margin: 10px 0;
+    letter-spacing: 3px;
+    font-family: 'Bebas Neue', sans-serif;
+}
+
+#product1 .title span {
+    color: #ff8c28;
+    font-weight: 500;
+    font-size: 20px;
+    letter-spacing: 2px;
+    font-family: 'Bebas Neue', sans-serif;
+}
+
+/* Product Container */
+#product1 .pro-container {
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
-}
-
-#product1 .container-fluid{
-    display: flex;
-}
-
-/* Custom Owl Carousel Dots */
-#product1 .owl-carousel .owl-dots {
-    text-align: center;
-    margin-top: 30px;
-    position: relative;
-    z-index: 10;
-}
-
-#product1 .owl-carousel .owl-dot {
-    display: none !important;
-    width: 60px;
-    height: 4px;
-    background: #666;
-    margin: 0 5px;
-    border-radius: 2px;
-    transition: all 0.3s ease;
-    cursor: pointer;
-}
-
-#product1 .owl-carousel .owl-dot.active {
-    background: #ff6600;
-    width: 80px;
-}
-
-#product1 .owl-carousel .owl-dot:hover {
-    background: #ff8519;
+    padding: 0 80px;
+    gap: 20px;
 }
 
 #product1 .pro {
-    width: 23%;
+    width: calc(23%);
     min-width: 250px;
     padding: 10px 12px;
     overflow: hidden;
     text-align: center;
     cursor: pointer;
     box-shadow: 20px 20px 30px rgba(0,0,0,0.02);
-    margin: 15px 0;
     transition: 0.2s ease;
     position: relative;
     background: white;
 }
 
-#product1 .pro:hover{
+#product1 .pro:hover {
     box-shadow: 20px 20px 30px rgba(102, 126, 234, 0.1);
     border: 1px solid #ffad66;
 }
@@ -439,19 +425,18 @@ body{
     width: 100%;
 }
 
-#product1 .pro .des{
+#product1 .pro .des {
     text-align: start;
     padding: 5px 0;   
 }
 
-#product1 .pro .des span{
+#product1 .pro .des span {
     color: #78909c;
     font-size: 12px;
     margin: 0;
-
 }
 
-#product1 .pro .des h5{
+#product1 .pro .des h5 {
     padding-top: 3px;
     color: #ff8519;
     font-size: 14px;
@@ -459,22 +444,7 @@ body{
     margin: 0;
 }
 
-#product1 .title h2{
-    color: #e2e2e2;
-    font-size:  80px;
-    margin: 10px;
-    position:relative;
-    letter-spacing: 3px;
-    font-family: 'Bebas Neue', sans-serif;
-}
-#product1 .title span{
-    color: #ff8c28; font-weight: 500;
-    font-size: 20px;
-    letter-spacing: 2px;
-    font-family: 'Bebas Neue', sans-serif;
-}
-
-#product1 .pro .buy{
+#product1 .pro .buy {
     width: 40px;
     height: 40px;
     line-height: 40px;
@@ -489,13 +459,53 @@ body{
     transition: 0.2s ease;
 }
 
-
-
 #product1 .pro .buy:hover {
     transform: scale(1.05);
     box-shadow: 0 4px 12px rgba(255, 133, 25, 0.3);
 }
 
+/* ========== TABLET RESPONSIVE (max-width: 1024px) ========== */
+@media (max-width: 1024px) {
+    #product1 {
+        padding: 120px 0 60px;
+        min-height: auto;
+    }
+
+    #product1 .item-slide {
+        width: 85%;
+        margin-bottom: 100px;
+    }
+
+    #product1 .item-slide .making-of-content {
+        padding: 0 40px 30px;
+    }
+
+    #product1 .item-slide h2 {
+        font-size: 40px;
+    }
+
+    #product1 .item-slide .content-right {
+        max-width: 500px;
+    }
+
+    #product1 .title {
+        padding: 0 40px 50px;
+    }
+
+    #product1 .title h2 {
+        font-size: 60px;
+    }
+
+    #product1 .pro-container {
+        padding: 0 40px;
+        gap: 15px;
+    }
+
+    #product1 .pro {
+        width: 48%;
+        min-width: 200px;
+    }
+}
 /* ========== FOOTER LAYOUT ========== */
 
 footer {
@@ -686,36 +696,6 @@ footer .form .input-group button:hover {
 
 }
 
-@media (max-width: 768px) {
-
-
-
-
-    footer {
-        padding: 20px;
-    }
-
-    footer .title {
-        font-size: 32px;
-    }
-
-    footer .About table td {
-        font-size: 14px;
-        padding: 8px;
-    }
-
-    footer .form h3 {
-        font-size: 24px;
-    }
-
-    footer .form .input-group {
-        flex-direction: column;
-    }
-
-    footer .form .input-group button {
-        width: 100%;
-    }
-}
 
 /* Tablet - iPad */
 @media (max-width: 1024px) {
@@ -872,47 +852,104 @@ footer .form .input-group button:hover {
         font-size: 36px;
         line-height: 44px;
     }
-    
-    #product1 .pro {
-        width: 48%;
-        min-width: 200px;
-    }
-    
-    footer {
-        padding: 20px;
-    }
-    
-    footer .About table td {
-        padding: 8px;
-        font-size: 14px;
-    }
-    
-    footer .form h3 {
-        font-size: 24px;
+
+    #product1 {
+        padding: 80px 0 40px;
+        background-size: cover;
     }
 
-    footer .title h5{
-        font-size: 30px;
+    /* Item Slide - Full Width */
+    #product1 .item-slide {
+        width: 100%;
+        max-width: 100%;
+        margin: 0 0 80px 0;
+        height: auto;
+        min-height: 450px;
     }
 
-    footer .title span{
-        font-size: 30px;
-        color: #ff6b35;
+    #product1 .item-slide .owl-carousel .item {
+        height: 500px;
     }
-    
-    footer .form p {
-        font-size: 14px;
-    }
-    
-    footer .form .input-group {
+
+    #product1 .item-slide .making-of-content {
         flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-end;
+        padding: 20px;
+        gap: 15px;
     }
-    
-    footer .form .input-group button {
-        font-size: 20px;
-        padding: 10px;
+
+    #product1 .item-slide .making-of-content .left-content {
+        width: 100%;
+        gap: 10px;
+    }
+
+    #product1 .item-slide h2 {
+        font-size: 28px;
+    }
+
+    #product1 .item-slide .content-right {
+        max-width: 100%;
+        width: 100%;
+    }
+
+    #product1 .item-slide p {
+        font-size: 12px;
+        margin-bottom: 15px;
+        line-height: 1.5;
+    }
+
+    #product1 .item-slide .explore {
+        padding: 10px 25px;
+        font-size: 13px;
+        letter-spacing: 1px;
+    }
+
+    /* Custom Dots */
+    .custom-dots {
+        gap: 5px;
+    }
+
+    .custom-dots .owl-dot {
+        width: 15px;
+        height: 2px;
+    }
+
+    .custom-dots .owl-dot.active {
+        width: 40px;
+    }
+
+    /* Title Section */
+    #product1 .title {
+        padding: 40px 20px;
+        text-align: left;
+    }
+
+    #product1 .title h2 {
+        font-size: 45px;
+    }
+
+    #product1 .title span {
+        font-size: 18px;
+        margin-left: 5px;
+    }
+
+    /* Product Container - 1 ảnh per row */
+    #product1 .pro-container {
+        padding: 0 20px;
+        gap: 20px;
+        justify-content: center;
+    }
+
+    #product1 .pro {
+        width: 100%;
+        max-width: 400px;
+        min-width: unset;
+        margin: 0 auto;
     }
 }
+
+
 
 /* Mobile Portrait */
 @media (max-width: 480px) {
