@@ -1,60 +1,39 @@
+/* ==========================================================
+   1. FONT IMPORTS & RESET / CƠ BẢN FONT & RESET
+========================================================== */
 @import url("https://fonts.googleapis.com/css2?family=Spartan:wght@100;200;300;400;500;600;700;800;900&display=swap");
 @import url('https://fonts.googleapis.com/css2?family=Abhaya+Libre:wght@400;500;600;700;800&family=Aldrich&family=Bebas+Neue&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Abhaya+Libre:wght@400;500;600;700;800&family=Aldrich&family=Bebas+Neue&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
-*{
+
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     font-family: "Poppins", sans-serif;
 }
 
-html{
+html {
     scroll-behavior: smooth;
 }
 
-/* Global Styles */
-
-h1{
-    font-size: 50px;
-    line-height: 64px;
-    color: #222;
-}
-
-h2{
-    font-size: 46px;
-    line-height: 54px;
-    color: #222;
-}
-
-h4{
-    font-size: 20px;
-    color: #222;
-}
-
-h6{
-    font-weight: 700;
-    font-size: 12px;
-}
-
-p{
-    font-size: 15px;
-    color: #465b52;
-    margin: 5px 0 20px 0;
-}
-
-.section-p1{
-    padding: 40px 80px;
-}
-
-.section-m1{
-    margin: 40px 0;
-}
-
-body{
+body {
     width: 100%;
 }
 
-/* Header styles */
+/* ==========================================================
+   2. TYPOGRAPHY & BASE GLOBAL STYLES / KIỂU CHỮ & CƠ BẢN
+========================================================== */
+h1 { font-size: 50px; line-height: 64px; color: #222; }
+h2 { font-size: 46px; line-height: 54px; color: #222; }
+h4 { font-size: 20px; color: #222; }
+h6 { font-weight: 700; font-size: 12px; }
+p { font-size: 15px; color: #465b52; margin: 5px 0 20px 0; }
+.section-p1 { padding: 40px 80px; }
+.section-m1 { margin: 40px 0; }
+
+/* ==========================================================
+   3. HEADER, NAVBAR, LOGO, ICONS / HEADER & THANH ĐIỀU HƯỚNG
+========================================================== */
 #header {
     display: flex;
     align-items: center;
@@ -70,33 +49,25 @@ body{
     transition: top 0.3s ease;
     border-bottom: 1px solid #ffffff29;
 }
-
 #header::before {
     content: "";
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
-    height: 50px; /* chiều cao shadow */
+    height: 50px;
     background: linear-gradient(to bottom, rgba(0,0,0,0.8), rgba(255, 255, 255, 0)); 
-    pointer-events: none; /* không che click */
+    pointer-events: none;
     z-index: -1;
 }
-
-
-
-#header .logo {
-    margin-right: auto; /* auto đẩy logo sang trái */
-    margin-bottom: -5px;
-}
+#header .logo { margin-right: auto; margin-bottom: -5px; }
 
 .header-icons { 
-    margin-left: auto; /* auto đẩy logo sang phải */
+    margin-left: auto;
     display: flex;
     align-items: center;
-    gap: 15px; /* khoảng cách giữa cart và profile */
+    gap: 15px;
 }
-
 .header-icons a {
     color: #ffffff;
     font-size: 20px;
@@ -108,24 +79,18 @@ body{
 }
 
 #navbar{
-    flex: 1; /* chiếm hết phần còn lại !!! */
+    flex: 1;
     display: flex;
     align-items: center;
     justify-content: center;
+    letter-spacing: 1px;
 }
-
-#navbar .cart{
-    margin-left: 30px;
-}
-
+#navbar .cart{ margin-left: 30px; }
 #navbar li{
-    /* nếu để position: relative ở đây thì underline sẽ bị tràn */
     list-style: none;
     padding: 0 20px;
 }
-
 #navbar li a{
-    /* để relative ở đây chỉ underline chữ thôi */
     font-family: 'Bebas Neue';
     position: relative;
     text-decoration: none;
@@ -134,7 +99,6 @@ body{
     color: #fff;
     transition: color 0.1s ease, transform 0.1s ease;
 }
-
 #navbar li a::after{
     content: "";
     position: absolute;
@@ -142,19 +106,28 @@ body{
     left: 50%;
     transform: translateX(-50%);
     bottom: -2px;
-    width: 0%; /* ẩn đi underline */
-    height: 1px;
+    width: 0%;
+    height: 2px;
     transition: width 0.3s ease;
 }
-
 #navbar li a:hover::after{
-    width: 100%; /* sau khi hover thì sẽ xuất hiện underline */
+    width: 100%;
 }
 
-/* ========================= Home page ======================*/
+/* Mobile Menu Toggle */
+#mobile { display: none; }
+#mobile i {
+    color: #fff;
+    font-size: 15px;
+    cursor: pointer;
+}
+#navbar #close {
+    display: none;
+}
 
-/* hero section */
-
+/* ==========================================================
+   4. HERO SECTION / BANNER CHÍNH
+========================================================== */
 #hero{
     background-image: url(/img/hero/header_bg.png);
     height: 100vh;
@@ -179,89 +152,234 @@ body{
     font-size: 18px;
     font-weight: 30px;
 }
-
 #hero .button {
     display: inline-block;
     padding: 12px 25px;
     font-size: 15px;
     font-weight: 600;
-    color: #ffff;               
+    color: #ffff;             
     background-color: #ff8519; 
     border: 2px solid #ff8519;
     border-radius: 5px;       
     cursor: pointer;
     transition: all 0.15s ease;
 }
-
 #hero .button:hover {
     background-color: #ffb777;
     color: #b55d00;  
     border-color: #b55d00;
-    transform: scale(1.03);     /* phóng to nhẹ */
+    transform: scale(1.03);
 }
+#hero .caption .highlight{ color:rgb(255, 145, 0); }
 
-#hero .caption .highlight{
-    color:rgb(255, 145, 0);
-}
-
-/* feature product section */
-
+/* ==========================================================
+   5. PRODUCT SECTION / SẢN PHẨM
+========================================================== */
 #product1 {
     text-align: center;
+    background: url(/img/bg/blueprint_rotate.png);
+    background-size: 100% 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 100%;
+    height: auto;
+    min-height: 1650px;
+    padding: 180px 0 80px;
 }
+#product1 .item-slide {
+    position: relative;
+    margin: 0 auto 140px;
+    width: 90%;
+    max-width: 1200px;
+    height: 600px;
 
-#product1 .pro-container{
+}
+#product1 .item-slide .owl-carousel {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+}
+#product1 .item-slide .owl-carousel .item {
+    width: 100%;
+    height: 700px;
+    overflow: hidden;
     display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+}
+#product1 .item-slide .owl-carousel .item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
 }
 
+/* Content Overlay on Carousel */
+#product1 .item-slide .making-of-content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding: 0 80px 20px;
+    z-index: 2;
+    pointer-events: none;
+}
+#product1 .item-slide .making-of-content > * {
+    pointer-events: auto;
+}
+
+/* Left Content - Title & Custom Dots */
+#product1 .item-slide .making-of-content .left-content {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+#product1 .item-slide h2 {
+    font-size: 50px;
+    font-weight: 700;
+    color: #ff6600;
+    text-transform: uppercase;
+    margin: 0;
+    line-height: 0.9;
+    text-align: left;
+}
+
+/* Right Content - Description & Button */
+#product1 .item-slide .content-right {
+    max-width: 600px;
+    text-align: left;
+}
+#product1 .item-slide p {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #ffffff;
+    margin: 0 0 30px 0;
+    font-weight: 300;
+}
+#product1 .item-slide .explore {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 15px 40px;
+    background: #ff6600;
+    color: #ffffff;
+    text-transform: uppercase;
+    font-weight: 700;
+    font-size: 16px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+    clip-path: polygon(0 0, calc(100% - 15px) 0, 100% 15px, 100% 100%, 15px 100%, 0 calc(100% - 15px));
+}
+#product1 .item-slide .explore::after {
+    content: '▶';
+    font-size: 12px;     
+}
+#product1 .item-slide .explore:hover {
+    background: #ff7722;
+    transform: scale(1.05);
+}
+
+/* Custom Dot Navigation */
+.custom-dots {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 8px;
+    z-index: 10;
+}
+.owl-dots { display: none !important; }
+.custom-dots .owl-dot {
+    width: 35px;
+    height: 3px;
+    background: #999;
+    border-radius: 0;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    border: none;
+    flex-shrink: 0;
+}
+.custom-dots .owl-dot.active {
+    background: #ff6600;
+    width: 100px;
+}
+.custom-dots .owl-dot:hover { background: #ccc; }
+.custom-dots .owl-dot span { display: none; }
+
+/* Title Section */
+#product1 .title {
+    padding: 40px;
+    text-align: center;
+}
+#product1 .title h2 {
+    color: #e2e2e2;
+    font-size: 80px;
+    margin: 10px 0;
+    letter-spacing: 3px;
+    font-family: 'Bebas Neue', sans-serif;
+}
+#product1 .title span {
+    color: #ff8c28;
+    font-weight: 500;
+    font-size: 20px;
+    letter-spacing: 2px;
+    font-family: 'Bebas Neue', sans-serif;
+}
+
+/* Product Cards */
+#product1 .pro-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 80px;
+}
 #product1 .pro {
-    width: 32%;
+    width: 100%;
     min-width: 250px;
-    padding: 10px 12px;
-    border: 1px solid #e1f5fe;
-    border-radius: 8px;
     overflow: hidden;
     text-align: center;
     cursor: pointer;
     box-shadow: 20px 20px 30px rgba(0,0,0,0.02);
-    margin: 15px 0;
     transition: 0.2s ease;
     position: relative;
     background: white;
+    margin-bottom: 0px;
 }
-
-#product1 .pro:hover{
+#product1 .pro:hover {
     box-shadow: 20px 20px 30px rgba(102, 126, 234, 0.1);
     border: 1px solid #ffad66;
 }
-
-#product1 .pro img {
-    width: 100%;
-    border-radius: 8px;
-}
-
-#product1 .pro .des{
+#product1 .pro img { width: 100%; height: auto; display: block; }
+#product1 .pro .des {
     text-align: start;
-    padding: 5px 0;   
+    padding: 10px 10px;   
 }
-
-#product1 .pro .des span{
+#product1 .pro .des span {
     color: #78909c;
     font-size: 12px;
     margin: 0;
 }
-
-#product1 .pro .des h5{
+#product1 .pro .des h4 {
+    padding-top: 3px;
+    color: #1a1a1a;
+    font-size: 14px;
+    font-weight: 600;
+    margin: 5px 0;
+}
+#product1 .pro .des h5 {
     padding-top: 3px;
     color: #ff8519;
     font-size: 14px;
     font-weight: 600;
     margin: 0;
 }
-
-#product1 .pro .buy{
+#product1 .pro .buy {
     width: 40px;
     height: 40px;
     line-height: 40px;
@@ -274,36 +392,51 @@ body{
     bottom: 20px;
     right: 10px;
     transition: 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
 }
-
 #product1 .pro .buy:hover {
     transform: scale(1.05);
     box-shadow: 0 4px 12px rgba(255, 133, 25, 0.3);
 }
 
-/* Footer Section */
-
+/* ==========================================================
+   6. FOOTER / CHÂN TRANG
+========================================================== */
 footer {
     background: #1a1a1a;
     color: white;
     padding: 40px 80px;
-    display: flex;
-    gap: 20px;
-    align-items: stretch;
 }
-
-footer .About {
-    flex: 6;
+footer .footer-container {
     display: flex;
+    flex-direction: column;
+    gap: 30px;
 }
-
+footer .title {
+    text-align: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 60px;
+    letter-spacing: 2px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    padding-bottom: 20px;
+    border-bottom: 2px solid #ff8519;
+    width: 50%;
+    margin: 0 auto;
+}
+footer .title h5{ font-family: 'Bebas Neue', sans-serif; font-size: 70px; }
+footer .title span{ font-family: 'Bebas Neue', sans-serif; font-size: 60px; color: #ff8519; }
+footer .footer-content { display: flex; gap: 20px; align-items: stretch; }
+/* Table section */
+footer .About { flex: 6; display: flex; }
 footer .About table {
     background-color: #a5a5a5;
     border-collapse: collapse;
     width: 100%;
     height: 100%;
 }
-
 footer .About table td {
     padding: 5px 15px;
     color: rgb(0, 0, 0);
@@ -311,22 +444,15 @@ footer .About table td {
     text-align: center;
     font-size: larger;
 }
-
 footer .About table a {
     color: #000000;
     text-decoration: none;
     font-size: 14px;
     transition: color 0.3s ease;
 }
-
-footer .About table a:hover {
-    color: #ff6b35;
-}
-
-footer i {
-    font-size: 20px;
-}
-
+footer .About table a:hover { color: #ff6b35; }
+footer i { font-size: 20px; }
+/* Form section */
 footer .form {
     flex: 3;
     background: #a5a5a5;
@@ -335,27 +461,9 @@ footer .form {
     flex-direction: column;
     background: #ff8519;
 }
-
-footer .form .subcribe{
-    padding-top: 15px;
-    padding-left: 15px;
-    padding-right: 15px ;
-}
-
-footer .form h3 {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 32px;
-    color: #000;
-    letter-spacing: 1px;
-}
-
-footer .form p {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 16px;
-    line-height: 1.6;
-    color: #000;
-}
-
+footer .form .subcribe { padding-top: 15px; padding-left: 15px; padding-right: 15px; }
+footer .form h3 { font-family: 'Bebas Neue', sans-serif; font-size: 32px; color: #000; letter-spacing: 1px; }
+footer .form p { font-family: 'Bebas Neue', sans-serif; font-size: 16px; line-height: 1.6; color: #000; }
 footer .form .bonus {
     background: #ff8519;
     font-weight: bold;
@@ -365,12 +473,7 @@ footer .form .bonus {
     border-top: 1px solid black;
     border-bottom: 1px solid black;
 }
-
-footer .form .input-group {
-    display: flex;
-    margin-top: auto;
-}
-
+footer .form .input-group { display: flex; margin-top: auto; }
 footer .form .input-group input[type="email"] {
     flex: 1;
     padding: 12px 15px;
@@ -379,17 +482,12 @@ footer .form .input-group input[type="email"] {
     transition: border-color 0.3s;
     background: #fff;
 }
-
-footer .form .input-group input[type="email"]::placeholder {
-    font-weight: 500;
-}
-
+footer .form .input-group input[type="email"]::placeholder { font-weight: 500; }
 footer .form .input-group input[type="email"]:focus {
     border-color: #333;
     outline: none;
     box-shadow: none;
 }
-
 footer .form .input-group button {
     padding: 12px 30px;
     background: #333;
@@ -401,7 +499,475 @@ footer .form .input-group button {
     cursor: pointer;
     transition: background 0.2s;
 }
+footer .form .input-group button:hover { background: #555; }
 
-footer .form .input-group button:hover {
-    background: #555;
+#product1 .item-slide {
+    position: relative;
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 140px;
+}
+
+.making-of-content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding: 0 80px 40px;
+    z-index: 2;
+    pointer-events: none;
+}
+
+.making-of-content > * {
+    pointer-events: auto;
+}
+
+#product1 .item-slide .owl-carousel .item img {
+    width: 100%;
+    height: 700px;
+    object-fit: cover;
+}
+
+/* ========== TABLET RESPONSIVE (max-width: 1024px) ========== */
+@media (max-width: 1024px){
+    .section-p1 {
+        padding: 40px 40px;
+    }
+    
+    #header {
+        padding: 5px 40px;
+    }
+    
+    #navbar {
+        gap: 10px;
+    }
+    
+    #navbar li {
+        padding: 0 10px;
+    }
+    
+    #navbar li a {
+        font-size: 18px;
+    }
+    
+    #hero {
+        padding: 0 40px;
+        height: 90vh;
+    }
+    
+    #hero h1 {
+        font-size: 60px;
+        line-height: 70px;
+    }
+    
+    #hero p {
+        font-size: 16px;
+    }
+    
+    #product1 .pro {
+        width: 48%;
+    }
+
+    #product1 {
+        padding: 120px 0 60px;
+        min-height: auto;
+        background-size: cover;
+    }
+
+    /* Carousel Slide */
+    #product1 .item-slide {
+        width: 90%;
+        margin-bottom: 100px;
+        height: 500px;
+    }
+
+    #product1 .item-slide .owl-carousel .item {
+        height: 500px;
+    }
+
+    #product1 .item-slide .making-of-content {
+        padding: 0 40px 30px;
+    }
+
+    #product1 .item-slide h2 {
+        font-size: 40px;
+    }
+
+    #product1 .item-slide .content-right {
+        max-width: 500px;
+    }
+
+    #product1 .item-slide p {
+        font-size: 13px;
+    }
+
+    #product1 .item-slide .explore {
+        padding: 12px 30px;
+        font-size: 14px;
+    }
+
+    /* Title Section */
+    #product1 .title {
+        padding: 0 40px 50px;
+        text-align: left;
+    }
+
+    #product1 .title h2 {
+        font-size: 60px;
+    }
+
+    #product1 .title span {
+        font-size: 18px;
+        margin-left: 5px;
+    }
+
+    /* Product Container */
+    #product1 .pro-container {
+        padding: 0 40px;
+    }
+
+    #product1 .pro {
+        min-width: 200px;
+    }
+
+    
+    footer {
+        padding: 30px 40px;
+    }
+
+    footer .title {
+        font-size: 40px;
+    }
+
+    footer .title span{
+        font-size: 40px;
+    }
+
+    footer .title h5{
+        font-size: 50px;
+    }
+
+    footer .footer-content {
+        flex-direction: column;
+    }
+
+    footer .About,
+    footer .form {
+        flex: 1;
+    }
+}
+
+/* Mobile Landscape & Small Tablets */
+@media (max-width: 768px) {
+    .section-p1 {
+        padding: 30px 20px;
+    }
+    
+    #header {
+        padding: 10px 20px;
+    }
+    
+    #header .logo {
+        width: 120px !important;
+        height: 60px !important;
+    }
+    
+    #navbar {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-start;
+        position: fixed;
+        top: 0;
+        right: -300px;
+        height: 100vh;
+        width: 300px;
+        background-color: rgba(26, 26, 26, 0.98);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 40px 60px rgba(0, 0, 0, 0.5);
+        padding: 80px 0 0 10px;
+        transition: 0.3s ease;
+        z-index: 999;
+    }
+    
+    #navbar.active {
+        right: 0;
+    }
+    
+    #navbar li {
+        margin-bottom: 25px;
+        width: 100%;
+    }
+    
+    #navbar li a {
+        font-size: 22px;
+    }
+    
+    #navbar #close {
+        position: absolute;
+        top: 30px;
+        left: 30px;
+        color: #fff;
+        font-size: 24px;
+        cursor: pointer;
+        display: block;
+    }
+    
+    #mobile {
+        display: block;
+    }
+    
+    #mobile i {
+        font-size: 24px;
+        cursor: pointer;
+        color: #fff;
+    }
+    
+    #hero {
+        padding: 0 20px;
+        height: 80vh;
+        background-position: 55%;
+    }
+    
+    #hero h1 {
+        font-size: 45px;
+        line-height: 55px;
+    }
+    
+    #hero p {
+        font-size: 14px;
+    }
+    
+    #hero .button {
+        padding: 10px 20px;
+        font-size: 14px;
+    }
+    
+    h2 {
+        font-size: 36px;
+        line-height: 44px;
+    }
+
+    #product1 {
+        padding: 80px 0 40px;
+        background-size: cover;
+    }
+
+    /* Item Slide - Full Width */
+    #product1 .item-slide {
+        width: 100%;
+        max-width: 100%;
+        margin: 0 0 80px 0;
+        height: auto;
+        min-height: 450px;
+    }
+
+    #product1 .item-slide .owl-carousel .item {
+        height: 500px;
+    }
+
+    #product1 .item-slide .making-of-content {
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-end;
+        padding: 20px;
+        gap: 15px;
+    }
+
+    #product1 .item-slide .making-of-content .left-content {
+        width: 100%;
+        gap: 10px;
+    }
+
+    #product1 .item-slide h2 {
+        font-size: 28px;
+    }
+
+    #product1 .item-slide .content-right {
+        max-width: 100%;
+        width: 100%;
+    }
+
+    #product1 .item-slide p {
+        font-size: 12px;
+        margin-bottom: 15px;
+        line-height: 1.5;
+    }
+
+    #product1 .item-slide .explore {
+        padding: 10px 25px;
+        font-size: 13px;
+        letter-spacing: 1px;
+    }
+
+    /* Custom Dots */
+    .custom-dots {
+        gap: 5px;
+    }
+
+    .custom-dots .owl-dot {
+        width: 15px;
+        height: 2px;
+    }
+
+    .custom-dots .owl-dot.active {
+        width: 40px;
+    }
+
+    /* Title Section */
+    #product1 .title {
+        padding: 40px 20px;
+        text-align: left;
+    }
+
+    #product1 .title h2 {
+        font-size: 45px;
+    }
+
+    #product1 .title span {
+        font-size: 18px;
+        margin-left: 5px;
+    }
+
+    #product1 .pro-container {
+        padding: 0 20px;
+        gap: 20px;
+        justify-content: center;
+    }
+
+    #product1 .pro {
+        width: 100%;
+        max-width: 400px;
+        min-width: unset;
+        margin: 0 auto;
+    }
+    footer .title span{
+        font-size: 30px;
+    }
+
+    footer .title h5{
+        font-size: 40px;
+    }
+}
+
+
+
+/* Mobile Portrait */
+@media (max-width: 480px) {
+    .section-p1 {
+        padding: 20px 15px;
+    }
+    
+    #header {
+        padding: 8px 15px;
+    }
+    
+    #header .logo {
+        width: 100px !important;
+        height: 50px !important;
+    }
+    
+    .header-icons {
+        gap: 10px;
+    }
+    
+    .header-icons a {
+        font-size: 18px;
+    }
+    
+    #hero {
+        padding: 0 15px;
+        height: 70vh;
+    }
+    
+    #hero h1 {
+        font-size: 32px;
+        line-height: 40px;
+    }
+    
+    #hero p {
+        font-size: 13px;
+        margin: 10px 0;
+    }
+    
+    #hero .button {
+        padding: 8px 18px;
+        font-size: 13px;
+    }
+    
+    h2 {
+        font-size: 28px;
+        line-height: 36px;
+    }
+    
+    #product1 .pro {
+        width: 100%;
+        min-width: 100%;
+    }
+    
+    #product1 .pro .des h4 {
+        font-size: 18px;
+    }
+    
+    footer {
+        padding: 15px;
+    }
+    
+    footer .About table {
+        font-size: 12px;
+    }
+    
+    footer .About table td {
+        padding: 5px;
+    }
+    
+    footer .About table td img {
+        max-width: 150px !important;
+    }
+    
+    footer .form .subcribe {
+        padding: 10px;
+    }
+    
+    footer .form h3 {
+        font-size: 20px;
+    }
+    
+    footer .form p {
+        font-size: 12px;
+    }
+    
+    footer .form .bonus {
+        font-size: 12px;
+        padding: 10px;
+    }
+    
+    footer .form .input-group input[type="email"] {
+        font-size: 12px;
+        padding: 10px;
+    }
+    
+    footer .form .input-group button {
+        font-size: 18px;
+        padding: 8px 15px;
+    }
+    
+    footer i {
+        font-size: 16px;
+    }
+    footer .title{
+        padding: 0px;
+        line-height: 30px;
+    }
+    footer .title span{
+        font-size: 20px;
+    }
+
+    footer .title h5{
+        font-size: 30px;
+    }
 }

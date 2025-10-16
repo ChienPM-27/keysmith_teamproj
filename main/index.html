@@ -7,13 +7,16 @@
     <link rel="stylesheet" href="./style.css">
     <link rel="icon" type="image/png" href="/img/logo/logo_favicon.png" sizes="32x32">
     <script src="https://kit.fontawesome.com/da0c4cdc9f.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css" integrity="sha512-tS3S5qG0BlhnQROyJXvNjeEM4UpMXHrQfTGmbQ1gKmelCxlSEBUaxhRBj/EFTzpbP4RVSrpEikbmdJobCvhE3g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css" integrity="sha512-sMXtMNL1zRzolHYKEujM2AqCLUR9F2C4/05cdbxjjLSRvMQIciEPCQZo++nk7go3BtSuK9kfa/s+a4f4i5pLkw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
     <section id="header"> 
         <a href="#"><img src="/img/logo/logo_full.png" class="logo" alt="logo" style="width: 150px; height: 75px;"></a>
 
         <ul id="navbar">
-            <li><a href="index.html">Home</a></li>
+            <a href="#" id="close"><i class="fa-solid fa-times"></i></a>
+            <li><a href="#" id="scrollToTop">Home</a></li>
             <li><a href="Store.html">Store</a></li>
             <li><a href="Category.html">Category</a></li>
             <li><a href="Collections.html">Collections</a></li>
@@ -21,10 +24,12 @@
         </ul>
 
         <div class="header-icons">
-            <a href="#" class="cart"><i class="fa-solid fa-magnifying-glass"></i></a>
+            <a href="#" class="search"><i class="fa-solid fa-magnifying-glass"></i></a>
             <a href="Cart.html" class="cart"><i class="fa-solid fa-cart-shopping"></i></a>
-            <a href="Profile.html" class="profile"><i class="fa-solid fa-circle-user"></i></a>
-            
+            <a href="./login/index.html" class="profile"><i class="fa-solid fa-circle-user"></i></a>
+            <div id="mobile">
+                <i id="bar" class="fas fa-bars"></i>
+            </div>
         </div>
     </section>
 
@@ -37,123 +42,226 @@
     </section>
 
     <section id="product1" class="section-p1">
-        <h2>Feature Products</h2>
-        <span style="color: #ff8c28; font-weight: 500;">Keycap Collections</span>
+
+        <div class="item-slide">
+            <div class="owl-carousel owl-theme">
+                <div class="item"><img src="/img/bg/about/the-making-of-slide-1.jpg" alt=""></div>
+                <div class="item"><img src="/img/bg/about/the-making-of-slide-2.jpg" alt=""></div>
+                <div class="item"><img src="/img/bg/about/the-making-of-slide-3.jpg" alt=""></div>
+                <div class="item"><img src="/img/bg/about/the-making-of-slide-6.jpeg" alt=""></div>
+            </div>
+
+            <div class="making-of-content">
+                <div class="left-content">
+                    <h2>THE<br>MAKING OF</h2>
+                    <div class="custom-dots"></div>
+                </div>
+                
+                <div class="content-right">
+                    <p>Producing thousands of keycaps with the highest standard of crafting, and finalizing is indeed an achievement. Come and join with us this making session to explore unexpected things!</p>
+                    <div class="explore">READ MORE</div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="title">
+            <h2>Featured</h2>
+            <span>ATTACK ON TITAN COLLECTION</span>
+        </div>
         
         <div class="pro-container">
-            <div class="pro">
-                <img src="../img/keycap/AttackOnTitan/Eren.jpg" alt="">
-                <div class="des">
-                    <span>Attack On Titan</span>
-                    <h4>Attack Titan keycap</h4>
-                    <h5>100$</h5>
+            <div class="owl-carousel">
+                <div class="pro">
+                    <img src="../img/keycap/AttackOnTitan/Eren.jpg" alt="">
+                    <div class="des">
+                        <span>Attack On Titan</span>
+                        <h4>Attack Titan <br>
+                        Keycap Artisan</h4>
+                        <h5>50$</h5>
+                    </div>
+                    <a href="#" class="buy"><i class="fa-solid fa-cart-shopping"></i></a>
+                </div>`
+                <div class="pro">
+                    <img src="../img/keycap/AttackOnTitan/Reiner.jpg" alt="">
+                    <div class="des">
+                        <span>Attack On Titan</span>
+                        <h4>Armored Titan<br>
+                        Keycap Artisan</h4>
+                        <h5>40$</h5>
+                    </div>
+                    <a href="#" class="buy"><i class="fa-solid fa-cart-shopping"></i></a>
                 </div>
-                <a href="#" class="buy"><i class="fa-solid fa-cart-shopping"></i></a>
-            </div>
-            <div class="pro">
-                <img src="../img/keycap/AttackOnTitan/Reiner.jpg" alt="">
-                <div class="des">
-                    <span>Attack On Titan</span>
-                    <h4>Attack Titan keycap</h4>
-                    <h5>100$</h5>
+                
+                <div class="pro">
+                    <img src="../img/keycap/AttackOnTitan/Scout.jpg" alt="">
+                    <div class="des">
+                        <span>Attack On Titan</span>
+                        <h4>Scout Regiment<br>
+                        Keycap Artisan</h4>
+                        <h5>45$</h5>
+                    </div>
+                    <a href="#" class="buy"><i class="fa-solid fa-cart-shopping"></i></a>
                 </div>
-                <a href="#" class="buy"><i class="fa-solid fa-cart-shopping"></i></a>
-            </div>
-            
-            <div class="pro">
-                <img src="../img/keycap/AttackOnTitan/Scout.jpg" alt="">
-                <div class="des">
-                    <span>Attack On Titan</span>
-                    <h4>Attack Titan keycap</h4>
-                    <h5>100$</h5>
+                
+                <div class="pro">
+                    <img src="../img/keycap/AttackOnTitan/spacebar.jpg" alt="">
+                    <div class="des">
+                        <span>Attack On Titan</span>
+                        <h4>Wings of Freedom<br>
+                        Keycap Artisan</h4>
+                        <h5>90$</h5>
+                    </div>
+                    <a href="#" class="buy"><i class="fa-solid fa-cart-shopping"></i></a>
                 </div>
-                <a href="#" class="buy"><i class="fa-solid fa-cart-shopping"></i></a>
-            </div>
-            
-            <div class="pro">
-                <img src="../img/keycap/AttackOnTitan/spacebar.jpg" alt="">
-                <div class="des">
-                    <span>Attack On Titan</span>
-                    <h4>Attack Titan keycap</h4>
-                    <h5>100$</h5>
+                <div class="pro">
+                    <img src="../img/keycap/AttackOnTitan/Fight_for_Paradis.webp" alt="">
+                    <div class="des">
+                        <span>Attack On Titan</span>
+                        <h4>Fight For Paradis<br>
+                        Keycap Artisan</h4>
+                        <h5>90$</h5>
+                    </div>
+                    <a href="#" class="buy"><i class="fa-solid fa-cart-shopping"></i></a>
                 </div>
-                <a href="#" class="buy"><i class="fa-solid fa-cart-shopping"></i></a>
             </div>
+            <div class="custom-dots" style="justify-content: center;"></div>
+
         </div>
+
     </section>
 
-    <footer class="section-p1" style="display: flex">
-        <div class="About">
-            <table border="1" cellspacing="0" cellpadding="8">
-                <tr>
-                    
-                    <td rowspan="4" style="width:20%; text-align: center;"><a href="#" style="font-family: Bebas Neue; font-size: 30px; font-weight: 700;">ABOUT US</a></td>
-                    <td style="width:30%;">HELP CENTER</td>
-                    <td rowspan="2" style="width: 30%;">SHIPPING &<br>RETURN POLICY</td>
-                    <td rowspan="5" style="width:40%;">
-                    <img src="/img/logo/logo_full.png" alt="Logo" style=" justify-content: center; max-width: 250px ; height:auto;
-                        filter:
-                        drop-shadow(0 0 1px black)
-                        drop-shadow(0 0 1px black)
-                        drop-shadow(0 0 1px black)">
-                    </td>
-                    
-                </tr>
 
-                <tr>
-                    <td>BLOG & NEWS</td>
-                </tr>
+<footer class="section-p1">
+    <div class="footer-container">
+        <div class="title">
+            <h5>ARE YOU ENJOYING?</h5>
+            <span>CONTINUE EXPLORE</span>
+        </div>
+        <div class="footer-content">
+            <!-- Table Section -->
+            <div class="About">
+                <table border="1" cellspacing="0" cellpadding="8">
+                    <tr>
+                        <td rowspan="4" style="width:20%; text-align: center;">
+                            <a href="#" style="font-family: Bebas Neue; font-size: 30px; font-weight: 700;">ABOUT US</a>
+                        </td>
+                        <td style="width:30%;">HELP CENTER</td>
+                        <td rowspan="2" style="width: 30%;">SHIPPING &<br>RETURN POLICY</td>
+                        <td rowspan="5" style="width:40%;">
+                            <img src="/img/logo/logo_full.png" alt="Logo" style="justify-content: center; max-width: 250px; height:auto;
+                                filter:
+                                drop-shadow(0 0 1px black)
+                                drop-shadow(0 0 1px black)
+                                drop-shadow(0 0 1px black)">
+                        </td>
+                    </tr>
 
-                <tr>
-                    <td colspan="2" style="text-align: left;">DISCORD
-                        <a href="https://discord.com" target="_blank"
-                        style="float:right"><i class="fa-brands fa-discord"></i></a>
-                    </td>
+                    <tr>
+                        <td>BLOG & NEWS</td>
+                    </tr>
 
-                </tr>
+                    <tr>
+                        <td colspan="2" style="text-align: left;">
+                            DISCORD
+                            <a href="https://discord.com" target="_blank" style="float:right">
+                                <i class="fa-brands fa-discord"></i>
+                            </a>
+                        </td>
+                    </tr>
 
-                <tr>
-                    <td colspan="2" style="text-align: left;">SOCIAL MEDIA
-                        <div style="float: right">
-                            <a href="https://www.instagram.com" target="_blank"><i class="fa-brands fa-square-instagram"></i></a>
-                            <a href="https://www.facebook.com" target="_blank"><i class="fa-brands fa-square-facebook"></i></a>
-                            <a href="https://www.tiktok.com" target="_blank"><i class="fa-brands fa-tiktok"></i></a>
-                            <a href="https://www.youtube.com" target="_blank"><i class="fa-brands fa-youtube"></i></a>
-                            <a href="https://twitter.com" target="_blank"><i class="fa-brands fa-square-x-twitter"></i></a>
-                        </div>
-                    </td>
-                </tr>
+                    <tr>
+                        <td colspan="2" style="text-align: left;">
+                            SOCIAL MEDIA
+                            <div style="float: right">
+                                <a href="https://www.instagram.com" target="_blank"><i class="fa-brands fa-square-instagram"></i></a>
+                                <a href="https://www.facebook.com" target="_blank"><i class="fa-brands fa-square-facebook"></i></a>
+                                <a href="https://www.tiktok.com" target="_blank"><i class="fa-brands fa-tiktok"></i></a>
+                                <a href="https://www.youtube.com" target="_blank"><i class="fa-brands fa-youtube"></i></a>
+                                <a href="https://twitter.com" target="_blank"><i class="fa-brands fa-square-x-twitter"></i></a>
+                            </div>
+                        </td>
+                    </tr>
 
-                <tr>
-                    <td colspan="3" style="text-align:left;">
-                    SUPPORT:
-                    <span style="float:right; font-family:Bebas Neue; ">SUPPORT@KEYSMITH.COM</span>
-                    </td>
-                </tr>
+                    <tr>
+                        <td colspan="3" style="text-align:left;">
+                            SUPPORT:
+                            <span style="float:right; font-family:Bebas Neue;">SUPPORT@KEYSMITH.COM</span>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- Form Section -->
+            <div class="form">
+                <div class="subcribe">
+                    <h3>SUBSCRIBE & GET INCENTIVES</h3>
+                    <p>
+                        Sign up and get the latest news about new design, group buy, straight to your inbox.
+                    </p>
+                </div>
+
+                <div class="bonus">Bonus: Many hot offers and giveaway await!</div>
+
+                <form id="subscribeForm" action="https://api.web3forms.com/submit" class="input-group" method="POST">
+                <input type="hidden" name="access_key" value="3610378c-53cc-4af5-bbbc-fff27cda52f3">
+                <input type="hidden" name="from_name" value="KeySmith Website">
+                <input type="hidden" name="subject" value="New Subscription from KeySmith">
+                <input type="email" name="email" placeholder="YOUR E-MAIL:" required>
+                <button type="submit">SIGN UP</button>
+                </form>
                 
-            </table>
-        </div>
+                <div id="formMessage" style="display: none;"></div>
 
-        <div class="form">
-            <div class="subcribe">
-                <h3>SUBSCRIBE & GET INCENTIVES</h3>
-                <p>
-                    Sign up and get the latest news about new design, group buy, straight to your inbox.
-                </p>
-            </div>
-
-            <div class="bonus">Bonus: Many hot offers and giveaway await!</div>
-
-            <div class="input-group">
-                <input type="email" placeholder="YOUR E-MAIL:" />
-                <button>SIGN UP</button>
             </div>
         </div>
+    </div>
 
-    </footer>
+
+</footer>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js" integrity="sha512-bPs7Ae6pVvhOSiIcyUClR7/q2OAsRiovw4vAkX+zJbw3ShAeeqezq50RIIcIURq7Oa20rW2n2q+fyXBNcU9lrw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
+        // ITEM SLIDE
+        $('.item-slide').each(function(){
+            var slide = $(this).find('.owl-carousel');
+            slide.owlCarousel({
+                loop: true,
+                nav: false,
+                dotsContainer: $(this).find('.custom-dots'),
+                autoplay: true,
+                autoplayTimeout: 4000,
+                responsive:{
+                    0:{ items:1 },
+                    600:{ items:1 },
+                    1000:{ items:1 }
+                }
+            });
+        });
+
+        // PRODUCT CAROUSEL
+        $('.pro-container').each(function(){
+        var product = $(this).find('.owl-carousel');
+        product.owlCarousel({
+            loop: true,
+            nav: true,
+            dotsContainer: $(this).find('.custom-dots'),
+            autoplay: false,
+            margin: 20,
+            items: 3,
+            dotsEach: 1,
+            responsive:{
+                0:{ items:1 },
+                600:{ items:2 },
+                1000:{ items:3 }
+            }
+        });
+        });
 
     </script>
+    <script src="./script.js"></script>
+    <script src="./js/subscription-form.js"></script>
+
 
 </body>
 </html>
