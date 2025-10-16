@@ -65,14 +65,55 @@ body{
 }
 
 /* container Section */
-
 .container {
 display: flex;
 height: 100vh;
 }
 
+.sidebar .header {
+    margin-left: 0;
+}
+
+
+.sidebar.open .header {
+    margin-left: 9em;
+}
+
+
+
+.menu-icon-btn {
+    background: none;
+    border: none;
+    padding: 0;
+}
+
+.menu-icon {
+    color: var(--color-primary);
+    font-size: 30px;
+    cursor: pointer;
+    margin: auto;
+    align-self:self-end;
+    transition: transform 0.3s ease;
+}
+
+.sidebar.open .menu-icon {
+    transform: rotate(90deg);
+}
+
+
+
+.container main {
+    width: 100%;
+    padding-left: 75px; /* Khớp với width sidebar đóng */
+    transition: padding-left 0.3s ease;
+}
+
+.sidebar.open ~ main {
+    padding-left: 250px; /* Khớp với width sidebar mở */
+}
+
 .sidebar  {
-width: 300px;
+width: 100px;
 height: 100vh;
 display: flex;
 flex-direction: column;
@@ -82,16 +123,31 @@ padding-top: 2rem;
 background-color: var(--color-background);
 box-shadow: 4px 2px 10px rgba(0, 0, 0, .5);
 position: fixed;
+transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); /* Animation mượt mà hơn */
+    overflow: hidden; /* Ẩn text khi đóng */
+}
+
+.sidebar.open {
+    width: 250px;
 }
 
 .sidebar ul {
     list-style: none;
 }
 
-.top-sidebar {
-height: 150px;
-
+.sidebar.open .top-sidebar {
+    height: 150px;
+    opacity: 1;
+    width: 200px;
+    transition: opacity 0.3s ease 0.1s;
 }
+
+.sidebar .top-sidebar {
+    opacity: 0;
+    width: 0;
+    transition: opacity 0.2s ease;
+}
+
 .top-sidebar img {
     width: 200px;
     position: relative;
@@ -123,21 +179,35 @@ width: 100%;
 .sidebar-link {
     display: flex;
     width: 100%;
-    padding: 1rem 0;
+    padding: 0.5rem 0;
     text-decoration: none;
     align-items: center;
     color: var(--color-text-white);
 }
 
-.sidebar-icon {
+.sidebar .sidebar-icon {
+    margin-left: 2em;
+    transition: margin-left 0.3s ease;
+}
+
+.sidebar.open .sidebar-icon {
     font-size: 24px;
     flex-shrink: 0;
     margin-left: 24px;
 }
 
-.sidebar-hidden {
+.sidebar.open .sidebar-hidden {
     margin-left: 1.5rem;
+    opacity: 1;
+    transition: opacity 0.3s ease 0.1s;
 }
+
+.sidebar .sidebar-hidden {
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    white-space: nowrap;
+}
+
 
 .sidebar-list-item:hover {
     background-color: var(--color-primary-hover);
@@ -153,4 +223,13 @@ width: 100%;
 
 .container main {
     width: 100%;
+    padding-left: 250px;
 }
+
+.menu-icon:hover {
+    color: var(--color-primary-hover);
+}
+.sidebar {
+
+}
+
