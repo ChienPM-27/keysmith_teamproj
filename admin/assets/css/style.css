@@ -81,7 +81,7 @@ align-items: center;
 padding-top: 2rem;
 background-color: var(--color-background);
 box-shadow: 4px 2px 10px rgba(0, 0, 0, .5);
-
+position: fixed;
 }
 
 .sidebar ul {
