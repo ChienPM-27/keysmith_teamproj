@@ -402,8 +402,90 @@ p { font-size: 15px; color: #465b52; margin: 5px 0 20px 0; }
     box-shadow: 0 4px 12px rgba(255, 133, 25, 0.3);
 }
 
+
+
 /* ==========================================================
-   6. FOOTER / CHÂN TRANG
+    NEWS
+========================================================== */
+
+
+#news {
+  background-image: url("../img/bg/concrete.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  padding: 60px 0;
+}
+
+.section-title {
+  text-align: center;
+  font-size: 2rem;
+  color: #fff;
+  margin-bottom: 10px;
+}
+
+.section-subtitle {
+  text-align: center;
+  color: #ccc;
+  margin-bottom: 40px;
+}
+
+.community-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 20px;
+  width: 90%;
+  margin: 0 auto;
+}
+
+.post {
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 12px;
+  overflow: hidden;
+  text-align: center;
+  transition: 0.3s;
+}
+
+.post:hover {
+  transform: translateY(-5px);
+}
+
+.post img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.post p {
+  color: #eee;
+  padding: 10px;
+  font-size: 0.9rem;
+}
+
+.cta {
+  text-align: center;
+  margin-top: 40px;
+}
+
+.btn {
+  background: #ff6a00;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: 0.3s;
+}
+
+.btn:hover {
+  background: #ff8533;
+}
+
+
+
+
+
+/* ==========================================================
+    FOOTER / CHÂN TRANG
 ========================================================== */
 footer {
     background: #1a1a1a;

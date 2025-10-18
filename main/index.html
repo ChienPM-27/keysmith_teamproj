@@ -19,8 +19,7 @@
             <li><a href="#" id="scrollToTop">Home</a></li>
             <li><a href="Store.html">Store</a></li>
             <li><a href="Category.html">Category</a></li>
-            <li><a href="Collections.html">Collections</a></li>
-            <li><a href="Contact.html">Contact</a></li>
+            <li><a href="./contact/index.html">Contact</a></li>
         </ul>
 
         <div class="header-icons">
@@ -131,6 +130,37 @@
 
     </section>
 
+    <section id="news">
+    <div class="container">
+        <h2 class="section-title">Community Showcase</h2>
+        <p class="section-subtitle">Join our creative fans — show off your custom keycaps!</p>
+
+        <div class="community-grid">
+        <div class="post">
+            <img src="../img/community/post1.jpg" alt="Keycap setup 1">
+            <p>@akira.type - “My Attack on Titan setup 🔥”</p>
+        </div>
+        <div class="post">
+            <img src="../img/community/post2.jpg" alt="Keycap setup 2">
+            <p>@mecha.zone - “Loving the Mecha Series look!”</p>
+        </div>
+        <div class="post">
+            <img src="../img/community/post3.jpg" alt="Keycap setup 3">
+            <p>@custom.labs - “Perfect gift for my workspace 💻”</p>
+        </div>
+        <div class="post">
+            <img src="../img/community/post4.jpg" alt="Keycap setup 4">
+            <p>@keysmith.vn - “Thanks for supporting local makers ❤️”</p>
+        </div>
+        </div>
+
+        <div class="cta">
+        <a href="#" class="btn">Share Your Photo</a>
+        </div>
+    </div>
+    </section>
+
+
 
 <footer class="section-p1">
     <div class="footer-container">
@@ -230,7 +260,7 @@
                 nav: false,
                 dotsContainer: $(this).find('.custom-dots'),
                 autoplay: true,
-                autoplayTimeout: 4000,
+                autoplayTimeout: 3000,
                 responsive:{
                     0:{ items:1 },
                     600:{ items:1 },
@@ -246,7 +276,8 @@
             loop: true,
             nav: true,
             dotsContainer: $(this).find('.custom-dots'),
-            autoplay: false,
+            autoplay: true,
+            autoplayTimeout: 3000,
             margin: 20,
             items: 3,
             dotsEach: 1,
@@ -261,7 +292,6 @@
     </script>
     <script src="./script.js"></script>
     <script src="./js/subscription-form.js"></script>
-
 
 </body>
 </html>
