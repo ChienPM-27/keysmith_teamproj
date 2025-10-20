@@ -272,41 +272,68 @@
         </div>
     </div>
 </footer>
-    <div class="modal-overlay" id="modalOverlay">
-        <!-- Login Modal -->
-        <div class="login-modal">
-            <div class="close-modal" id="closeModal">
-                <i class="fa-solid fa-xmark"></i>
+ 
+<!-- LOGIN MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+    <div class="login-modal">
+        <div class="close-modal" id="closeModal">
+            <i class="fa-solid fa-xmark"></i>
+        </div>
+        
+        <form id="loginForm">
+            <h1>Login</h1>
+            
+            <div class="input-box">
+                <input id="loginUsername" type="text" placeholder="Username" required>
+                <i class="fa-solid fa-user"></i>
             </div>
             
-            <form id="loginForm">
-                <h1>Login</h1>
-                
-                <div class="input-box">
-                    <input type="text" placeholder="Username" required>
-                    <i class="fa-solid fa-user"></i>
-                </div>
-                
-                <div class="input-box">
-                    <input type="password" placeholder="Password" required>
-                    <i class="fa-solid fa-lock"></i>
-                </div>
-                
-                <div class="remember-forgot">
-                    <label>
-                        <input type="checkbox"> Remember Me
-                    </label>
-                    <a href="#">Forgot Password?</a>
-                </div>
-                
-                <button type="submit" class="btn-login">Login</button>
-                
-                <div class="register-link">
-                    <p>Don't have an account? <a href="#">Register</a></p>
-                </div>
-            </form>
-        </div>
+            <div class="input-box">
+                <input id="loginPassword" type="password" placeholder="Password" required>
+                <i class="fa-solid fa-lock"></i>
+            </div>
+            
+            <div class="remember-forgot">
+                <label><input type="checkbox" id="rememberMe"> Remember Me</label>
+            </div>
+            
+            <button type="submit" class="btn-login">Login</button>
+            
+            <div class="register-link">
+                <p>Don't have an account? <a href="#" id="openRegister">Register</a></p>
+            </div>
+        </form>
     </div>
+</div>
+
+<!-- REGISTER MODAL -->
+<div class="modal-overlay" id="registerOverlay">
+    <div class="login-modal">
+        <div class="close-modal" id="closeRegister">
+            <i class="fa-solid fa-xmark"></i>
+        </div>
+        
+        <form id="registerForm">
+            <h1>Register</h1>
+            
+            <div class="input-box">
+                <input id="registerUsername" type="text" placeholder="Username" required>
+                <i class="fa-solid fa-user-plus"></i>
+            </div>
+            
+            <div class="input-box">
+                <input id="registerPassword" type="password" placeholder="Password" required>
+                <i class="fa-solid fa-lock"></i>
+            </div>
+            
+            <button type="submit" class="btn-login">Register</button>
+            
+            <div class="register-link">
+                <p>Already have an account? <a href="#" id="switchToLogin">Login</a></p>
+            </div>
+        </form>
+    </div>
+</div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js" integrity="sha512-bPs7Ae6pVvhOSiIcyUClR7/q2OAsRiovw4vAkX+zJbw3ShAeeqezq50RIIcIURq7Oa20rW2n2q+fyXBNcU9lrw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>

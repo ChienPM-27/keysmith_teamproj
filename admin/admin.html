@@ -3,41 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Admin Dashboard - KeySmith</title>
     <link rel="stylesheet" href="./assets/css/style.css">
     <link rel="stylesheet" href="./assets/fonts/fontawesome-free-7.1.0-web/fontawesome-free-7.1.0-web/css/all.min.css">
 </head>
 <body>
-    <!-- header -->
-    
-    <!-- container -->
-    
+    <!-- Container -->
     <div class="container">
         
-        <!-- sidebar aside -->
+        <!-- Sidebar Aside -->
         <aside class="sidebar open" id="sidebar">
             <header class="header">
                 <button class="menu-icon-btn">
                     <div class="menu-icon"><i class="fa-solid fa-bars"></i></div>
                 </button>
             </header>
+            
             <div class="top-sidebar">
                 <img src="../img/logo/logo_full.png" alt="logo_key_smith">
             </div>
+            
             <div class="middle-sidebar">
                 <ul class="sidebar-list">
-                    <li class="sidebar-list-item"><a href="#" class="sidebar-link"><div class="sidebar-icon"><i class="fa-solid fa-house"></i></div><div class="sidebar-hidden">Dashboard</div></a></li>
-                    <li class="sidebar-list-item"><a href="#" class="sidebar-link"><div class="sidebar-icon"><i class="fa-solid fa-keyboard"></i></div></i><div class="sidebar-hidden">Products</div></a></li>
-                    <li class="sidebar-list-item"><a href="#" class="sidebar-link"><div class="sidebar-icon"><i class="fa-solid fa-users"></i></div><div class="sidebar-hidden">Customers</div></a></li>
-                    <li class="sidebar-list-item"><a href="#" class="sidebar-link"><div class="sidebar-icon"><i class="fa-solid fa-cart-shopping"></i></div><div class="sidebar-hidden">Orders</div></a></li>
-                    <li class="sidebar-list-item"><a href="#" class="sidebar-link"><div class="sidebar-icon"><i class="fa-solid fa-chart-simple"></i></div><div class="sidebar-hidden">Analytics</div></a></li>
-                    <li class="sidebar-list-item"><a href="#" class="sidebar-link"><div class="sidebar-icon"><i class="fa-solid fa-warehouse"></i></div><div class="sidebar-hidden">Ware House</div></a></li>
+                    <li class="sidebar-list-item">
+                        <a href="#" class="sidebar-link">
+                            <div class="sidebar-icon"><i class="fa-solid fa-house"></i></div>
+                            <div class="sidebar-hidden">Dashboard</div>
+                        </a>
+                    </li>
+                    <li class="sidebar-list-item">
+                        <a href="#" class="sidebar-link">
+                            <div class="sidebar-icon"><i class="fa-solid fa-keyboard"></i></div>
+                            <div class="sidebar-hidden">Products</div>
+                        </a>
+                    </li>
+                    <li class="sidebar-list-item">
+                        <a href="#" class="sidebar-link">
+                            <div class="sidebar-icon"><i class="fa-solid fa-users"></i></div>
+                            <div class="sidebar-hidden">Customers</div>
+                        </a>
+                    </li>
+                    <li class="sidebar-list-item">
+                        <a href="#" class="sidebar-link">
+                            <div class="sidebar-icon"><i class="fa-solid fa-cart-shopping"></i></div>
+                            <div class="sidebar-hidden">Orders</div>
+                        </a>
+                    </li>
+                    <li class="sidebar-list-item">
+                        <a href="#" class="sidebar-link">
+                            <div class="sidebar-icon"><i class="fa-solid fa-chart-simple"></i></div>
+                            <div class="sidebar-hidden">Analytics</div>
+                        </a>
+                    </li>
+                    <li class="sidebar-list-item">
+                        <a href="#" class="sidebar-link">
+                            <div class="sidebar-icon"><i class="fa-solid fa-warehouse"></i></div>
+                            <div class="sidebar-hidden">Ware House</div>
+                        </a>
+                    </li>
                 </ul>
             </div>
+            
             <div class="bottom-sidebar">
                 <ul class="sidebar-list">
                     <li class="sidebar-list-item user-logout">
-                        <a href="" class="sidebar-link">
+                        <a href="#" class="sidebar-link">
                             <div class="sidebar-icon">
                                 <i class="fa-solid fa-arrow-left"></i>
                             </div>
@@ -45,15 +75,15 @@
                         </a>
                     </li>
                     <li class="sidebar-list-item user-logout">
-                        <a href="" class="sidebar-link">
+                        <a href="#" class="sidebar-link">
                             <div class="sidebar-icon">
-                                <i class="fa-solid fa-user"></i>
+                                <i class="fa-solid fa-user-shield"></i>
                             </div>
-                            <div class="sidebar-hidden">Admin-name</div>
+                            <div class="sidebar-hidden">Admin</div>
                         </a>
                     </li>
                     <li class="sidebar-list-item user-logout">
-                        <a href="" class="sidebar-link">
+                        <a href="#" class="sidebar-link">
                             <div class="sidebar-icon">
                                 <i class="fa-solid fa-arrow-right-from-bracket"></i>
                             </div>
@@ -63,20 +93,93 @@
                 </ul>
             </div>
         </aside>
-        <!-- content -->
         <main class="content">
-            
+            <h1>Welcome to Admin Dashboard</h1>
+            <p>You are logged in as administrator</p>
         </main>
     </div>
 
+    <!-- Admin Protection Script -->
     <script>
-        const burgerBtn = document.querySelector('.menu-icon-btn');
-const sidebar = document.querySelector('.sidebar');
+        // Kiểm tra xác thực khi tải trang
+        window.addEventListener('DOMContentLoaded', () => {
+            const loggedInUser = localStorage.getItem('loggedInUser');
+            const userRole = localStorage.getItem('userRole');
 
-// Toggle class 'open' khi click
-burgerBtn.addEventListener('click', () => {
-    sidebar.classList.toggle('open');
-});
+            // Nếu không phải admin hoặc chưa đăng nhập, chuyển về trang chủ
+            if (!loggedInUser || userRole !== 'admin') {
+                alert('⚠️ Access denied! Admin authentication required.');
+                localStorage.removeItem('loggedInUser');
+                localStorage.removeItem('userRole');
+                localStorage.removeItem('rememberedUser');
+                window.location.href = '../main/index.html';
+                return;
+            }
+
+            // Cập nhật tên admin
+            updateAdminDisplay();
+        });
+
+        // Cập nhật hiển thị tên admin
+        function updateAdminDisplay() {
+            const loggedInUser = localStorage.getItem('loggedInUser');
+            const adminNameElement = document.querySelector('.bottom-sidebar .user-logout:nth-child(2) .sidebar-hidden');
+            
+            if (adminNameElement && loggedInUser) {
+                adminNameElement.textContent = loggedInUser;
+            }
+        }
+
+        // Xử lý sidebar toggle
+        const burgerBtn = document.querySelector('.menu-icon-btn');
+        const sidebar = document.querySelector('.sidebar');
+
+        if (burgerBtn && sidebar) {
+            burgerBtn.addEventListener('click', () => {
+                sidebar.classList.toggle('open');
+            });
+        }
+
+        // Xử lý nút Home page
+        const homeBtn = document.querySelector('.bottom-sidebar .user-logout:nth-child(1) a');
+        if (homeBtn) {
+            homeBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (confirm('Do you want to return to home page? You will be logged out from admin panel.')) {
+                    localStorage.removeItem('loggedInUser');
+                    localStorage.removeItem('userRole');
+                    localStorage.removeItem('rememberedUser');
+                    window.location.href = '../main/index.html';
+                }
+            });
+        }
+
+        // Xử lý nút Log out
+        const logoutBtn = document.querySelector('.bottom-sidebar .user-logout:nth-child(3) a');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (confirm('Are you sure you want to log out?')) {
+                    localStorage.removeItem('loggedInUser');
+                    localStorage.removeItem('userRole');
+                    localStorage.removeItem('rememberedUser');
+                    alert('👋 Logged out successfully!');
+                    window.location.href = '../main/index.html';
+                }
+            });
+        }
+
+        // Ngăn chặn truy cập trái phép
+        Object.defineProperty(window, 'bypassAuth', {
+            get: function() {
+                console.warn('⚠️ Unauthorized access attempt detected!');
+                return false;
+            },
+            set: function() {
+                console.warn('⚠️ Cannot bypass authentication!');
+            }
+        });
+        
     </script>
 </body>
 </html>
