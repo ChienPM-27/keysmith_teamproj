@@ -8,3 +8,33 @@
         display: flex;
     }
 }
+
+@media only screen and (max-width: 615px) {
+    .header{
+        position: fixed;
+    }
+    
+    .sidebar.open {
+        transition: width var(--animation-duration) var(--animation-timing-curve);
+        display: none;
+    }
+    .sidebar .top-sidebar {
+        opacity: 1;
+        height: 150px;
+        margin-left: -12em;
+    }
+    .sidebar {
+        overflow: hidden;
+        width: 55%;
+        flex-direction: column;
+        position: fixed;
+        z-index: 99;
+        height: 100vh;
+    }
+    .sidebar .sidebar-hidden {
+        margin-left: 1em;
+        opacity: 1;
+        text-align: center;
+        line-height: 0rem;
+    }
+}
