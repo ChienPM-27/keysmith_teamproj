@@ -16,6 +16,12 @@ window.addEventListener('scroll', () => {
     lastScroll = currentScroll <= 0 ? 0 : currentScroll;
 });
 
+const button = document.querySelector(".profile");
+const login = document.querySelector(".login");
+
+button.addEventListener("click", () => {
+    login.style.display = "flex";
+});
 
 
 // ------------------- MOBILE MENU TOGGLE -------------------

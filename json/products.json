@@ -1,0 +1,32 @@
+[
+  {
+    "name": "Attack Titan Keycap Artisan",
+    "price": 50,
+    "category": "Attack On Titan",
+    "image": "../img/keycap/AttackOnTitan/Eren.jpg"
+  },
+  {
+    "name": "Armored Titan Keycap Artisan",
+    "price": 40,
+    "category": "Attack On Titan",
+    "image": "../img/keycap/AttackOnTitan/Reiner.jpg"
+  },
+  {
+    "name": "Scout Regiment Keycap Artisan",
+    "price": 45,
+    "category": "Attack On Titan",
+    "image": "../img/keycap/AttackOnTitan/Scout.jpg"
+  },
+  {
+    "name": "Wings of Freedom Keycap Artisan",
+    "price": 90,
+    "category": "Attack On Titan",
+    "image": "../img/keycap/AttackOnTitan/spacebar.jpg"
+  },
+  {
+    "name": "Fight For Paradis Keycap Artisan",
+    "price": 90,
+    "category": "Attack On Titan",
+    "image": "../img/keycap/AttackOnTitan/Fight_for_Paradis.webp"
+  }
+]

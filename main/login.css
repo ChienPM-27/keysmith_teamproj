@@ -1,0 +1,223 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@200;300;400;500;600;700;800;900&display=swap');
+
+/* Modal Overlay */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(5px);
+    z-index: 10000;
+    justify-content: center;
+    align-items: center;
+    animation: fadeIn 0.3s ease;
+}
+
+.modal-overlay.active {
+    display: flex;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Login Modal */
+.login-modal {
+    position: relative;
+    width: 90%;
+    max-width: 420px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(20px);
+    color: #fff;
+    border-radius: 12px;
+    padding: 30px 40px;
+    animation: slideDown 0.3s ease;
+    font-family: "Nunito", sans-serif;
+}
+
+/* Close Button */
+.close-modal {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 35px;
+    height: 35px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: 0.3s;
+    color: #fff;
+}
+
+.close-modal i {
+    font-size: 20px;
+}
+
+.close-modal:hover {
+    background: rgba(255, 107, 53, 0.8);
+    transform: rotate(90deg);
+}
+
+.login-modal h1 {
+    font-size: 36px;
+    text-align: center;
+    margin-bottom: 30px;
+    color: #fff;
+    font-family: "Nunito", sans-serif;
+}
+
+.login-modal .input-box {
+    position: relative;
+    width: 100%;
+    height: 50px;
+    margin: 30px 0;
+}
+
+.login-modal .input-box input {
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    border: 2px solid rgba(255, 255, 255, .2);
+    border-radius: 40px;
+    font-size: 16px;
+    color: #fff;
+    padding: 20px 45px 20px 20px;
+    transition: 0.3s;
+    font-family: "Nunito", sans-serif;
+}
+
+.login-modal .input-box input:focus {
+    border-color: #ff8519;
+}
+
+.login-modal .input-box input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.login-modal .input-box i {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 18px;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.login-modal .remember-forgot {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14.5px;
+    margin: -15px 0 15px;
+    font-family: "Nunito", sans-serif;
+}
+
+.login-modal .remember-forgot label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #fff;
+    cursor: pointer;
+}
+
+.login-modal .remember-forgot label input {
+    accent-color: #ff8519;
+    cursor: pointer;
+}
+
+.login-modal .remember-forgot a {
+    color: #fff;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.login-modal .remember-forgot a:hover {
+    color: #ff8519;
+}
+
+.login-modal .btn-login {
+    width: 100%;
+    height: 45px;
+    background: #ff8519;
+    border: none;
+    outline: none;
+    border-radius: 40px;
+    box-shadow: 0 0 10px rgba(255, 133, 25, 0.3);
+    cursor: pointer;
+    font-size: 16px;
+    color: #fff;
+    font-weight: 600;
+    transition: 0.3s;
+    font-family: "Nunito", sans-serif;
+}
+
+.login-modal .btn-login:hover {
+    background: #ff6b35;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 133, 25, 0.4);
+}
+
+.login-modal .register-link {
+    font-size: 14.5px;
+    text-align: center;
+    margin: 20px 0 15px;
+    font-family: "Nunito", sans-serif;
+}
+
+.login-modal .register-link p {
+    color: #fff;
+    margin: 0;
+}
+
+.login-modal .register-link a {
+    color: #ff8519;
+    text-decoration: none;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.login-modal .register-link a:hover {
+    color: #ff6b35;
+    text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .login-modal {
+        padding: 25px 30px;
+    }
+
+    .login-modal h1 {
+        font-size: 28px;
+    }
+
+    .login-modal .input-box {
+        height: 45px;
+        margin: 25px 0;
+    }
+
+    .login-modal .input-box input {
+        font-size: 14px;
+    }
+}
