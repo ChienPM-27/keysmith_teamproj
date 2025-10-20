@@ -723,6 +723,13 @@ footer .form .input-group button:hover { background: #555; }
         min-width: 200px;
     }
 
+    #news .section-title h2{
+        font-size: 50px;
+    }
+
+    #news .news-container{
+        padding: 0 20px;
+    }
     
     footer {
         padding: 30px 40px;

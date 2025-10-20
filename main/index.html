@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KeySmith</title>
     <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="./login.css">
     <link rel="icon" type="image/png" href="/img/logo/logo_favicon.png" sizes="32x32">
     <script src="https://kit.fontawesome.com/da0c4cdc9f.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css" integrity="sha512-tS3S5qG0BlhnQROyJXvNjeEM4UpMXHrQfTGmbQ1gKmelCxlSEBUaxhRBj/EFTzpbP4RVSrpEikbmdJobCvhE3g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -25,7 +26,7 @@
         <div class="header-icons">
             <a href="#" class="search"><i class="fa-solid fa-magnifying-glass"></i></a>
             <a href="Cart.html" class="cart"><i class="fa-solid fa-cart-shopping"></i></a>
-            <a href="./login/index.html" class="profile"><i class="fa-solid fa-circle-user"></i></a>
+            <a href="#" class="profile"><i class="fa-solid fa-circle-user"></i></a>
             <div id="mobile">
                 <i id="bar" class="fas fa-bars"></i>
             </div>
@@ -270,9 +271,42 @@
             </div>
         </div>
     </div>
-
-
 </footer>
+    <div class="modal-overlay" id="modalOverlay">
+        <!-- Login Modal -->
+        <div class="login-modal">
+            <div class="close-modal" id="closeModal">
+                <i class="fa-solid fa-xmark"></i>
+            </div>
+            
+            <form id="loginForm">
+                <h1>Login</h1>
+                
+                <div class="input-box">
+                    <input type="text" placeholder="Username" required>
+                    <i class="fa-solid fa-user"></i>
+                </div>
+                
+                <div class="input-box">
+                    <input type="password" placeholder="Password" required>
+                    <i class="fa-solid fa-lock"></i>
+                </div>
+                
+                <div class="remember-forgot">
+                    <label>
+                        <input type="checkbox"> Remember Me
+                    </label>
+                    <a href="#">Forgot Password?</a>
+                </div>
+                
+                <button type="submit" class="btn-login">Login</button>
+                
+                <div class="register-link">
+                    <p>Don't have an account? <a href="#">Register</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js" integrity="sha512-bPs7Ae6pVvhOSiIcyUClR7/q2OAsRiovw4vAkX+zJbw3ShAeeqezq50RIIcIURq7Oa20rW2n2q+fyXBNcU9lrw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
@@ -336,6 +370,7 @@
         });
 
     </script>
+    <script src="./js/login.js"></script>
     <script src="./script.js"></script>
     <script src="./js/subscription-form.js"></script>
 
