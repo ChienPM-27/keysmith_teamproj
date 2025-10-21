@@ -19,45 +19,42 @@
         
         <!-- Sidebar Aside -->
         <aside class="sidebar open" id="sidebar">
-            
-            
             <div class="top-sidebar">
                 <img src="../img/logo/logo_full.png" alt="logo_key_smith">
             </div>
-            
             <div class="middle-sidebar">
                 <ul class="sidebar-list">
-                    <li class="sidebar-list-item">
+                    <li class="sidebar-list-item tab-content active">
                         <a href="#" class="sidebar-link">
                             <div class="sidebar-icon"><i class="fa-solid fa-house"></i></div>
                             <div class="sidebar-hidden">Dashboard</div>
                         </a>
                     </li>
-                    <li class="sidebar-list-item">
+                    <li class="sidebar-list-item tab-content ">
                         <a href="#" class="sidebar-link">
                             <div class="sidebar-icon"><i class="fa-solid fa-keyboard"></i></div>
                             <div class="sidebar-hidden">Products</div>
                         </a>
                     </li>
-                    <li class="sidebar-list-item">
+                    <li class="sidebar-list-item tab-content ">
                         <a href="#" class="sidebar-link">
                             <div class="sidebar-icon"><i class="fa-solid fa-users"></i></div>
                             <div class="sidebar-hidden">Customers</div>
                         </a>
                     </li>
-                    <li class="sidebar-list-item">
+                    <li class="sidebar-list-item tab-content ">
                         <a href="#" class="sidebar-link">
                             <div class="sidebar-icon"><i class="fa-solid fa-cart-shopping"></i></div>
                             <div class="sidebar-hidden">Orders</div>
                         </a>
                     </li>
-                    <li class="sidebar-list-item">
+                    <li class="sidebar-list-item tab-content ">
                         <a href="#" class="sidebar-link">
                             <div class="sidebar-icon"><i class="fa-solid fa-chart-simple"></i></div>
                             <div class="sidebar-hidden">Analytics</div>
                         </a>
                     </li>
-                    <li class="sidebar-list-item">
+                    <li class="sidebar-list-item tab-content ">
                         <a href="#" class="sidebar-link">
                             <div class="sidebar-icon"><i class="fa-solid fa-warehouse"></i></div>
                             <div class="sidebar-hidden">Ware House</div>
@@ -97,55 +94,15 @@
         </aside>
         <main class="content">
             <!--dashboard  -->
-            <div class="section"></div>
+            <div class="section active">hello</div>
             <!--  -->
-            <div class="section"></div>
-            <div class="section"></div>
-            <div class="section"></div>
-            <div class="section"></div>
-            <div class="section"></div>
+            <div class="section "></div>
+            <div class="section "></div>
+            <div class="section "></div>
+            <div class="section "></div>
+            <div class="section "></div>
         </main>
     </div>
-
-    <!-- Admin Protection Script -->
-    <script>
-        // Kiểm tra xác thực khi tải trang
-        window.addEventListener('DOMContentLoaded', () => {
-            const loggedInUser = localStorage.getItem('loggedInUser');
-            const userRole = localStorage.getItem('userRole');
-
-            // Nếu không phải admin hoặc chưa đăng nhập, chuyển về trang chủ
-            if (!loggedInUser || userRole !== 'admin') {
-                alert('⚠️ Access denied! Admin authentication required.');
-                localStorage.removeItem('loggedInUser');
-                localStorage.removeItem('userRole');
-                localStorage.removeItem('rememberedUser');
-                window.location.href = '../main/index.html';
-                return;
-            }
-
-            // Cập nhật tên admin
-            updateAdminDisplay();
-        });
-
-        // Cập nhật hiển thị tên admin
-        function updateAdminDisplay() {
-            const loggedInUser = localStorage.getItem('loggedInUser');
-            const adminNameElement = document.querySelector('.bottom-sidebar .user-logout:nth-child(2) .sidebar-hidden');
-            
-            if (adminNameElement && loggedInUser) {
-                adminNameElement.textContent = loggedInUser;
-            }
-        }
-
-        // Xử lý sidebar toggle
-        const burgerBtn = document.querySelector('.menu-icon-btn');
-        const sidebar = document.querySelector('.sidebar');
-
-// Toggle class 'open' khi click
-burgerBtn.addEventListener('click', () => {
-    sidebar.classList.toggle('open');
-});
-    </script>
+<script src="./script.js"></script>
 </body>
 </html>

@@ -67,7 +67,7 @@ body{
 /* container Section */
 .container main {
     width: 100%;
-    padding-left: 75px; /* Khớp với width sidebar đóng */
+ /* Khớp với width sidebar đóng */
     transition: padding-left 0.3s ease;
 }
 .container {
@@ -100,10 +100,6 @@ height: 100vh;
     color: var(--color-primary);
     font-size: 40px;
     cursor: pointer;
-}
-
-.sidebar.open ~ main {
-    padding-left: 250px; /* Khớp với width sidebar mở */
 }
 
 .sidebar  {
@@ -216,10 +212,7 @@ width: 100%;
     width: 100%;
 }
 
-.container main {
-    width: 100%;
-    padding-left: 250px;
-}
+
 
 .menu-icon:hover {
     color: var(--color-primary-hover);
@@ -227,4 +220,19 @@ width: 100%;
 
 .content {
     padding: 0;
+    width: 100%;
+    overflow-y: auto;
 }
+
+.section {
+    display: none;
+    width: 100%;
+    min-height: 100vh;
+    padding: 2rem;
+}
+
+.section.active {
+    display: block;
+}
+
+/* Style cho sidebar item active */
