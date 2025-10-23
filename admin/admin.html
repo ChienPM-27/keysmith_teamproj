@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - KeySmith</title>
+    <link rel="stylesheet" href="./assets/css/analytics.css">
     <link rel="stylesheet" href="./assets/css/style.css">
     <link rel="stylesheet" href="./assets/css/responsive.css">
     <script src="https://kit.fontawesome.com/da0c4cdc9f.js" crossorigin="anonymous"></script>
@@ -30,31 +31,31 @@
                             <div class="sidebar-hidden">Dashboard</div>
                         </a>
                     </li>
-                    <li class="sidebar-list-item tab-content ">
+                    <li class="sidebar-list-item tab-content">
                         <a href="#" class="sidebar-link">
                             <div class="sidebar-icon"><i class="fa-solid fa-keyboard"></i></div>
                             <div class="sidebar-hidden">Products</div>
                         </a>
                     </li>
-                    <li class="sidebar-list-item tab-content ">
+                    <li class="sidebar-list-item tab-content">
                         <a href="#" class="sidebar-link">
                             <div class="sidebar-icon"><i class="fa-solid fa-users"></i></div>
                             <div class="sidebar-hidden">Customers</div>
                         </a>
                     </li>
-                    <li class="sidebar-list-item tab-content ">
+                    <li class="sidebar-list-item tab-content">
                         <a href="#" class="sidebar-link">
                             <div class="sidebar-icon"><i class="fa-solid fa-cart-shopping"></i></div>
                             <div class="sidebar-hidden">Orders</div>
                         </a>
                     </li>
-                    <li class="sidebar-list-item tab-content ">
+                    <li class="sidebar-list-item tab-content">
                         <a href="#" class="sidebar-link">
                             <div class="sidebar-icon"><i class="fa-solid fa-chart-simple"></i></div>
                             <div class="sidebar-hidden">Analytics</div>
                         </a>
                     </li>
-                    <li class="sidebar-list-item tab-content ">
+                    <li class="sidebar-list-item tab-content">
                         <a href="#" class="sidebar-link">
                             <div class="sidebar-icon"><i class="fa-solid fa-warehouse"></i></div>
                             <div class="sidebar-hidden">Ware House</div>
@@ -92,17 +93,21 @@
                 </ul>
             </div>
         </aside>
+        
         <main class="content">
-            <!--dashboard  -->
-            <div class="section active">hello</div>
-            <!--  -->
-            <div class="section "></div>
-            <div class="section "></div>
-            <div class="section "></div>
-            <div class="section "></div>
-            <div class="section "></div>
+            <div id="dashboard-section" class="section active"></div>
+            <div id="products-section" class="section"></div>
+            <div id="customer-section" class="section"></div>
+            <div id="orders-section" class="section"></div>
+            <div id="analytics-section" class="section"></div>
+            <div id="warehouse-section" class="section"></div>
         </main>
+
     </div>
-<script src="./script.js"></script>
+
+    <script src="./js/include.js"></script>
+    <script src="./js/analytics.js"></script>
+    <script src="./script.js"></script>
+
 </body>
 </html>
