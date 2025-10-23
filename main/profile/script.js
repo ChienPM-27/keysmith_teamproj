@@ -40,9 +40,6 @@ document.addEventListener('DOMContentLoaded', function() {
     populateBirthdayOptions();
 }); 
 
-
-
-
 document.getElementById('profile-form').addEventListener('submit', function(e) {
     e.preventDefault();
 
