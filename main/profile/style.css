@@ -584,6 +584,11 @@ footer .form .input-group button:hover {
     font-size: 16px;
     box-sizing: border-box;
     min-width: 0;
+    color: var(--color-secondary);
+}
+
+#gender{
+    color: var(--color-secondary);
 }
 
 .Capnhat{
