@@ -1,3 +1,48 @@
+function populateBirthdayOptions() {
+    const daySelect = document.getElementById('birth-day');
+    const monthSelect = document.getElementById('birth-month');
+    const yearSelect = document.getElementById('birth-year');
+
+    // tao option cho ngày (1-31)
+    if (daySelect.options.length > 1) return;
+
+    for (let i = 1; i <= 31; i++) {
+        const option = document.createElement('option');
+        option.value = i;
+        option.textContent = i;
+        daySelect.appendChild(option);
+    }
+    // tao option cho tháng (1-12)
+    if (monthSelect.options.length > 1) return;
+
+    const monthNames = ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'];
+    for (let i = 1; i <= 12; i++) {
+        const option = document.createElement('option');
+        option.value = i;
+        option.textContent = monthNames[i - 1];
+        monthSelect.appendChild(option);
+    }   
+
+    // tao option cho năm (1900 - hiện tại)
+    const currentYear = new Date().getFullYear();
+    for (let i = currentYear; i >= 1900; i--) {
+        const option = document.createElement('option');
+        option.value = i;
+        option.textContent = i;
+        yearSelect.appendChild(option);
+    }
+}
+
+populateBirthdayOptions();
+
+// goi ham khi trang duoc tai
+document.addEventListener('DOMContentLoaded', function() {
+    populateBirthdayOptions();
+}); 
+
+
+
+
 document.getElementById('profile-form').addEventListener('submit', function(e) {
     e.preventDefault();
 
