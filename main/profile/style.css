@@ -416,6 +416,7 @@ footer .form .input-group button:hover {
     padding-bottom: 10px;
     /* font-family: 'Bebas Neue', sans-serif; */
     font-size: 23px;
+    color: var(--color-primary);
 }
         
 .account-sidebar ul {
@@ -439,9 +440,22 @@ footer .form .input-group button:hover {
     font-weight: 500;
 }
         
-.account-sidebar a:hover, .account-sidebar a.active {
-    background-color: #e9ecef;
-    color: #000;
+.account-sidebar a:hover{
+    background-color: rgba(255, 133, 25, 0.1);
+    color: var(--color-primary);
+}   
+
+.account-sidebar a.active {
+    color: white ;
+    font-weight: 500;
+}
+
+.account-sidebar a i{
+    color: var(--color-text-white);
+}
+
+.account-sidebar li a:hover i {
+    color: var(--color-primary);
 }
         
 .account-sidebar i {
@@ -451,6 +465,10 @@ footer .form .input-group button:hover {
     align-items: center;
     justify-content: center;
     font-size: 16px;
+}
+
+.account-sidebar a.active{
+    color: var(--color-primary-hover);
 }
 
 .account-content{
