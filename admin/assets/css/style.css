@@ -222,17 +222,41 @@ width: 100%;
     padding: 0;
     width: 100%;
     overflow-y: auto;
+    background-color: var(--color-secondary)
 }
 
 .section {
     display: none;
     width: 100%;
     min-height: 100vh;
-    padding: 2rem;
 }
 
 .section.active {
     display: block;
 }
 
-/* Style cho sidebar item active */
+.cards {
+    display: flex;
+}
+
+.cards .card-single {
+    background: var(--color-secondary);
+    height: 500px;
+    width: max(500px, 290px);
+    position: relative;
+    border-radius: 15px;
+    box-shadow: inset 5px 5px 5px var(--color-background), inset -5px -5px 5px var(--color-background),;
+}
+
+.cards .card-single .box {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    right: 20px;
+    bottom: 20px;
+    background-color: var(--color-primary-hover);
+}
+
+.on-box img {
+    width: 150px;
+}
