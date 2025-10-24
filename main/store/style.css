@@ -161,7 +161,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 160px;
+  margin-top: 140px;
 }
 
 hr {
@@ -285,6 +285,19 @@ hr {
   border-radius: 4px;
   font-weight: 600;
 }
+
+#btn-top {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 10px 10px;
+  background-color: transparent;
+  border-radius: 50%;
+  border: 1px solid black;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+}
+
 
 /* Footer Section */
 
