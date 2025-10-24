@@ -1,65 +1,653 @@
 @import url("https://fonts.googleapis.com/css2?family=Spartan:wght@100;200;300;400;500;600;700;800;900&display=swap");
 @import url('https://fonts.googleapis.com/css2?family=Abhaya+Libre:wght@400;500;600;700;800&family=Aldrich&family=Bebas+Neue&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Abhaya+Libre:wght@400;500;600;700;800&family=Aldrich&family=Bebas+Neue&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+
 :root {
-  --color-primary: #ff8519;
-  --color-primary-hover: #ffad66;
-  --color-secondary: #a5a5a5;
-  --color-text-dark: #000;
-  --color-text-white: #fff;
-  --color-background: #1a1a1a;
-  --font-main: 'Poppins', sans-serif;
-  --font-title: 'Bebas Neue', sans-serif;
+    --color-primary: #ff8519;
+    --color-primary-hover: #ffad66;
+    --color-secondary: #a5a5a5;
+    --color-text-dark: #000;
+    --color-text-white: #fff;
+    --color-background: #1a1a1a;
+    --font-main: 'Poppins', sans-serif;
+    --font-title: 'Bebas Neue', sans-serif;
 }
-*{
+
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     font-family: "Poppins", sans-serif;
 }
+ul,li{ 
+      padding: 0;
+}
+ul{
+    list-style: none;
+    margin: 0%;
+}
+label {
+    color: #fff;
+}
 
-html{
+input {
+    cursor: pointer;
+}
+
+html {
     scroll-behavior: smooth;
 }
 
 /* Global Styles */
-
-h1{
+h1 {
     font-size: 50px;
     line-height: 64px;
     color: #222;
 }
 
-h2{
+h2 {
     font-size: 46px;
     line-height: 54px;
-    color: #222;
+    color: #fff;
 }
 
-h4{
+h4 {
     font-size: 20px;
-    color: #222;
+    color: #fff;
 }
 
-h6{
+h6 {
     font-weight: 700;
     font-size: 12px;
 }
 
-p{
+p {
     font-size: 15px;
     color: #465b52;
     margin: 5px 0 20px 0;
 }
 
-.section-p1{
+.section-p1 {
     padding: 40px 80px;
 }
 
-.section-m1{
+.section-m1 {
     margin: 40px 0;
 }
 
-body{
+body {
     width: 100%;
+}
+
+#header {
+    display: flex;
+    justify-content: space-between; /* navbar bên trái, icon bên phải */
+    align-items: center;
+    width: 100%;
+    height: 60px;
+    padding: 0 80px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: rgba(26, 26, 26, 0.85); /* nền mờ nhẹ */
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid #ffffff29;
+    z-index: 100;
+}
+
+/* hiệu ứng gradient dưới header */
+#header::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.8), rgba(255, 255, 255, 0));
+    pointer-events: none;
+    z-index: -1;
+}
+
+/* menu */
+#navbar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 25px;
+}
+
+#navbar li {
+    list-style: none;
+}
+
+#navbar li a {
+    font-family: 'Bebas Neue', sans-serif;
+    position: relative;
+    text-decoration: none;
+    font-size: 25px;
+    font-weight: 400;
+    color: #fff;
+    transition: color 0.3s ease;
+}
+
+#navbar li a::after {
+    content: "";
+    position: absolute;
+    background-color: var(--color-primary);
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: -4px;
+    width: 0%;
+    height: 2px;
+    transition: width 0.3s ease;
+}
+
+#navbar li a:hover {
+    color: var(--color-primary-hover);
+}
+
+#navbar li a:hover::after {
+    width: 100%;
+}
+
+/* icon tài khoản */
+.header-icons {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.header-icons a {
+    color: #fff;
+    font-size: 22px;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.header-icons p {
+    color: #fff;
+    font-size: 18px;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.header-icons a:hover {
+    color: var(--color-primary);
+}
+
+#content {
+    position: relative;
+    width: 100%;
+    height: auto;
+    overflow: hidden;
+    max-height: 2000px;
+    margin-top: 60px;
+}
+
+#content .bg {
+    position: absolute;
+    height: 2000px;
+    z-index: -1;
+    width: 100%;
+}
+
+#search {
+    position: relative;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.1);
+    width: 100%;
+    height: 150px;
+    display: flex;
+    justify-content: center;
+    /* canh giữa ngang */
+    align-items: center;
+}
+
+#search .logo {
+    width: 12%;
+}
+
+#search .linebgR {
+    position: absolute;
+    z-index: -1;
+    width: 90%;
+    top: 0;
+    right: 3%;
+}
+
+#search .linebgL {
+    position: absolute;
+    z-index: -1;
+    width: 90%;
+    bottom: 0;
+    left: 3%;
+}
+
+#search p {
+    font-size: 50px;
+    z-index: 2;
+    margin-left: 3%;
+    margin-right: 3%;
+    color: #fff;
+}
+
+#search .Cart {
+    margin: 0;
+    font-size: 25px;
+    color: #fff;
+    width: 12%;
+}
+
+#search input {
+    width: 20%;
+    height: 20%;
+    margin-left: 15%;
+}
+
+#search label {
+    width: auto;
+    margin-left: 4px;
+    font-size: 22px;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+#search label:hover {
+    color: var(--color-primary-hover);
+}
+
+#Container {
+    width: 80%;
+    min-height: 500px;
+    height: auto;
+    max-height: 1000px;
+    margin: 50px auto 50px auto;
+    overflow: auto;
+}
+
+/*-------Thanh Cuon Dang Cap-------*/
+#Container::-webkit-scrollbar {
+    width: 8px;
+    /* Độ rộng thanh cuộn dọc */
+    height: 8px;
+    /* Cho thanh cuộn ngang nếu có */
+}
+
+#Container::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    /* nền thanh */
+    border-radius: 10px;
+}
+
+#Container::-webkit-scrollbar-thumb {
+    background: var(--color-primary);
+    /* màu tay cầm */
+    border-radius: 10px;
+    transition: background 0.3s;
+}
+
+#Container::-webkit-scrollbar-thumb:hover {
+    background: var(--color-primary-hover);
+    /* đổi màu khi hover */
+}
+
+/*======General======*/
+#general {
+    display: flex;
+    background: rgba(255, 255, 255, 0.1);
+    /* lớp kính mờ trong suốt */
+    backdrop-filter: blur(10px);
+    /* làm mờ phần nền phía sau */
+    width: 100%;
+    z-index: 3;
+    height: 30px;
+    justify-content: center;
+    align-items: center;
+    font-size: 15px;
+    /* ➕ THÊM 2 DÒNG NÀY */
+    position: sticky;
+    top: 0;
+}
+
+#general .Choose {
+    cursor: pointer;
+    margin-left: 20px;
+}
+
+#general .Price {
+    margin-left: 55%;
+}
+
+#general .Quantity {
+    margin-left: 4%;
+}
+
+#general .TotalPrice {
+    margin-left: 4%;
+}
+
+#general .Actions {
+    margin-left: 4%;
+}
+
+/*=====finalization=====*/
+#finalization {
+    display: flex;
+    background: rgba(255, 255, 255, 0.1);
+    /* lớp kính mờ trong suốt */
+    backdrop-filter: blur(10px);
+    /* làm mờ phần nền phía sau */
+    width: 100%;
+    z-index: 3;
+    height: 100px;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+    /* THÊM 2 DÒNG NÀY */
+    position: sticky;
+    bottom: 0;
+}
+
+#finalization div {
+    color: #fff;
+}
+
+#finalization .ChooseAll {
+    cursor: pointer;
+    margin-left: 15px;
+}
+
+#finalization .ChooseAll:hover {
+    color: var(--color-primary-hover);
+}
+
+#finalization .delete {
+    margin-left: 5%;
+    cursor: pointer;
+}
+
+#finalization .delete:hover {
+    color: var(--color-primary-hover);
+}
+
+#finalization .icon-voucher {
+    color: #fff;
+    margin-left: 20%;
+    font-size: 30px;
+}
+
+#finalization .icon-voucher:hover {
+    color: var(--color-primary-hover);
+}
+
+#finalization .Voucher {
+    margin-left: 10px;
+    margin-right: 10%;
+}
+
+#finalization .total {
+    margin-left: 50px;
+}
+
+#finalization .money {
+    color: var(--color-primary);
+    font-size: 30px;
+    margin-left: 5px;
+}
+
+#finalization .money-icon {
+    color: var(--color-primary);
+}
+
+#finalization .checkout {
+    color: #fff;
+    background-color: var(--color-primary);
+    width: 15%;
+    height: 60px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 25px;
+}
+
+#finalization .checkout:hover {
+    color: var(--color-primary-hover);
+}
+
+/*=======SAN PHAM=======*/
+.Product {
+    /*-----line dang cap------*/
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.1);
+    margin-top: 15px;
+    margin-bottom: 30px;
+    height: 200px;
+    color: #fff;
+    list-style: none;
+}
+
+#suggest {  
+    height: 720px;
+    width: 100%;
+    margin-top: calc(var(--height-container) + 50px);
+    position: sticky;
+    bottom: 0;
+}
+#suggest .title {
+    justify-content: center;
+    display: flex;
+}
+#suggest .maybe {
+    color: var(--color-primary);
+    margin-right: 10px;
+}
+#suggest .new-product {
+    height: 570px;
+    display: flex;
+    width: 90%;
+    margin: 50px 5% 20px 5%;
+    
+}
+#suggest ul {
+    cursor: pointer;
+    border-radius: 20px;
+    width: calc(33.3% - 20px);
+    /*-----line dang cap------*/
+    border: solid rgba(255, 255, 255, 0.2);
+    box-shadow: inset 0 0 100px rgba(255, 255, 255, 0.1);
+}
+#suggest ul:hover {
+    border: solid var(--color-primary);
+    box-shadow: inset 0 0 50px var(--color-primary);
+}
+#suggest .Brand {
+    color: var(--color-secondary);
+    font-size: 20px;
+    padding-left: 10px;
+}
+#suggest .name {
+    color: #fff;
+    font-size: 30px;
+    height: 50px;
+    line-height: 50px;
+    padding-left: 10px;
+}
+#suggest .money {
+    color: var(--color-primary);
+    font-size: 25px;
+    padding-left: 10px;
+    padding-bottom: 10px;
+}
+#suggest .money-icon {
+    color: var(--color-primary);
+    padding-left: 5px;
+}
+#suggest .mid {
+    margin:0 50px 0 50px;
+}
+#suggest .imgg {
+    width: 100%;
+    object-fit: cover;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+}
+
+
+/* ==========================================================
+   FOOTER / CHÂN TRANG
+========================================================== */
+footer {
+    background: #1a1a1a;
+    color: white;
+    padding: 40px 80px;
+}
+
+footer .footer-container {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+footer .title {
+    text-align: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 60px;
+    letter-spacing: 2px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    padding-bottom: 20px;
+    border-bottom: 2px solid #ff8519;
+    width: 50%;
+    margin: 0 auto;
+}
+
+footer .title h5 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 70px;
+}
+
+footer .title span {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 60px;
+    color: #ff8519;
+}
+
+footer .footer-content {
+    display: flex;
+    gap: 20px;
+    align-items: stretch;
+}
+
+/* Table section */
+footer .About {
+    flex: 6;
+    display: flex;
+}
+
+footer .About table {
+    background-color: #a5a5a5;
+    border-collapse: collapse;
+    width: 100%;
+    height: 100%;
+}
+
+footer .About table td {
+    padding: 5px 15px;
+    color: rgb(0, 0, 0);
+    font-family: 'Bebas Neue';
+    text-align: center;
+    font-size: larger;
+}
+
+footer .About table a {
+    color: #000000;
+    text-decoration: none;
+    font-size: 14px;
+    transition: color 0.3s ease;
+}
+
+footer .About table a:hover {
+    color: #ff6b35;
+}
+
+footer i {
+    font-size: 20px;
+}
+
+/* Form section */
+footer .form {
+    flex: 3;
+    background: #a5a5a5;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    background: #ff8519;
+}
+
+footer .form .subcribe {
+    padding-top: 15px;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+footer .form h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    color: #000;
+    letter-spacing: 1px;
+}
+
+footer .form p {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    color: #000;
+}
+
+footer .form .bonus {
+    background: #ff8519;
+    font-weight: bold;
+    color: #000000;
+    font-size: 14px;
+    padding: 15px;
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+}
+
+footer .form .input-group {
+    display: flex;
+    margin-top: auto;
+}
+
+footer .form .input-group input[type="email"] {
+    flex: 1;
+    padding: 12px 15px;
+    font-size: 14px;
+    border: none;
+    transition: border-color 0.3s;
+    background: #fff;
+}
+
+footer .form .input-group input[type="email"]::placeholder {
+    font-weight: 500;
+}
+
+footer .form .input-group input[type="email"]:focus {
+    border-color: #333;
+    outline: none;
+    box-shadow: none;
+}
+
+footer .form .input-group button {
+    padding: 12px 30px;
+    background: #333;
+    color: #fff;
+    border: none;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 25px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+footer .form .input-group button:hover {
+    background: #555;
 }
