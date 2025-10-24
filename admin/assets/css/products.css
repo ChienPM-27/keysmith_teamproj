@@ -1,0 +1,79 @@
+.product-body {
+    padding: 20px 80px;
+}
+.product-control {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.product-control-left  select{
+    background-color: #eee;
+    padding: 10px 20px;
+    border: none;
+    outline: none;
+    border-right: 10px solid #eee;
+    height: 40px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.product-control-center {
+    flex:1;
+}
+
+.form-search {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    justify-content: center;
+}
+.form-search input {
+    height: 40px;
+    outline: none;
+    border: none;
+    background-color: #f0f0f0;
+    padding: 10px 20px;
+    border-bottom-left-radius: 5px;
+    border-top-left-radius: 5px;
+    width: 70%;
+}
+.form-search .search-btn {
+    outline: none;
+    font-size: 16px;
+    height: 40px;
+    padding: 0 15px;
+    color: black;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    background-color: #f0f0f0;
+}
+
+.product-control-right {
+    display: flex;
+}
+
+.btn-control {
+    margin-left: 10px;
+    border-radius: 5px;
+    background-color: var(--color-primary);
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    outline: none;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.btn-control:hover {
+    background-color: var(--color-primary-hover);
+}
+
+
+.list-left img {
+    height: 110px;
+}
