@@ -39,9 +39,10 @@ if (burgerBtn && sidebar) {
         sidebar.classList.toggle('open');
     });
 }
+
+
 const sidebars = document.querySelectorAll(".sidebar-list-item.tab-content");
 const sections = document.querySelectorAll(".section");
-
 for(let i = 0; i < sidebars.length; i++) {
     sidebars[i].onclick = function () {
         document.querySelector(".sidebar-list-item.active").classList.remove("active");
@@ -50,6 +51,9 @@ for(let i = 0; i < sidebars.length; i++) {
         sections[i].classList.add("active");
     };
 }
+
+
+
 
 const closeBtn = document.querySelectorAll('.section');
 console.log(closeBtn[0])
