@@ -1,3 +1,8 @@
+document.getElementById('mobileMenuToggle').addEventListener('click', function() {
+    var navbar = document.getElementById('navbar');
+    navbar.classList.toggle('active');
+});
+
 function populateBirthdayOptions() {
     const daySelect = document.getElementById('birth-day');
     const monthSelect = document.getElementById('birth-month');

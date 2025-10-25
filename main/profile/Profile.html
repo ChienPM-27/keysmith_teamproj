@@ -13,6 +13,10 @@
     <section id="header"> 
         <a href="#"><img src="../../img/logo/logo_full.png" class="logo" alt="logo" style="width: 150px; height: 75px;"></a>
 
+        <button class="mobile-menu-btn" id="mobileMenuToggle">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+
         <ul id="navbar">
             <li><a href="index.html">Home</a></li>
             <li><a href="Store.html">Store</a></li>
@@ -29,17 +33,17 @@
     </section>
 
 
-    <!-- ======= MAIN CONTENT (bạn có thể thêm nội dung mới ở đây) ======= -->
+    <!-- ======= MAIN CONTENT======= -->
     <section class="account-page" style="margin-top: 150px; min-height: 60vh; text-align:center;">
         <div class="account-container">
             <div class="account-sidebar">
-                <h3>Tài khoản của tôi</h3>
+                <h3>ACCOUNT</h3>
                 <ul>
-                    <li><a href="#" class="active" data-section="Profile" ><i class="fa-solid fa-user"></i>Thông tin cá nhân</a></li>
-                    <li><a href="#" data-section="order"><i class="fa-solid fa-box"></i>Quản lý đơn hàng</a></li>
-                    <li><a href="#" data-section="address"><i class="fa-solid fa-location-dot"></i>Địa chỉ</a></li>
-                    <li><a href="#" data-section="setting"><i class="fa-solid fa-gear"></i>Cài đặt</a></li>
-                    <li><a href="#" ><i class="fa-solid fa-right-from-bracket"></i>Đăng xuất</a></li>
+                    <li><a href="#" class="active" data-section="Profile" ><i class="fa-solid fa-user"></i>Account Settings</a></li>
+                    <li><a href="#" data-section="order"><i class="fa-solid fa-box"></i>My Order</a></li>
+                    <li><a href="#" data-section="address"><i class="fa-solid fa-location-dot"></i>Address</a></li>
+                    <li><a href="#" data-section="setting"><i class="fa-solid fa-gear"></i>Settings</a></li>
+                    <li><a href="#" ><i class="fa-solid fa-right-from-bracket"></i>Log out</a></li>
                 </ul>
             </div>
 
@@ -50,62 +54,62 @@
                         <i class="fa-solid fa-user"></i>
                     </div>
                     <div class="info">
-                        <h3>Chào bạn!</h3>
-                        <p>Cập nhật thông tin để cá nhân hóa tài khoản</p>
+                        <h3>Welcome!</h3>
+                        <p>Update your information to personalize your account</p>
                     </div>
                 </div>
 
                 <div class="profile-form">
-                    <h2>Thông tin tài khoản</h2>
+                    <h2>Address information</h2>
                     <form>
                         <div class="form-row">
                             <div class="form-group">
-                                <label>Họ</label>
-                                <input type="text" id="last-name" placeholder="Nhập họ ">
+                                <label>Last-name</label>
+                                <input type="text" id="last-name" placeholder="Enter last-name ">
                             </div>
 
                             <div class="form-group">
-                                <label>Tên</label>
-                                <input type="text" id="first-name" placeholder="Nhập tên">
+                                <label>First-name</label>
+                                <input type="text" id="first-name" placeholder="Enter first-name">
                             </div>
                         </div>
                             <div class="form-group">
                                 <label>Email</label>
-                                <input type="text" id="email" placeholder="Nhập email">
+                                <input type="text" id="email" placeholder="Enter email">
                             </div>
 
                             <div class="form-group">
-                                <label>Số điện thoại</label>
-                                <input type="tel" id="phone" placeholder="Nhập số điện thoại">
+                                <label>Phone number</label>
+                                <input type="tel" id="phone" placeholder="Enter phone number">
                             </div>
 
                             <div class="form-group">
-                                <label>Ngày sinh</label>
+                                <label>Date of birth</label>
                                     <div class="birthday-selectors"> 
                                         <select id="birth-day">
-                                            <option value="">Ngày</option>
+                                            <option value="">Day</option>
                                         </select>
         
                                         <select id="birth-month">
-                                            <option value="">Tháng</option>
+                                            <option value="">Month</option>
                                         </select>
                                 
                                         <select id="birth-year">
-                                            <option value="">Năm</option>
+                                            <option value="">Year</option>
                                         </select>
                                     </div>
                             </div>
 
                             <div class="form-group">
-                                <label for="gender">Giới tính</label>
+                                <label for="gender">Gender</label>
                                 <select id="gender">
-                                    <option value="male">Nam</option>
-                                    <option value="female">Nữ</option>
-                                    <option value="other">Khác</option>
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
+                                    <option value="other">Another</option>
                             </select>
                             </div>
                         
-                            <button type="submit" class="Capnhat">Cập nhật thông tin</button>
+                            <button type="submit" class="Capnhat">Update</button>
                     </form>
                 </div>
             </div>
