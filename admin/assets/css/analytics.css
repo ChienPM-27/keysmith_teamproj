@@ -1,5 +1,9 @@
 /* ==================== ANALYTICS SECTION ==================== */
 
+.analytics-wrapper {
+    padding: 20px;
+}
+
 .analytics-wrapper .section-header {
     margin-bottom: 2rem;
     border-bottom: 2px solid var(--color-primary);
