@@ -73,7 +73,139 @@
     background-color: var(--color-primary-hover);
 }
 
+.list {
+    display: flex;
+    border: solid #ddd;
+    border-radius: 1rem;
+    height: auto;
+    padding: 10px;
+    justify-content: space-between;
+    background-color: #fff;
+    position: relative;
+    overflow: hidden;
+}
+
+.list-left {
+    display: flex;
+    width: 80%;
+}
 
 .list-left img {
     height: 110px;
+    width: 110px;
+    object-fit: cover;
+    margin-right: 14px;
+    border-radius: 5px;
+}
+
+.list-info h4 {
+    font-weight: 500;
+    color: var(--color-text-dark);
+    font-size: 20px;
+}
+.list-note {
+    margin-top: 5px;
+    font-size: 14px;
+    color: #666;
+    flex-grow: 1;
+}
+.list-category {
+    margin-top: 8px;
+    font-size: 12px;
+    color: #999;
+    padding: 5px 12px;
+    border: #999 1px solid;
+    border-radius: 30px;
+}
+.list-right {
+    display: flex;
+    flex-direction: column;
+    width: 20%;
+    align-items: flex-end;
+    gap: 0;
+}
+.list-price {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--color-primary);
+}
+.list-control {
+    margin-top:10px;
+    justify-content: flex-end;
+}
+
+.list-control .btn-edit {
+    color: #000;
+    background-color: #ddd;
+    border: none;
+    outline: none;
+    font-size: 12px;
+    cursor: pointer;
+    padding: 6px 20px;
+    border-radius: 16px;
+    font-weight: 300;
+    transition: background-color 0.3s ease-in-out;
+}
+
+
+.list-control .btn-view,
+.list-control .btn-delete{
+    border: none;
+    outline: none;
+    background-color: transparent;
+    cursor: pointer;
+    font-size: 12px;
+    color: #fff;
+    background-color: var(--color-primary);
+    padding: 6px 20px;
+    border-radius: 16px;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.list-control .btn-edit:hover {
+    background-color: #bbb;
+}
+
+.list-control .btn-view:hover {
+    background-color: var(--color-primary-hover);
+}
+.list-control .btn-delete:hover {
+    background-color: red;
+}
+
+.page-nav, .page-nav-list {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: 30px;
+}
+
+.page-nav-list .page-nav-item {
+    list-style: none;
+}
+
+.page-nav-list .page-nav-item a {
+    text-decoration: none;
+    display: inline-block;
+    color: black;
+    border: 1px solid black;
+    height: 30px;
+    width: 30px;
+    text-align: center;
+    line-height: 27px;
+    border-radius: 50%;
+    font-size: 15px;
+    transition: background-color 0.3s ease, color 0.3s ease, border 0.3s ease;
+}
+
+.page-nav-item.active a {
+    color: #fff;
+    background-color: var(--color-primary);
+    border: none;
+}
+.page-nav-item:hover a {
+    color: #fff;
+    background-color: var(--color-primary);
+    border: none;
 }
