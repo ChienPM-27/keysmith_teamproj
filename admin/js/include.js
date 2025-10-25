@@ -1,4 +1,4 @@
-async function includeHTML(id, filePath) {
+async function includeHTML(id, filePath, callback) {
   const element = document.getElementById(id);
   if (!element) return;
 
@@ -7,11 +7,11 @@ async function includeHTML(id, filePath) {
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const html = await response.text();
     element.innerHTML = html;
+    if (callback) callback();
   } catch (error) {
     console.error("Lỗi khi load file:", filePath, error);
   }
 }
-
 
 document.addEventListener("DOMContentLoaded", () => {
   includeHTML("dashboard-section", "./components/dashboard.html");
@@ -19,5 +19,5 @@ document.addEventListener("DOMContentLoaded", () => {
   includeHTML("customer-section", "./components/customers.html");
   includeHTML("orders-section", "./components/orders.html");
   includeHTML("analytics-section", "./components/analytics.html");
-  includeHTML("warehouse-section", "./components/warehouse.html");
+  includeHTML("warehouse-section", "./components/warehouse.html", initializeWarehouse);
 });
