@@ -169,6 +169,18 @@
 .list-control .btn-view:hover {
     background-color: var(--color-primary-hover);
 }
+.icon-hidden {
+  display: none; /* Ẩn icon mắt gạch ban đầu */
+}
+
+/* Khi button có class 'hidden', ẩn icon mắt mở và hiện icon mắt gạch */
+.btn-view.hidden .icon-visible {
+    display: none;
+}
+
+.btn-view.hidden .icon-hidden {
+    display: inline-block;
+}
 .list-control .btn-delete:hover {
     background-color: red;
 }
@@ -196,7 +208,6 @@
     line-height: 27px;
     border-radius: 50%;
     font-size: 15px;
-    transition: background-color 0.3s ease, color 0.3s ease, border 0.3s ease;
 }
 
 .page-nav-item.active a {

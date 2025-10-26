@@ -16,7 +16,7 @@
                         <div class="title-logo"><i class="fa-solid fa-users"></i></div>
                     </div>
                     <div class="box-content">
-                        <div class="amount-user">6</div>
+                        <div class="amount-user" id="userCount">6</div>
                     </div>
                 </div>
             </div>
@@ -29,7 +29,7 @@
                         <div class="title-logo"><i class="fa-solid fa-cart-shopping"></i></div>
                     </div>
                     <div class="box-content">
-                        <div class="amount-product">10</div>
+                        <div class="amount-product" id="productCount">10</div>
                     </div>
                 </div>
             </div>
@@ -42,7 +42,7 @@
                         <div class="title-logo"><i class="fa-solid fa-money-bill"></i></div>
                     </div>
                     <div class="box-content">
-                        <div class="amount">100000</div>
+                        <div class="amount" id="revenueTotal">100000</div>
                     </div>
                 </div>
             </div>
@@ -55,7 +55,7 @@
                         <div class="title-logo"><i class="fa-solid fa-warehouse"></i></div>
                     </div>
                     <div class="box-content">
-                        <div class="amount">10</div>
+                        <div class="amount" id="stockTotal">10</div>
                     </div>
                 </div>
             </div>
@@ -63,29 +63,15 @@
     </div>
     <div class="alerts">
     <div class="alert-box">
-        <div class="alert-icon">
-            <i class="fa-solid fa-exclamation-triangle"></i>
-        </div>
-        <div class="alert-content">
-            <span>3 sản phẩm sắp hết hàng!</span>
-            <div id="view-details">Xem chi tiết</div>
-        </div>
+        <i class="fa-solid fa-exclamation-triangle"></i>
+        <span>3 sản phẩm sắp hết hàng!</span>
+        <a href="/inventory">Xem chi tiết</a>
     </div>
     </div>
-    <div class="order-status">
-        <div class="status-card new">
-            <div class="status-card-left"><i class="fa-solid fa-clock"></i></div>
-            <div class="status-card-right">
-                <h4>Mới đặt</h4>
-                <div class="status-count">24</div>
-            </div>
-        </div>
-        <div class="status-card processing">
-            <div class="status-card-left"><i class="fa-solid fa-spinner"></i></div>
-            <div class="status-card-right">
-                <h4>Đang xử lý</h4>
-                <div class="status-count">12</div>
-            </div>
+    <!-- Hidden placeholder for orders count (script expects this id). Kept hidden to avoid layout changes -->
+    <div id="ordersCount" style="display:none">0</div>
+    <div>
+    <canvas id="myChart"></canvas>
     </div>
 
 </div>
