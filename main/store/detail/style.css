@@ -644,27 +644,25 @@ footer .form .input-group button:hover {
     /* Navigation Mobile */
     #navbar {
         display: none;
-        position: fixed;
-        top: 70px;
+        position: absolute;
+        top: 100%;
         left: 0;
         width: 100%;
-        height: calc(100vh - 70px);
-        background: rgba(0, 0, 0, 0.98);
-        backdrop-filter: blur(20px);
+        background: rgba(0, 0, 0, 0.95);
+        backdrop-filter: blur(10px);
         flex-direction: column;
         padding: 20px 0;
-        z-index: 998;
-        overflow-y: auto;
+        z-index: 100;
     }
 
     #navbar.active {
-        display: flex !important;
+        display: flex;
     }
     
     #navbar li {
-        padding: 15px 20px;
+        padding: 12px 20px;
         width: 100%;
-        text-align: left;
+        text-align: center;
         border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
 
