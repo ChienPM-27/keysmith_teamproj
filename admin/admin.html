@@ -6,6 +6,10 @@
     <title>Admin Dashboard - KeySmith</title>
     <link rel="stylesheet" href="./assets/css/style.css">
     <link rel="stylesheet" href="./assets/css/responsive.css">
+    <link rel="stylesheet" href="./assets/css/analytics.css">
+    <link rel="stylesheet" href="./assets/css/warehouse.css">
+    <link rel="stylesheet" href="./assets/css/dashboard.css">
+    <link rel="stylesheet" href="./assets/css/products.css">
     <script src="https://kit.fontawesome.com/da0c4cdc9f.js" crossorigin="anonymous"></script>
 </head>
 <body>
@@ -30,31 +34,31 @@
                             <div class="sidebar-hidden">Dashboard</div>
                         </a>
                     </li>
-                    <li class="sidebar-list-item tab-content ">
+                    <li class="sidebar-list-item tab-content">
                         <a href="#" class="sidebar-link">
                             <div class="sidebar-icon"><i class="fa-solid fa-keyboard"></i></div>
                             <div class="sidebar-hidden">Products</div>
                         </a>
                     </li>
-                    <li class="sidebar-list-item tab-content ">
+                    <li class="sidebar-list-item tab-content">
                         <a href="#" class="sidebar-link">
                             <div class="sidebar-icon"><i class="fa-solid fa-users"></i></div>
                             <div class="sidebar-hidden">Customers</div>
                         </a>
                     </li>
-                    <li class="sidebar-list-item tab-content ">
+                    <li class="sidebar-list-item tab-content">
                         <a href="#" class="sidebar-link">
                             <div class="sidebar-icon"><i class="fa-solid fa-cart-shopping"></i></div>
                             <div class="sidebar-hidden">Orders</div>
                         </a>
                     </li>
-                    <li class="sidebar-list-item tab-content ">
+                    <li class="sidebar-list-item tab-content">
                         <a href="#" class="sidebar-link">
                             <div class="sidebar-icon"><i class="fa-solid fa-chart-simple"></i></div>
                             <div class="sidebar-hidden">Analytics</div>
                         </a>
                     </li>
-                    <li class="sidebar-list-item tab-content ">
+                    <li class="sidebar-list-item tab-content">
                         <a href="#" class="sidebar-link">
                             <div class="sidebar-icon"><i class="fa-solid fa-warehouse"></i></div>
                             <div class="sidebar-hidden">Ware House</div>
@@ -92,17 +96,29 @@
                 </ul>
             </div>
         </aside>
+        
         <main class="content">
-            <!--dashboard  -->
-            <div class="section active">hello</div>
-            <!--  -->
-            <div class="section "></div>
-            <div class="section "></div>
-            <div class="section "></div>
-            <div class="section "></div>
-            <div class="section "></div>
+            <div id="dashboard-section" class="section active dashboard-wrapper"></div>
+            <div id="products-section" class="section products-wrapper"></div>
+            <div id="customer-section" class="section customer-wrapper"></div>
+            <div id="orders-section" class="section orders-wrapper"></div>
+
+            <!-- Analytics Section với wrapper -->
+            <div id="analytics-section" class="section analytics-wrapper"></div>
+            
+            <!-- Warehouse Section với wrapper -->
+            <div id="warehouse-section" class="section warehouse-wrapper"></div>
         </main>
+
     </div>
-<script src="./script.js"></script>
+
+    <script src="./js/include.js"></script>
+    <script src="./js/analytics.js"></script>
+    <script src="./js/warehouse.js"></script>
+    <script src="./script.js"></script>
+    <script src="./js/script.js"></script>
+    <script src="./js/dashboard.js"></script>
+    <script src="./js/products.js"></script>
+
 </body>
 </html>

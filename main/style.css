@@ -759,6 +759,9 @@ footer .form .input-group button:hover { background: #555; }
 
 /* Mobile Landscape & Small Tablets */
 @media (max-width: 768px) {
+
+    
+    
     .section-p1 {
         padding: 30px 20px;
     }
