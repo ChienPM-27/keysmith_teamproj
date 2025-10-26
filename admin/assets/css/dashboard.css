@@ -4,11 +4,39 @@
 
 
 /* dashboard section */
+.dashboard-wrapper {
+    padding: 20px;
+}
+
+.dashboard-wrapper .section-header {
+    margin-bottom: 2rem;
+    border-bottom: 2px solid var(--color-primary);
+    padding-bottom: 1rem;
+}
+
+.dashboard-wrapper .section-header h1 {
+    color: var(--color-text-dark);
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.dashboard-wrapper .section-header h1 i {
+    color: var(--color-primary);
+}
+
+.dashboard-wrapper .section-header p {
+    color: #666;
+    font-size: 0.95rem;
+    margin: 0;
+}
 .dashboard-body {
 
 }
 
-.cards {
+.dashboard-body .cards {
     display: flex;
     width: 100%;
     margin-top: 1.5rem;
@@ -97,4 +125,50 @@ transform: scale(1.05) translateY(-5px);
     color: red;
 }
 
+/* Order Status Section */
+.order-status {
+    display: flex;
+    gap: 2rem;
+    margin: 32px 24px;
+    height: 100px;
+}
 
+.status-card {
+    flex: 1;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    transition: transform 0.3s ease-in-out;
+}
+
+.status-card:hover {
+    transform: scale(1.05) translateY(-5px);
+}
+.status-card .status-card-left {
+    padding-left: 16px;
+    font-size: 24px;
+}
+
+.status-card .status-card-right {
+    margin-right: 1.25rem;
+    font-weight: 400;
+    font-family: poppins, sans-serif;
+}
+
+.new {
+    background: linear-gradient(320deg, #3b82f6 0, #fff 60%);
+}
+
+.new .status-card-left {
+    color: #3b82f6;
+}
+
+.processing .status-card-left {
+    color: #f59e0b;
+}
+.processing {
+    background: linear-gradient(320deg, #fbbf24 0, #fff 60%);
+}
