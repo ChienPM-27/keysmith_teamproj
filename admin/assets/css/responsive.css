@@ -36,3 +36,8 @@
         line-height: 0rem;
     }
 }
+@media (max-width: 768px) {
+        .chart-box {
+            max-width: 100%;
+        }
+    }

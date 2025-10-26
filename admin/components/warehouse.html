@@ -1,0 +1,270 @@
+
+<div class="container">
+    <!-- Header -->
+    <div class="header">
+        <h1><i class="fas fa-warehouse"></i> Warehouse Management</h1>
+        <div class="header-actions">
+            <button class="btn btn-secondary" onclick="window.location.href='../admin/admin.html'">
+                <i class="fas fa-arrow-left"></i> Back to Admin
+            </button>
+            <button class="btn btn-primary" onclick="openImportModal()">
+                <i class="fas fa-plus"></i> New Import Order
+            </button>
+        </div>
+    </div>
+
+    <!-- Alert Section -->
+    <div class="alert-section" id="alertSection">
+        <!-- Sẽ được populate bởi JavaScript -->
+    </div>
+
+    <!-- Tabs Navigation -->
+    <div class="tabs">
+        <button class="tab active" onclick="switchTab('inventory')">
+            <i class="fas fa-boxes"></i> Inventory Overview
+        </button>
+        <button class="tab" onclick="switchTab('import')">
+            <i class="fas fa-file-import"></i> Import Orders
+        </button>
+        <button class="tab" onclick="switchTab('transactions')">
+            <i class="fas fa-exchange-alt"></i> Transactions History
+        </button>
+        <button class="tab" onclick="switchTab('margins')">
+            <i class="fas fa-percent"></i> Profit Margins
+        </button>
+    </div>
+
+    <!-- Tab Content: Inventory Overview -->
+    <div id="inventoryTab" class="tab-content active">
+        <div class="filters">
+            <div class="search-box">
+                <input type="text" id="searchInventory" placeholder="Search products..." onkeyup="filterInventory()">
+                <i class="fas fa-search"></i>
+            </div>
+            <select class="filter-select" id="categoryFilter" onchange="filterInventory()">
+                <option value="all">All Categories</option>
+                <option value="Attack On Titan">Attack On Titan</option>
+                <option value="Yugioh">Yugioh</option>
+                <option value="LOTR">Lord Of The Ring</option>
+            </select>
+        </div>
+
+        <div class="table-container">
+            <table id="inventoryTable">
+                <thead>
+                    <tr>
+                        <th>Product Name</th>
+                        <th>Category</th>
+                        <th>Stock</th>
+                        <th>Status</th>
+                        <th>Cost Price</th>
+                        <th>Sell Price</th>
+                        <th>Profit %</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="inventoryTableBody">
+                    <!-- Sẽ được populate bởi JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Tab Content: Import Orders -->
+    <div id="importTab" class="tab-content">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon" style="background: rgba(76, 175, 80, 0.2); color: #4caf50;">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="stat-info">
+                    <h3 id="completedOrders">0</h3>
+                    <p>Completed Orders</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: rgba(255, 193, 7, 0.2); color: #ffc107;">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="stat-info">
+                    <h3 id="pendingOrders">0</h3>
+                    <p>Pending Orders</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: rgba(33, 150, 243, 0.2); color: #2196f3;">
+                    <i class="fas fa-dollar-sign"></i>
+                </div>
+                <div class="stat-info">
+                    <h3 id="totalImportValue">$0</h3>
+                    <p>Total Import Value</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-container" style="margin-top: 20px;">
+            <table id="importTable">
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Date</th>
+                        <th>Products</th>
+                        <th>Total Value</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="importTableBody">
+                    <!-- Sẽ được populate bởi JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Tab Content: Transactions History -->
+    <div id="transactionsTab" class="tab-content">
+        <div class="filters">
+            <div class="date-filter">
+                <label>From:</label>
+                <input type="date" id="dateFrom" onchange="filterTransactions()">
+                <label>To:</label>
+                <input type="date" id="dateTo" onchange="filterTransactions()">
+                <button class="btn btn-secondary" onclick="resetDateFilter()">
+                    <i class="fas fa-redo"></i> Reset
+                </button>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table id="transactionsTable">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Product</th>
+                        <th>Type</th>
+                        <th>Quantity</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody id="transactionsTableBody">
+                    <!-- Sẽ được populate bởi JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Tab Content: Profit Margins -->
+    <div id="marginsTab" class="tab-content">
+        <h2 style="margin-bottom: 20px;">Category Profit Margins</h2>
+        <div class="margins-grid" id="categoryMarginsGrid">
+            <!-- Sẽ được populate bởi JavaScript -->
+        </div>
+
+        <h2 style="margin: 30px 0 20px 0;">Product Profit Margins</h2>
+        <div class="table-container">
+            <table id="productMarginsTable">
+                <thead>
+                    <tr>
+                        <th>Product Name</th>
+                        <th>Category</th>
+                        <th>Cost Price</th>
+                        <th>Sell Price</th>
+                        <th>Profit Margin %</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="productMarginsTableBody">
+                    <!-- Sẽ được populate bởi JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: New/Edit Import Order -->
+<div id="importModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="importModalTitle">New Import Order</h2>
+            <span class="close" onclick="closeImportModal()">&times;</span>
+        </div>
+        <div class="modal-body">
+            <form id="importForm">
+                <input type="hidden" id="importOrderId">
+                
+                <div class="form-group">
+                    <label>Import Date</label>
+                    <input type="date" id="importDate" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Products</label>
+                    <div id="importProductsList">
+                        <div class="import-product-item">
+                            <select class="product-select" required>
+                                <option value="">Select Product</option>
+                                <!-- Sẽ được populate bởi JavaScript -->
+                            </select>
+                            <input type="number" placeholder="Quantity" min="1" required>
+                            <input type="number" placeholder="Cost Price" step="0.01" min="0" required>
+                            <button type="button" class="btn-icon btn-remove" onclick="removeProductLine(this)">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-secondary" onclick="addProductLine()">
+                        <i class="fas fa-plus"></i> Add Product
+                    </button>
+                </div>
+
+                <div class="form-group">
+                    <label>Total Value: <span id="totalImportValueDisplay">$0.00</span></label>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeImportModal()">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="saveImportOrder(false)" id="saveDraftBtn">Save as Draft</button>
+                    <button type="submit" class="btn btn-primary">Complete Order</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Edit Margin -->
+<div id="marginModal" class="modal">
+    <div class="modal-content modal-small">
+        <div class="modal-header">
+            <h2>Edit Profit Margin</h2>
+            <span class="close" onclick="closeMarginModal()">&times;</span>
+        </div>
+        <div class="modal-body">
+            <form id="marginForm">
+                <input type="hidden" id="marginProductId">
+                
+                <div class="form-group">
+                    <label id="marginProductName">Product Name</label>
+                </div>
+
+                <div class="form-group">
+                    <label>Cost Price ($)</label>
+                    <input type="number" id="marginCost" step="0.01" min="0" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Sell Price ($)</label>
+                    <input type="number" id="marginPrice" step="0.01" min="0" required onkeyup="calculateMargin()">
+                </div>
+
+                <div class="form-group">
+                    <label>Profit Margin: <span id="calculatedMargin">0%</span></label>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeMarginModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

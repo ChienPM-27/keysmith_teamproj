@@ -228,11 +228,9 @@ width: 100%;
     display: none;
     width: 100%;
     min-height: 100vh;
-    padding: 2rem;
 }
 
 .section.active {
     display: block;
 }
 
-/* Style cho sidebar item active */

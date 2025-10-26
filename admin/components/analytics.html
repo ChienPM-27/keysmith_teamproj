@@ -1,0 +1,278 @@
+<!-- Analytics Section -->
+    <div class="section-header">
+        <h1><i class="fa-solid fa-chart-simple"></i> Analytics</h1>
+        <p>Phân tích dữ liệu và quản lý giá bán</p>
+    </div>
+
+    <!-- Analytics Tabs -->
+    <div class="analytics-tabs">
+        <button class="analytics-tab-btn active" data-tab="sales-report">
+            <i class="fa-solid fa-chart-line"></i> Báo cáo Bán hàng
+        </button>
+        <button class="analytics-tab-btn" data-tab="customer-stats">
+            <i class="fa-solid fa-users-gear"></i> Thống kê Khách hàng
+        </button>
+    </div>
+
+    <!-- Tab 1: Báo cáo Bán hàng -->
+    <div class="analytics-tab-content active" id="sales-report">
+        <!-- Filters -->
+        <div class="analytics-filters">
+            <div class="filter-group">
+                <label><i class="fa-solid fa-calendar"></i> Từ ngày:</label>
+                <input type="date" class="filter-input" id="salesDateFrom">
+            </div>
+            <div class="filter-group">
+                <label><i class="fa-solid fa-calendar"></i> Đến ngày:</label>
+                <input type="date" class="filter-input" id="salesDateTo">
+            </div>
+            <button class="btn-primary"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                    <i class="fa-solid fa-dollar-sign"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>Tổng Doanh Thu</h3>
+                    <p class="stat-value">125,500,000đ</p>
+                    <span class="stat-change positive"><i class="fa-solid fa-arrow-up"></i> +12.5%</span>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>Tổng Đơn Hàng</h3>
+                    <p class="stat-value">342</p>
+                    <span class="stat-change positive"><i class="fa-solid fa-arrow-up"></i> +8.2%</span>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                    <i class="fa-solid fa-chart-line"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>Giá Trị TB/Đơn</h3>
+                    <p class="stat-value">367,000đ</p>
+                    <span class="stat-change negative"><i class="fa-solid fa-arrow-down"></i> -2.1%</span>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+                    <i class="fa-solid fa-percent"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>Lợi Nhuận</h3>
+                    <p class="stat-value">35,200,000đ</p>
+                    <span class="stat-change positive"><i class="fa-solid fa-arrow-up"></i> +15.3%</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Top Products -->
+        <div class="top-products">
+            <h3><i class="fa-solid fa-fire"></i> Top 5 Sản phẩm bán chạy</h3>
+            <div class="product-list">
+                <div class="product-item">
+                    <div class="product-rank">1</div>
+                    <img src="../../img/keycap/AttackOnTitan/Eren.jpg" alt="Product">
+                    <div class="product-details">
+                        <h4>Attack Titan Keycap</h4>
+                        <p>Đã bán: <strong>156 sản phẩm</strong></p>
+                    </div>
+                    <div class="product-revenue">7,800,000đ</div>
+                </div>
+                <div class="product-item">
+                    <div class="product-rank">2</div>
+                    <img src="../../img/keycap/AttackOnTitan/Scout.jpg" alt="Product">
+                    <div class="product-details">
+                        <h4>Scout Regiment Keycap</h4>
+                        <p>Đã bán: <strong>142 sản phẩm</strong></p>
+                    </div>
+                    <div class="product-revenue">6,390,000đ</div>
+                </div>
+                <div class="product-item">
+                    <div class="product-rank">3</div>
+                    <img src="../../img/keycap/AttackOnTitan/Reiner.jpg" alt="Product">
+                    <div class="product-details">
+                        <h4>Armored Titan Keycap</h4>
+                        <p>Đã bán: <strong>128 sản phẩm</strong></p>
+                    </div>
+                    <div class="product-revenue">5,120,000đ</div>
+                </div>
+                <div class="product-item">
+                    <div class="product-rank">4</div>
+                    <img src="../../img/keycap/AttackOnTitan/spacebar.jpg" alt="Product">
+                    <div class="product-details">
+                        <h4>Wings of Freedom Keycap</h4>
+                        <p>Đã bán: <strong>95 sản phẩm</strong></p>
+                    </div>
+                    <div class="product-revenue">8,550,000đ</div>
+                </div>
+                <div class="product-item">
+                    <div class="product-rank">5</div>
+                    <img src="../../img/keycap/AttackOnTitan/Fight_for_Paradis.webp" alt="Product">
+                    <div class="product-details">
+                        <h4>Fight For Paradis Keycap</h4>
+                        <p>Đã bán: <strong>87 sản phẩm</strong></p>
+                    </div>
+                    <div class="product-revenue">7,830,000đ</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Order Status Stats -->
+        <div class="order-status-grid">
+            <div class="status-card new">
+                <i class="fa-solid fa-clock"></i>
+                <div>
+                    <h4>Mới đặt</h4>
+                    <p class="status-count">24</p>
+                </div>
+            </div>
+            <div class="status-card processing">
+                <i class="fa-solid fa-spinner"></i>
+                <div>
+                    <h4>Đang xử lý</h4>
+                    <p class="status-count">18</p>
+                </div>
+            </div>
+            <div class="status-card delivered">
+                <i class="fa-solid fa-check-circle"></i>
+                <div>
+                    <h4>Đã giao</h4>
+                    <p class="status-count">285</p>
+                </div>
+            </div>
+            <div class="status-card cancelled">
+                <i class="fa-solid fa-times-circle"></i>
+                <div>
+                    <h4>Đã hủy</h4>
+                    <p class="status-count">15</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tab 3: Thống kê Khách hàng -->
+    <div class="analytics-tab-content" id="customer-stats">
+        <div class="customer-stats-grid">
+            <!-- Top Customers -->
+            <div class="stats-panel">
+                <h3><i class="fa-solid fa-crown"></i> Top Khách hàng chi tiêu</h3>
+                <div class="top-customer-list">
+                    <div class="customer-rank-item rank-1">
+                        <div class="rank-badge">🥇</div>
+                        <div class="customer-info">
+                            <h4>nguyenvana</h4>
+                            <p>25 đơn hàng</p>
+                        </div>
+                        <div class="customer-spending">12,500,000đ</div>
+                    </div>
+                    <div class="customer-rank-item rank-2">
+                        <div class="rank-badge">🥈</div>
+                        <div class="customer-info">
+                            <h4>tranthib</h4>
+                            <p>18 đơn hàng</p>
+                        </div>
+                        <div class="customer-spending">8,900,000đ</div>
+                    </div>
+                    <div class="customer-rank-item rank-3">
+                        <div class="rank-badge">🥉</div>
+                        <div class="customer-info">
+                            <h4>levanc</h4>
+                            <p>15 đơn hàng</p>
+                        </div>
+                        <div class="customer-spending">7,200,000đ</div>
+                    </div>
+                    <div class="customer-rank-item">
+                        <div class="rank-badge">4</div>
+                        <div class="customer-info">
+                            <h4>phamthid</h4>
+                            <p>12 đơn hàng</p>
+                        </div>
+                        <div class="customer-spending">5,800,000đ</div>
+                    </div>
+                    <div class="customer-rank-item">
+                        <div class="rank-badge">5</div>
+                        <div class="customer-info">
+                            <h4>hoangvane</h4>
+                            <p>10 đơn hàng</p>
+                        </div>
+                        <div class="customer-spending">4,500,000đ</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Customer Growth -->
+            <div class="stats-panel">
+                <h3><i class="fa-solid fa-user-plus"></i> Khách hàng mới</h3>
+                <div class="growth-stats">
+                    <div class="growth-item">
+                        <div class="growth-period">Hôm nay</div>
+                        <div class="growth-number">5 <span>khách hàng</span></div>
+                    </div>
+                    <div class="growth-item">
+                        <div class="growth-period">Tuần này</div>
+                        <div class="growth-number">32 <span>khách hàng</span></div>
+                    </div>
+                    <div class="growth-item">
+                        <div class="growth-period">Tháng này</div>
+                        <div class="growth-number">128 <span>khách hàng</span></div>
+                    </div>
+                </div>
+                
+                <div class="chart-placeholder small">
+                    <i class="fa-solid fa-chart-bar"></i>
+                    <p>Biểu đồ tăng trưởng khách hàng</p>
+                </div>
+            </div>
+
+            <!-- Customer Retention -->
+            <div class="stats-panel full-width">
+                <h3><i class="fa-solid fa-repeat"></i> Tỷ lệ khách hàng quay lại</h3>
+                <div class="retention-grid">
+                    <div class="retention-card">
+                        <div class="retention-icon">
+                            <i class="fa-solid fa-user-check"></i>
+                        </div>
+                        <div class="retention-data">
+                            <h4>Khách hàng trung thành</h4>
+                            <p class="retention-value">156 khách hàng</p>
+                            <small>≥ 3 đơn hàng</small>
+                        </div>
+                        <div class="retention-percent">45.6%</div>
+                    </div>
+                    <div class="retention-card">
+                        <div class="retention-icon">
+                            <i class="fa-solid fa-user"></i>
+                        </div>
+                        <div class="retention-data">
+                            <h4>Khách hàng quay lại</h4>
+                            <p class="retention-value">89 khách hàng</p>
+                            <small>2 đơn hàng</small>
+                        </div>
+                        <div class="retention-percent">26.0%</div>
+                    </div>
+                    <div class="retention-card">
+                        <div class="retention-icon">
+                            <i class="fa-solid fa-user-plus"></i>
+                        </div>
+                        <div class="retention-data">
+                            <h4>Khách hàng mới</h4>
+                            <p class="retention-value">97 khách hàng</p>
+                            <small>1 đơn hàng</small>
+                        </div>
+                        <div class="retention-percent">28.4%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>

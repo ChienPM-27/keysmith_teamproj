@@ -265,6 +265,7 @@
 
 /* ========== MOBILE LANDSCAPE & SMALL TABLETS (max-width: 768px) ========== */
 @media (max-width: 768px) {
+
     .modal-overlay {
         padding: 15px;
     }
