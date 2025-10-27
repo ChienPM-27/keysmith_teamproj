@@ -2,7 +2,7 @@
   {
     "id": 1,
     "name": "Attack Titan Keycap",
-    "price": 60,
+    "price": 75,
     "image": "../../img/keycap/AttackOnTitan/Eren.jpg",
     "category": "Attack on Titan",
     "stock": 0,
@@ -12,7 +12,7 @@
   {
     "id": 2,
     "name": "Fight for Paradis Keycap",
-    "price": 50000,
+    "price": 68,
     "image": "../../img/keycap/AttackOnTitan/Fight_for_Paradis.webp",
     "category": "Attack on Titan",
     "stock": 0,
@@ -22,7 +22,7 @@
   {
     "id": 3,
     "name": "Reiner Keycap",
-    "price": 50000,
+    "price": 72,
     "image": "../../img/keycap/AttackOnTitan/Reiner.jpg",
     "category": "Attack on Titan",
     "stock": 0,
@@ -32,7 +32,7 @@
   {
     "id": 4,
     "name": "Scout Keycap",
-    "price": 50000,
+    "price": 65,
     "image": "../../img/keycap/AttackOnTitan/Scout.jpg",
     "category": "Attack on Titan",
     "stock": 0,
@@ -42,7 +42,7 @@
   {
     "id": 5,
     "name": "Spacebar Keycap",
-    "price": 50000,
+    "price": 85,
     "image": "../../img/keycap/AttackOnTitan/spacebar.jpg",
     "category": "Attack on Titan",
     "stock": 0,
@@ -52,7 +52,7 @@
   {
     "id": 6,
     "name": "Durin's Axe Keycap",
-    "price": 50000,
+    "price": 78,
     "image": "../../img/keycap/LOTR/durin/durin's_axe.jpg",
     "category": "The Lord of the Rings",
     "stock": 0,
@@ -62,7 +62,7 @@
   {
     "id": 7,
     "name": "Durin's Folk Keycap",
-    "price": 50000,
+    "price": 82,
     "image": "../../img/keycap/LOTR/durin/durin's_folk.jpg",
     "category": "The Lord of the Rings",
     "stock": 0,
@@ -72,7 +72,7 @@
   {
     "id": 8,
     "name": "Durin's Helm Keycap",
-    "price": 50000,
+    "price": 76,
     "image": "../../img/keycap/LOTR/durin/durin's_helm.jpg",
     "category": "The Lord of the Rings",
     "stock": 0,
@@ -82,7 +82,7 @@
   {
     "id": 9,
     "name": "Horn of Gondor Keycap",
-    "price": 50000,
+    "price": 88,
     "image": "../../img/keycap/LOTR/gondor/horn_of_gordor.jpg",
     "category": "The Lord of the Rings",
     "stock": 0,
@@ -92,7 +92,7 @@
   {
     "id": 10,
     "name": "Horn of Gondor #2 Keycap",
-    "price": 50000,
+    "price": 90,
     "image": "../../img/keycap/LOTR/gondor/horn_of_gordor_1.jpg",
     "category": "The Lord of the Rings",
     "stock": 0,
@@ -102,7 +102,7 @@
   {
     "id": 11,
     "name": "Horn of Gondor (White) Keycap",
-    "price": 50000,
+    "price": 92,
     "image": "../../img/keycap/LOTR/gondor/horn_of_gordor_white.jpg",
     "category": "The Lord of the Rings",
     "stock": 0,
@@ -112,7 +112,7 @@
   {
     "id": 12,
     "name": "Palantir Keycap",
-    "price": 50000,
+    "price": 95,
     "image": "../../img/keycap/LOTR/gondor/palantir.jpg",
     "category": "The Lord of the Rings",
     "stock": 0,
@@ -122,7 +122,7 @@
   {
     "id": 13,
     "name": "Palantir #2 Keycap",
-    "price": 50000,
+    "price": 98,
     "image": "../../img/keycap/LOTR/gondor/palantir_1.jpg",
     "category": "The Lord of the Rings",
     "stock": 0,
@@ -132,7 +132,7 @@
   {
     "id": 14,
     "name": "Palantir (White) Keycap",
-    "price": 50000,
+    "price": 100,
     "image": "../../img/keycap/LOTR/gondor/palantir_white.jpg",
     "category": "The Lord of the Rings",
     "stock": 0,
@@ -142,7 +142,7 @@
   {
     "id": 15,
     "name": "White Tree Keycap",
-    "price": 50000,
+    "price": 85,
     "image": "../../img/keycap/LOTR/gondor/white_tree.jpg",
     "category": "The Lord of the Rings",
     "stock": 0,
@@ -152,7 +152,7 @@
   {
     "id": 16,
     "name": "White Tree #2 Keycap",
-    "price": 50000,
+    "price": 87,
     "image": "../../img/keycap/LOTR/gondor/white_tree_1.jpg",
     "category": "The Lord of the Rings",
     "stock": 0,
@@ -162,7 +162,7 @@
   {
     "id": 17,
     "name": "White Tree (White) Keycap",
-    "price": 50000,
+    "price": 89,
     "image": "../../img/keycap/LOTR/gondor/white_tree_white.jpg",
     "category": "The Lord of the Rings",
     "stock": 0,
@@ -172,7 +172,7 @@
   {
     "id": 18,
     "name": "One Piece Keycap 1",
-    "price": 50000,
+    "price": 62,
     "image": "../../img/keycap/OnePiece/1.png",
     "category": "One Piece",
     "stock": 0,
@@ -182,7 +182,7 @@
   {
     "id": 19,
     "name": "One Piece Keycap 2",
-    "price": 50000,
+    "price": 64,
     "image": "../../img/keycap/OnePiece/2.png",
     "category": "One Piece",
     "stock": 0,
@@ -192,7 +192,7 @@
   {
     "id": 20,
     "name": "Yu-Gi-Oh! Keycap 1",
-    "price": 50000,
+    "price": 70,
     "image": "../../img/keycap/Yugioh/1.jpg",
     "category": "Yu-Gi-Oh!",
     "stock": 0,
@@ -202,7 +202,7 @@
   {
     "id": 21,
     "name": "Yu-Gi-Oh! Keycap 2",
-    "price": 50000,
+    "price": 73,
     "image": "../../img/keycap/Yugioh/2.jpg",
     "category": "Yu-Gi-Oh!",
     "stock": 0,
@@ -212,7 +212,7 @@
   {
     "id": 22,
     "name": "YGOv3 Ra 11 Keycap",
-    "price": 50000,
+    "price": 80,
     "image": "../../img/keycap/Yugioh/YGOv3-Ra-11.webp",
     "category": "Yu-Gi-Oh!",
     "stock": 0,
@@ -222,7 +222,7 @@
   {
     "id": 23,
     "name": "YuGiOh BEWDragon 5 Keycap",
-    "price": 50000,
+    "price": 83,
     "image": "../../img/keycap/Yugioh/YuGiOh-BEWDragon-5.webp",
     "category": "Yu-Gi-Oh!",
     "stock": 0,
@@ -232,7 +232,7 @@
   {
     "id": 24,
     "name": "YuGiOh DarkMagicianGirl 5 Keycap",
-    "price": 50000,
+    "price": 86,
     "image": "../../img/keycap/Yugioh/YuGiOh-DarkMagicianGirl-5.webp",
     "category": "Yu-Gi-Oh!",
     "stock": 0,
@@ -242,7 +242,7 @@
   {
     "id": 25,
     "name": "YuGiOh V2 Concept 11-4 Keycap",
-    "price": 50000,
+    "price": 55,
     "image": "../../img/keycap/Yugioh/YuGiOh-V2-Concept-11-4.webp",
     "category": "Yu-Gi-Oh!",
     "stock": 0,
@@ -252,7 +252,7 @@
   {
     "id": 26,
     "name": "YuGiOh V2 Concept 11-6 Keycap",
-    "price": 50000,
+    "price": 58,
     "image": "../../img/keycap/Yugioh/YuGiOh-V2-Concept-11-6.webp",
     "category": "Yu-Gi-Oh!",
     "stock": 0,
