@@ -15,7 +15,7 @@ async function includeHTML(id, filePath, callback) {
 
 document.addEventListener("DOMContentLoaded", () => {
   includeHTML("dashboard-section", "./components/dashboard.html");
-  includeHTML("products-section", "./components/products.html", initializeProducts);
+  includeHTML("products-section", "./components/products.html");
   includeHTML("customer-section", "./components/customers.html");
   includeHTML("orders-section", "./components/orders.html");
   includeHTML("analytics-section", "./components/analytics.html");
