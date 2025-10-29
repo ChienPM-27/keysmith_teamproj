@@ -1,3 +1,31 @@
+.products-wrapper {
+    padding: 20px;
+}
+
+.products-wrapper .section-header {
+    margin-bottom: 2rem;
+    border-bottom: 2px solid var(--color-primary);
+    padding-bottom: 1rem;
+}
+
+.products-wrapper .section-header h1 {
+    color: var(--color-text-dark);
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.products-wrapper .section-header h1 i {
+    color: var(--color-primary);
+}
+
+.products-wrapper .section-header p {
+    color: #666;
+    font-size: 0.95rem;
+    margin: 0;
+}
 .product-body {
     padding: 20px 80px;
 }

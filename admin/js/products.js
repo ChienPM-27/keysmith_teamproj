@@ -1,5 +1,7 @@
 let currentEditingId = null;
 let productsLoaded = false;
+let currentPage = 1;
+const itemsPerPage = 10;
 
 function formatCurrency(amount) {
     return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
@@ -54,10 +56,27 @@ function showProduct(searchTerm = '', category = '') {
 
     if (filteredProducts.length === 0) {
         productContainer.innerHTML = '<p style="text-align: center; padding: 20px; color: #666;">No products found</p>';
+        updatePagination(0);
         return;
     }
 
-    productContainer.innerHTML = filteredProducts.map(product => `
+    // Tính toán phân trang
+    const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+    
+    // Đảm bảo currentPage không vượt quá totalPages
+    if (currentPage > totalPages) {
+        currentPage = totalPages;
+    }
+    if (currentPage < 1) {
+        currentPage = 1;
+    }
+
+    const start = (currentPage - 1) * itemsPerPage;
+    const end = start + itemsPerPage;
+    const productsToShow = filteredProducts.slice(start, end);
+
+    // Hiển thị sản phẩm
+    productContainer.innerHTML = productsToShow.map(product => `
         <div class="list" data-id="${product.id}">
             <div class="list-left">
                 <img src="${product.image}" alt="${product.name}" onerror="this.src='../../img/keycap/default.jpg'">
@@ -81,6 +100,119 @@ function showProduct(searchTerm = '', category = '') {
             </div>
         </div>
     `).join('');
+
+    // Cập nhật phân trang
+    updatePagination(filteredProducts.length);
+}
+
+function updatePagination(totalItems) {
+    const pageNavList = document.querySelector('.page-nav-list');
+    
+    if (!pageNavList) return;
+
+    if (totalItems === 0) {
+        pageNavList.innerHTML = '<li class="page-nav-item"><a href="#">0</a></li>';
+        return;
+    }
+
+    const totalPages = Math.ceil(totalItems / itemsPerPage);
+    
+    if (totalPages <= 1) {
+        pageNavList.innerHTML = '<li class="page-nav-item active"><a href="#" onclick="return false;">1</a></li>';
+        return;
+    }
+
+    let paginationHTML = '';
+    
+    // Nút Previous
+    if (currentPage > 1) {
+        paginationHTML += `<li class="page-nav-item"><a href="#" onclick="changePage(${currentPage - 1}); return false;">«</a></li>`;
+    }
+    
+    // Logic hiển thị số trang
+    if (totalPages <= 7) {
+        // Hiển thị tất cả nếu ít hơn hoặc bằng 7 trang
+        for (let i = 1; i <= totalPages; i++) {
+            paginationHTML += `
+                <li class="page-nav-item ${i === currentPage ? 'active' : ''}">
+                    <a href="#" onclick="changePage(${i}); return false;">${i}</a>
+                </li>
+            `;
+        }
+    } else {
+        // Hiển thị với dấu ...
+        // Trang đầu
+        paginationHTML += `
+            <li class="page-nav-item ${1 === currentPage ? 'active' : ''}">
+                <a href="#" onclick="changePage(1); return false;">1</a>
+            </li>
+        `;
+        
+        // Dấu ... đầu
+        if (currentPage > 3) {
+            paginationHTML += `<li class="page-nav-item"><a href="#" onclick="return false;">...</a></li>`;
+        }
+        
+        // Các trang ở giữa
+        const startPage = Math.max(2, currentPage - 1);
+        const endPage = Math.min(totalPages - 1, currentPage + 1);
+        
+        for (let i = startPage; i <= endPage; i++) {
+            paginationHTML += `
+                <li class="page-nav-item ${i === currentPage ? 'active' : ''}">
+                    <a href="#" onclick="changePage(${i}); return false;">${i}</a>
+                </li>
+            `;
+        }
+        
+        // Dấu ... cuối
+        if (currentPage < totalPages - 2) {
+            paginationHTML += `<li class="page-nav-item"><a href="#" onclick="return false;">...</a></li>`;
+        }
+        
+        // Trang cuối
+        paginationHTML += `
+            <li class="page-nav-item ${totalPages === currentPage ? 'active' : ''}">
+                <a href="#" onclick="changePage(${totalPages}); return false;">${totalPages}</a>
+            </li>
+        `;
+    }
+    
+    // Nút Next
+    if (currentPage < totalPages) {
+        paginationHTML += `<li class="page-nav-item"><a href="#" onclick="changePage(${currentPage + 1}); return false;">»</a></li>`;
+    }
+    
+    pageNavList.innerHTML = paginationHTML;
+}
+
+function changePage(page) {
+    const products = DataManager.getProducts();
+    const searchInput = document.getElementById('form-search-product');
+    const categorySelect = document.getElementById('the-loai');
+    
+    const search = searchInput ? searchInput.value.toLowerCase() : '';
+    const selectedCategory = categorySelect ? categorySelect.value : '';
+
+    let filteredProducts = products.filter(product => {
+        const matchesSearch = product.name.toLowerCase().includes(search) || 
+                            (product.description && product.description.toLowerCase().includes(search));
+        const matchesCategory = !selectedCategory || product.category === selectedCategory;
+        return matchesSearch && matchesCategory;
+    });
+
+    const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+    
+    if (page < 1 || page > totalPages) return;
+    
+    currentPage = page;
+    showProduct();
+    
+    // Scroll lên đầu danh sách sản phẩm
+    const productContainer = document.querySelector('.show-product');
+    if (productContainer) {
+        productContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
 }
 
 function openAddProductModal() {
@@ -194,6 +326,7 @@ function handleAddProduct(e) {
     alert('Product added successfully!');
     closeProductModal();
     updateCategoryFilter();
+    currentPage = 1; // Reset về trang 1 khi thêm sản phẩm mới
     showProduct();
 }
 
@@ -234,6 +367,7 @@ function handleUpdateProduct(e) {
 async function refreshProducts() {
     await DataManager.loadProductsFromJSON();
     updateCategoryFilter();
+    currentPage = 1; // Reset về trang 1 khi refresh
     showProduct();
     alert('Products refreshed from JSON!');
 }
@@ -273,6 +407,23 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (e.target === modal) closeProductModal();
             });
         }
+
+        // Thêm event listener cho search và filter để reset về trang 1
+        const searchInput = document.getElementById('form-search-product');
+        if (searchInput) {
+            searchInput.addEventListener('input', () => {
+                currentPage = 1;
+                showProduct();
+            });
+        }
+
+        const categorySelect = document.getElementById('the-loai');
+        if (categorySelect) {
+            categorySelect.addEventListener('change', () => {
+                currentPage = 1;
+                showProduct();
+            });
+        }
     }, 500);
 });
 
@@ -282,3 +433,4 @@ window.viewProduct = viewProduct;
 window.deleteProduct = deleteProduct;
 window.uploadImage = uploadImage;
 window.refreshProducts = refreshProducts;
+window.changePage = changePage;
