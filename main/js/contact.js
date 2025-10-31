@@ -27,7 +27,7 @@ if (contactLink) {
     });
 }
 
-// Close Contact Modal
+// Close Contact Modal Function
 function closeContactModalFunc() {
     // Hide modal
     contactModalOverlay.classList.remove('active');
@@ -39,6 +39,7 @@ function closeContactModalFunc() {
     body.style.overflow = '';
 }
 
+// Close button click
 if (closeContactModal) {
     closeContactModal.addEventListener('click', closeContactModalFunc);
 }
