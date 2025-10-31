@@ -30,7 +30,7 @@
 }
 
     /* FILTER MENU */
-#customer-body .filter-menu {
+.filter-menu {
     display: flex;
     align-items: center;
     justify-content: space-around;
@@ -41,10 +41,7 @@
     background: #f8f9fa;
 }
 
-#filter-user-status,
-#customer-body .form-search input,
-#customer-body .filter-date input,
-.btn-control-large{
+.status, .form-search-input, .form-control-date {
     padding: 1rem 0.5rem;
     border-radius: 5px;
     border: none;
@@ -53,7 +50,7 @@
     cursor: pointer;
 }
 
-#customer-body .filter-menu > div:nth-child(2) {
+.filter-menu > div:nth-child(2) {
     flex: 1;
 }
 

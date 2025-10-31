@@ -1,0 +1,99 @@
+<!-- Orders Section -->
+<div class="section-header">
+    <h1><i class="fa-solid fa-chart-simple"></i> Orders</h1>
+    <p>Quản lý và theo dõi đơn hàng</p>
+</div>
+
+<div class="body" id="customer-body">
+    <div class="cards-list">
+        <div class="card">
+            <div class="card-content">
+                <div class="card-title">
+                    <h3>Total Orders</h3>
+                    <i class="fa-solid fa-bag-shopping"></i>
+                </div>
+                <span class="card-value">150</span>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-content">
+                <div class="card-title">
+                    <h3>Pending Orders</h3>
+                    <i class="fa-solid fa-hourglass-half"></i>
+                </div>
+                <span class="card-value">25</span>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-content">
+                <div class="card-title">
+                    <h3>Completed Orders</h3>
+                    <i class="fa-solid fa-check-circle"></i>
+                </div>
+                <span class="card-value">120</span>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-content">
+                <div class="card-title">
+                    <h3>Canceled Orders</h3>
+                    <i class="fa-solid fa-times-circle"></i>
+                </div>
+                <span class="card-value">5</span>
+            </div>
+        </div>
+    </div>
+    <div class="filter-menu">
+        <div>
+            <select name="status" class="status" id="filter-order-status" onchange="">
+                <option value="">Tất cả</option>
+                <option value="">Đang xử lý</option>
+                <option value="">Đã hoàn thành</option>
+                <option value="">Đã hủy</option>
+            </select>
+        </div>
+        <div>
+            <form action="" class="form-search">
+                <input id="form-search-order" type="text" class="form-search-input" placeholder="Tìm kiếm đơn hàng..." oninput="">
+            </form>
+        </div>
+        <div>
+            <form action="" class="filter-date">
+                <div>
+                    <label for="time-start">Từ</label>
+                    <input type="date" class="form-control-date" id="time-start-order" onchange="">
+                </div>
+                <div>
+                    <label for="time-end">Đến</label>
+                    <input type="date" class="form-control-date" id="time-end-order" onchange="">
+                </div>
+            </form>    
+        </div>
+    </div>
+    <div class="table">
+        <table width="100%">
+            <thead>
+                <tr>
+                    <td>Mã đơn</td>
+                    <td>Khách hàng</td>
+                    <td>Ngày đặt</td>
+                    <td>Tổng tiền</td>
+                    <td>Trạng thái</td>
+                    <td>Thao tác</td>
+                </tr>
+            </thead>
+            <tbody id="showOrder">
+                <tr>
+                    <td>ORD001</td>
+                    <td>Nguyễn Văn A</td>
+                    <td>2024-06-01</td>
+                    <td>1,000,000 VND</td>
+                    <td>Đang xử lý</td>
+                    <td>
+                        <button class="btn-detail" id="" onclick=""><i class="fa-regular fa-eye"></i> Chi tiết</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

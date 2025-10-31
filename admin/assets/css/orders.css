@@ -1,0 +1,131 @@
+/* HEADER */
+.section-header {
+    margin-bottom: 2rem;
+    border-bottom: 2px solid var(--color-primary);
+    padding-bottom: 1rem;
+}
+
+.section-header h1 {
+    color: var(--color-text-dark);
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.section-header h1 i {
+    color: var(--color-primary);
+}
+
+.section-header p {
+    color: #666;
+    font-size: 0.95rem;
+    margin: 0;
+}
+
+/* BODY */
+.body {
+    padding: 20px;
+}
+
+    /* CARDS LIST */
+#customer-body .cards-list {
+    display: flex;
+    width: 100%;
+    margin-top: 1.5rem;
+    margin-bottom: 2rem;
+    height: 150px;
+}
+
+#customer-body .card {
+    width: 25%;
+    height: 100%;
+    margin: 0 0.5rem;
+    padding: 1.25rem 1.25rem;
+    border-radius: 1rem;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(320deg,#fff4df 0,#fff 70% );
+    transition: transform 0.3s ease-in-out;
+    cursor: pointer;
+}
+
+#customer-body .card:hover {
+    transform: scale(1.05) translateY(-5px);
+}
+
+#customer-body .card .card-content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    height: 100%;
+    gap: 1rem;
+}
+
+#customer-body .card .card-content .card-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+#customer-body .card .card-content .card-title h3 {
+    font-weight: 600;
+}
+
+#customer-body .card .card-content .card-title i {
+    color: var(--color-primary);
+}
+
+#customer-body .card .card-content .card-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-text-dark);
+}
+
+    /* TABLE */
+table {
+    border-collapse: collapse;
+}
+
+.table {
+    width: 100%;
+    overflow: auto;
+    background: #f8f9fa;
+    border-radius: 1rem;
+}
+
+.table tr {
+    border-bottom: 1px solid #f8f9fa;
+}
+
+.table thead {
+    background: #ddd;
+}
+
+.table thead td {
+    font-size: 16px;
+    text-transform: uppercase;
+    font-weight: 500;
+    padding: 1rem;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.table tbody tr td {
+    padding: 0.5rem 1rem;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.btn-detail {
+    background-color: #ddd;
+    padding: 5px 15px;
+    border-radius: 15px;
+    font-size: 14px;
+    text-transform: uppercase;
+    margin-left: 0;
+    outline: none;
+    border: none;
+    cursor: pointer;
+}
