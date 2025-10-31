@@ -46,9 +46,10 @@ p { font-size: 15px; color: #465b52; margin: 5px 0 20px 0; }
     left: 0;
     width: 100%;
     z-index: 100;
-    transition: top 0.3s ease;
+    transition: top 0.3s ease, background-color 0.3s ease, border-bottom 0.3s ease;
     border-bottom: 1px solid #ffffff29;
 }
+
 #header::before {
     content: "";
     position: absolute;
@@ -59,7 +60,37 @@ p { font-size: 15px; color: #465b52; margin: 5px 0 20px 0; }
     background: linear-gradient(to bottom, rgba(0,0,0,0.8), rgba(255, 255, 255, 0)); 
     pointer-events: none;
     z-index: -1;
+    transition: opacity 0.3s ease;
 }
+
+/* =============================
+   HEADER CONTACT MODE
+============================= */
+#header.contact-mode {
+    background-color: rgb(255, 255, 255) !important;
+    border-bottom: 2px solid black !important;
+}
+
+#header.contact-mode::before {
+    opacity: 0;
+}
+
+#header.contact-mode .header-icons a {
+    color: #000000 !important;
+}
+
+#header.contact-mode .header-icons a:hover {
+    color: #ff9f4a !important;
+}
+
+#header.contact-mode #navbar li a {
+    color: #000000 !important;
+}
+
+#header.contact-mode #mobile i {
+    color: #000000 !important;
+}
+
 #header .logo { margin-right: auto; margin-bottom: -5px; }
 
 .header-icons { 
@@ -72,10 +103,10 @@ p { font-size: 15px; color: #465b52; margin: 5px 0 20px 0; }
     color: #ffffff;
     font-size: 20px;
     text-decoration: none;
+    transition: color 0.3s ease;
 }
 .header-icons a:hover{
     color:#ff9f4a;
-    transition: color 0.3s ease;
 }
 
 #navbar{
@@ -120,6 +151,7 @@ p { font-size: 15px; color: #465b52; margin: 5px 0 20px 0; }
     color: #fff;
     font-size: 15px;
     cursor: pointer;
+    transition: color 0.3s ease;
 }
 #navbar #close {
     display: none;
@@ -759,6 +791,7 @@ footer .form .input-group button:hover { background: #555; }
 
 /* Mobile Landscape & Small Tablets */
 @media (max-width: 768px) {
+    
     .section-p1 {
         padding: 30px 20px;
     }
