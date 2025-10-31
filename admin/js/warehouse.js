@@ -1,14 +1,17 @@
-// ============================================
-// INITIALIZATION
-// ============================================
+// ==================== SYNCHRONIZED WAREHOUSE MODULE ====================
+// Sử dụng DataManager làm single source of truth
+
+// ==================== INITIALIZATION ====================
 
 function initializeWarehouse() {
-    // Wait for data to be loaded
-    if (!inventoryData || inventoryData.length === 0) {
+    // Wait for DataManager
+    if (!window.dataManager || !window.dataManager.initialized) {
         setTimeout(initializeWarehouse, 100);
         return;
     }
 
+    console.log('✅ Warehouse module connected to DataManager');
+    
     // Load all sections
     loadAlertSection();
     loadInventoryTable();
@@ -21,42 +24,78 @@ function initializeWarehouse() {
     if (importDateInput) {
         importDateInput.valueAsDate = new Date();
     }
+
+    // Listen for DataManager updates
+    window.dataManager.on('products', () => {
+        loadInventoryTable();
+        loadAlertSection();
+    });
+
+    window.dataManager.on('warehouse', () => {
+        loadImportOrdersTable();
+        loadTransactionsTable();
+        loadMarginsSection();
+        loadInventoryTable();
+        loadAlertSection();
+    });
 }
 
-// ============================================
-// TAB SWITCHING
-// ============================================
+// ==================== UTILITY FUNCTIONS ====================
+
+function formatCurrency(amount) {
+    return '$' + parseFloat(amount).toFixed(2);
+}
+
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+    });
+}
+
+function calculateProfitMargin(cost, price) {
+    if (cost === 0) return 0;
+    return (((price - cost) / cost) * 100).toFixed(1);
+}
+
+function getStockStatus(stock, minStock) {
+    if (stock === 0) {
+        return { text: 'Out of Stock', class: 'badge-low' };
+    } else if (stock < minStock) {
+        return { text: 'Low Stock', class: 'badge-ok' };
+    } else {
+        return { text: 'In Stock', class: 'badge-good' };
+    }
+}
+
+// ==================== TAB SWITCHING ====================
 
 function switchTab(tabName) {
-    // Hide all tab contents
     document.querySelectorAll('.tab-content').forEach(content => {
         content.classList.remove('active');
     });
     
-    // Remove active class from all tabs
     document.querySelectorAll('.tab').forEach(tab => {
         tab.classList.remove('active');
     });
     
-    // Show selected tab content
     const tabContent = document.getElementById(tabName + 'Tab');
     if (tabContent) {
         tabContent.classList.add('active');
     }
     
-    // Add active class to clicked tab button
     event.target.closest('.tab').classList.add('active');
 }
 
-// ============================================
-// ALERT SECTION
-// ============================================
+// ==================== ALERT SECTION ====================
 
 function loadAlertSection() {
     const alertSection = document.getElementById('alertSection');
     if (!alertSection) return;
 
-    const lowStockItems = getLowStockItems();
+    const lowStockItems = window.dataManager.getLowStockItems();
     
     if (lowStockItems.length === 0) {
         alertSection.innerHTML = '';
@@ -83,9 +122,7 @@ function loadAlertSection() {
     `;
 }
 
-// ============================================
-// INVENTORY TAB
-// ============================================
+// ==================== INVENTORY TAB ====================
 
 function loadInventoryTable() {
     const tbody = document.getElementById('inventoryTableBody');
@@ -129,12 +166,13 @@ function getFilteredInventory() {
     const searchInput = document.getElementById('searchInventory');
     const categoryFilter = document.getElementById('categoryFilter');
     
-    if (!searchInput || !categoryFilter) return inventoryData;
+    const inventory = window.dataManager.getWarehouseInventory();
+    if (!searchInput || !categoryFilter) return inventory;
 
     const searchTerm = searchInput.value.toLowerCase();
     const category = categoryFilter.value;
     
-    return inventoryData.filter(item => {
+    return inventory.filter(item => {
         const matchesSearch = item.name.toLowerCase().includes(searchTerm) || 
                              item.category.toLowerCase().includes(searchTerm);
         const matchesCategory = category === 'all' || item.category === category;
@@ -142,18 +180,18 @@ function getFilteredInventory() {
     });
 }
 
-// ============================================
-// IMPORT ORDERS TAB
-// ============================================
+// ==================== IMPORT ORDERS TAB ====================
 
 function loadImportOrdersTable() {
     const tbody = document.getElementById('importTableBody');
     if (!tbody) return;
 
+    const importOrders = window.dataManager.getImportOrders();
+
     // Update stats
-    const completedCount = importOrdersData.filter(o => o.status === 'completed').length;
-    const pendingCount = importOrdersData.filter(o => o.status === 'pending').length;
-    const totalValue = importOrdersData.reduce((sum, o) => sum + o.total, 0);
+    const completedCount = importOrders.filter(o => o.status === 'completed').length;
+    const pendingCount = importOrders.filter(o => o.status === 'pending').length;
+    const totalValue = importOrders.reduce((sum, o) => sum + o.total, 0);
     
     const completedEl = document.getElementById('completedOrders');
     const pendingEl = document.getElementById('pendingOrders');
@@ -164,12 +202,12 @@ function loadImportOrdersTable() {
     if (totalEl) totalEl.textContent = formatCurrency(totalValue);
     
     // Load table
-    if (importOrdersData.length === 0) {
+    if (importOrders.length === 0) {
         tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 40px;">No import orders found</td></tr>';
         return;
     }
     
-    tbody.innerHTML = importOrdersData.map(order => {
+    tbody.innerHTML = importOrders.map(order => {
         const itemsSummary = order.items.map(item => 
             `${item.productName} (×${item.quantity})`
         ).join(', ');
@@ -201,9 +239,7 @@ function loadImportOrdersTable() {
     }).join('');
 }
 
-// ============================================
-// TRANSACTIONS TAB
-// ============================================
+// ==================== TRANSACTIONS TAB ====================
 
 function loadTransactionsTable() {
     const tbody = document.getElementById('transactionsTableBody');
@@ -235,12 +271,13 @@ function getFilteredTransactions() {
     const dateFromInput = document.getElementById('dateFrom');
     const dateToInput = document.getElementById('dateTo');
     
-    if (!dateFromInput || !dateToInput) return transactionsData;
+    const transactions = window.dataManager.getTransactions();
+    if (!dateFromInput || !dateToInput) return transactions;
 
     const dateFrom = dateFromInput.value;
     const dateTo = dateToInput.value;
     
-    return transactionsData.filter(trans => {
+    return transactions.filter(trans => {
         const transDate = trans.date.split('T')[0];
         if (dateFrom && transDate < dateFrom) return false;
         if (dateTo && transDate > dateTo) return false;
@@ -258,15 +295,16 @@ function resetDateFilter() {
     filterTransactions();
 }
 
-// ============================================
-// MARGINS TAB
-// ============================================
+// ==================== MARGINS TAB ====================
 
 function loadMarginsSection() {
+    const categoryMargins = window.dataManager.getCategoryMargins();
+    const inventory = window.dataManager.getWarehouseInventory();
+
     // Load category margins
     const categoryGrid = document.getElementById('categoryMarginsGrid');
     if (categoryGrid) {
-        categoryGrid.innerHTML = categoryMarginsData.map(cat => `
+        categoryGrid.innerHTML = categoryMargins.map(cat => `
             <div class="margin-card">
                 <h3>${cat.category}</h3>
                 <div class="margin-value">
@@ -287,7 +325,7 @@ function loadMarginsSection() {
     // Load product margins
     const tbody = document.getElementById('productMarginsTableBody');
     if (tbody) {
-        tbody.innerHTML = inventoryData.map(item => {
+        tbody.innerHTML = inventory.map(item => {
             const profitMargin = calculateProfitMargin(item.cost, item.price);
             return `
                 <tr>
@@ -320,16 +358,12 @@ function saveCategoryMargin(category) {
     }
     
     if (confirm(`Apply ${newMargin}% profit margin to all products in "${category}" category?`)) {
-        updateCategoryMargin(category, newMargin);
-        loadMarginsSection();
-        loadInventoryTable();
+        window.dataManager.updateCategoryMargin(category, newMargin);
         alert('✅ Category margin updated successfully!');
     }
 }
 
-// ============================================
-// IMPORT ORDER MODAL
-// ============================================
+// ==================== IMPORT ORDER MODAL ====================
 
 function openImportModal() {
     const modal = document.getElementById('importModal');
@@ -347,7 +381,6 @@ function openImportModal() {
     if (orderIdEl) orderIdEl.value = '';
     if (dateEl) dateEl.valueAsDate = new Date();
     
-    // Reset product list to one item
     const productsList = document.getElementById('importProductsList');
     if (productsList) {
         productsList.innerHTML = getProductLineHTML();
@@ -364,7 +397,7 @@ function closeImportModal() {
 }
 
 function editImportOrder(orderId) {
-    const order = importOrdersData.find(o => o.id === orderId);
+    const order = window.dataManager.getImportOrders().find(o => o.id === orderId);
     if (!order || order.status === 'completed') return;
     
     const modal = document.getElementById('importModal');
@@ -380,7 +413,6 @@ function editImportOrder(orderId) {
     if (orderIdEl) orderIdEl.value = orderId;
     if (dateEl) dateEl.value = order.date;
     
-    // Load products
     const productsList = document.getElementById('importProductsList');
     if (productsList) {
         productsList.innerHTML = order.items.map(item => getProductLineHTML(item)).join('');
@@ -407,9 +439,10 @@ function getProductLineHTML(item = null) {
 }
 
 function populateProductSelects() {
+    const products = window.dataManager.getProducts();
     const selects = document.querySelectorAll('.product-select');
-    const options = inventoryData.map(p => 
-        `<option value="${p.id}" data-name="${p.name}">${p.name}</option>`
+    const options = products.map(p => 
+        `<option value="${p.id}" data-name="${p.name}" data-cost="${p.cost}">${p.name}</option>`
     ).join('');
     
     selects.forEach(select => {
@@ -464,7 +497,7 @@ function saveImportOrder(complete = false) {
         return;
     }
 
-    const orderId = orderIdEl ? orderIdEl.value : '';
+    const orderId = orderIdEl ? parseInt(orderIdEl.value) : null;
     const date = dateEl.value;
     const items = [];
     let total = 0;
@@ -500,53 +533,24 @@ function saveImportOrder(complete = false) {
     };
     
     if (orderId) {
-        // Update existing order
-        if (updateImportOrder(parseInt(orderId), orderData)) {
-            if (complete) {
-                completeImportOrder(parseInt(orderId));
-            }
+        window.dataManager.updateImportOrder(orderId, orderData);
+        if (complete) {
+            window.dataManager.completeImportOrder(orderId);
         }
     } else {
-        // Create new order
-        const newOrder = addImportOrder(orderData);
+        const newOrder = window.dataManager.addImportOrder(orderData);
         if (complete && newOrder) {
-            completeImportOrder(newOrder.id);
+            window.dataManager.completeImportOrder(newOrder.id);
         }
     }
     
     closeImportModal();
-    loadImportOrdersTable();
-    loadInventoryTable();
-    loadTransactionsTable();
-    loadAlertSection();
-    
     alert(complete ? '✅ Import order completed successfully!' : '✅ Import order saved as draft!');
-}
-
-// Form submit handler
-const importForm = document.getElementById('importForm');
-if (importForm) {
-    importForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        saveImportOrder(true);
-    });
-}
-
-// Save draft button handler
-const saveDraftBtn = document.getElementById('saveDraftBtn');
-if (saveDraftBtn) {
-    saveDraftBtn.addEventListener('click', function() {
-        saveImportOrder(false);
-    });
 }
 
 function completeOrder(orderId) {
     if (confirm('⚠️ Complete this import order? This will update the inventory and cannot be undone.')) {
-        if (completeImportOrder(orderId)) {
-            loadImportOrdersTable();
-            loadInventoryTable();
-            loadTransactionsTable();
-            loadAlertSection();
+        if (window.dataManager.completeImportOrder(orderId)) {
             alert('✅ Import order completed successfully! Inventory updated.');
         } else {
             alert('❌ Failed to complete order');
@@ -556,8 +560,7 @@ function completeOrder(orderId) {
 
 function deleteOrder(orderId) {
     if (confirm('⚠️ Delete this import order? This action cannot be undone.')) {
-        if (deleteImportOrder(orderId)) {
-            loadImportOrdersTable();
+        if (window.dataManager.deleteImportOrder(orderId)) {
             alert('✅ Import order deleted successfully!');
         } else {
             alert('❌ Cannot delete completed orders');
@@ -565,12 +568,10 @@ function deleteOrder(orderId) {
     }
 }
 
-// ============================================
-// MARGIN MODAL
-// ============================================
+// ==================== MARGIN MODAL ====================
 
 function openMarginModal(productId) {
-    const product = getProductById(productId);
+    const product = window.dataManager.getProduct(productId);
     if (!product) return;
     
     const modal = document.getElementById('marginModal');
@@ -612,7 +613,26 @@ function calculateMargin() {
     marginEl.textContent = margin + '%';
 }
 
-// Margin form submit handler
+// ==================== FORM HANDLERS ====================
+
+// Import form submit
+const importForm = document.getElementById('importForm');
+if (importForm) {
+    importForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        saveImportOrder(true);
+    });
+}
+
+// Save draft button
+const saveDraftBtn = document.getElementById('saveDraftBtn');
+if (saveDraftBtn) {
+    saveDraftBtn.addEventListener('click', function() {
+        saveImportOrder(false);
+    });
+}
+
+// Margin form submit
 const marginForm = document.getElementById('marginForm');
 if (marginForm) {
     marginForm.addEventListener('submit', function(e) {
@@ -625,23 +645,20 @@ if (marginForm) {
         if (!productIdEl || !costEl || !priceEl) return;
 
         const productId = parseInt(productIdEl.value);
-        const newCost = costEl.value;
-        const newPrice = priceEl.value;
+        const newCost = parseFloat(costEl.value);
+        const newPrice = parseFloat(priceEl.value);
         
-        if (updateProductMargin(productId, newCost, newPrice)) {
-            closeMarginModal();
-            loadInventoryTable();
-            loadMarginsSection();
-            alert('✅ Product margin updated successfully!');
-        } else {
-            alert('❌ Failed to update margin');
-        }
+        window.dataManager.updateProduct(productId, {
+            cost: newCost,
+            price: newPrice
+        });
+        
+        closeMarginModal();
+        alert('✅ Product margin updated successfully!');
     });
 }
 
-// ============================================
-// CLOSE MODALS ON OUTSIDE CLICK
-// ============================================
+// ==================== MODAL CLOSE ON OUTSIDE CLICK ====================
 
 window.onclick = function(event) {
     const importModal = document.getElementById('importModal');
@@ -655,29 +672,22 @@ window.onclick = function(event) {
     }
 }
 
-// ============================================
-// KEYBOARD SHORTCUTS
-// ============================================
+// ==================== KEYBOARD SHORTCUTS ====================
 
 document.addEventListener('keydown', function(e) {
-    // ESC to close modals
     if (e.key === 'Escape') {
         closeImportModal();
         closeMarginModal();
     }
     
-    // Ctrl/Cmd + N for new import order
     if ((e.ctrlKey || e.metaKey) && e.key === 'n') {
         e.preventDefault();
         openImportModal();
     }
 });
 
-// ============================================
-// AUTO INITIALIZE
-// ============================================
+// ==================== AUTO INITIALIZE ====================
 
-// Quan sát và tự động khởi tạo
 const warehouseObserver = new MutationObserver(() => {
     const warehouseSection = document.querySelector('.warehouse-wrapper');
     
@@ -694,3 +704,4 @@ if (document.body) {
         warehouseObserver.observe(document.body, { childList: true, subtree: true }));
 }
 
+console.log('✅ Synchronized Warehouse module loaded!');

@@ -1,4 +1,6 @@
-// ==================== DATA MANAGER - QUẢN LÝ DỮ LIỆU TẬP TRUNG ====================
+// ==================== SYNCHRONIZED DATA MANAGER v2.0 ====================
+// Đồng bộ toàn bộ: Products, Warehouse, Analytics
+
 class DataManager {
     static async loadProductsFromJSON() {
         try {
@@ -82,13 +84,24 @@ class DataManager {
             products: [],
             customers: [],
             orders: [],
-            warehouse: []
+            warehouse: {
+                inventory: [],
+                importOrders: [],
+                transactions: [],
+                categoryMargins: []
+            },
+            analytics: {
+                lastUpdated: null,
+                salesCache: {},
+                customerCache: {}
+            }
         };
         this.listeners = {};
         this.initialized = false;
     }
 
-    // Khởi tạo và load tất cả dữ liệu
+    // ==================== KHỞI TẠO ====================
+    
     async initialize() {
         if (this.initialized) return;
         
@@ -99,8 +112,15 @@ class DataManager {
                 this.loadOrders(),
                 this.loadWarehouse()
             ]);
+            
+            // Đồng bộ warehouse với products
+            this.syncWarehouseWithProducts();
+            
+            // Cache analytics
+            this.updateAnalyticsCache();
+            
             this.initialized = true;
-            console.log('✅ DataManager initialized successfully');
+            console.log('✅ DataManager v2.0 initialized & synchronized');
             this.notifyListeners('initialized');
         } catch (error) {
             console.error('❌ DataManager initialization failed:', error);
@@ -114,15 +134,16 @@ class DataManager {
             const response = await fetch('../json/products.json');
             const products = await response.json();
             
-            // Lấy dữ liệu stock và sold từ localStorage
             const savedProducts = JSON.parse(localStorage.getItem('products') || '[]');
             
             this.data.products = products.map(product => {
                 const saved = savedProducts.find(p => p.id === product.id);
                 return {
                     ...product,
-                    stock: saved?.stock || Math.floor(Math.random() * 100) + 50,
-                    sold: saved?.sold || Math.floor(Math.random() * 200)
+                    stock: saved?.stock ?? product.stock ?? Math.floor(Math.random() * 100) + 50,
+                    sold: saved?.sold ?? product.sold ?? Math.floor(Math.random() * 200),
+                    cost: saved?.cost ?? product.price * 0.6, // 60% of price as default cost
+                    minStock: saved?.minStock ?? 20
                 };
             });
 
@@ -138,7 +159,6 @@ class DataManager {
         if (saved) {
             this.data.customers = JSON.parse(saved);
         } else {
-            // Dữ liệu mẫu ban đầu
             this.data.customers = this.generateSampleCustomers();
             this.saveCustomers();
         }
@@ -150,7 +170,6 @@ class DataManager {
         if (saved) {
             this.data.orders = JSON.parse(saved);
         } else {
-            // Dữ liệu mẫu ban đầu
             this.data.orders = this.generateSampleOrders();
             this.saveOrders();
         }
@@ -158,14 +177,51 @@ class DataManager {
     }
 
     async loadWarehouse() {
-        const saved = localStorage.getItem('warehouse');
-        if (saved) {
-            this.data.warehouse = JSON.parse(saved);
+        // Import Orders
+        const savedOrders = localStorage.getItem('warehouseImportOrders');
+        if (savedOrders) {
+            this.data.warehouse.importOrders = JSON.parse(savedOrders);
         } else {
-            this.data.warehouse = [];
-            this.saveWarehouse();
+            this.data.warehouse.importOrders = this.generateSampleImportOrders();
         }
+
+        // Transactions
+        const savedTransactions = localStorage.getItem('warehouseTransactions');
+        this.data.warehouse.transactions = savedTransactions ? JSON.parse(savedTransactions) : [];
+
+        // Category Margins
+        const savedMargins = localStorage.getItem('categoryMargins');
+        if (savedMargins) {
+            this.data.warehouse.categoryMargins = JSON.parse(savedMargins);
+        } else {
+            this.data.warehouse.categoryMargins = [
+                { category: 'Attack on Titan', margin: 25 },
+                { category: 'The Lord of the Rings', margin: 30 },
+                { category: 'One Piece', margin: 22 },
+                { category: 'Yu-Gi-Oh!', margin: 28 }
+            ];
+        }
+
+        this.saveWarehouse();
         this.notifyListeners('warehouse');
+    }
+
+    // ==================== ĐỒNG BỘ WAREHOUSE VỚI PRODUCTS ====================
+    
+    syncWarehouseWithProducts() {
+        // Warehouse inventory = Products với thêm thông tin warehouse
+        this.data.warehouse.inventory = this.data.products.map(product => ({
+            id: product.id,
+            name: product.name,
+            category: product.category,
+            stock: product.stock,
+            minStock: product.minStock,
+            cost: product.cost,
+            price: product.price,
+            lastUpdated: new Date().toISOString()
+        }));
+        
+        console.log('✅ Warehouse synced with products');
     }
 
     // ==================== GETTERS ====================
@@ -194,13 +250,47 @@ class DataManager {
         return this.data.orders.find(o => o.id === id);
     }
 
-    getWarehouse() {
-        return [...this.data.warehouse];
+    // Warehouse getters
+    getWarehouseInventory() {
+        return [...this.data.warehouse.inventory];
     }
 
-    // ==================== ANALYTICS METHODS ====================
+    getImportOrders() {
+        return [...this.data.warehouse.importOrders];
+    }
+
+    getTransactions() {
+        return [...this.data.warehouse.transactions];
+    }
+
+    getCategoryMargins() {
+        return [...this.data.warehouse.categoryMargins];
+    }
+
+    getLowStockItems() {
+        return this.data.warehouse.inventory.filter(item => item.stock < item.minStock);
+    }
+
+    // ==================== ANALYTICS METHODS (CACHED) ====================
     
-    getSalesAnalytics(dateFrom = null, dateTo = null) {
+    updateAnalyticsCache() {
+        this.data.analytics.lastUpdated = new Date().toISOString();
+        this.data.analytics.salesCache = this.calculateSalesAnalytics();
+        this.data.analytics.customerCache = this.calculateCustomerAnalytics();
+        console.log('✅ Analytics cache updated');
+    }
+
+    getSalesAnalytics(dateFrom = null, dateTo = null, forceRefresh = false) {
+        // Nếu có filter date hoặc force refresh, tính lại
+        if (dateFrom || dateTo || forceRefresh) {
+            return this.calculateSalesAnalytics(dateFrom, dateTo);
+        }
+        
+        // Return cached data
+        return this.data.analytics.salesCache;
+    }
+
+    calculateSalesAnalytics(dateFrom = null, dateTo = null) {
         let orders = this.data.orders;
 
         // Filter by date range
@@ -217,11 +307,21 @@ class DataManager {
             order.status !== 'cancelled' ? sum + order.total : sum, 0);
         
         const totalOrders = orders.filter(o => o.status !== 'cancelled').length;
-        
         const avgOrderValue = totalOrders > 0 ? totalRevenue / totalOrders : 0;
 
-        // Tính profit (giả sử margin 28%)
-        const profit = totalRevenue * 0.28;
+        // Tính profit từ warehouse cost
+        let totalProfit = 0;
+        orders.forEach(order => {
+            if (order.status !== 'cancelled') {
+                order.items.forEach(item => {
+                    const product = this.getProduct(item.productId);
+                    if (product) {
+                        const profit = (item.price - product.cost) * item.quantity;
+                        totalProfit += profit;
+                    }
+                });
+            }
+        });
 
         // Status breakdown
         const statusBreakdown = {
@@ -264,14 +364,21 @@ class DataManager {
             totalRevenue,
             totalOrders,
             avgOrderValue,
-            profit,
+            profit: totalProfit,
             statusBreakdown,
-            topProducts
+            topProducts,
+            profitMargin: totalRevenue > 0 ? (totalProfit / totalRevenue * 100).toFixed(1) : 0
         };
     }
 
-    getCustomerAnalytics() {
-        // Top customers by spending
+    getCustomerAnalytics(forceRefresh = false) {
+        if (forceRefresh) {
+            return this.calculateCustomerAnalytics();
+        }
+        return this.data.analytics.customerCache;
+    }
+
+    calculateCustomerAnalytics() {
         const customerSpending = {};
         
         this.data.orders.forEach(order => {
@@ -349,17 +456,61 @@ class DataManager {
         };
     }
 
-    // ==================== UPDATE METHODS ====================
+    // ==================== UPDATE METHODS (TỰ ĐỘNG SYNC) ====================
     
     updateProduct(id, updates) {
         const index = this.data.products.findIndex(p => p.id === id);
         if (index !== -1) {
             this.data.products[index] = { ...this.data.products[index], ...updates };
+            
+            // Sync to warehouse
+            const warehouseIndex = this.data.warehouse.inventory.findIndex(i => i.id === id);
+            if (warehouseIndex !== -1) {
+                this.data.warehouse.inventory[warehouseIndex] = {
+                    ...this.data.warehouse.inventory[warehouseIndex],
+                    stock: this.data.products[index].stock,
+                    price: this.data.products[index].price,
+                    cost: this.data.products[index].cost,
+                    lastUpdated: new Date().toISOString()
+                };
+            }
+            
             this.saveProducts();
+            this.saveWarehouse();
+            this.updateAnalyticsCache();
             this.notifyListeners('products');
+            this.notifyListeners('warehouse');
             return true;
         }
         return false;
+    }
+
+    updateProductStock(productId, quantity, type = 'import', notes = '') {
+        const product = this.getProduct(productId);
+        if (!product) return false;
+
+        const oldStock = product.stock;
+        const newStock = oldStock + quantity;
+
+        // Update product
+        this.updateProduct(productId, { stock: newStock });
+
+        // Add transaction
+        this.data.warehouse.transactions.unshift({
+            id: Date.now(),
+            date: new Date().toISOString(),
+            productId: productId,
+            productName: product.name,
+            type: type,
+            quantity: quantity,
+            oldStock: oldStock,
+            newStock: newStock,
+            notes: notes || `${type === 'import' ? 'Import' : 'Export'} order`
+        });
+
+        this.saveWarehouse();
+        this.notifyListeners('warehouse');
+        return true;
     }
 
     addOrder(order) {
@@ -369,7 +520,23 @@ class DataManager {
             ...order
         };
         this.data.orders.unshift(newOrder);
+        
+        // Update product sold count và stock
+        order.items.forEach(item => {
+            const product = this.getProduct(item.productId);
+            if (product) {
+                this.updateProduct(item.productId, {
+                    sold: product.sold + item.quantity,
+                    stock: product.stock - item.quantity
+                });
+                
+                // Add transaction
+                this.updateProductStock(item.productId, -item.quantity, 'export', `Order #${newOrder.id}`);
+            }
+        });
+        
         this.saveOrders();
+        this.updateAnalyticsCache();
         this.notifyListeners('orders');
         return newOrder;
     }
@@ -379,24 +546,108 @@ class DataManager {
         if (index !== -1) {
             this.data.orders[index] = { ...this.data.orders[index], ...updates };
             this.saveOrders();
+            this.updateAnalyticsCache();
             this.notifyListeners('orders');
             return true;
         }
         return false;
     }
 
-    addCustomer(customer) {
-        const newCustomer = {
-            username: customer.username,
-            email: customer.email,
-            joinDate: new Date().toISOString(),
-            phone: customer.phone || '',
-            address: customer.address || ''
+    // ==================== WAREHOUSE OPERATIONS ====================
+    
+    addImportOrder(orderData) {
+        const newOrder = {
+            id: Date.now(),
+            date: orderData.date,
+            status: orderData.status || 'pending',
+            items: orderData.items,
+            total: orderData.total,
+            createdAt: new Date().toISOString()
         };
-        this.data.customers.push(newCustomer);
-        this.saveCustomers();
-        this.notifyListeners('customers');
-        return newCustomer;
+
+        this.data.warehouse.importOrders.unshift(newOrder);
+        this.saveWarehouse();
+        this.notifyListeners('warehouse');
+        return newOrder;
+    }
+
+    updateImportOrder(orderId, orderData) {
+        const index = this.data.warehouse.importOrders.findIndex(o => o.id === orderId);
+        if (index === -1) return false;
+
+        const order = this.data.warehouse.importOrders[index];
+        if (order.status === 'completed') return false;
+
+        order.date = orderData.date;
+        order.items = orderData.items;
+        order.total = orderData.total;
+        order.status = orderData.status;
+
+        this.saveWarehouse();
+        this.notifyListeners('warehouse');
+        return true;
+    }
+
+    completeImportOrder(orderId) {
+        const order = this.data.warehouse.importOrders.find(o => o.id === orderId);
+        if (!order || order.status === 'completed') return false;
+
+        // Update inventory for each product
+        order.items.forEach(item => {
+            const product = this.getProduct(item.productId);
+            if (product) {
+                // Update cost and stock
+                this.updateProduct(item.productId, {
+                    cost: item.cost,
+                    stock: product.stock + item.quantity
+                });
+                
+                // Add transaction
+                this.updateProductStock(item.productId, item.quantity, 'import', `Import Order #${orderId}`);
+            }
+        });
+
+        order.status = 'completed';
+        order.completedAt = new Date().toISOString();
+        
+        this.saveWarehouse();
+        this.updateAnalyticsCache();
+        this.notifyListeners('warehouse');
+        return true;
+    }
+
+    deleteImportOrder(orderId) {
+        const order = this.data.warehouse.importOrders.find(o => o.id === orderId);
+        if (!order || order.status === 'completed') return false;
+
+        this.data.warehouse.importOrders = this.data.warehouse.importOrders.filter(o => o.id !== orderId);
+        this.saveWarehouse();
+        this.notifyListeners('warehouse');
+        return true;
+    }
+
+    updateCategoryMargin(category, marginPercent) {
+        const margin = parseFloat(marginPercent);
+        
+        // Update category margin
+        const categoryData = this.data.warehouse.categoryMargins.find(c => c.category === category);
+        if (categoryData) {
+            categoryData.margin = margin;
+        }
+
+        // Update all products in this category
+        this.data.products.forEach(product => {
+            if (product.category === category) {
+                const newPrice = product.cost * (1 + margin / 100);
+                this.updateProduct(product.id, {
+                    price: parseFloat(newPrice.toFixed(2))
+                });
+            }
+        });
+
+        this.saveWarehouse();
+        this.updateAnalyticsCache();
+        this.notifyListeners('warehouse');
     }
 
     // ==================== SAVE TO LOCALSTORAGE ====================
@@ -414,7 +665,10 @@ class DataManager {
     }
 
     saveWarehouse() {
-        localStorage.setItem('warehouse', JSON.stringify(this.data.warehouse));
+        localStorage.setItem('warehouseInventory', JSON.stringify(this.data.warehouse.inventory));
+        localStorage.setItem('warehouseImportOrders', JSON.stringify(this.data.warehouse.importOrders));
+        localStorage.setItem('warehouseTransactions', JSON.stringify(this.data.warehouse.transactions));
+        localStorage.setItem('categoryMargins', JSON.stringify(this.data.warehouse.categoryMargins));
     }
 
     // ==================== EVENT LISTENERS ====================
@@ -441,14 +695,13 @@ class DataManager {
     // ==================== SAMPLE DATA GENERATORS ====================
     
     generateSampleCustomers() {
-        const customers = [
+        return [
             { username: 'nguyenvana', email: 'nguyenvana@email.com', joinDate: '2024-01-15', phone: '0901234567', address: 'TPHCM' },
             { username: 'tranthib', email: 'tranthib@email.com', joinDate: '2024-02-20', phone: '0902345678', address: 'Hà Nội' },
             { username: 'levanc', email: 'levanc@email.com', joinDate: '2024-03-10', phone: '0903456789', address: 'Đà Nẵng' },
             { username: 'phamthid', email: 'phamthid@email.com', joinDate: '2024-04-05', phone: '0904567890', address: 'TPHCM' },
             { username: 'hoangvane', email: 'hoangvane@email.com', joinDate: '2024-05-12', phone: '0905678901', address: 'Hà Nội' }
         ];
-        return customers;
     }
 
     generateSampleOrders() {
@@ -492,12 +745,50 @@ class DataManager {
         
         return products;
     }
+
+    generateSampleImportOrders() {
+        const today = new Date();
+        const orders = [];
+        
+        // 3 pending orders
+        for (let i = 0; i < 3; i++) {
+            const date = new Date(today);
+            date.setDate(date.getDate() - i);
+            
+            const randomProducts = [];
+            const productCount = Math.floor(Math.random() * 3) + 1;
+            
+            for (let j = 0; j < productCount; j++) {
+                const product = this.data.products[Math.floor(Math.random() * this.data.products.length)];
+                randomProducts.push({
+                    productId: product.id,
+                    productName: product.name,
+                    quantity: Math.floor(Math.random() * 50) + 10,
+                    cost: product.cost
+                });
+            }
+            
+            const total = randomProducts.reduce((sum, item) => sum + (item.quantity * item.cost), 0);
+            
+            orders.push({
+                id: Date.now() + i,
+                date: date.toISOString().split('T')[0],
+                status: 'pending',
+                items: randomProducts,
+                total: total,
+                createdAt: date.toISOString()
+            });
+        }
+        
+        return orders;
+    }
 }
 
-// Tạo instance global
+// ==================== GLOBAL INSTANCE ====================
+
 window.dataManager = new DataManager();
 
-// Auto-initialize khi DOM ready
+// Auto-initialize
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
         window.dataManager.initialize();
@@ -505,3 +796,5 @@ if (document.readyState === 'loading') {
 } else {
     window.dataManager.initialize();
 }
+
+console.log('🚀 Synchronized DataManager v2.0 loaded!');

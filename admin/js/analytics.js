@@ -1,4 +1,7 @@
-// ==================== ANALYTICS WITH REAL DATA ==================== 
+// ==================== SYNCHRONIZED ANALYTICS MODULE ====================
+// Sử dụng cached data từ DataManager
+
+// ==================== INITIALIZATION ====================
 
 function initializeAnalyticsTabs() {
     const btns = document.querySelectorAll('.analytics-tab-btn');
@@ -18,7 +21,6 @@ function initializeAnalyticsTabs() {
             if (targetContent) {
                 targetContent.classList.add('active');
                 
-                // Load data when tab is opened
                 if (targetTab === 'sales-report') {
                     loadSalesReport();
                 } else if (targetTab === 'customer-stats') {
@@ -27,32 +29,34 @@ function initializeAnalyticsTabs() {
             }
         });
     });
+
+    console.log('✅ Analytics module initialized');
 }
 
 // ==================== SALES REPORT ====================
 
-function loadSalesReport() {
+function loadSalesReport(forceRefresh = false) {
     if (!window.dataManager || !window.dataManager.initialized) {
-        console.log('Waiting for DataManager...');
-        setTimeout(loadSalesReport, 100);
+        setTimeout(() => loadSalesReport(forceRefresh), 100);
         return;
     }
 
-    // Get date filters
     const dateFrom = document.getElementById('salesDateFrom')?.value;
     const dateTo = document.getElementById('salesDateTo')?.value;
 
-    // Get analytics data
-    const analytics = window.dataManager.getSalesAnalytics(dateFrom, dateTo);
+    // Get analytics (sử dụng cache nếu không có filter)
+    const analytics = window.dataManager.getSalesAnalytics(dateFrom, dateTo, forceRefresh);
 
-    // Update stats cards
     updateStatsCards(analytics);
-    
-    // Update top products
     updateTopProducts(analytics.topProducts);
-    
-    // Update order status
     updateOrderStatus(analytics.statusBreakdown);
+    
+    console.log('📊 Sales report loaded', {
+        revenue: analytics.totalRevenue,
+        orders: analytics.totalOrders,
+        profit: analytics.profit,
+        margin: analytics.profitMargin + '%'
+    });
 }
 
 function updateStatsCards(analytics) {
@@ -81,10 +85,16 @@ function updateStatsCards(analytics) {
         avgCard.textContent = formatCurrency(analytics.avgOrderValue);
     }
 
-    // Profit
+    // Profit (Real profit từ cost)
     const profitCard = document.querySelector('.stat-card:nth-child(4) .stat-value');
     if (profitCard) {
         profitCard.textContent = formatCurrency(analytics.profit);
+    }
+
+    // Update profit margin display nếu có
+    const profitMarginEl = document.querySelector('.profit-margin-display');
+    if (profitMarginEl && analytics.profitMargin) {
+        profitMarginEl.textContent = `Margin: ${analytics.profitMargin}%`;
     }
 }
 
@@ -102,7 +112,7 @@ function updateTopProducts(topProducts) {
     productList.innerHTML = topProducts.map((product, index) => `
         <div class="product-item">
             <div class="product-rank">${index + 1}</div>
-            <img src="${product.image}" alt="${product.name}">
+            <img src="${product.image}" alt="${product.name}" onerror="this.src='../../img/placeholder.jpg'">
             <div class="product-details">
                 <h4>${product.name}</h4>
                 <p>Đã bán: <strong>${product.soldQuantity} sản phẩm</strong></p>
@@ -128,23 +138,24 @@ function updateOrderStatus(statusBreakdown) {
 
 // ==================== CUSTOMER STATS ====================
 
-function loadCustomerStats() {
+function loadCustomerStats(forceRefresh = false) {
     if (!window.dataManager || !window.dataManager.initialized) {
-        console.log('Waiting for DataManager...');
-        setTimeout(loadCustomerStats, 100);
+        setTimeout(() => loadCustomerStats(forceRefresh), 100);
         return;
     }
 
-    const analytics = window.dataManager.getCustomerAnalytics();
+    // Get analytics (sử dụng cache)
+    const analytics = window.dataManager.getCustomerAnalytics(forceRefresh);
 
-    // Update top customers
     updateTopCustomers(analytics.topCustomers);
-    
-    // Update customer growth
     updateCustomerGrowth(analytics.growth);
-    
-    // Update retention
     updateCustomerRetention(analytics.retention);
+    
+    console.log('👥 Customer stats loaded', {
+        topCustomers: analytics.topCustomers.length,
+        newThisMonth: analytics.growth.thisMonth,
+        loyalCustomers: analytics.retention.loyal.count
+    });
 }
 
 function updateTopCustomers(topCustomers) {
@@ -214,7 +225,6 @@ function updateCustomerRetention(retention) {
 
 // ==================== EVENT LISTENERS ====================
 
-// Listen for date filter changes
 function setupFilters() {
     const searchBtn = document.querySelector('.analytics-filters .btn-primary');
     const dateFrom = document.getElementById('salesDateFrom');
@@ -222,7 +232,7 @@ function setupFilters() {
 
     if (searchBtn) {
         searchBtn.addEventListener('click', () => {
-            loadSalesReport();
+            loadSalesReport(true); // Force refresh when filtering
         });
     }
 
@@ -245,37 +255,116 @@ function setupFilters() {
     }
 }
 
-// Listen for DataManager updates
 function setupDataListeners() {
     if (window.dataManager) {
+        // Listen for order changes
         window.dataManager.on('orders', () => {
-            // Reload sales report if currently viewing
+            window.dataManager.updateAnalyticsCache();
             if (document.getElementById('sales-report')?.classList.contains('active')) {
-                loadSalesReport();
+                loadSalesReport(true);
             }
         });
 
+        // Listen for customer changes
         window.dataManager.on('customers', () => {
-            // Reload customer stats if currently viewing
+            window.dataManager.updateAnalyticsCache();
             if (document.getElementById('customer-stats')?.classList.contains('active')) {
-                loadCustomerStats();
+                loadCustomerStats(true);
             }
         });
+
+        // Listen for product/warehouse changes (affects profit calculation)
+        window.dataManager.on('products', () => {
+            window.dataManager.updateAnalyticsCache();
+            if (document.getElementById('sales-report')?.classList.contains('active')) {
+                loadSalesReport(true);
+            }
+        });
+
+        window.dataManager.on('warehouse', () => {
+            window.dataManager.updateAnalyticsCache();
+            if (document.getElementById('sales-report')?.classList.contains('active')) {
+                loadSalesReport(true);
+            }
+        });
+
+        console.log('✅ Analytics listeners registered');
     }
+}
+
+// ==================== REFRESH BUTTON ====================
+
+function addRefreshButton() {
+    const filterGroup = document.querySelector('.analytics-filters');
+    if (!filterGroup || document.getElementById('analytics-refresh-btn')) return;
+
+    const refreshBtn = document.createElement('button');
+    refreshBtn.id = 'analytics-refresh-btn';
+    refreshBtn.className = 'btn-secondary';
+    refreshBtn.innerHTML = '<i class="fa-solid fa-arrows-rotate"></i> Làm mới dữ liệu';
+    refreshBtn.onclick = () => {
+        const activeTab = document.querySelector('.analytics-tab-content.active');
+        if (activeTab?.id === 'sales-report') {
+            loadSalesReport(true);
+        } else if (activeTab?.id === 'customer-stats') {
+            loadCustomerStats(true);
+        }
+        alert('✅ Dữ liệu đã được làm mới!');
+    };
+
+    filterGroup.appendChild(refreshBtn);
+}
+
+// ==================== EXPORT FUNCTIONS ====================
+
+function exportSalesReport() {
+    const analytics = window.dataManager.getSalesAnalytics();
+    const csvContent = generateSalesCSV(analytics);
+    downloadCSV(csvContent, 'sales-report.csv');
+}
+
+function generateSalesCSV(analytics) {
+    let csv = 'Sales Report\n\n';
+    csv += 'Metric,Value\n';
+    csv += `Total Revenue,${analytics.totalRevenue}\n`;
+    csv += `Total Orders,${analytics.totalOrders}\n`;
+    csv += `Average Order Value,${analytics.avgOrderValue}\n`;
+    csv += `Total Profit,${analytics.profit}\n`;
+    csv += `Profit Margin,${analytics.profitMargin}%\n\n`;
+    
+    csv += 'Top Products\n';
+    csv += 'Rank,Product Name,Quantity Sold,Revenue\n';
+    analytics.topProducts.forEach((product, index) => {
+        csv += `${index + 1},${product.name},${product.soldQuantity},${product.revenue}\n`;
+    });
+    
+    return csv;
+}
+
+function downloadCSV(content, filename) {
+    const blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', filename);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
 }
 
 // ==================== INITIALIZATION ====================
 
-// Quan sát và tự động khởi tạo
-const obs = new MutationObserver(() => {
+const analyticsObserver = new MutationObserver(() => {
     const analyticsSection = document.querySelector('.analytics-tab-btn');
     
     if (analyticsSection) {
         initializeAnalyticsTabs();
         setupFilters();
         setupDataListeners();
+        addRefreshButton();
         
-        // Load initial data
+        // Load initial data when DataManager is ready
         if (window.dataManager?.initialized) {
             loadSalesReport();
         } else {
@@ -284,13 +373,15 @@ const obs = new MutationObserver(() => {
             });
         }
         
-        obs.disconnect();
+        analyticsObserver.disconnect();
     }
 });
 
 if (document.body) {
-    obs.observe(document.body, { childList: true, subtree: true });
+    analyticsObserver.observe(document.body, { childList: true, subtree: true });
 } else {
     document.addEventListener('DOMContentLoaded', () => 
-        obs.observe(document.body, { childList: true, subtree: true }));
+        analyticsObserver.observe(document.body, { childList: true, subtree: true }));
 }
+
+console.log('✅ Synchronized Analytics module loaded!');
