@@ -278,7 +278,7 @@ footer .form .input-group button:hover {
   align-items: flex-start;
   padding: 160px 80px 60px;
   min-height: 100vh;
-  background-image: url("/img/keycap/AttackOnTitan/Eren.jpg");
+  background-image: url("/img/bg/about/the-making-of-slide-6.jpeg");
   background-size: cover;
   background-position: center;
   position: relative;
@@ -566,4 +566,30 @@ footer .form .input-group button:hover {
   #product-extra h3 {
     font-size: 22px;
   }
+}
+#back-btn {
+  position: fixed;
+  top: 90px;
+  left: 25px;
+  background: linear-gradient(135deg, #ff9f4a, #ff6a00);
+  color: #fff;
+  font-family: "Bebas Neue", sans-serif;
+  font-size: 17px;
+  padding: 10px 26px;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(255, 159, 74, 0.4);
+  transition: all 0.3s ease;
+  z-index: 9999;
+}
+
+#back-btn:hover {
+  background: linear-gradient(135deg, #ffb864, #ff852e);
+  transform: translateY(-2px);
+}
+
+#back-btn:active {
+  transform: scale(0.96);
+  background: linear-gradient(135deg, #ff8c1a, #cc5500);
 }
