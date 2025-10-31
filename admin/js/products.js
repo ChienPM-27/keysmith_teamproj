@@ -4,7 +4,7 @@ let currentPage = 1;
 const itemsPerPage = 10;
 
 function formatCurrency(amount) {
-    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
+    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount);
 }
 
 async function initializeProducts() {
