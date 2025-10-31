@@ -85,6 +85,7 @@ transform: scale(1.05) translateY(-5px);
 .amount-user {
 
 }
+
 .alerts {
     box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
     height: 100px;
@@ -107,7 +108,7 @@ transform: scale(1.05) translateY(-5px);
     color: red;
 }
 
-.alerts .alert-content span {
+.alerts span {
     font-weight: 500;
     font-size: 16px;
 }

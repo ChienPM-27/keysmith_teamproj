@@ -8,9 +8,10 @@
         <div class="product-control-left">
             <select name="the-loai" id="the-loai" onchange="showProduct()">
                 <option value="">Tất cả</option>
-                <option value="">Attack On Titan</option>
-                <option value="">One Piece</option>
-                <option value="">Yugioh</option>
+                <option value="Attack on Titan">Attack On Titan</option>
+                <option value="The Lord of the Rings">The Lord of the Rings</option>
+                <option value="One Piece">One Piece</option>
+                <option value="Yugioh">Yugioh</option>
             </select>
         </div>
         <div class="product-control-center">
@@ -24,90 +25,69 @@
             <button class="btn-control" id="btn-refresh-product"><i class="fa-solid fa-arrows-rotate"></i> Làm mới</button>
         </div>
     </div>
-    <div class="show-product">
-        <div class="list">
-            <div class="list-left">
-                <img src="../../img/keycap/AttackOnTitan/Eren.jpg" alt="">
-                <div class="list-info">
-                    <h4>Name-product</h4>
-                    <p class="list-note"></p>
-                    <span class="list-category">AttackOnTitan</span>
-                </div>
-            </div>
-            <div class="list-right">
-                <div class="list-price">
-                    <span class="list-current-price">180.000&nbsp;₫</span>
-                </div>
-                <div class="list-control">
-                    <div class="list-tool">
-                        <button class="btn-edit"><i class="fa-solid fa-pen-to-square"></i></button>
-                        <button class="btn-view"><i class="fa-solid fa-eye"></i></button>
-                        <button class="btn-delete"><i class="fa-solid fa-trash"></i></button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    
+    <!-- Container sẽ được JavaScript tự động fill vào -->
+    <div class="show-product"></div>
+    
+    <!-- Phân trang -->
     <div class="page-nav">
         <ul class="page-nav-list">
-            <li class="page-nav-item active"><a href="#">1</a></li>
-            <li class="page-nav-item"><a href="#">2</a></li>
-            <li class="page-nav-item"><a href="#">3</a></li>
+            <!-- JavaScript sẽ tự động tạo các nút ở đây -->
         </ul>
     </div>
 </div>
-    <div class="modal add-product">
-        <div class="modal-container">
-            <h3 class="modal-container-title add-product-e">THÊM MỚI SẢN PHẨM</h3>
-            <h3 class="modal-container-title edit-product-e">CHỈNH SỬA SẢN PHẨM</h3>
-            <button class="modal-close product-form"><i class="fa-regular fa-xmark"></i></button>
-            <div class="modal-content">
-                <form action="" class="add-product-form">
-                    <div class="modal-content-left">
-                        <img src="./assets/img/blank-image.png" alt="" class="upload-image-preview">
-                        <div class="form-group file">
-                            <label for="up-hinh-anh" class="form-label-file"><i class="fa-regular fa-cloud-arrow-up"></i>Chọn hình ảnh</label>
-                            <input accept="image/jpeg, image/png, image/jpg" id="up-hinh-anh" name="up-hinh-anh" type="file" class="form-control" onchange="uploadImage(this)">
-                        </div>
+
+<!-- Modal thêm/sửa sản phẩm (giữ nguyên) -->
+<div class="modal add-product">
+    <div class="modal-container">
+        <h3 class="modal-container-title add-product-e">THÊM MỚI SẢN PHẨM</h3>
+        <h3 class="modal-container-title edit-product-e">CHỈNH SỬA SẢN PHẨM</h3>
+        <button class="modal-close product-form"><i class="fa-solid fa-xmark"></i></button>
+        <div class="modal-content">
+            <form action="" class="add-product-form">
+                <div class="modal-content-left">
+                    <img src="./assets/img/blank-image.png" alt="" class="upload-image-preview">
+                    <div class="form-group file">
+                        <label for="up-hinh-anh" class="form-label-file"><i class="fa-solid fa-image"></i>Chọn hình ảnh</label>
+                        <input accept="image/jpeg, image/png, image/jpg" id="up-hinh-anh" name="up-hinh-anh" type="file" class="form-control" onchange="uploadImage(this)">
                     </div>
-                    <div class="modal-content-right">
-                        <div class="form-group">
-                            <label for="ten-mon" class="form-label">Tên món</label>
-                            <input id="ten-mon" name="ten-mon" type="text" placeholder="Nhập tên món"
-                                class="form-control">
-                            <span class="form-message"></span>
-                        </div>
-                        <div class="form-group">
-                            <label for="category" class="form-label">Chọn thể loại</label>
-                            <select name="category" id="chon-the-loai" >
-                                <option value="">Attack On Titan</option>
-                                <option value="">One Piece</option>
-                                <option value="">Yugioh</option>
-                            </select>
-                            <span class="form-message"></span>
-                        </div>
-                        <div class="form-group">
-                            <label for="gia-moi" class="form-label">Giá bán</label>
-                            <input id="gia-moi" name="gia-moi" type="text" placeholder="Nhập giá bán"
-                                class="form-control">
-                            <span class="form-message"></span>
-                        </div>
-                        <div class="form-group">
-                            <label for="mo-ta" class="form-label">Mô tả</label>
-                            <textarea class="product-desc" id="mo-ta" placeholder="Nhập mô tả món ăn..."></textarea>
-                            <span class="form-message"></span>
-                        </div>
-                        <button class="form-submit btn-add-product-form add-product-e" id="add-product-button">
-                            <i class="fa-regular fa-plus"></i>
-                            <span>THÊM MÓN</span>
-                        </button>
-                        <button class="form-submit btn-update-product-form edit-product-e" id="update-product-button">
-                            <i class="fa-light fa-pencil"></i>
-                            <span>LƯU THAY ĐỔI</span>
-                        </button>
+                </div>
+                <div class="modal-content-right">
+                    <div class="form-group">
+                        <label for="ten-mon" class="form-label">Tên món</label>
+                        <input id="ten-mon" name="ten-mon" type="text" placeholder="Nhập tên món" class="form-control">
+                        <span class="form-message"></span>
                     </div>
-                </form>
-            </div>
+                    <div class="form-group">
+                        <label for="category" class="form-label">Chọn thể loại</label>
+                        <select name="category" id="chon-the-loai">
+                            <option value="Attack on Titan">Attack On Titan</option>
+                            <option value="The Lord of the Rings">The Lord of the Rings</option>
+                            <option value="One Piece">One Piece</option>
+                            <option value="Yugioh">Yugioh</option>
+                        </select>
+                        <span class="form-message"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="gia-moi" class="form-label">Giá bán</label>
+                        <input id="gia-moi" name="gia-moi" type="text" placeholder="Nhập giá bán" class="form-control">
+                        <span class="form-message"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="mo-ta" class="form-label">Mô tả</label>
+                        <textarea class="product-desc" id="mo-ta" placeholder="Nhập mô tả món ăn..."></textarea>
+                        <span class="form-message"></span>
+                    </div>
+                    <button class="form-submit btn-add-product-form add-product-e" id="add-product-button">
+                        <i class="fa-regular fa-plus"></i>
+                        <span>THÊM MÓN</span>
+                    </button>
+                    <button class="form-submit btn-update-product-form edit-product-e" id="update-product-button">
+                        <i class="fa-light fa-pencil"></i>
+                        <span>LƯU THAY ĐỔI</span>
+                    </button>
+                </div>
             </form>
         </div>
     </div>
+</div>

@@ -1,12 +1,8 @@
-
 <div class="container">
     <!-- Header -->
     <div class="header">
         <h1><i class="fas fa-warehouse"></i> Warehouse Management</h1>
         <div class="header-actions">
-            <button class="btn btn-secondary" onclick="window.location.href='../admin/admin.html'">
-                <i class="fas fa-arrow-left"></i> Back to Admin
-            </button>
             <button class="btn btn-primary" onclick="openImportModal()">
                 <i class="fas fa-plus"></i> New Import Order
             </button>
@@ -43,9 +39,10 @@
             </div>
             <select class="filter-select" id="categoryFilter" onchange="filterInventory()">
                 <option value="all">All Categories</option>
-                <option value="Attack On Titan">Attack On Titan</option>
-                <option value="Yugioh">Yugioh</option>
-                <option value="LOTR">Lord Of The Ring</option>
+                <option value="Attack on Titan">Attack on Titan</option>
+                <option value="The Lord of the Rings">The Lord of the Rings</option>
+                <option value="One Piece">One Piece</option>
+                <option value="Yu-Gi-Oh!">Yu-Gi-Oh!</option>
             </select>
         </div>
 
@@ -64,7 +61,7 @@
                     </tr>
                 </thead>
                 <tbody id="inventoryTableBody">
-                    <!-- Sẽ được populate bởi JavaScript -->
+                    <tr><td colspan="8" style="text-align: center; padding: 40px;">Loading...</td></tr>
                 </tbody>
             </table>
         </div>
@@ -115,7 +112,7 @@
                     </tr>
                 </thead>
                 <tbody id="importTableBody">
-                    <!-- Sẽ được populate bởi JavaScript -->
+                    <tr><td colspan="6" style="text-align: center; padding: 40px;">Loading...</td></tr>
                 </tbody>
             </table>
         </div>
@@ -147,7 +144,7 @@
                     </tr>
                 </thead>
                 <tbody id="transactionsTableBody">
-                    <!-- Sẽ được populate bởi JavaScript -->
+                    <tr><td colspan="5" style="text-align: center; padding: 40px;">Loading...</td></tr>
                 </tbody>
             </table>
         </div>
@@ -174,7 +171,7 @@
                     </tr>
                 </thead>
                 <tbody id="productMarginsTableBody">
-                    <!-- Sẽ được populate bởi JavaScript -->
+                    <tr><td colspan="6" style="text-align: center; padding: 40px;">Loading...</td></tr>
                 </tbody>
             </table>
         </div>
@@ -203,10 +200,9 @@
                         <div class="import-product-item">
                             <select class="product-select" required>
                                 <option value="">Select Product</option>
-                                <!-- Sẽ được populate bởi JavaScript -->
                             </select>
                             <input type="number" placeholder="Quantity" min="1" required>
-                            <input type="number" placeholder="Cost Price" step="0.01" min="0" required>
+                            <input type="number" placeholder="Cost Price ($)" step="0.01" min="0" required>
                             <button type="button" class="btn-icon btn-remove" onclick="removeProductLine(this)">
                                 <i class="fas fa-trash"></i>
                             </button>
@@ -248,7 +244,7 @@
 
                 <div class="form-group">
                     <label>Cost Price ($)</label>
-                    <input type="number" id="marginCost" step="0.01" min="0" required>
+                    <input type="number" id="marginCost" step="0.01" min="0" required onkeyup="calculateMargin()">
                 </div>
 
                 <div class="form-group">
@@ -257,7 +253,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Profit Margin: <span id="calculatedMargin">0%</span></label>
+                    <label>Profit Margin: <span id="calculatedMargin" style="color: #ff8519; font-weight: 700;">0%</span></label>
                 </div>
 
                 <div class="modal-actions">
