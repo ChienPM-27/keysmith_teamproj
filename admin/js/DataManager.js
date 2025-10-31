@@ -15,7 +15,7 @@ class DataManager {
             return this.getProducts();
         }
     }
-
+    
     static getProducts() {
         try {
             return JSON.parse(localStorage.getItem('products')) || [];
@@ -23,11 +23,11 @@ class DataManager {
             return [];
         }
     }
-
+    
     static saveProducts(products) {
         localStorage.setItem('products', JSON.stringify(products));
     }
-
+    
     static addProduct(product) {
         const products = this.getProducts();
         const newId = products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
@@ -38,7 +38,7 @@ class DataManager {
         this.saveProducts(products);
         return product;
     }
-
+    
     static updateProduct(id, updatedProduct) {
         const products = this.getProducts();
         const index = products.findIndex(p => p.id === id);
@@ -49,19 +49,19 @@ class DataManager {
         }
         return false;
     }
-
+    
     static deleteProduct(id) {
         const products = this.getProducts();
         const filtered = products.filter(p => p.id !== id);
         this.saveProducts(filtered);
         return filtered.length < products.length;
     }
-
+    
     static getProductById(id) {
         const products = this.getProducts();
         return products.find(p => p.id === id);
     }
-
+    
     static getUsers() {
         try {
             return JSON.parse(localStorage.getItem('users')) || [];
@@ -69,7 +69,7 @@ class DataManager {
             return [];
         }
     }
-
+    
     static getOrders() {
         try {
             return JSON.parse(localStorage.getItem('orders')) || [];
@@ -77,11 +77,6 @@ class DataManager {
             return [];
         }
     }
-}
-
-window.DataManager = DataManager;
-
-class DataManager {
     constructor() {
         this.data = {
             products: [],
