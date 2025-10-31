@@ -5,7 +5,7 @@
     "price": 75,
     "image": "../../img/keycap/AttackOnTitan/Eren.jpg",
     "category": "Attack on Titan",
-    "stock": 0,
+    "stock": 4,
     "sold": 0,
     "description": "Keycap hình Eren Titan"
   },
@@ -15,7 +15,7 @@
     "price": 68,
     "image": "../../img/keycap/AttackOnTitan/Fight_for_Paradis.webp",
     "category": "Attack on Titan",
-    "stock": 0,
+    "stock": 2,
     "sold": 0,
     "description": "Keycap hình Fight for Paradis"
   },
@@ -25,7 +25,7 @@
     "price": 72,
     "image": "../../img/keycap/AttackOnTitan/Reiner.jpg",
     "category": "Attack on Titan",
-    "stock": 0,
+    "stock": 5,
     "sold": 0,
     "description": "Keycap hình Reiner"
   },
@@ -35,7 +35,7 @@
     "price": 65,
     "image": "../../img/keycap/AttackOnTitan/Scout.jpg",
     "category": "Attack on Titan",
-    "stock": 0,
+    "stock": 1,
     "sold": 0,
     "description": "Keycap hình Scout"
   },
@@ -45,7 +45,7 @@
     "price": 85,
     "image": "../../img/keycap/AttackOnTitan/spacebar.jpg",
     "category": "Attack on Titan",
-    "stock": 0,
+    "stock": 3,
     "sold": 0,
     "description": "Keycap hình Spacebar"
   },
@@ -55,7 +55,7 @@
     "price": 78,
     "image": "../../img/keycap/LOTR/durin/durin's_axe.jpg",
     "category": "The Lord of the Rings",
-    "stock": 0,
+    "stock": 2,
     "sold": 0,
     "description": "Keycap hình Durin's Axe"
   },
@@ -65,7 +65,7 @@
     "price": 82,
     "image": "../../img/keycap/LOTR/durin/durin's_folk.jpg",
     "category": "The Lord of the Rings",
-    "stock": 0,
+    "stock": 4,
     "sold": 0,
     "description": "Keycap hình Durin's Folk"
   },
@@ -75,7 +75,7 @@
     "price": 76,
     "image": "../../img/keycap/LOTR/durin/durin's_helm.jpg",
     "category": "The Lord of the Rings",
-    "stock": 0,
+    "stock": 5,
     "sold": 0,
     "description": "Keycap hình Durin's Helm"
   },
@@ -85,7 +85,7 @@
     "price": 88,
     "image": "../../img/keycap/LOTR/gondor/horn_of_gordor.jpg",
     "category": "The Lord of the Rings",
-    "stock": 0,
+    "stock": 1,
     "sold": 0,
     "description": "Keycap hình Horn of Gondor"
   },
@@ -95,7 +95,7 @@
     "price": 90,
     "image": "../../img/keycap/LOTR/gondor/horn_of_gordor_1.jpg",
     "category": "The Lord of the Rings",
-    "stock": 0,
+    "stock": 3,
     "sold": 0,
     "description": "Keycap hình Horn of Gondor #2"
   },
@@ -105,7 +105,7 @@
     "price": 92,
     "image": "../../img/keycap/LOTR/gondor/horn_of_gordor_white.jpg",
     "category": "The Lord of the Rings",
-    "stock": 0,
+    "stock": 2,
     "sold": 0,
     "description": "Keycap hình Horn of Gondor (White)"
   },
@@ -115,7 +115,7 @@
     "price": 95,
     "image": "../../img/keycap/LOTR/gondor/palantir.jpg",
     "category": "The Lord of the Rings",
-    "stock": 0,
+    "stock": 4,
     "sold": 0,
     "description": "Keycap hình Palantir"
   },
@@ -125,7 +125,7 @@
     "price": 98,
     "image": "../../img/keycap/LOTR/gondor/palantir_1.jpg",
     "category": "The Lord of the Rings",
-    "stock": 0,
+    "stock": 5,
     "sold": 0,
     "description": "Keycap hình Palantir #2"
   },
@@ -135,7 +135,7 @@
     "price": 100,
     "image": "../../img/keycap/LOTR/gondor/palantir_white.jpg",
     "category": "The Lord of the Rings",
-    "stock": 0,
+    "stock": 1,
     "sold": 0,
     "description": "Keycap hình Palantir (White)"
   },
@@ -145,7 +145,7 @@
     "price": 85,
     "image": "../../img/keycap/LOTR/gondor/white_tree.jpg",
     "category": "The Lord of the Rings",
-    "stock": 0,
+    "stock": 3,
     "sold": 0,
     "description": "Keycap hình White Tree"
   },
@@ -155,7 +155,7 @@
     "price": 87,
     "image": "../../img/keycap/LOTR/gondor/white_tree_1.jpg",
     "category": "The Lord of the Rings",
-    "stock": 0,
+    "stock": 2,
     "sold": 0,
     "description": "Keycap hình White Tree #2"
   },
@@ -165,7 +165,7 @@
     "price": 89,
     "image": "../../img/keycap/LOTR/gondor/white_tree_white.jpg",
     "category": "The Lord of the Rings",
-    "stock": 0,
+    "stock": 4,
     "sold": 0,
     "description": "Keycap hình White Tree (White)"
   },
@@ -175,7 +175,7 @@
     "price": 62,
     "image": "../../img/keycap/OnePiece/1.png",
     "category": "One Piece",
-    "stock": 0,
+    "stock": 5,
     "sold": 0,
     "description": "Keycap hình One Piece 1"
   },
@@ -185,7 +185,7 @@
     "price": 64,
     "image": "../../img/keycap/OnePiece/2.png",
     "category": "One Piece",
-    "stock": 0,
+    "stock": 1,
     "sold": 0,
     "description": "Keycap hình One Piece 2"
   },
@@ -195,7 +195,7 @@
     "price": 70,
     "image": "../../img/keycap/Yugioh/1.jpg",
     "category": "Yu-Gi-Oh!",
-    "stock": 0,
+    "stock": 3,
     "sold": 0,
     "description": "Keycap hình Yu-Gi-Oh! 1"
   },
@@ -205,7 +205,7 @@
     "price": 73,
     "image": "../../img/keycap/Yugioh/2.jpg",
     "category": "Yu-Gi-Oh!",
-    "stock": 0,
+    "stock": 2,
     "sold": 0,
     "description": "Keycap hình Yu-Gi-Oh! 2"
   },
@@ -215,7 +215,7 @@
     "price": 80,
     "image": "../../img/keycap/Yugioh/YGOv3-Ra-11.webp",
     "category": "Yu-Gi-Oh!",
-    "stock": 0,
+    "stock": 4,
     "sold": 0,
     "description": "Keycap hình YGOv3 Ra 11"
   },
@@ -225,7 +225,7 @@
     "price": 83,
     "image": "../../img/keycap/Yugioh/YuGiOh-BEWDragon-5.webp",
     "category": "Yu-Gi-Oh!",
-    "stock": 0,
+    "stock": 5,
     "sold": 0,
     "description": "Keycap hình YuGiOh BEWDragon 5"
   },
@@ -235,7 +235,7 @@
     "price": 86,
     "image": "../../img/keycap/Yugioh/YuGiOh-DarkMagicianGirl-5.webp",
     "category": "Yu-Gi-Oh!",
-    "stock": 0,
+    "stock": 1,
     "sold": 0,
     "description": "Keycap hình YuGiOh DarkMagicianGirl 5"
   },
@@ -245,7 +245,7 @@
     "price": 55,
     "image": "../../img/keycap/Yugioh/YuGiOh-V2-Concept-11-4.webp",
     "category": "Yu-Gi-Oh!",
-    "stock": 0,
+    "stock": 3,
     "sold": 0,
     "description": "Keycap hình YuGiOh V2 Concept 11-4"
   },
@@ -255,7 +255,7 @@
     "price": 58,
     "image": "../../img/keycap/Yugioh/YuGiOh-V2-Concept-11-6.webp",
     "category": "Yu-Gi-Oh!",
-    "stock": 0,
+    "stock": 2,
     "sold": 0,
     "description": "Keycap hình YuGiOh V2 Concept 11-6"
   }
