@@ -94,8 +94,6 @@ body{
     z-index: -1;
 }
 
-
-
 #header .logo {
     margin-right: auto; /* auto đẩy logo sang trái */
     margin-bottom: -5px;
@@ -368,15 +366,18 @@ footer .form .input-group button:hover {
 }
 .account-page{
     background-image: url(/img/bg/blueprint_rotate.png);
-    /* background: rgba(255, 255, 255, 0.1); */
     backdrop-filter: blur(15px);
     -webkit-backdrop-filter: blur(15px);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
     border-radius: 15px;
     border: 1px solid rgba(255, 255, 255, 0.2);
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     text-align: center;
-    /* background-size: cover;
-    background-position: center; */
+    margin-top: 60px;
+    padding-top: 0;
 }
 
 .account-container {
@@ -387,7 +388,9 @@ footer .form .input-group button:hover {
     padding: 20px;
     gap: 30px;
     box-shadow: rgba(0, 0, 0, 0.3);
-    background-color: rgba(255, 255, 255, 0.8);
+    /* background-color: rgba(255, 255, 255, 0.95); */
+    margin-top: 0;
+    padding-top: 0;
     border-radius: 10px;
     backdrop-filter: blur(15px);
     -webkit-backdrop-filter: blur(15px);
@@ -422,8 +425,12 @@ footer .form .input-group button:hover {
     /* font-family: 'Bebas Neue', sans-serif; */
     font-size: 23px;
     color: var(--color-primary);
-    margin-top: 0;
+    margin-top: 90px;
     padding-top: 0;
+
+    border: none;
+    box-shadow: none;
+    border-radius: 0;
 }
         
 .account-sidebar ul {
@@ -621,7 +628,7 @@ footer .form .input-group button:hover {
     cursor: pointer;
     font-size: 16px;
     transition: all 0.3s ease;
-    width: 100%;
+    /* width: 100%; */
     max-width: 200px;
     font-weight: 600;
 }
@@ -630,8 +637,6 @@ footer .form .input-group button:hover {
     background-color: var(--color-primary-hover);
     box-shadow: 0 4px 15px rgba(0,0,0,0.2);
 }
-
-/* sesponsive style */
 
 /*moblile button */
 .mobile-menu-btn{
@@ -645,232 +650,30 @@ footer .form .input-group button:hover {
     margin-left: 15px;
 }
 
-/* mobile */
-@media (max-width: 767px){
-    #header{
-        padding: 5px 20px;
-    }
-
-    #header .logo {
-        width: 120px;
-        height: auto;
-    }
-    
-    .mobile-menu-btn {
-        display: block;
-    }
-    
-    /* Navigation mobile */
-    #navbar {
-        display: none;
-        position: absolute;
-        top: 100%;
-        left: 0;
-        width: 100%;
-        background: rgba(0, 0, 0, 0.95);
-        backdrop-filter: blur(10px);
-        flex-direction: column;
-        padding: 20px 0;
-        z-index: 100;
-        transition: all 0.3 ease-in-out;
-    }
-
-    #navbar.active {
-        display: flex;
-    }
-    
-    #navbar li {
-        padding: 12px 20px;
-        width: 100%;
-        text-align: center;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    }
-    
-    .header-icons {
-        gap: 10px;
-    }
-    
-    .header-icons a {
-        font-size: 18px;
-    }
-
-    .account-page {
-        margin-top: 100px;
-        padding: 0 10px;
-    }
-    
-    .account-sidebar a{
-        min-height: 44px;
-        padding: 15px 12px;
-    }
-
-    .account-container {
-        padding: 15px;
-        flex-direction: column;
-        transition: all 0.3s ease;
-    }
-    
-    .profile-header {
-        flex-direction: column;
-        text-align: center;
-        padding: 15px;
-    }
-    
-    .avatar {
-        width: 80px;
-        height: 80px;
-        font-size: 30px;
-    }
-
-    .info h3 {
-        font-size: 20px;
-    }
-    
-    .info p {
-        font-size: 14px;
-    }
-    
-    .profile-form h2 {
-        font-size: 22px;
-    }
-    
-    .account-content {
-        padding: 20px;
-    }
-    
-    .form-row {
-        flex-direction: column;
-        gap: 0;
-    }
-
-    .birthday-selectors {
-        flex-direction: column;
-        gap: 10px;
-    }
-    
-    .birthday-selectors select {
-        width: 100%;
-    }
-    
-    /* Footer mobile */
-    footer {
-        flex-direction: column;
-        padding: 20px;
-    }
-    
-    footer .About table {
-        font-size: 14px;
-    }
-
-    footer .About table td {
-        padding: 5px 10px;
-        display: block;
-        width: 100% !important;
-        text-align: left;
-        border: none;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-    }
-    
-    footer .About table tr {
-        display: block;
-        margin-bottom: 10px;
-    }
-    
-    footer .About table td[rowspan] {
-        display: none;
-    }
-    
-    footer .form h3 {
-        font-size: 24px;
-    }
-
-    footer .form p {
-        font-size: 14px;
-    }
-    
-    .input-group {
-        flex-direction: column;
-    }
-    
-    .input-group input[type="email"] {
-        width: 100%;
-        margin-bottom: 10px;
-    }
-    
-    /* Single product page mobile */
-    #prodetails {
-        flex-direction: column;
-        margin-top: 100px;
-    }
-
-    #prodetails .single-pro-image {
-        width: 100%;
-        margin-right: 0;
-        margin-bottom: 20px;
-    }
-    
-    #prodetails .single-pro-details {
-        width: 100%;
-    }
-    
-    /* Global mobile adjustments */
-    .section-p1 {
-        padding: 20px;
-    }
-    
-    h1 {
-        font-size: 36px;
-        line-height: 1.2;
-    }
-
-    h2 {
-        font-size: 30px;
-        line-height: 1.3;
-    }
-
-    .form-group input, 
-    .form-group select, 
-    .form-group textarea {
-        font-size: 16px; /* Ngăn chặn zoom trên iOS */
-        height: 44px; /* Chiều cao phù hợp cho touch */
-    }
-
-    .birthday-selectors select {
-        height: 44px;
-    }
-    
-    /* Body padding để tránh header che nội dung */
-    body {
-        padding-top: 70px;
-    }
-
-    .Capnhat {
-        min-height: 44px;
-        padding: 12px 20px;
-    }
-    
-    .mobile-menu-btn {
-        min-width: 44px;
-        min-height: 44px;
-    }
+/* Reset button */
+.form-header-and-actions{
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 25px;
+    padding-bottom: 10px;
+    width: 100%;
 }
 
-/* Tablet styles (768px - 1024px) */
-@media (min-width: 768px) and (max-width: 1024px) {
-    .section-p1 {
-        padding: 30px 40px;
-    }
-    
-    #header {
-        padding: 5px 40px;
-    }
-    
-    .account-container {
-        max-width: 95%;
-        gap: 20px;
-    }
-    
-    footer {
-        padding: 30px 40px;
-    }
+.reset{
+    padding: 6px 15px;
+    color: var(--color-text-white);
+    background: transparent;
+    border: 1px solid var(--color-secondary);
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3 ease;
+    margin-left: auto;
+    margin-right: 0;
+    margin-top: -20px;
+    margin-bottom: -15px;
+}
+
+.reset:hover{
+    background-color: var(--color-text-dark);
 }

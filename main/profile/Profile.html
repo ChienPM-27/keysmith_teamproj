@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KeySmith</title>
-    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="./assets/css/style.css">
+    <link rel="stylesheet" href="./assets/css/responsive.css">
     <link rel="icon" type="image/png" href="../../img/logo/logo_favicon.png" sizes="32x32">
     <script src="https://kit.fontawesome.com/da0c4cdc9f.js" crossorigin="anonymous"></script>
 </head>
@@ -60,8 +61,13 @@
                 </div>
 
                 <div class="profile-form">
-                    <h2>Address information</h2>
-                    <form>
+                    <form id="addressForm">
+
+                        <div class="form-header-and-actions">
+                            <h2>Address information</h2>
+                            <button type="reset" class="reset">Reset All</button>
+                        </div>
+                
                         <div class="form-row">
                             <div class="form-group">
                                 <label>Last-name</label>
@@ -108,7 +114,7 @@
                                     <option value="other">Other</option>
                             </select>
                             </div>
-                        
+                            
                             <button type="submit" class="Capnhat">Update</button>
                     </form>
                 </div>
