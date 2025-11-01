@@ -301,7 +301,7 @@ body {
     width: 100%;
     z-index: 3;
     height: 30px;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
     font-size: 15px;
     /* ➕ THÊM 2 DÒNG NÀY */
@@ -315,7 +315,7 @@ body {
 }
 
 #general .Price {
-    margin-left: 55%;
+    margin-left: 45%;
 }
 
 #general .Quantity {
@@ -328,6 +328,7 @@ body {
 
 #general .Actions {
     margin-left: 4%;
+    margin-right: 20px;
 }
 
 /*=====finalization=====*/
@@ -352,6 +353,12 @@ body {
     color: #fff;
 }
 
+#finalization input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--color-primary);
+}
+
 #finalization .ChooseAll {
     cursor: pointer;
     margin-left: 15px;
@@ -372,7 +379,7 @@ body {
 
 #finalization .icon-voucher {
     color: #fff;
-    margin-left: 20%;
+    margin-left: 10%;
     font-size: 30px;
 }
 
@@ -415,15 +422,112 @@ body {
 
 /*=======SAN PHAM=======*/
 .Product {
-    /*-----line dang cap------*/
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.1);
-    margin-top: 15px;
-    margin-bottom: 30px;
-    height: 200px;
-    color: #fff;
-    list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+  border-radius: 18px;
+  padding: 15px 25px;
+  margin: 20px 0;
+  box-shadow: 0 0 20px rgba(255,255,255,0.1);
+  transition: 0.3s ease;
 }
+.Product:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 0 25px rgba(255,255,255,0.2);
+}
+
+.Product input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--color-primary);
+}
+
+/* Nội dung sản phẩm */
+.Product .info {
+  color: #fff;
+  display: flex;
+  width: 20%;
+}
+
+.Product .price {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin-left: 10%;
+}
+/* Hình ảnh sản phẩm */
+.Product img {
+  width: 90px;
+  height: 90px;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.Product .quantity {   
+    display: flex;
+    width: 60px;
+    gap: 5px;
+    margin-left: 4%;
+}
+
+.quantity input {
+    width: 25px;
+    height: 25px;
+    text-align: center;
+    background: transparent;
+    font-size: 16px;
+    background-color: #fff;
+}
+
+
+.Product .total-price {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin-left: 4%;
+}
+
+
+.Product .name {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.Product .desc {
+  font-size: 14px;
+  color: #ccc;
+}
+
+
+
+/* Hành động bên phải (xóa / số lượng / nút) */
+.Product .actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: 4%;
+}
+
+.Product .actions button {
+  background: transparent;
+  border: 2px solid rgba(255,255,255,0.2);
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: 0.2s;
+}
+
+.Product .actions button:hover {
+  background: rgba(255, 60, 60, 0.3);
+  border-color: rgba(255, 60, 60, 0.6);
+}
+
 
 #suggest {  
     height: 720px;
@@ -490,6 +594,72 @@ body {
     border-top-left-radius: 20px;
     border-top-right-radius: 20px;
 }
+
+.empty-cart {
+    width: 100%;
+    height: 300px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 25px;
+    color: #fff;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    margin-top: 50px;
+    backdrop-filter: blur(10px);
+    box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.1);
+}
+/* ==========================================================
+   POPUP THÔNG BÁO
+========================================================== */
+.popup {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  animation: fadeIn 0.3s ease;
+}
+
+.popup-content {
+  background: #fff;
+  color: #333;
+  padding: 20px 30px;
+  border-radius: 15px;
+  text-align: center;
+  min-width: 280px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+  animation: scaleUp 0.3s ease;
+}
+
+.popup-content p {
+  font-size: 1.1rem;
+  margin-bottom: 15px;
+}
+
+.popup-content button {
+  background: #ff7f32;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.popup-content button:hover {
+  background: #ff5200;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; } to { opacity: 1; }
+}
+@keyframes scaleUp {
+  from { transform: scale(0.8); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
 
 
 /* ==========================================================

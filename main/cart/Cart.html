@@ -9,6 +9,14 @@
     <script src="https://kit.fontawesome.com/da0c4cdc9f.js" crossorigin="anonymous"></script>
     <script src="./script.js"></script>
 </head>
+<!-- Popup thông báo -->
+<div id="popup" class="popup">
+  <div class="popup-content">
+    <p id="popup-message"></p>
+    <button id="popup-close">Đóng</button>
+  </div>
+</div>
+
 <body>
     <section id="header">
         <ul id="navbar">
@@ -36,17 +44,52 @@
         </div>
         <div id="Container">
             <div id="general">
-                <input type="checkbox" id="Product" >
-                <label for="Product" class="Choose">Product</label>
+                <label for="" class="Choose">Product</label>
                 <label for="" class="Price">Unit Price</label>
                 <label for="" class="Quantity">Quantity</label>
                 <label for="" class="TotalPrice">Total Price</label>
                 <label for="" class="Actions">Actions</label>
             </div>
-            <ul>
-                <li class="Product">product1</li>
-                <li class="Product">product2</li>
-                <li class="Product">product1</li>
+            
+            <ul >
+                <!-- Example Product Item -->
+                <li class="Product">
+                    <input type="checkbox" >
+                    <img src="/img/keycap/OnePiece/1.png" alt="">
+                    <div class="info">
+                        <h3 class="name">Monkey.D Luffy</h3>
+                    </div>
+                    <div class="price">36<i class="fa-solid fa-dollar-sign"></i></div>
+                    <div class="quantity">
+                        <button class="decrease">-</button>
+                        <input type="number" value="1" min="1">
+                        <button class="increase">+</button>
+                    </div>
+                    <div class="total-price">36<i class="fa-solid fa-dollar-sign"></i></div>
+                    <div class="actions">
+                        <button class="delete">🗑</button>
+                    </div>
+                </li>
+                <!-- Add more product items here -->
+                 <li class="Product">
+                    <input type="checkbox" >
+                    <img src="/img/keycap/AttackOnTitan/Eren.jpg" alt="">
+                    <div class="info">
+                        <h3 class="name">Eren</h3>
+                    </div>
+                    <div class="price">36<i class="fa-solid fa-dollar-sign"></i></div>
+                    <div class="quantity">
+                        <button class="decrease">-</button>
+                        <input type="number" value="1" min="1">
+                        <button class="increase">+</button>
+                    </div>
+                    <div class="total-price">36<i class="fa-solid fa-dollar-sign"></i></div>
+                    <div class="actions">
+                        <button class="delete">🗑</button>
+                    </div>
+                </li>
+                 
+                    
             </ul>
             <div id="finalization">
                 <input type="checkbox" id="chooseALL">
@@ -56,7 +99,6 @@
                 <div class="Voucher">KeySmith Voucher</div>
                 <div class="total">Total (0 item):</div>
                 <div class="money">36</div>
-                <div class="money-icon"><i class="fa-solid fa-dollar-sign"></i></div>
                 <button class="checkout">Check Out</button>
             </div>
         </div>
@@ -174,8 +216,6 @@
         </div>
     </div>
 </footer>
-
-
 
 </body>
 </html>
