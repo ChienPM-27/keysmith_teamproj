@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KeySmith</title>
-    <link rel="stylesheet" href="./assets/css/style.css">
+    <link rel="stylesheet" href="./style.css">
     <link rel="stylesheet" href="./assets/css/responsive.css">
     <link rel="icon" type="image/png" href="../../img/logo/logo_favicon.png" sizes="32x32">
     <script src="https://kit.fontawesome.com/da0c4cdc9f.js" crossorigin="anonymous"></script>
@@ -49,7 +49,7 @@
             </div>
 
             <div class="account-content">
-            <div class="account-section active">
+            <div class="account-section active" data-section-name="Profile">
                 <div class="profile-header">
                     <div class="avatar">
                         <i class="fa-solid fa-user"></i>
@@ -67,7 +67,7 @@
                             <h2>Address information</h2>
                             <button type="reset" class="reset">Reset All</button>
                         </div>
-                
+
                         <div class="form-row">
                             <div class="form-group">
                                 <label>Last-name</label>
@@ -119,10 +119,37 @@
                     </form>
                 </div>
             </div>
-        </div>
-        </div>
 
+            <div class="account-section" data-section-name="order">
+                <h2 class="order-page-title">YOUR ORDERS</h2>
+
+                <div class="order-table">
+                        <div class="order-header-row">
+                        <div class="order-col header-col-1">Order ID</div>
+                        <div class="order-col header-col-2">Date</div>
+                        <div class="order-col header-col-3">Address</div>
+                        <div class="order-col header-col-4">Order Value</div>
+                        <div class="order-col header-col-5">Payment Status</div>
+                        </div>
+        
+                        <div class="order-empty-row">
+                        <p>You have no orders yet.</p>
+                        </div>
+                    </div>
+            </div>
+
+        <div class="account-section" data-section-name="address">
+                <div class="address-header-actions">
+                    <h2 class="address-page-title">YOUR ADDRESS</h2>
+                    <button type="button" class="address-btn" id="openAddressModalBtn">
+                        +Add New Address
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
     </section>
+    
 
     <!-- ======= FOOTER ======= -->
     <footer class="section-p1" style="display: flex">
@@ -188,6 +215,52 @@
             </div>
         </div>
     </footer>
+
+    <div id="addressModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>THÊM ĐỊA CHỈ MỚI</h2>
+                <button class="modal-close" id="closeAddressModal">&times;</button>
+    </div>
+            <div class="modal-body">
+                <form id="newAddressForm">
+                    <div class="form-group">
+                        <label for="modal-fullname">Họ tên</label>
+                        <input type="text" id="modal-fullname" placeholder="Nhập Họ Tên">
+                    </div>
+                    
+                                        <div class="form-group">
+                        <label for="modal-phone">Số điện thoại</label>
+                        <input type="tel" id="modal-phone" placeholder="Nhập Số điện thoại">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="modal-company">Công ty (tùy chọn)</label>
+                        <input type="text" id="modal-company" placeholder="Công ty">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="modal-address">Địa chỉ</label>
+                        <input type="text" id="modal-address" placeholder="Số nhà, địa chỉ chi tiết">
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="modal-country">Quốc gia</label>
+                            <select id="modal-country">
+                                <option value="Vietnam" selected>Vietnam</option>
+                                <option value="USA">USA</option>
+                            </select>
+                        </div>
+               </div>
+                                        <div class="form-group-checkbox">
+                        <input type="checkbox" id="modal-default-address">
+                        <label for="modal-default-address">Đặt là địa chỉ mặc định?</label>
+                    </div>
+              </form>
+            </div>
+    </div>
+
     <script src="script.js"></script>
 
 </body>
