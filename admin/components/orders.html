@@ -1,99 +1,40 @@
 <!-- Orders Section -->
 <div class="section-header">
-    <h1><i class="fa-solid fa-chart-simple"></i> Orders</h1>
-    <p>Quản lý và theo dõi đơn hàng</p>
+    <h1><i class="fa-solid fa-cart-shopping"></i> Quản lý đơn hàng</h1>
+    <p>Quản lý và theo dõi đơn hàng của cửa hàng.</p>
 </div>
 
-<div class="body" id="customer-body">
-    <div class="cards-list">
-        <div class="card">
-            <div class="card-content">
-                <div class="card-title">
-                    <h3>Total Orders</h3>
-                    <i class="fa-solid fa-bag-shopping"></i>
-                </div>
-                <span class="card-value">150</span>
-            </div>
-        </div>
-        <div class="card">
-            <div class="card-content">
-                <div class="card-title">
-                    <h3>Pending Orders</h3>
-                    <i class="fa-solid fa-hourglass-half"></i>
-                </div>
-                <span class="card-value">25</span>
-            </div>
-        </div>
-        <div class="card">
-            <div class="card-content">
-                <div class="card-title">
-                    <h3>Completed Orders</h3>
-                    <i class="fa-solid fa-check-circle"></i>
-                </div>
-                <span class="card-value">120</span>
-            </div>
-        </div>
-        <div class="card">
-            <div class="card-content">
-                <div class="card-title">
-                    <h3>Canceled Orders</h3>
-                    <i class="fa-solid fa-times-circle"></i>
-                </div>
-                <span class="card-value">5</span>
-            </div>
-        </div>
-    </div>
-    <div class="filter-menu">
-        <div>
-            <select name="status" class="status" id="filter-order-status" onchange="">
-                <option value="">Tất cả</option>
-                <option value="">Đang xử lý</option>
-                <option value="">Đã hoàn thành</option>
-                <option value="">Đã hủy</option>
+<div class="order-body">
+    <div class="order-control">
+        <div class="order-control-left">
+            <select name="order-status" id="filter-order-status">
+                <option value="">Tất cả trạng thái</option>
+                <option value="new">Đơn mới</option>
+                <option value="processing">Đang xử lý</option>
+                <option value="delivered">Đã giao</option>
+                <option value="cancelled">Đã hủy</option>
             </select>
         </div>
-        <div>
-            <form action="" class="form-search">
-                <input id="form-search-order" type="text" class="form-search-input" placeholder="Tìm kiếm đơn hàng..." oninput="">
+        <div class="order-control-center">
+            <form action="" class="form-search" onsubmit="return false;">
+                <input type="text" id="form-search-order" placeholder="Tìm kiếm theo mã đơn, khách hàng...">
+                <div class="search-btn"><i class="fa-solid fa-magnifying-glass"></i></div>
             </form>
         </div>
-        <div>
-            <form action="" class="filter-date">
-                <div>
-                    <label for="time-start">Từ</label>
-                    <input type="date" class="form-control-date" id="time-start-order" onchange="">
-                </div>
-                <div>
-                    <label for="time-end">Đến</label>
-                    <input type="date" class="form-control-date" id="time-end-order" onchange="">
-                </div>
-            </form>    
+        <div class="order-control-right">
+            <div class="filter-date">
+                <label for="time-start-order">Từ ngày:</label>
+                <input type="date" id="time-start-order">
+            </div>
+            <div class="filter-date">
+                <label for="time-end-order">Đến ngày:</label>
+                <input type="date" id="time-end-order">
+            </div>
+            <button class="btn-control" id="btn-refresh-order"><i class="fa-solid fa-arrows-rotate"></i> Làm mới</button>
         </div>
     </div>
-    <div class="table">
-        <table width="100%">
-            <thead>
-                <tr>
-                    <td>Mã đơn</td>
-                    <td>Khách hàng</td>
-                    <td>Ngày đặt</td>
-                    <td>Tổng tiền</td>
-                    <td>Trạng thái</td>
-                    <td>Thao tác</td>
-                </tr>
-            </thead>
-            <tbody id="showOrder">
-                <tr>
-                    <td>ORD001</td>
-                    <td>Nguyễn Văn A</td>
-                    <td>2024-06-01</td>
-                    <td>1,000,000 VND</td>
-                    <td>Đang xử lý</td>
-                    <td>
-                        <button class="btn-detail" id="" onclick=""><i class="fa-regular fa-eye"></i> Chi tiết</button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+    
+    <!-- Container sẽ được JavaScript tự động fill vào -->
+    <div class="show-order-container" id="show-order-container">
     </div>
 </div>
