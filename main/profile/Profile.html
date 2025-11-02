@@ -43,8 +43,7 @@
                     <li><a href="#" class="active" data-section="Profile" ><i class="fa-solid fa-user"></i>Account Settings</a></li>
                     <li><a href="#" data-section="order"><i class="fa-solid fa-box"></i>My Order</a></li>
                     <li><a href="#" data-section="address"><i class="fa-solid fa-location-dot"></i>Address</a></li>
-                    <li><a href="#" data-section="setting"><i class="fa-solid fa-gear"></i>Settings</a></li>
-                    <li><a href="#" ><i class="fa-solid fa-right-from-bracket"></i>Log out</a></li>
+                    <li><a href="#" data-section="setting"><i class="fa-solid fa-lock"></i>Đổi mật khẩu</a></li>                    <li><a href="#" ><i class="fa-solid fa-right-from-bracket"></i>Log out</a></li>
                 </ul>
             </div>
 
@@ -146,6 +145,31 @@
                     </button>
                 </div>
             </div>
+            
+    <div class="account-section" data-section-name="setting">
+    <h2 class="password-page-title">CHANGE PASSWORD</h2>
+    
+    <div class="password-form">
+        <form id="changePasswordForm">
+            <div class="form-group">
+                <label>Current Password</label>
+                <input type="password" id="current-password" placeholder="Enter current password" required>
+            </div>
+            
+            <div class="form-group">
+                <label>New Password</label>
+                <input type="password" id="new-password" placeholder="Enter new password" required>
+            </div>
+            
+            <div class="form-group">
+                <label>Confirm New Password</label>
+                <input type="password" id="confirm-password" placeholder="Re-enter new password" required>
+            </div>
+            
+            <button type="submit" class="Capnhat">Change Password</button>
+        </form>
+    </div>
+</div>
         </div>
     </div>
     </section>
@@ -217,49 +241,57 @@
     </footer>
 
     <div id="addressModal" class="modal-overlay">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>THÊM ĐỊA CHỈ MỚI</h2>
-                <button class="modal-close" id="closeAddressModal">&times;</button>
-    </div>
-            <div class="modal-body">
-                <form id="newAddressForm">
-                    <div class="form-group">
-                        <label for="modal-fullname">Họ tên</label>
-                        <input type="text" id="modal-fullname" placeholder="Nhập Họ Tên">
-                    </div>
-                    
-                                        <div class="form-group">
-                        <label for="modal-phone">Số điện thoại</label>
-                        <input type="tel" id="modal-phone" placeholder="Nhập Số điện thoại">
-                    </div>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Add New Address</h2>
+            <button class="modal-close" id="closeAddressModal">&times;</button>
+        </div>
+        
+        <div class="modal-body">
+            <form id="newAddressForm">
+                <div class="form-group">
+                    <label for="modal-fullname">Full Name</label>
+                    <input type="text" id="modal-fullname" placeholder="Enter Full name">
+                </div>
+                
+                <div class="form-group">
+                    <label for="modal-phone">Phone Number</label>
+                    <input type="tel" id="modal-phone" placeholder="Enter Phone number">
+                </div>
 
-                    <div class="form-group">
-                        <label for="modal-company">Công ty (tùy chọn)</label>
-                        <input type="text" id="modal-company" placeholder="Công ty">
-                    </div>
+                <div class="form-group">
+                    <label for="modal-company">Company (Optional)</label>
+                    <input type="text" id="modal-company" placeholder="Company">
+                </div>
 
-                    <div class="form-group">
-                        <label for="modal-address">Địa chỉ</label>
-                        <input type="text" id="modal-address" placeholder="Số nhà, địa chỉ chi tiết">
-                    </div>
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="modal-country">Quốc gia</label>
-                            <select id="modal-country">
-                                <option value="Vietnam" selected>Vietnam</option>
-                                <option value="USA">USA</option>
-                            </select>
-                        </div>
-               </div>
-                                        <div class="form-group-checkbox">
-                        <input type="checkbox" id="modal-default-address">
-                        <label for="modal-default-address">Đặt là địa chỉ mặc định?</label>
-                    </div>
-              </form>
-            </div>
-    </div>
+                <div class="form-group">
+                    <label for="modal-address">Address</label>
+                    <input type="text" id="modal-address" placeholder="Street address, apartment, etc.">
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="modal-country">Country</label>
+                        <select id="modal-country">
+                            <option value="Vietnam" selected>Vietnam</option>
+                            <option value="USA">USA</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group-checkbox">
+                    <input type="checkbox" id="modal-default-address">
+                    <label for="modal-default-address">Set as default address?</label>
+                </div>
+            </form>
+        </div>
+
+        <div class="modal-footer">
+            <button type="button" class="modal-btn modal-btn-secondary" id="cancelAddressBtn">Cancel</button>
+            <button type="button" class="modal-btn modal-btn-primary" id="saveAddressBtn">Add Address</button>
+        </div>
+    </div>
+</div>
 
     <script src="script.js"></script>
 

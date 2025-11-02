@@ -769,11 +769,11 @@
     .address-page-title{
         text-align: left;
         font-size: 24px;
-        font-weight: 600;
+        font-weight: 700;
         margin-top: 40px;
         /* margin-bottom: 10px;
         padding-bottom: 10px; */
-        /* color: var(--color-primary); */
+        color: var(--color-primary);
         margin: 10px;
         padding: 0;
     }
@@ -795,154 +795,268 @@
         background-color: var(--color-primary-hover);
     }
 
-    .modal-overlay{
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        z-index: 1000;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        opacity: 0;
-        visibility: hidden;
-        transition: opacity 0.3s ease, visibility 0s 0.3s;
-    }
+     .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0s 0.3s;
+        }
 
-    .modal-overlay.active {
-    opacity: 1;
-    visibility: visible;
-    transition: opacity 0.3s ease;
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+            transition: opacity 0.3s ease;
+        }
+
+        /* Modal Content */
+        .modal-content {
+            background-color: var(--color-background);
+            color: var(--color-text-white);
+            padding: 0;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 480px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transform: scale(0.9);
+            opacity: 0;
+            transition: all 0.3s ease-out;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        /* Modal Header */
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            background-color: rgba(255, 133, 25, 0.1);
+        }
+
+        .modal-header h2 {
+            font-size: 18px;
+            color: var(--color-primary);
+            margin: 0;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--color-secondary);
+            font-size: 32px;
+            font-weight: bold;
+            cursor: pointer;
+            line-height: 1;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.2s ease;
+        }
+
+        .modal-close:hover {
+            color: var(--color-text-white);
+        }
+
+        /* Modal Body */
+        .modal-body {
+            padding: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        .form-group label {
+            color: var(--color-text-white);
+            margin-bottom: 5px;
+            font-weight: 500;
+            font-size: 13px;
+            display: block;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="tel"],
+        .form-group select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #555;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 6px;
+            font-size: 13px;
+            color: var(--color-text-white);
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .form-group input::placeholder {
+            color: #888;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        .form-group-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 5px;
+        }
+
+        .form-group-checkbox input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+
+        .form-group-checkbox label {
+            font-weight: 400;
+            font-size: 13px;
+            color: var(--color-secondary);
+            margin: 0;
+            cursor: pointer;
+        }
+
+        /* Modal Footer */
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            padding: 15px 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            background-color: rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-btn {
+            padding: 8px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .modal-btn-secondary {
+            background-color: var(--color-secondary);
+            color: var(--color-text-dark);
+        }
+
+        .modal-btn-secondary:hover {
+            background-color: #888;
+        }
+
+        .modal-btn-primary {
+            background-color: var(--color-primary);
+            color: white;
+        }
+
+        .modal-btn-primary:hover {
+            background-color: var(--color-primary-hover);
+        }
+
+        /* Scrollbar styling */
+        .modal-content::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .modal-content::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .modal-content::-webkit-scrollbar-thumb {
+            background: var(--color-secondary);
+            border-radius: 4px;
+        }
+
+        .modal-content::-webkit-scrollbar-thumb:hover {
+            background: var(--color-primary);
+        }
+        
+    /* ========================= CHANGE PASSWORD SECTION ========================= */
+.password-page-title {
+    text-align: left;
+    font-size: 24px; 
+    font-weight: 600;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    color: var(--color-primary);
+    margin-top: 60px;
 }
 
-    /* Nội dung của Modal (Cửa sổ bật lên) */
-    .modal-content {
-        background-color: var(--color-background); 
-        color: var(--color-text-white);
-        padding: 20px 25px;
-        border-radius: 8px;
-        width: 90%;
-        max-width: 550px;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        
-        transform: scale(0.95);
-        opacity: 0;
-        transition: all 0.25s ease-out;
-    }
+.password-form {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 25px;
+    border-radius: 8px;
+    max-width: 500px;
+}
 
-    .modal-overlay.active .modal-content {
-        transform: scale(1);
-        opacity: 1;
-    }
+.password-form .form-group {
+    margin-bottom: 20px;
+}
 
-    .modal-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        padding-bottom: 10px;
-        margin-bottom: 15px;
-    }
+.password-form .form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: var(--color-text-dark);
+    font-size: 14px;
+}
 
-    .modal-body .form-group{
-        text-align: left;
-        margin-bottom: 10px !important;
-    }
+.password-form .form-group input[type="password"] {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #1a1a1a;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 6px;
+    box-sizing: border-box;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    color: var(--color-text-dark);
+}
 
-    .modal-header h2 {
-        font-size: 20px;
-        color: var(--color-primary);
-        margin: 0;
-        text-transform: uppercase;
-    }
+.password-form .form-group input[type="password"]:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    background: rgba(255, 255, 255, 0.15);
+}
 
-    .modal-close {
-        background: none;
-        border: none;
-        color: var(--color-secondary);
-        font-size: 30px;
-        font-weight: bold;
-        cursor: pointer;
-        line-height: 1;
-    } */
+.password-form .form-group input[type="password"]::placeholder {
+    color: var(--color-secondary);
+}
 
-    /* Body (Form) */
-    .modal-body .form-group label {
-        color: var(--color-text-white);
-        margin-bottom: 4px;
-        font-weight: 400;   
-        font-size: 14px;
-        display: block;
-    }
-    .modal-body input[type="text"],
-    .modal-body input[type="tel"],
-    .modal-body select {
-        width: 100%;
-        padding: 10px 15px;
-        border: 1px solid #555;
-        background: rgba(0, 0, 0, 0.2);
-        border-radius: 4px;
-        font-size: 15px;
-        color: var(--color-text-white);
-        height: 40px !important; 
-    }
-
-    .modal-body .form-row {
-        display: flex;
-        gap: 15px;
-    }
-    .modal-body .form-row .form-group {
-        flex: 1;
-    }
-
-    .form-group-checkbox {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        margin-top: 20px;
-        text-align: left;
-    }
-    .form-group-checkbox label {
-        font-weight: 500;
-        color: var(--color-secondary);
-    }
-
-    /* Footer (Nút bấm) */
-    .modal-footer {
-        display: flex;
-        justify-content: flex-end;
-        gap: 15px;
-        margin-top: 25px;
-        padding-top: 15px;
-        border-top: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .modal-btn {
-        padding: 10px 20px;
-        border: none;
-        border-radius: 4px;
-        font-size: 14px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.2s ease;
-    }
-
-    .modal-btn-secondary {
-        background-color: var(--color-secondary);
-        color: var(--color-text-dark);
-    }
-    .modal-btn-secondary:hover {
-        background-color: #888;
-    }
-
-    .modal-btn-primary {
-        background-color: var(--color-primary);
-        color: var(--color-text-dark);
-    }
-    .modal-btn-primary:hover {
-        background-color: var(--color-primary-hover);
-    }
-
-        
+.password-form .Capnhat {
+    margin-top: 10px;
+}

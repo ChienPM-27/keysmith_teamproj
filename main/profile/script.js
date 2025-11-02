@@ -145,39 +145,163 @@ document.addEventListener('DOMContentLoaded', function() {
     
    // --- 5. BỔ SUNG LOGIC MỞ/ĐÓNG MODAL ĐỊA CHỈ ---
     
-    const addressModal = document.getElementById('addressModal');
-    // Tìm nút bằng ID chúng ta đã thêm ở Bước 1
-    const addAddressBtn = document.getElementById('openAddressModalBtn'); 
-    const closeAddressModal = document.getElementById('closeAddressModal');
-    const cancelAddressModal = document.getElementById('cancelAddressModal');
+  // ========================= ADDRESS MODAL FUNCTIONALITY =========================
 
-    // Hàm mở Modal
-    function openModal() {
-        if (addressModal) addressModal.classList.add('active');
-    }
+const addressModal = document.getElementById('addressModal');
+const openAddressModalBtn = document.getElementById('openAddressModalBtn');
+const closeAddressModalBtn = document.getElementById('closeAddressModal');
+const cancelAddressBtn = document.getElementById('cancelAddressBtn');
+const saveAddressBtn = document.getElementById('saveAddressBtn');
+const newAddressForm = document.getElementById('newAddressForm');
 
-    // Hàm đóng Modal
-    function closeModal() {
-        if (addressModal) addressModal.classList.remove('active');
-    }
+// Mở modal khi click nút "Add New Address"
+if (openAddressModalBtn) {
+    openAddressModalBtn.addEventListener('click', () => {
+        addressModal.classList.add('active');
+        document.body.style.overflow = 'hidden'; // Khóa scroll
+    });
+}
 
-    // Gán sự kiện
-    if (addAddressBtn) {
-        addAddressBtn.addEventListener('click', openModal);
+// Hàm đóng modal
+function closeAddressModal() {
+    addressModal.classList.remove('active');
+    document.body.style.overflow = ''; // Mở lại scroll
+    if (newAddressForm) {
+        newAddressForm.reset(); // Reset form
     }
-    if (closeAddressModal) {
-        closeAddressModal.addEventListener('click', closeModal);
-    }
-    if (cancelAddressModal) {
-        cancelAddressModal.addEventListener('click', closeModal);
-    }
+}
 
-    // Tùy chọn: Đóng modal khi nhấp ra ngoài
-    if (addressModal) {
-        addressModal.addEventListener('click', function(e) {
-            // Chỉ đóng nếu nhấp vào lớp phủ (overlay), không phải nội dung (content)
-            if (e.target === addressModal) { 
-                closeModal();
-            }
+// Đóng modal khi click nút X
+if (closeAddressModalBtn) {
+    closeAddressModalBtn.addEventListener('click', closeAddressModal);
+}
+
+// Đóng modal khi click nút Hủy
+if (cancelAddressBtn) {
+    cancelAddressBtn.addEventListener('click', closeAddressModal);
+}
+
+// Đóng modal khi click bên ngoài
+addressModal.addEventListener('click', (e) => {
+    if (e.target === addressModal) {
+        closeAddressModal();
+    }
+});
+
+// Xử lý lưu địa chỉ
+if (saveAddressBtn) {
+    saveAddressBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        
+        // Lấy dữ liệu từ form
+        const fullname = document.getElementById('modal-fullname').value.trim();
+        const phone = document.getElementById('modal-phone').value.trim();
+        const company = document.getElementById('modal-company').value.trim();
+        const address = document.getElementById('modal-address').value.trim();
+        const country = document.getElementById('modal-country').value;
+        const isDefault = document.getElementById('modal-default-address').checked;
+        
+        // Validate
+        if (!fullname) {
+            alert('Vui lòng nhập họ tên!');
+            return;
+        }
+        
+        if (!phone) {
+            alert('Vui lòng nhập số điện thoại!');
+            return;
+        }
+        
+        if (!address) {
+            alert('Vui lòng nhập địa chỉ!');
+            return;
+        }
+        
+        // Tạo object địa chỉ
+        const newAddress = {
+            fullname,
+            phone,
+            company,
+            address,
+            country,
+            isDefault
+        };
+        
+        console.log('Địa chỉ mới:', newAddress);
+        
+        // TODO: Gửi dữ liệu lên server hoặc lưu vào localStorage
+        
+        alert('Đã thêm địa chỉ thành công!');
+        closeAddressModal();
+    });
+}
+
+// Đóng modal khi nhấn phím ESC
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && addressModal.classList.contains('active')) {
+        closeAddressModal();
+    }
+});
+
+// ========================= CHANGE PASSWORD FUNCTIONALITY =========================
+
+const changePasswordForm = document.getElementById('changePasswordForm');
+
+if (changePasswordForm) {
+    changePasswordForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const currentPassword = document.getElementById('current-password').value.trim();
+        const newPassword = document.getElementById('new-password').value.trim();
+        const confirmPassword = document.getElementById('confirm-password').value.trim();
+        
+        // Validate empty fields
+        if (!currentPassword || !newPassword || !confirmPassword) {
+            alert('Please fill in all fields!');
+            return;
+        }
+        
+        // Validate password length
+        if (newPassword.length < 8) {
+            alert('New password must be at least 8 characters long!');
+            return;
+        }
+        
+        // Validate password strength
+        if (!/[A-Z]/.test(newPassword)) {
+            alert('Password must contain at least one uppercase letter!');
+            return;
+        }
+        
+        if (!/[a-z]/.test(newPassword)) {
+            alert('Password must contain at least one lowercase letter!');
+            return;
+        }
+        
+        if (!/\d/.test(newPassword)) {
+            alert('Password must contain at least one number!');
+            return;
+        }
+        
+        // Check if passwords match
+        if (newPassword !== confirmPassword) {
+            alert('New password and confirmation do not match!');
+            return;
+        }
+        
+        // Check if new password is different from current
+        if (currentPassword === newPassword) {
+            alert('New password must be different from current password!');
+            return;
+        }
+        
+        // TODO: Send to server
+        console.log('Change password:', {
+            currentPassword,
+            newPassword
         });
-    }
+        
+        alert('Password changed successfully!');
+        changePasswordForm.reset();
+    });
+}
