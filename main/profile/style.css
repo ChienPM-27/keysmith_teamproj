@@ -454,6 +454,7 @@
         border-radius: 5px;
         transition: all 0.3s ease;
         font-weight: 500;
+        white-space: nowrap;
     }
             
     .account-sidebar a:hover{
@@ -687,7 +688,6 @@
         font-weight: 600;
         margin-top: 35px;
         color: var(--color-primary); 
-        
         border-bottom: 2px solid rgba(255, 255, 255, 0.1);
     }
 
@@ -795,7 +795,7 @@
         background-color: var(--color-primary-hover);
     }
 
-     .modal-overlay {
+    .modal-overlay {
             position: fixed;
             top: 0;
             left: 0;

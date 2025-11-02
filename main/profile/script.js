@@ -305,3 +305,24 @@ if (changePasswordForm) {
         changePasswordForm.reset();
     });
 }
+
+// --- 6. BỔ SUNG LOGIC LOG OUT ---
+    
+    const logoutButton = document.getElementById('logoutBtn');
+    if (logoutButton) {
+        logoutButton.addEventListener('click', function(e) {
+            // Ngăn trình duyệt chuyển trang (href="index.html") ngay lập tức
+            e.preventDefault(); 
+            
+            // Hỏi xác nhận
+            const confirmLogout = confirm('Bạn có chắc chắn muốn đăng xuất không?');
+            
+            if (confirmLogout) {
+                // Xóa dữ liệu đã lưu
+                localStorage.removeItem('profileData');
+                
+                // Chuyển về trang chủ (lấy từ href của nút)
+                window.location.href = this.getAttribute('href'); 
+            }
+        });
+    }
