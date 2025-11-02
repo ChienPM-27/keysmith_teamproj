@@ -100,10 +100,10 @@ class DataManager {
                 this.loadWarehouse()
             ]);
             this.initialized = true;
-            console.log('✅ DataManager initialized successfully');
+            console.log('DataManager initialized successfully');
             this.notifyListeners('initialized');
         } catch (error) {
-            console.error('❌ DataManager initialization failed:', error);
+            console.error('DataManager initialization failed:', error);
         }
     }
 

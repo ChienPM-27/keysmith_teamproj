@@ -7,8 +7,7 @@ async function initializeCustomers() {
         console.log('DataManager chưa sẵn sàng, đang đợi...');
         return;
     }
-    
-    await window.dataManager.loadCustomers();
+    // Đọc dữ liệu từ localStorage.users thay vì customers
     customersLoaded = true;
     showCustomers();
 }
@@ -19,7 +18,27 @@ function showCustomers(searchTerm = '', status = '') {
         return;
     }
 
-    const customers = window.dataManager.getCustomers();
+    // Lấy người dùng từ localStorage.users
+    let users = [];
+    try {
+        if (typeof DataManager !== 'undefined' && typeof DataManager.getUsers === 'function') {
+            users = DataManager.getUsers() || [];
+        } else {
+            users = JSON.parse(localStorage.getItem('users') || '[]');
+        }
+    } catch (_) {
+        users = [];
+    }
+
+    // Chuyển đổi users thành cấu trúc customer rỗng (trừ username)
+    const customers = users.map(u => ({
+        username: u.username,
+        email: '',
+        phone: '',
+        address: '',
+        joinDate: '',
+        status: ''
+    }));
     const customerContainer = document.getElementById('show-customer-container');
     
     if (!customerContainer) return;
@@ -49,9 +68,9 @@ function showCustomers(searchTerm = '', status = '') {
 
     // Hiển thị tất cả khách hàng (không phân trang)
     customerContainer.innerHTML = filteredCustomers.map(customer => {
-        const joinDate = customer.joinDate ? new Date(customer.joinDate).toLocaleDateString('vi-VN') : 'N/A';
+        const joinDate = '';
         const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(customer.username)}&background=random&size=110`;
-        const statusText = customer.status === 'active' ? 'Đang hoạt động' : customer.status === 'locked' ? 'Bị khóa' : 'Không xác định';
+        const statusText = '';
         
         return `
         <div class="list" data-username="${customer.username}">
@@ -59,8 +78,8 @@ function showCustomers(searchTerm = '', status = '') {
                 <img src="${avatarUrl}" alt="${customer.username}" onerror="this.src='https://ui-avatars.com/api/?name=User&background=cccccc&size=110'">
                 <div class="list-info">
                     <h4>${customer.username}</h4>
-                    <p class="list-note"><i class="fa-solid fa-envelope"></i> ${customer.email || 'Chưa có email'}</p>
-                    ${customer.phone ? `<p class="list-note"><i class="fa-solid fa-phone"></i> ${customer.phone}</p>` : ''}
+                    <p class="list-note"><i class="fa-solid fa-envelope"></i> ${customer.email || ''}</p>
+                    ${customer.phone ? `<p class=\"list-note\"><i class=\"fa-solid fa-phone\"></i> ${customer.phone}</p>` : ''}
                     <span class="list-category">${statusText}</span>
                 </div>
             </div>
