@@ -38,6 +38,8 @@
     }
 }
 
+
+
 /* =============================
    CONTACT MODAL CONTENT
 ============================= */
@@ -46,7 +48,7 @@
     width: 90%;
     max-width: 1200px;
     max-height: 90vh;
-    background-image: url(/img/bg/concrete.png);
+
     background-size: cover;
     border-radius: 12px;
     box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
