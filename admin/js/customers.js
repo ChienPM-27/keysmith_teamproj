@@ -130,8 +130,23 @@ function closeCustomerModal() {
 }
 
 function editCustomer(username) {
-    const customer = window.dataManager.getCustomer(username);
-    if (!customer) return;
+    // Lấy user từ localStorage.users
+    let users = [];
+    try {
+        if (typeof DataManager !== 'undefined' && typeof DataManager.getUsers === 'function') {
+            users = DataManager.getUsers() || [];
+        } else {
+            users = JSON.parse(localStorage.getItem('users') || '[]');
+        }
+    } catch (_) {
+        users = [];
+    }
+    
+    const user = users.find(u => u.username === username);
+    if (!user) {
+        alert('Không tìm thấy người dùng!');
+        return;
+    }
 
     const modal = document.querySelector('.modal.add-customer');
     if (!modal) {
@@ -142,11 +157,12 @@ function editCustomer(username) {
 
     currentEditingUsername = username;
     
-    document.getElementById('customer-username').value = customer.username;
+    document.getElementById('customer-username').value = username;
     document.getElementById('customer-username').disabled = true;
-    document.getElementById('customer-email').value = customer.email || '';
-    document.getElementById('customer-phone').value = customer.phone || '';
-    document.getElementById('customer-address').value = customer.address || '';
+    // Các trường khác để trống vì users chỉ có username, password, role
+    document.getElementById('customer-email').value = '';
+    document.getElementById('customer-phone').value = '';
+    document.getElementById('customer-address').value = '';
     
     const addBtn = document.getElementById('add-customer-button');
     const updateBtn = document.getElementById('update-customer-button');
