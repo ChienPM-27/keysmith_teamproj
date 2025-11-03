@@ -103,3 +103,19 @@ if (backBtn) {
 
 // Ẩn nút Back mặc định khi đang ở store view
 if (backBtn) backBtn.style.display = "none";
+// ===== Dynamic Share Links =====
+document.addEventListener("DOMContentLoaded", () => {
+  const currentURL = window.location.href;
+  const title = document.getElementById("productTitle")?.textContent || "KeySmith Product";
+
+  const setShareLink = (selector, url) => {
+    const el = document.querySelector(selector);
+    if (el) el.href = url;
+  };
+
+  setShareLink(".share-fb", `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentURL)}`);
+  setShareLink(".share-pinterest", `https://pinterest.com/pin/create/button/?url=${encodeURIComponent(currentURL)}&description=${encodeURIComponent(title)}`);
+  setShareLink(".share-tiktok", `https://www.tiktok.com/share?url=${encodeURIComponent(currentURL)}`);
+  setShareLink(".share-twitter", `https://twitter.com/intent/tweet?url=${encodeURIComponent(currentURL)}&text=${encodeURIComponent(title)}`);
+  setShareLink(".share-instagram", `https://www.instagram.com/?url=${encodeURIComponent(currentURL)}`);
+});
