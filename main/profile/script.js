@@ -158,7 +158,7 @@ const newAddressForm = document.getElementById('newAddressForm');
 if (openAddressModalBtn) {
     openAddressModalBtn.addEventListener('click', () => {
         addressModal.classList.add('active');
-        document.body.style.overflow = 'hidden'; // Khóa scroll
+        document.body.style.overflow = 'hidden'; 
     });
 }
 

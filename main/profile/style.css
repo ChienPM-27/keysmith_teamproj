@@ -622,7 +622,7 @@
         color: var(--color-secondary);
     }
 
-    .Capnhat{
+    .reset{
         padding: 12px 25px;
         color: white;
         margin-top: 10px;
@@ -637,12 +637,11 @@
         font-weight: 600;
     }
 
-    .Capnhat:hover{
+    .reset:hover{
         background-color: var(--color-primary-hover);
         box-shadow: 0 4px 15px rgba(0,0,0,0.2);
     }
 
-    /*moblile button */
     .mobile-menu-btn{
         display: none;
         background: none;
@@ -1057,6 +1056,6 @@
     color: var(--color-secondary);
 }
 
-.password-form .Capnhat {
+.password-form .reset {
     margin-top: 10px;
 }
