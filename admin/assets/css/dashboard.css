@@ -32,9 +32,10 @@
     font-size: 0.95rem;
     margin: 0;
 }
-.dashboard-body {
 
-}
+/* .dashboard-body {
+
+} */
 
 .dashboard-body .cards {
     display: flex;
@@ -82,9 +83,10 @@ transform: scale(1.05) translateY(-5px);
     font-size: 35px;
     font-weight: 600;
 }
-.amount-user {
 
-}
+/* .amount-user {
+
+} */
 
 .alerts {
     box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
