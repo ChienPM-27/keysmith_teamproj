@@ -12,7 +12,7 @@ window.addEventListener('DOMContentLoaded', () => {
         localStorage.removeItem('loggedInUser');
         localStorage.removeItem('userRole');
         localStorage.removeItem('rememberedUser');
-        window.location.href = '../main/index.html';
+        window.location.href = '/index.html';
         return;
     }
 
@@ -69,7 +69,7 @@ if (homeBtn) {
             localStorage.removeItem('loggedInUser');
             localStorage.removeItem('userRole');
             localStorage.removeItem('rememberedUser');
-            window.location.href = '../main/index.html';
+            window.location.href = './index.html';
         }
     });
 }
@@ -84,7 +84,7 @@ if (logoutBtn) {
             localStorage.removeItem('userRole');
             localStorage.removeItem('rememberedUser');
             alert('👋 Logged out successfully!');
-            window.location.href = '../main/index.html';
+            window.location.href = './index.html';
         }
     });
 }

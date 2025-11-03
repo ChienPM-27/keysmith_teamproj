@@ -577,21 +577,58 @@ class DataManager {
             createdAt: new Date().toISOString()
         };
     }
-    addCustomer(customer) {
-        const newCustomer = {
-            username: customer.username,
-            email: customer.email,
-            joinDate: customer.joinDate || new Date().toISOString(),
-            phone: customer.phone || '',
-            address: customer.address || '',
-            status: customer.status || 'active'
-        };
 
-        this.data.warehouse.importOrders.unshift(newOrder);
-        this.saveWarehouse();
-        this.notifyListeners('warehouse');
-        return newOrder;
+
+addCustomer(customer) {
+    const newCustomer = {
+        username: customer.username,
+        email: customer.email,
+        joinDate: customer.joinDate || new Date().toISOString(),
+        phone: customer.phone || '',
+        address: customer.address || '',
+        status: customer.status || 'active'
+    };
+
+    // Kiểm tra username đã tồn tại chưa
+    const existingCustomer = this.data.customers.find(c => c.username === newCustomer.username);
+    if (existingCustomer) {
+        return false;
     }
+
+    // Thêm customer mới
+    this.data.customers.push(newCustomer);
+    this.saveCustomers();
+    this.updateAnalyticsCache();
+    this.notifyListeners('customers');
+    return newCustomer;
+}
+
+updateCustomer(username, updates) {
+    const index = this.data.customers.findIndex(c => c.username === username);
+    if (index !== -1) {
+        this.data.customers[index] = { 
+            ...this.data.customers[index], 
+            ...updates 
+        };
+        this.saveCustomers();
+        this.updateAnalyticsCache();
+        this.notifyListeners('customers');
+        return true;
+    }
+    return false;
+}
+
+deleteCustomer(username) {
+    const filtered = this.data.customers.filter(c => c.username !== username);
+    if (filtered.length < this.data.customers.length) {
+        this.data.customers = filtered;
+        this.saveCustomers();
+        this.updateAnalyticsCache();
+        this.notifyListeners('customers');
+        return true;
+    }
+    return false;
+}
 
     updateImportOrder(orderId, orderData) {
         const index = this.data.warehouse.importOrders.findIndex(o => o.id === orderId);
@@ -715,15 +752,52 @@ class DataManager {
     }
 
     // ==================== SAMPLE DATA GENERATORS ====================
-    
+
+
     generateSampleCustomers() {
         const customers = [
-            { username: 'nguyenvana', email: 'nguyenvana@email.com', joinDate: '2024-01-15', phone: '0901234567', address: 'TPHCM', status: 'active' },
-            { username: 'tranthib', email: 'tranthib@email.com', joinDate: '2024-02-20', phone: '0902345678', address: 'Hà Nội', status: 'active' },
-            { username: 'levanc', email: 'levanc@email.com', joinDate: '2024-03-10', phone: '0903456789', address: 'Đà Nẵng', status: 'active' },
-            { username: 'phamthid', email: 'phamthid@email.com', joinDate: '2024-04-05', phone: '0904567890', address: 'TPHCM', status: 'active' },
-            { username: 'hoangvane', email: 'hoangvane@email.com', joinDate: '2024-05-12', phone: '0905678901', address: 'Hà Nội', status: 'active' }
+            { 
+                username: 'nguyenvana', 
+                email: 'nguyenvana@email.com', 
+                joinDate: '2024-01-15', 
+                phone: '0901234567', 
+                address: 'TPHCM', 
+                status: 'active' 
+            },
+            { 
+                username: 'tranthib', 
+                email: 'tranthib@email.com', 
+                joinDate: '2024-02-20', 
+                phone: '0902345678', 
+                address: 'Hà Nội', 
+                status: 'active' 
+            },
+            { 
+                username: 'levanc', 
+                email: 'levanc@email.com', 
+                joinDate: '2024-03-10', 
+                phone: '0903456789', 
+                address: 'Đà Nẵng', 
+                status: 'active' 
+            },
+            { 
+                username: 'phamthid', 
+                email: 'phamthid@email.com', 
+                joinDate: '2024-04-05', 
+                phone: '0904567890', 
+                address: 'TPHCM', 
+                status: 'active' 
+            },
+            { 
+                username: 'hoangvane', 
+                email: 'hoangvane@email.com', 
+                joinDate: '2024-05-12', 
+                phone: '0905678901', 
+                address: 'Hà Nội', 
+                status: 'active' 
+            }
         ];
+        return customers;
     }
 
     generateSampleOrders() {
