@@ -120,10 +120,10 @@ class DataManager {
             this.updateAnalyticsCache();
             
             this.initialized = true;
-            console.log('✅ DataManager v2.0 initialized & synchronized');
+            console.log('DataManager initialized successfully');
             this.notifyListeners('initialized');
         } catch (error) {
-            console.error('❌ DataManager initialization failed:', error);
+            console.error('DataManager initialization failed:', error);
         }
     }
 
@@ -158,6 +158,18 @@ class DataManager {
         const saved = localStorage.getItem('customers');
         if (saved) {
             this.data.customers = JSON.parse(saved);
+            // Migration: Thêm status 'active' cho customers cũ không có status
+            let needsSave = false;
+            this.data.customers = this.data.customers.map(customer => {
+                if (!customer.status) {
+                    needsSave = true;
+                    return { ...customer, status: 'active' };
+                }
+                return customer;
+            });
+            if (needsSave) {
+                this.saveCustomers();
+            }
         } else {
             this.data.customers = this.generateSampleCustomers();
             this.saveCustomers();
@@ -564,6 +576,16 @@ class DataManager {
             total: orderData.total,
             createdAt: new Date().toISOString()
         };
+    }
+    addCustomer(customer) {
+        const newCustomer = {
+            username: customer.username,
+            email: customer.email,
+            joinDate: customer.joinDate || new Date().toISOString(),
+            phone: customer.phone || '',
+            address: customer.address || '',
+            status: customer.status || 'active'
+        };
 
         this.data.warehouse.importOrders.unshift(newOrder);
         this.saveWarehouse();
@@ -695,12 +717,12 @@ class DataManager {
     // ==================== SAMPLE DATA GENERATORS ====================
     
     generateSampleCustomers() {
-        return [
-            { username: 'nguyenvana', email: 'nguyenvana@email.com', joinDate: '2024-01-15', phone: '0901234567', address: 'TPHCM' },
-            { username: 'tranthib', email: 'tranthib@email.com', joinDate: '2024-02-20', phone: '0902345678', address: 'Hà Nội' },
-            { username: 'levanc', email: 'levanc@email.com', joinDate: '2024-03-10', phone: '0903456789', address: 'Đà Nẵng' },
-            { username: 'phamthid', email: 'phamthid@email.com', joinDate: '2024-04-05', phone: '0904567890', address: 'TPHCM' },
-            { username: 'hoangvane', email: 'hoangvane@email.com', joinDate: '2024-05-12', phone: '0905678901', address: 'Hà Nội' }
+        const customers = [
+            { username: 'nguyenvana', email: 'nguyenvana@email.com', joinDate: '2024-01-15', phone: '0901234567', address: 'TPHCM', status: 'active' },
+            { username: 'tranthib', email: 'tranthib@email.com', joinDate: '2024-02-20', phone: '0902345678', address: 'Hà Nội', status: 'active' },
+            { username: 'levanc', email: 'levanc@email.com', joinDate: '2024-03-10', phone: '0903456789', address: 'Đà Nẵng', status: 'active' },
+            { username: 'phamthid', email: 'phamthid@email.com', joinDate: '2024-04-05', phone: '0904567890', address: 'TPHCM', status: 'active' },
+            { username: 'hoangvane', email: 'hoangvane@email.com', joinDate: '2024-05-12', phone: '0905678901', address: 'Hà Nội', status: 'active' }
         ];
     }
 
