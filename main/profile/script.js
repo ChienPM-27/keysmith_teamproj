@@ -10,8 +10,10 @@ function populateBirthdayOptions() {
 
     if (!daySelect || !monthSelect || !yearSelect) return;
 
-    // Logic tạo option cho ngày (1-31)
-    if (daySelect.options.length <= 1) { 
+    // tao option cho ngày (1-31)
+    if (daySelect.options.length > 1) return;
+
+    if(daySelect.option.length <= 1){
         for (let i = 1; i <= 31; i++) {
             const option = document.createElement('option');
             option.value = i;
@@ -19,19 +21,17 @@ function populateBirthdayOptions() {
             daySelect.appendChild(option);
         }
     }
-    
-    // Logic tạo option cho tháng (1-12)
-    if (monthSelect.options.length <= 1) { 
-        const monthNames = ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'];
+    // tao option cho tháng (1-12)
+    if(monthSelect.option.length <= 1){
+        const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
         for (let i = 1; i <= 12; i++) {
             const option = document.createElement('option');
             option.value = i;
             option.textContent = monthNames[i - 1];
             monthSelect.appendChild(option);
-        }   
+        }   
     }
-
-    // Logic tạo option cho năm (1900 - hiện tại)
+    // tao option cho năm (1900 - hiện tại)
     if (yearSelect.options.length <= 1) {
         const currentYear = new Date().getFullYear();
         for (let i = currentYear; i >= 1900; i--) {
@@ -43,22 +43,22 @@ function populateBirthdayOptions() {
     }
 }
 
+// goi ham khi trang duoc tai
 document.addEventListener('DOMContentLoaded', function() {
-    // 1. Khởi tạo option ngày sinh
     populateBirthdayOptions();
-    
-    const mainForm = document.getElementById('addressForm');
-    const navLinks = document.querySelectorAll('.account-sidebar ul li a'); 
-    const accountSections = document.querySelectorAll('.account-section');
+}); 
 
-    // 2. Tải dữ liệu đã lưu khi trang được tải
-    const savedData = JSON.parse(localStorage.getItem('profileData'));
+const mainForm = document.getElementById('addressForm');
+
+const savedData = JSON.parse(localStorage.getItem('profileData'));
     if (savedData) {
+        // Tải các trường cơ bản
         document.getElementById('last-name').value = savedData.lastName || '';
         document.getElementById('first-name').value = savedData.firstName || '';
         document.getElementById('email').value = savedData.email || ''; 
         document.getElementById('phone').value = savedData.phone || '';
         
+        // Tải dữ liệu Ngày sinh (sử dụng 3 trường)
         document.getElementById('birth-day').value = savedData.birthDay || '';
         document.getElementById('birth-month').value = savedData.birthMonth || '';
         document.getElementById('birth-year').value = savedData.birthYear || '';
@@ -69,8 +69,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // 3. Xử lý sự kiện Submit (nút Update)
     if (mainForm) {
         mainForm.addEventListener('submit', function(e) {
-            e.preventDefault(); 
-            
+            e.preventDefault(); // NGĂN CHẶN FORM TẢI LẠI TRANG
+    
+            // Lấy dữ liệu ngày sinh
             const birthDay = document.getElementById('birth-day').value;
             const birthMonth = document.getElementById('birth-month').value;
             const birthYear = document.getElementById('birth-year').value;
@@ -81,6 +82,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 email: document.getElementById('email').value,
                 phone: document.getElementById('phone').value,
                 
+                // LƯU DỮ LIỆU NGÀY SINH (sử dụng 3 trường)
                 birthDay: birthDay,
                 birthMonth: birthMonth,
                 birthYear: birthYear,
@@ -141,7 +143,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!initialSection) {
         switchSection('Profile');
     }
-});
+
     
    // --- 5. BỔ SUNG LOGIC MỞ/ĐÓNG MODAL ĐỊA CHỈ ---
     
