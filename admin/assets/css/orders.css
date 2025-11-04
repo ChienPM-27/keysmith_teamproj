@@ -1,11 +1,15 @@
+.orders-wrapper {
+  
+    padding: 20px;
+}
 /* HEADER */
-.section-header {
+.orders-wrapper .section-header {
     margin-bottom: 2rem;
     border-bottom: 2px solid var(--color-primary);
     padding-bottom: 1rem;
 }
 
-.section-header h1 {
+.orders-wrapper .section-header h1 {
     color: var(--color-text-dark);
     font-size: 2rem;
     margin-bottom: 0.5rem;
@@ -14,11 +18,11 @@
     gap: 0.5rem;
 }
 
-.section-header h1 i {
+.orders-wrapper .section-header h1 i {
     color: var(--color-primary);
 }
 
-.section-header p {
+.orders-wrapper .section-header p {
     color: #666;
     font-size: 0.95rem;
     margin: 0;
@@ -46,7 +50,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    flex-wrap: wrap;
+    align-content: center;
     margin-bottom: 20px;
     gap: 5px;
 }
@@ -104,19 +108,19 @@
     align-items: center;
 }
 
-.filter-date {
+.orders-wrapper .filter-date {
     display: flex;
     align-items: center;
     gap: 2.5px;
 }
 
-.filter-date label {
+.orders-wrapper .filter-date label {
     font-size: 14px;
     color: #666;
     white-space: nowrap;
 }
 
-.filter-date input[type="date"] {
+.orders-wrapper .filter-date input[type="date"] {
     height: 40px;
     padding: 8px 12px;
     border: 1px solid #ddd;
@@ -126,11 +130,11 @@
     background-color: #fff;
 }
 
-.filter-date input[type="date"]:focus {
+.orders-wrapper .filter-date input[type="date"]:focus {
     border-color: var(--color-primary);
 }
 
-.list-control .btn-control {
+.orders-wrapper .list-control .btn-control {
     margin-left: 0px;
     border-radius: 5px;
     background-color: var(--color-primary);
@@ -147,13 +151,13 @@
     white-space: nowrap;
 }
 
-.list-control .btn-control:hover {
+.orders-wrapper .list-control .btn-control:hover {
     border: 1px solid var(--color-primary);
     color: var(--color-text-dark);
     transform: translateY(-1px);
 }
 
-.list-control .btn-control i {
+.orders-wrapper .list-control .btn-control i {
     font-size: 14px;
 }
 

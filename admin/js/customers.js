@@ -17,28 +17,69 @@ function showCustomers(searchTerm = '', status = '') {
         console.log('Customers chưa được tải, đang đợi...');
         return;
     }
-
-    // Lấy người dùng từ localStorage.users
-    let users = [];
+    // Merge customers from localStorage.customers and localStorage.users
+    // - If username exists in both, merge fields (customers data wins for contact fields)
+    // - If user exists but not in customers, add a customer entry derived from user (status default 'active')
+    let customers = [];
     try {
-        if (typeof DataManager !== 'undefined' && typeof DataManager.getUsers === 'function') {
-            users = DataManager.getUsers() || [];
-        } else {
-            users = JSON.parse(localStorage.getItem('users') || '[]');
-        }
-    } catch (_) {
-        users = [];
-    }
+        const localCustomers = Array.isArray(JSON.parse(localStorage.getItem('customers') || '[]')) ? JSON.parse(localStorage.getItem('customers') || '[]') : [];
+        const users = Array.isArray(JSON.parse(localStorage.getItem('users') || '[]')) ? JSON.parse(localStorage.getItem('users') || '[]') : [];
 
-    // Chuyển đổi users thành cấu trúc customer rỗng (trừ username)
-    const customers = users.map(u => ({
-        username: u.username,
-        email: '',
-        phone: '',
-        address: '',
-        joinDate: '',
-        status: ''
-    }));
+        // Build map of customers by username
+        const custMap = new Map();
+        localCustomers.forEach(c => {
+            if (c && c.username) {
+                custMap.set(c.username, Object.assign({}, c));
+            }
+        });
+
+        // Merge or add from users
+        users.forEach(u => {
+            if (!u || !u.username) return;
+            const existing = custMap.get(u.username);
+            if (existing) {
+                // supplement: keep existing contact fields; but copy non-sensitive user fields if missing
+                Object.keys(u).forEach(k => {
+                    if (k === 'password') return; // do not copy password
+                    if (!existing[k] && u[k] !== undefined) existing[k] = u[k];
+                });
+                // ensure status default
+                if (!existing.status) existing.status = 'active';
+                custMap.set(u.username, existing);
+            } else {
+                // create a new customer record from user (do not copy password)
+                const newCust = {
+                    username: u.username,
+                    email: '',
+                    phone: '',
+                    address: '',
+                    joinDate: '',
+                    status: 'active'
+                };
+                Object.keys(u).forEach(k => { if (k !== 'password' && !(k in newCust)) newCust[k] = u[k]; });
+                custMap.set(u.username, newCust);
+            }
+        });
+
+        // Ensure every customer has the standard fields
+        customers = Array.from(custMap.values()).map(c => ({
+            username: c.username || '',
+            email: c.email || '',
+            phone: c.phone || '',
+            address: c.address || '',
+            joinDate: c.joinDate || '',
+            status: c.status || 'active',
+            // keep any extra non-sensitive fields
+            ...(c.role ? { role: c.role } : {})
+        }));
+
+        // Persist merged customers back to localStorage so future loads are consistent
+        localStorage.setItem('customers', JSON.stringify(customers));
+        if (window.dataManager && window.dataManager.data) window.dataManager.data.customers = customers;
+    } catch (err) {
+        console.error('Error merging customers/users from localStorage', err);
+        customers = [];
+    }
     const customerContainer = document.getElementById('show-customer-container');
     
     if (!customerContainer) return;
@@ -70,7 +111,10 @@ function showCustomers(searchTerm = '', status = '') {
     customerContainer.innerHTML = filteredCustomers.map(customer => {
         const joinDate = '';
         const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(customer.username)}&background=random&size=110`;
-        const statusText = '';
+        const statusText = customer.status || '';
+        const isActive = (customer.status || '').toLowerCase() === 'active';
+        const lockIcon = isActive ? 'fa-lock-open' : 'fa-lock';
+        const lockTitle = isActive ? 'Khóa/Không khóa (Hiện đang hoạt động) — bấm để chuyển sang inactive' : 'Khóa/Không khóa (Đang bị khóa) — bấm để kích hoạt';
         
         return `
         <div class="list" data-username="${customer.username}">
@@ -90,6 +134,7 @@ function showCustomers(searchTerm = '', status = '') {
                 <div class="list-control">
                     <div class="list-tool">
                         <button class="btn-edit" onclick="editCustomer('${customer.username}')"><i class="fa-solid fa-pen-to-square"></i></button>
+                        <button class="btn-lock" title="${lockTitle}" onclick="toggleCustomerStatus('${customer.username}')"><i class="fa-solid ${lockIcon}"></i></button>
                         <button class="btn-delete" onclick="deleteCustomer('${customer.username}')"><i class="fa-solid fa-trash"></i></button>
                     </div>
                 </div>
@@ -97,6 +142,28 @@ function showCustomers(searchTerm = '', status = '') {
         </div>
         `;
     }).join('');
+}
+
+function toggleCustomerStatus(username) {
+    try {
+        const customers = JSON.parse(localStorage.getItem('customers') || '[]');
+        const idx = (customers || []).findIndex(c => c.username === username);
+        if (idx === -1) {
+            alert('Không tìm thấy khách hàng để thay đổi trạng thái.');
+            return;
+        }
+
+        const current = (customers[idx].status || 'active').toLowerCase();
+        const next = current === 'active' ? 'inactive' : 'active';
+        customers[idx].status = next;
+        localStorage.setItem('customers', JSON.stringify(customers));
+        if (window.dataManager && window.dataManager.data) window.dataManager.data.customers = customers;
+        showCustomers();
+        alert(`Đã chuyển trạng thái ${username} sang ${next}.`);
+    } catch (err) {
+        console.error('Lỗi khi thay đổi trạng thái khách hàng', err);
+        alert('Không thể thay đổi trạng thái, xem console để biết chi tiết.');
+    }
 }
 
 
@@ -174,15 +241,57 @@ function editCustomer(username) {
 
 function deleteCustomer(username) {
     if (!confirm(`Bạn có chắc chắn muốn xóa khách hàng "${username}"?`)) return;
-    
-    const customers = window.dataManager.getCustomers();
-    const filtered = customers.filter(c => c.username !== username);
-    
-    localStorage.setItem('customers', JSON.stringify(filtered));
-    window.dataManager.data.customers = filtered;
-    
-    alert('Đã xóa khách hàng thành công!');
-    showCustomers();
+    // remove from localStorage.customers if present, otherwise attempt via DataManager
+    try {
+        let customers = JSON.parse(localStorage.getItem('customers') || '[]');
+        if (Array.isArray(customers) && customers.length > 0) {
+            const filtered = customers.filter(c => c.username !== username);
+            localStorage.setItem('customers', JSON.stringify(filtered));
+            if (window.dataManager && window.dataManager.data) window.dataManager.data.customers = filtered;
+            // Also remove corresponding user from localStorage.users if exists
+            try {
+                let users = JSON.parse(localStorage.getItem('users') || '[]');
+                if (Array.isArray(users) && users.some(u => u.username === username)) {
+                    users = users.filter(u => u.username !== username);
+                    localStorage.setItem('users', JSON.stringify(users));
+                    if (window.dataManager && window.dataManager.data) window.dataManager.data.users = users;
+                }
+            } catch (e) {
+                console.error('Error removing user from localStorage.users', e);
+            }
+
+            alert('Đã xóa khách hàng và tài khoản người dùng (nếu có) thành công!');
+            showCustomers();
+            return;
+        }
+    } catch (e) {
+        console.error('Error deleting from local customers', e);
+    }
+
+    // fallback: try DataManager
+    if (window.dataManager && typeof window.dataManager.getCustomers === 'function') {
+        const customersDM = window.dataManager.getCustomers() || [];
+        const filtered = customersDM.filter(c => c.username !== username);
+        localStorage.setItem('customers', JSON.stringify(filtered));
+        if (window.dataManager && window.dataManager.data) window.dataManager.data.customers = filtered;
+        // Also remove the user from localStorage.users if present
+        try {
+            let users = JSON.parse(localStorage.getItem('users') || '[]');
+            if (Array.isArray(users) && users.some(u => u.username === username)) {
+                users = users.filter(u => u.username !== username);
+                localStorage.setItem('users', JSON.stringify(users));
+                if (window.dataManager && window.dataManager.data) window.dataManager.data.users = users;
+            }
+        } catch (e) {
+            console.error('Error removing user from localStorage.users', e);
+        }
+
+        alert('Đã xóa khách hàng và tài khoản người dùng (nếu có) thành công!');
+        showCustomers();
+        return;
+    }
+
+    alert('Không tìm thấy danh sách khách hàng để xóa.');
 }
 
 function handleAddCustomer(e) {
@@ -198,10 +307,21 @@ function handleAddCustomer(e) {
         return;
     }
 
-    const existingCustomer = window.dataManager.getCustomer(username);
-    if (existingCustomer) {
-        alert('Tên người dùng đã tồn tại!');
-        return;
+    // ensure username uniqueness in local customers (or users)
+    try {
+        const localCustomers = JSON.parse(localStorage.getItem('customers') || '[]');
+        if (Array.isArray(localCustomers) && localCustomers.some(c => c.username === username)) {
+            alert('Tên người dùng đã tồn tại!');
+            return;
+        }
+        // also check users list to avoid collisions if desired
+        const users = JSON.parse(localStorage.getItem('users') || '[]');
+        if (Array.isArray(users) && users.some(u => u.username === username)) {
+            // username exists as a user; still allow adding customer but warn
+            if (!confirm('Tên người dùng tồn tại trong hệ thống users. Bạn vẫn muốn thêm thông tin khách hàng?')) return;
+        }
+    } catch (err) {
+        console.error('Error reading local storage for uniqueness check', err);
     }
 
     const newCustomer = {
@@ -213,10 +333,24 @@ function handleAddCustomer(e) {
         status: 'active'
     };
 
-    window.dataManager.addCustomer(newCustomer);
-    alert('Đã thêm khách hàng thành công!');
-    closeCustomerModal();
-    showCustomers();
+    // Save to localStorage.customers
+    try {
+        const customers = JSON.parse(localStorage.getItem('customers') || '[]');
+        customers.push(newCustomer);
+        localStorage.setItem('customers', JSON.stringify(customers));
+        // also update DataManager if present
+        if (window.dataManager && window.dataManager.data) {
+            window.dataManager.data.customers = customers;
+        }
+
+        alert('Đã thêm khách hàng thành công!');
+        closeCustomerModal();
+        showCustomers();
+        return;
+    } catch (err) {
+        console.error('Lỗi khi lưu khách hàng vào localStorage:', err);
+        alert('Không thể lưu khách hàng. Xem console để biết chi tiết.');
+    }
 }
 
 function handleUpdateCustomer(e) {
@@ -232,29 +366,51 @@ function handleUpdateCustomer(e) {
         alert('Vui lòng nhập email!');
         return;
     }
-
-    const customers = window.dataManager.getCustomers();
-    const index = customers.findIndex(c => c.username === currentEditingUsername);
-    
-    if (index !== -1) {
-        customers[index] = {
-            ...customers[index],
-            email,
-            phone,
-            address
-        };
-        
-        localStorage.setItem('customers', JSON.stringify(customers));
-        window.dataManager.data.customers = customers;
-        
-        alert('Đã cập nhật thông tin khách hàng thành công!');
-        closeCustomerModal();
-        showCustomers();
-        
-        document.getElementById('customer-username').disabled = false;
-    } else {
-        alert('Không tìm thấy khách hàng!');
+    // Try update in localStorage.customers first
+    try {
+        const customers = JSON.parse(localStorage.getItem('customers') || '[]');
+        const index = (customers || []).findIndex(c => c.username === currentEditingUsername);
+        if (index !== -1) {
+            customers[index] = {
+                ...customers[index],
+                email,
+                phone,
+                address
+            };
+            localStorage.setItem('customers', JSON.stringify(customers));
+            if (window.dataManager && window.dataManager.data) window.dataManager.data.customers = customers;
+            alert('Đã cập nhật thông tin khách hàng thành công!');
+            closeCustomerModal();
+            showCustomers();
+            document.getElementById('customer-username').disabled = false;
+            return;
+        }
+    } catch (err) {
+        console.error('Error updating local customers', err);
     }
+
+    // Fallback to DataManager
+    if (window.dataManager && typeof window.dataManager.getCustomers === 'function') {
+        const customers = window.dataManager.getCustomers();
+        const index = customers.findIndex(c => c.username === currentEditingUsername);
+        if (index !== -1) {
+            customers[index] = {
+                ...customers[index],
+                email,
+                phone,
+                address
+            };
+            localStorage.setItem('customers', JSON.stringify(customers));
+            if (window.dataManager && window.dataManager.data) window.dataManager.data.customers = customers;
+            alert('Đã cập nhật thông tin khách hàng thành công!');
+            closeCustomerModal();
+            showCustomers();
+            document.getElementById('customer-username').disabled = false;
+            return;
+        }
+    }
+
+    alert('Không tìm thấy khách hàng!');
 }
 
 async function refreshCustomers() {
