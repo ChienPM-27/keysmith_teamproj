@@ -130,7 +130,7 @@
     border-color: var(--color-primary);
 }
 
-.btn-control {
+.list-control .btn-control {
     margin-left: 0px;
     border-radius: 5px;
     background-color: var(--color-primary);
@@ -147,12 +147,13 @@
     white-space: nowrap;
 }
 
-.btn-control:hover {
-    background-color: var(--color-primary-dark);
+.list-control .btn-control:hover {
+    border: 1px solid var(--color-primary);
+    color: var(--color-text-dark);
     transform: translateY(-1px);
 }
 
-.btn-control i {
+.list-control .btn-control i {
     font-size: 14px;
 }
 
