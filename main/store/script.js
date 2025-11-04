@@ -15,21 +15,163 @@ const backBtn = document.getElementById("back-btn");
 let allProducts = [];
 
 // ===== Load Store Products (có phân trang) =====
-fetch("../store/detail/product.json")
+// load products from local detail JSON
+fetch("./detail/product.json")
   .then((res) => res.json())
   .then((products) => {
     allProducts = products;
-    const pagination = document.getElementById("pagination");
 
+    // UI elements
+    const pagination = document.getElementById("pagination");
+    const searchInput = document.getElementById("search-input");
+    const searchButton = document.getElementById("search-button");
+    const statusSelect = document.getElementById("status");
+    const brandsSelect = document.getElementById("brands");
+    const categorySelect = document.getElementById("category");
+    const colorSelect = document.getElementById("color");
+    const sortSelect = document.getElementById("sort");
+    const priceMinInput = document.getElementById("price-min");
+    const priceMaxInput = document.getElementById("price-max");
+
+    // Pagination state
     let currentPage = 1;
     const itemsPerPage = 10;
-    const totalPages = Math.ceil(products.length / itemsPerPage);
+    let filteredProducts = [...allProducts];
+
+    // Populate filters from data
+    function populateFilters(products) {
+      const brands = new Set();
+      const categories = new Set();
+      const colors = new Set();
+
+      products.forEach((p) => {
+        const b = p.specs?.Brand;
+        if (b) brands.add(b.trim());
+
+        const catRaw = p.specs?.Category;
+        if (catRaw) {
+          // Category often like "Keycap / Attack On Titan Collection"
+          const parts = catRaw.split("/").map((s) => s.trim());
+          const last = parts[parts.length - 1];
+          // remove 'Collection' suffix if present
+          const normalized = last.replace(/Collection/i, "").trim();
+          if (normalized) categories.add(normalized);
+        }
+
+        const colorRaw = p.specs?.Color;
+        if (colorRaw) {
+          // split by en-dash, em-dash, comma or slash
+          const tokens = colorRaw.split(/\s*[–—,-/]\s*/);
+          tokens.forEach((t) => {
+            const tok = t.trim();
+            if (tok) colors.add(tok);
+          });
+        }
+      });
+
+      // brands
+      brandsSelect.innerHTML = `<option value="">Hãng sản xuất</option>`;
+      Array.from(brands)
+        .sort()
+        .forEach((b) =>
+          brandsSelect.insertAdjacentHTML(
+            "beforeend",
+            `<option value="${b}">${b}</option>`
+          )
+        );
+
+      // categories
+      categorySelect.innerHTML = `<option value="">Danh mục / Bộ sưu tập</option>`;
+      Array.from(categories)
+        .sort()
+        .forEach((c) =>
+          categorySelect.insertAdjacentHTML(
+            "beforeend",
+            `<option value="${c}">${c}</option>`
+          )
+        );
+
+      // colors
+      colorSelect.innerHTML = `<option value="">Màu sắc</option>`;
+      Array.from(colors)
+        .sort()
+        .forEach((c) =>
+          colorSelect.insertAdjacentHTML(
+            "beforeend",
+            `<option value="${c}">${c}</option>`
+          )
+        );
+    }
+
+    function applyFilters() {
+      const q = (searchInput?.value || "").trim().toLowerCase();
+      const status = statusSelect?.value || "";
+      const brand = brandsSelect?.value || "";
+      const category = categorySelect?.value || "";
+      const color = colorSelect?.value || "";
+      const sort = sortSelect?.value || "";
+      const min = Number(priceMinInput?.value || 0) || 0;
+      const max = Number(priceMaxInput?.value || 0) || 0;
+
+      filteredProducts = allProducts.filter((p) => {
+        // search text on title and shortDesc
+        if (q) {
+          const hay = (p.title + " " + (p.shortDesc || "")).toLowerCase();
+          if (!hay.includes(q)) return false;
+        }
+
+        // status: products may not have 'status' field, ignore if missing
+        if (status) {
+          if ((p.status || "").toLowerCase() !== status.toLowerCase())
+            return false;
+        }
+
+        // brand
+        if (brand) {
+          if ((p.specs?.Brand || "") !== brand) return false;
+        }
+
+        // category (we compare normalized as in populate)
+        if (category) {
+          const catRaw = p.specs?.Category || "";
+          const parts = catRaw.split("/").map((s) => s.trim());
+          const last = parts[parts.length - 1] || "";
+          const normalized = last.replace(/Collection/i, "").trim();
+          if (normalized !== category) return false;
+        }
+
+        // color
+        if (color) {
+          const colorRaw = p.specs?.Color || "";
+          const tokens = colorRaw.split(/\s*[–—,-/]\s*/).map((t) => t.trim());
+          if (!tokens.includes(color)) return false;
+        }
+
+        // price range
+        if (min && p.price < min) return false;
+        if (max && max > 0 && p.price > max) return false;
+
+        return true;
+      });
+
+      // sorting
+      if (sort === "incre-price") {
+        filteredProducts.sort((a, b) => a.price - b.price);
+      } else if (sort === "decre-price") {
+        filteredProducts.sort((a, b) => b.price - a.price);
+      }
+
+      // after filter, go to first page
+      currentPage = 1;
+      renderPage(currentPage);
+    }
 
     function renderPage(page) {
       pro_container.innerHTML = "";
+      const totalPages = Math.max(1, Math.ceil(filteredProducts.length / itemsPerPage));
       const start = (page - 1) * itemsPerPage;
       const end = start + itemsPerPage;
-      const pageItems = products.slice(start, end);
+      const pageItems = filteredProducts.slice(start, end);
 
       pageItems.forEach((product) => {
         const pro = document.createElement("div");
@@ -47,14 +189,14 @@ fetch("../store/detail/product.json")
         pro_container.appendChild(pro);
       });
 
-      updatePagination();
+      updatePagination(totalPages);
     }
 
-    function updatePagination() {
+    function updatePagination(totalPages) {
       if (!pagination) return;
       pagination.innerHTML = "";
 
-      // Nút mũi tên trái
+      // left arrow
       const leftArrow = document.createElement("a");
       leftArrow.href = "#";
       leftArrow.innerHTML = `<i class="fa-solid fa-arrow-left"></i>`;
@@ -63,13 +205,10 @@ fetch("../store/detail/product.json")
         if (currentPage > 1) {
           currentPage--;
           renderPage(currentPage);
-        } else {
-          alert("Bạn đang ở trang đầu tiên!");
         }
       });
       pagination.appendChild(leftArrow);
 
-      // Nút số trang
       for (let i = 1; i <= totalPages; i++) {
         const a = document.createElement("a");
         a.href = "#";
@@ -83,7 +222,7 @@ fetch("../store/detail/product.json")
         pagination.appendChild(a);
       }
 
-      // Nút mũi tên phải
+      // right arrow
       const rightArrow = document.createElement("a");
       rightArrow.href = "#";
       rightArrow.innerHTML = `<i class="fa-solid fa-arrow-right"></i>`;
@@ -92,14 +231,27 @@ fetch("../store/detail/product.json")
         if (currentPage < totalPages) {
           currentPage++;
           renderPage(currentPage);
-        } else {
-          alert("Bạn đang ở trang cuối cùng!");
         }
       });
       pagination.appendChild(rightArrow);
     }
 
+    // initialize
+    filteredProducts = [...allProducts];
+    populateFilters(allProducts);
     renderPage(currentPage);
+
+    // Event listeners for filters/search
+    if (searchButton) searchButton.addEventListener("click", () => applyFilters());
+    if (searchInput) searchInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") applyFilters();
+    });
+    [statusSelect, brandsSelect, categorySelect, colorSelect, sortSelect].forEach((el) => {
+      if (el) el.addEventListener("change", () => applyFilters());
+    });
+    [priceMinInput, priceMaxInput].forEach((el) => {
+      if (el) el.addEventListener("change", () => applyFilters());
+    });
   })
   .catch((err) => console.error("Lỗi đọc JSON:", err));
 

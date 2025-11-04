@@ -1,6 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Spartan:wght@100;200;300;400;500;600;700;800;900&display=swap");
 @import url('https://fonts.googleapis.com/css2?family=Abhaya+Libre:wght@400;500;600;700;800&family=Aldrich&family=Bebas+Neue&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Abhaya+Libre:wght@400;500;600;700;800&family=Aldrich&family=Bebas+Neue&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+
 :root {
   --color-primary: #ff8519;
   --color-primary-hover: #ffad66;
@@ -11,11 +12,12 @@
   --font-main: 'Poppins', sans-serif;
   --font-title: 'Bebas Neue', sans-serif;
 }
-*{
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: "Poppins", sans-serif;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
 }
 
 html {
@@ -89,26 +91,29 @@ body {
   top: 0;
   left: 0;
   width: 100%;
-  height: 50px; /* chiều cao shadow */
-  background: linear-gradient(
-    to bottom,
-    rgba(0, 0, 0, 0.8),
-    rgba(255, 255, 255, 0)
-  );
-  pointer-events: none; /* không che click */
+  height: 50px;
+  /* chiều cao shadow */
+  background: linear-gradient(to bottom,
+      rgba(0, 0, 0, 0.8),
+      rgba(255, 255, 255, 0));
+  pointer-events: none;
+  /* không che click */
   z-index: -1;
 }
 
 #header .logo {
-  margin-right: auto; /* auto đẩy logo sang trái */
+  margin-right: auto;
+  /* auto đẩy logo sang trái */
   margin-bottom: -5px;
 }
 
 .header-icons {
-  margin-left: auto; /* auto đẩy logo sang phải */
+  margin-left: auto;
+  /* auto đẩy logo sang phải */
   display: flex;
   align-items: center;
-  gap: 15px; /* khoảng cách giữa cart và profile */
+  gap: 15px;
+  /* khoảng cách giữa cart và profile */
 }
 
 .header-icons a {
@@ -116,13 +121,15 @@ body {
   font-size: 20px;
   text-decoration: none;
 }
+
 .header-icons a:hover {
   color: #ff9f4a;
   transition: color 0.3s ease;
 }
 
 #navbar {
-  flex: 1; /* chiếm hết phần còn lại !!! */
+  flex: 1;
+  /* chiếm hết phần còn lại !!! */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -156,13 +163,15 @@ body {
   left: 50%;
   transform: translateX(-50%);
   bottom: -2px;
-  width: 0%; /* ẩn đi underline */
+  width: 0%;
+  /* ẩn đi underline */
   height: 1px;
   transition: width 0.3s ease;
 }
 
 #navbar li a:hover::after {
-  width: 100%; /* sau khi hover thì sẽ xuất hiện underline */
+  width: 100%;
+  /* sau khi hover thì sẽ xuất hiện underline */
 }
 
 /* ========================= Store page ======================*/
@@ -175,14 +184,54 @@ body {
 }
 
 hr {
-    margin: 40px 20px 0 20px;
+  margin: 40px 20px 0 20px;
+}
+
+#store-search-bar {
+  display: flex;
+  justify-content: center;
+  margin: 20px auto 0px auto;
+  padding: 10px 12px;
+  gap: 0.25rem
+}
+
+#store-search-bar input {
+  width: 95%;
+  padding: 10px 12px;
+  border: 1px solid #e1f5fe;
+  border-radius: 8px;
+  box-shadow: 20px 20px 30px rgba(0, 0, 0, 0.02);
+  font-size: 16px;
+  margin-left: 10px;
+}
+
+#store-search-bar input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+#store-search-bar button {
+  border: none;
+  background-color: var(--color-primary);
+  color: white;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  box-shadow: 0 4px 12px rgba(255, 133, 25, 0.3);
+  transition: background-color 0.2s ease-in-out;
+  margin-right: 10px;
+}
+
+#store-search-bar button:hover {
+  background-color: var(--color-primary-hover);
 }
 
 #filter-menu {
   display: flex;
   flex-wrap: wrap;
   padding: 10px 12px;
-  margin: 20px auto 0px auto;
+  margin: 0;
   position: relative;
 }
 
@@ -194,13 +243,48 @@ hr {
   margin: 0 10px;
 }
 
-#sort {
-    position: absolute;
-    right: 10px;
+/* Price range inputs and color/category selects styling */
+#filter-menu .price-range {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-left: 10px;
 }
 
-#status, #brands, #collections, #condition {
-    justify-content: flex-start;
+#filter-menu .price-range input[type="number"] {
+  width: 120px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid #e1f5fe;
+  box-shadow: 20px 20px 30px rgba(0, 0, 0, 0.02);
+}
+
+#filter-menu .price-range input[type="number"]:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+#filter-menu #category,
+#filter-menu #color,
+#filter-menu #brands {
+  min-width: 160px;
+}
+
+#filter-menu select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+#sort {
+  position: absolute;
+  right: 10px;
+}
+
+#status,
+#brands,
+#collections,
+#condition {
+  justify-content: flex-start;
 }
 
 /* product section */
@@ -433,6 +517,7 @@ footer .form .input-group button {
 footer .form .input-group button:hover {
   background: #555;
 }
+
 /* ===== Pagination Hover Effect ===== */
 #pagination a {
   display: inline-block;
@@ -447,9 +532,11 @@ footer .form .input-group button:hover {
 }
 
 #pagination a:hover {
-  background-color: #ff6a00;  /* màu cam nổi bật khi rê chuột */
+  background-color: #ff6a00;
+  /* màu cam nổi bật khi rê chuột */
   color: white;
-  transform: translateY(-2px); /* nhích lên nhẹ */
+  transform: translateY(-2px);
+  /* nhích lên nhẹ */
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
 
