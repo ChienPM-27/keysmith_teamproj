@@ -98,9 +98,14 @@
     <!-- ===== DETAIL VIEW ===== -->
     <section id="product-detail" style="display: none">
       <div class="product-wrapper">
+        <!-- ===== PRODUCT IMAGE SLIDER (tối đa 3 hình) ===== -->
         <div class="product-images">
-          <img src="" alt="Main Product" class="main-img" id="mainProductImg" />
-          <div class="thumbnail-list"></div>
+          <div class="thumbnail-list">
+            <div class="image-slider" id="imageSlider">
+              <div class="slides"></div>
+            </div>
+            <div class="slider-dots" id="sliderDots"></div>
+          </div>
         </div>
 
         <div class="product-info">

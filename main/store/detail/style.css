@@ -313,39 +313,6 @@ footer .form .input-group button:hover {
   max-width: 450px;
 }
 
-.product-images .main-img {
-  width: 100%;
-  border-radius: 10px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-  object-fit: cover;
-}
-
-/* --- DANH SÁCH ẢNH MINI --- */
-.thumbnail-list {
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  gap: 10px;
-  width: 100%;
-  flex-wrap: wrap;
-}
-
-.thumbnail-list .thumb {
-  width: 70px;
-  height: 70px;
-  object-fit: cover;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: transform 0.3s, border 0.3s;
-  border: 2px solid transparent;
-}
-
-.thumbnail-list .thumb:hover,
-.thumbnail-list .active-thumb {
-  border: 2px solid #ff9f4a;
-  transform: scale(1.05);
-}
-
 /* --- THÔNG TIN SẢN PHẨM --- */
 .product-info {
   flex: 1.2;
@@ -414,17 +381,6 @@ footer .form .input-group button:hover {
 }
 .share-icons a:hover {
   color: #ff6b35;
-}
-.like-section {
-  color: #bbb;
-  font-size: 18px;
-}
-.like-section i {
-  cursor: pointer;
-  transition: transform 0.2s ease;
-}
-.like-section i:hover {
-  transform: scale(1.2);
 }
 
 /* --- NÚT MUA --- */
@@ -502,13 +458,55 @@ footer .form .input-group button:hover {
 .qty-btn:hover {
   background: #ff7a00;
 }
-/* ===================== BỔ SUNG: PRODUCT DETAILS + DESCRIPTION TRÊN CÙNG NỀN ===================== */
 
+/* ===================== BỔ SUNG SLIDER ẢNH SẢN PHẨM ===================== */
+.image-slider {
+  position: relative;
+  width: 100%;
+  max-width: 450px;
+  overflow: hidden;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.image-slider .slides {
+  display: flex;
+  transition: transform 0.5s ease-in-out;
+}
+
+.image-slider img {
+  width: 100%;
+  flex-shrink: 0;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+.slider-dots {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.slider-dots span {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin: 0 4px;
+  background-color: #ccc;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.slider-dots .active {
+  background-color: #ff9f4a;
+}
+
+/* ===================== PRODUCT EXTRA (CHI TIẾT + MÔ TẢ) ===================== */
 #product-extra {
   width: 100%;
   max-width: 1200px;
   margin-top: 100px;
-  background: rgba(0, 0, 0, 0.4); /* nền mờ trong suốt */
+  background: rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border-radius: 16px;
@@ -519,7 +517,7 @@ footer .form .input-group button:hover {
 }
 
 #product-detail {
-  flex-direction: column; /* gộp phần chi tiết & mô tả vào cùng 1 khối dọc */
+  flex-direction: column;
   align-items: center;
 }
 
@@ -567,6 +565,8 @@ footer .form .input-group button:hover {
     font-size: 22px;
   }
 }
+
+/* ===== NÚT BACK ===== */
 #back-btn {
   position: fixed;
   top: 90px;
