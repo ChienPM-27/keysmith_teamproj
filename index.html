@@ -21,13 +21,12 @@
             <ul id="navbar">
                 <a href="#" id="close"><i class="fa-solid fa-times"></i></a>
                 <li><a href="#" id="scrollToTop">Home</a></li>
-                <li><a href="./store/Store.html">Store</a></li>
+                <li><a href="./main/store/index.html">Store</a></li>
                 <li><a href="#">Feature</a></li>
                 <li><a href="#" id="contactLink">Contact</a></li>
             </ul>
 
             <div class="header-icons">
-                <a href="#" class="search"><i class="fa-solid fa-magnifying-glass"></i></a>
                 <a href="Cart.html" class="cart"><i class="fa-solid fa-cart-shopping"></i></a>
                 <a href="#" class="profile"><i class="fa-solid fa-circle-user"></i></a>
                 <div id="mobile">
@@ -447,7 +446,7 @@
         var product = $(this).find('.owl-carousel');
         product.owlCarousel({
             loop: true,
-            nav: true,
+            center: true,
             dotsContainer: $(this).find('.custom-dots'),
             autoplay: true,
             autoplayTimeout: 3000,
