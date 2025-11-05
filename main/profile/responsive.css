@@ -1,0 +1,624 @@
+/* ========================= RESPONSIVE STYLES ========================= */
+
+/* ========================= MOBILE (max-width: 767px) ========================= */
+@media (max-width: 767px) {
+    
+    /* Header Mobile */
+    #header {
+        padding: 5px 20px;
+    }
+
+    #header .logo {
+        width: 120px;
+        height: auto;
+    }
+    
+    .mobile-menu-btn {
+        display: block;
+        min-width: 44px;
+        min-height: 44px;
+    }
+    
+    /* Navigation Mobile */
+    #navbar {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background: rgba(0, 0, 0, 0.95);
+        backdrop-filter: blur(10px);
+        flex-direction: column;
+        padding: 20px 0;
+        z-index: 100;
+        transition: all 0.3s ease-in-out;
+    }
+
+    #navbar.active {
+        display: flex;
+    }
+    
+    #navbar li {
+        padding: 12px 20px;
+        width: 100%;
+        text-align: center;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    /* Header Icons */
+    .header-icons {
+        gap: 10px;
+    }
+    
+    .header-icons a {
+        font-size: 18px;
+    }
+
+    /* Account Page Mobile */
+    .account-page {
+        margin-top: 80px;
+        padding: 0 10px;
+    }
+    
+    .account-container {
+        padding: 15px;
+        flex-direction: column;
+        transition: all 0.3s ease;
+        gap: 20px;
+    }
+    
+    /* Sidebar Mobile */
+    .account-sidebar {
+        flex: none;
+        width: 100%;
+        padding: 15px;
+    }
+    
+    .account-sidebar h3 {
+        margin-top: 0;
+        font-size: 20px;
+    }
+    
+    .account-sidebar a {
+        min-height: 44px;
+        padding: 15px 12px;
+        font-size: 15px;
+    }
+
+    /* Profile Header Mobile */
+    .profile-header {
+        flex-direction: column;
+        text-align: center;
+        padding: 15px;
+    }
+    
+    .avatar {
+        width: 80px;
+        height: 80px;
+        font-size: 30px;
+    }
+
+    .info h3 {
+        font-size: 20px;
+    }
+    
+    .info p {
+        font-size: 14px;
+    }
+    
+    /* Profile Form Mobile */
+    .profile-form h2 {
+        font-size: 22px;
+    }
+    
+    .account-content {
+        padding: 20px;
+        max-width: 100%;
+    }
+    
+    .form-row {
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .form-group input, 
+    .form-group select, 
+    .form-group textarea {
+        font-size: 16px; /* Prevent iOS zoom */
+        height: 44px;
+    }
+
+    /* Birthday Selectors Mobile */
+    .birthday-selectors {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .birthday-selectors select {
+        width: 100%;
+        height: 44px;
+    }
+
+    /* Form Actions Mobile */
+    .form-actions {
+        flex-direction: column;
+        gap: 10px;
+        align-items: stretch;
+    }
+
+    .reset,
+    .btn-primary {
+        width: 100%;
+        max-width: 100%;
+        min-height: 44px;
+        padding: 12px 20px;
+    }
+
+    /* ========================= ORDER TABLE MOBILE ========================= */
+    
+    .order-page-title {
+        font-size: 20px;
+        margin-top: 20px;
+        margin-bottom: 15px;
+    }
+
+    .order-table {
+        border-radius: 8px;
+        margin: 0;
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .order-header-row {
+        display: none; /* Hide table header on mobile */
+    }
+
+    /* Empty State Mobile */
+    .order-empty-row {
+        padding: 80px 20px;
+        flex-direction: column;
+        gap: 15px;
+        min-height: 300px;
+    }
+
+    .order-empty-row::before {
+        content: "📦";
+        font-size: 60px;
+        opacity: 0.3;
+    }
+
+    .order-empty-row p {
+        font-size: 15px;
+        line-height: 1.6;
+    }
+
+    /* Order Data Rows - Card Layout */
+    .order-data-row {
+        flex-direction: column;
+        padding: 20px;
+        gap: 12px;
+        border-bottom: 8px solid var(--color-background);
+        background-color: rgba(255, 255, 255, 0.05);
+        text-align: left;
+        border-radius: 8px;
+        margin-bottom: 10px;
+    }
+
+    .order-data-row .order-col {
+        flex: none;
+        width: 100%;
+        justify-content: flex-start;
+        border-right: none;
+        padding: 8px 0;
+        white-space: normal;
+        word-wrap: break-word;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .order-data-row .order-col:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+
+    .order-data-row .order-col::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: var(--color-primary);
+        display: inline-block;
+        min-width: 120px;
+        margin-right: 10px;
+    }
+
+    .account-section[data-section-name="order"] {
+        padding: 0;
+        overflow-x: hidden;
+    }
+
+    /* ========================= ADDRESS SECTION MOBILE ========================= */
+    
+    .address-header {
+        flex-direction: column;
+        align-items: flex-start;
+        margin-top: 20px;
+        gap: 15px;
+    }
+
+    .address-page-title {
+        font-size: 20px;
+    }
+
+    .address-btn {
+        width: 100%;
+        justify-content: center;
+        padding: 12px 20px;
+    }
+
+    /* ========================= MODAL MOBILE ========================= */
+    
+    .modal-content {
+        width: 95%;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+
+    .modal-header h2 {
+        font-size: 16px;
+    }
+
+    .modal-body {
+        padding: 15px;
+    }
+
+    .modal-footer {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .modal-btn {
+        width: 100%;
+    }
+
+    /* ========================= PASSWORD SECTION MOBILE ========================= */
+    
+    .password-page-title {
+        font-size: 20px;
+        margin-top: 20px;
+    }
+
+    .password-form {
+        padding: 20px;
+        max-width: 100%;
+    }
+
+    .password-form .form-group input[type="password"] {
+        height: 44px;
+        font-size: 16px;
+    }
+
+    /* ========================= FOOTER MOBILE ========================= */
+    
+    footer {
+        flex-direction: column;
+        padding: 20px;
+        gap: 20px;
+    }
+    
+    footer .About table {
+        font-size: 14px;
+    }
+
+    footer .About table td {
+        padding: 5px 10px;
+        display: block;
+        width: 100% !important;
+        text-align: left;
+        border: none;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    }
+    
+    footer .About table tr {
+        display: block;
+        margin-bottom: 10px;
+    }
+    
+    footer .About table td[rowspan] {
+        display: none;
+    }
+    
+    footer .form h3 {
+        font-size: 24px;
+    }
+
+    footer .form p {
+        font-size: 14px;
+    }
+    
+    .input-group {
+        flex-direction: column;
+    }
+    
+    .input-group input[type="email"] {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+    
+    /* ========================= GLOBAL MOBILE ADJUSTMENTS ========================= */
+    
+    .section-p1 {
+        padding: 20px;
+    }
+    
+    h1 {
+        font-size: 36px;
+        line-height: 1.2;
+    }
+
+    h2 {
+        font-size: 30px;
+        line-height: 1.3;
+    }
+    
+    body {
+        padding-top: 70px;
+    }
+
+    /* Single Product Page Mobile */
+    #prodetails {
+        flex-direction: column;
+        margin-top: 100px;
+    }
+
+    #prodetails .single-pro-image {
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: 20px;
+    }
+    
+    #prodetails .single-pro-details {
+        width: 100%;
+    }
+}
+
+/* ========================= TABLET (768px - 1024px) ========================= */
+
+@media (min-width: 768px) and (max-width: 1024px) {
+    
+    /* General Tablet */
+    .section-p1 {
+        padding: 30px 40px;
+    }
+    
+    #header {
+        padding: 5px 40px;
+    }
+    
+    /* Account Container Tablet */
+    .account-container {
+        max-width: 95%;
+        gap: 20px;
+    }
+
+    .account-sidebar {
+        flex: 0 0 200px;
+    }
+
+    .account-sidebar a {
+        padding: 10px 12px;
+        font-size: 14px;
+    }
+
+    .account-content {
+        padding: 25px;
+    }
+    
+    /* Order Table Tablet */
+    .order-table {
+        font-size: 12px;
+    }
+
+    .order-header-row {
+        font-size: 11px;
+        padding: 10px 5px;
+    }
+
+    .order-col {
+        padding: 0 5px;
+    }
+
+    .header-col-1 { flex: 0.8; }
+    .header-col-2 { flex: 0.9; }
+    .header-col-3 { flex: 1.5; }
+    .header-col-4 { flex: 1; }
+    .header-col-5 { flex: 1.2; }
+
+    /* Address Header Tablet */
+    .address-header {
+        margin-top: 40px;
+    }
+
+    .address-page-title {
+        font-size: 22px;
+    }
+
+    .address-btn {
+        padding: 8px 16px;
+        font-size: 13px;
+    }
+
+    /* Profile Header Tablet */
+    .profile-header {
+        padding: 20px;
+    }
+
+    .avatar {
+        width: 90px;
+        height: 90px;
+    }
+
+    /* Form Tablet */
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        font-size: 15px;
+    }
+    
+    /* Footer Tablet */
+    footer {
+        padding: 30px 40px;
+    }
+
+    footer .About table {
+        font-size: 15px;
+    }
+
+    footer .form h3 {
+        font-size: 28px;
+    }
+}
+
+/* ========================= SMALL MOBILE (max-width: 480px) ========================= */
+
+@media (max-width: 480px) {
+    
+    #header {
+        padding: 5px 15px;
+    }
+
+    .account-page {
+        margin-top: 70px;
+        padding: 0 5px;
+    }
+
+    .account-container {
+        padding: 10px;
+    }
+
+    .account-content {
+        padding: 15px;
+    }
+
+    .profile-header {
+        padding: 15px 10px;
+    }
+
+    .avatar {
+        width: 70px;
+        height: 70px;
+        font-size: 28px;
+    }
+
+    .info h3 {
+        font-size: 18px;
+    }
+
+    .form-group label {
+        font-size: 13px;
+    }
+
+    .modal-content {
+        width: 98%;
+    }
+
+    /* Horizontal scroll fallback for very small screens */
+    .order-table-wrapper {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .order-table-wrapper::-webkit-scrollbar {
+        height: 6px;
+    }
+
+    .order-table-wrapper::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.05);
+    }
+
+    .order-table-wrapper::-webkit-scrollbar-thumb {
+        background: var(--color-primary);
+        border-radius: 3px;
+    }
+}
+
+/* ========================= LARGE DESKTOP (min-width: 1440px) ========================= */
+
+@media (min-width: 1440px) {
+    
+    .account-container {
+        max-width: 1200px;
+    }
+
+    .account-content {
+        max-width: 800px;
+    }
+
+    .section-p1 {
+        padding: 40px 100px;
+    }
+
+    footer {
+        padding: 40px 100px;
+    }
+}
+
+/* ========================= LANDSCAPE ORIENTATION ========================= */
+
+@media (max-width: 767px) and (orientation: landscape) {
+    
+    body {
+        padding-top: 60px;
+    }
+
+    .account-page {
+        margin-top: 70px;
+    }
+
+    .profile-header {
+        flex-direction: row;
+        text-align: left;
+    }
+
+    .avatar {
+        width: 60px;
+        height: 60px;
+        font-size: 24px;
+    }
+
+    .modal-content {
+        max-height: 85vh;
+    }
+}
+
+/* ========================= PRINT STYLES ========================= */
+
+@media print {
+    
+    #header,
+    footer,
+    .account-sidebar,
+    .mobile-menu-btn,
+    .address-btn,
+    .reset,
+    .btn-primary {
+        display: none;
+    }
+
+    .account-container {
+        max-width: 100%;
+        box-shadow: none;
+    }
+
+    .account-content {
+        background: white;
+        color: black;
+    }
+
+    .order-table {
+        background: white;
+        border: 1px solid black;
+    }
+
+    .order-header-row {
+        background: #f0f0f0;
+        color: black;
+    }
+}
