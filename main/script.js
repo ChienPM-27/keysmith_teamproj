@@ -23,6 +23,23 @@ button.addEventListener("click", () => {
     login.style.display = "flex";
 });
 
+// ------------------- CART CLICK HANDLER -------------------
+const cartBtn = document.querySelector('.cart');
+cartBtn.addEventListener('click', function(e) {
+    e.preventDefault();
+    const loggedUser = localStorage.getItem('loggedInUser');
+    if (!loggedUser) {
+        // Mở modal login đúng chuẩn
+        const modalOverlay = document.getElementById('modalOverlay');
+        if (modalOverlay) {
+            modalOverlay.classList.add('active');
+            modalOverlay.style.display = 'flex'; // Đảm bảo modal hiển thị
+            document.body.style.overflow = 'hidden';
+        }
+    } else {
+        window.location.href = './main/store/Store.html?cart=1';
+    }
+});
 
 // ------------------- MOBILE MENU TOGGLE -------------------
 const bar = document.getElementById('bar');

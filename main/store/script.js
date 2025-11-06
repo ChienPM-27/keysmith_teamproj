@@ -1408,3 +1408,16 @@ document.addEventListener("DOMContentLoaded", () => {
     `https://www.instagram.com/?url=${encodeURIComponent(currentURL)}`
   );
 });
+
+document.addEventListener('DOMContentLoaded', function() {
+  // Hiển thị cart-view nếu có ?cart=1 trên URL
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('cart') === '1') {
+    const storeView = document.getElementById('store-view');
+    const detailView = document.getElementById('product-detail');
+    const cartView = document.getElementById('cart-view');
+    if (storeView) storeView.style.display = 'none';
+    if (detailView) detailView.style.display = 'none';
+    if (cartView) cartView.style.display = 'block';
+  }
+});
