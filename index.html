@@ -14,10 +14,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css" integrity="sha512-tS3S5qG0BlhnQROyJXvNjeEM4UpMXHrQfTGmbQ1gKmelCxlSEBUaxhRBj/EFTzpbP4RVSrpEikbmdJobCvhE3g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css" integrity="sha512-sMXtMNL1zRzolHYKEujM2AqCLUR9F2C4/05cdbxjjLSRvMQIciEPCQZo++nk7go3BtSuK9kfa/s+a4f4i5pLkw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
-    <!-- Profile Modal -->
-    <link rel="stylesheet" href="./main/util/profile.css">
-    <script src="./main/js/profile-manager.js"></script>
-    </body>
 <body>
     <!-- 404 ERROR OVERLAY -->
     <div class="error-404-overlay" id="error404Overlay" style="display: none;">
@@ -533,9 +529,21 @@
     <script src="./main/script.js"></script>
     <script src="./main/js/subscription-form.js"></script>
     <script src="./main/js/feature.js"></script>
-
+    
+    <!-- Login and Profile Management -->
     <script src="./main/js/login.js"></script>
-
+    <script>
+        // Wait for login.js to initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize profile management after a short delay
+            setTimeout(() => {
+                if (localStorage.getItem('loggedInUser') && 
+                    localStorage.getItem('userRole') === 'user') {
+                    window.profileModal = new window.ProfileModalController();
+                }
+            }, 500);
+        });
+    </script>
     <script src="./main/js/profile-manager.js"></script>
 
 </body>

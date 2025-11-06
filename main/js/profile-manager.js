@@ -1,4 +1,4 @@
-// ==================== PROFILE MANAGER ====================
+// ==================== FIXED PROFILE MANAGER ====================
 // File: main/js/profile-manager.js
 
 (function() {
@@ -85,7 +85,7 @@
         // Create profile modal HTML
         createModal() {
             const modalHTML = `
-                <div class="profile-modal-overlay" id="profileModalOverlay">
+                <div class="profile-modal-overlay" id="profileModalOverlay" style="display: none;">
                     <div class="profile-modal">
                         <div class="close-profile-modal" id="closeProfileModal">
                             <i class="fa-solid fa-xmark"></i>
@@ -221,6 +221,8 @@
             const monthSelect = document.getElementById('profile-birth-month');
             const yearSelect = document.getElementById('profile-birth-year');
 
+            if (!daySelect || !monthSelect || !yearSelect) return;
+
             // Days
             for (let i = 1; i <= 31; i++) {
                 daySelect.innerHTML += `<option value="${i}">${i}</option>`;
@@ -241,30 +243,35 @@
         }
 
         attachEventListeners() {
-            // Open profile modal - Use setTimeout to ensure this runs after login.js
+            // Open profile modal when clicking on profile button
             setTimeout(() => {
                 const profileBtn = document.querySelector('.profile');
                 if (profileBtn) {
-                    // Remove all existing click listeners
+                    // Get fresh reference and remove all listeners
                     const newProfileBtn = profileBtn.cloneNode(true);
                     profileBtn.parentNode.replaceChild(newProfileBtn, profileBtn);
                     
-                    // Add new click listener
+                    // Add profile modal click handler
                     newProfileBtn.addEventListener('click', (e) => {
                         e.preventDefault();
+                        e.stopPropagation();
+                        
                         const loggedUser = localStorage.getItem('loggedInUser');
                         const userRole = localStorage.getItem('userRole');
                         
+                        // Only open if user is logged in as regular user
                         if (loggedUser && userRole === 'user') {
                             this.openModal();
                         }
+                        // If not logged in, login.js will handle it
                     });
+                    
+                    console.log('✅ Profile button click handler attached');
                 }
-            }, 100);
+            }, 200);
 
             // Close modal
             const closeBtn = document.getElementById('closeProfileModal');
-
             if (closeBtn) {
                 closeBtn.addEventListener('click', () => this.closeModal());
             }
@@ -313,7 +320,7 @@
 
             // ESC key to close
             document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape' && this.modal.classList.contains('active')) {
+                if (e.key === 'Escape' && this.modal && this.modal.classList.contains('active')) {
                     this.closeModal();
                 }
             });
@@ -321,14 +328,20 @@
 
         // Open modal
         openModal() {
+            if (!this.modal) return;
+            
             this.modal.classList.add('active');
             document.body.style.overflow = 'hidden';
             this.loadProfileData();
             this.updateUsername();
+            
+            console.log('✅ Profile modal opened');
         }
 
         // Close modal
         closeModal() {
+            if (!this.modal) return;
+            
             this.modal.classList.remove('active');
             document.body.style.overflow = 'auto';
         }
@@ -351,14 +364,23 @@
         loadProfileData() {
             const profile = this.profileManager.getProfile();
             if (profile) {
-                document.getElementById('profile-last-name').value = profile.lastName || '';
-                document.getElementById('profile-first-name').value = profile.firstName || '';
-                document.getElementById('profile-email').value = profile.email || '';
-                document.getElementById('profile-phone').value = profile.phone || '';
-                document.getElementById('profile-address').value = profile.address || '';
-                document.getElementById('profile-birth-day').value = profile.birthDay || '';
-                document.getElementById('profile-birth-month').value = profile.birthMonth || '';
-                document.getElementById('profile-birth-year').value = profile.birthYear || '';
+                const fields = {
+                    'profile-last-name': profile.lastName,
+                    'profile-first-name': profile.firstName,
+                    'profile-email': profile.email,
+                    'profile-phone': profile.phone,
+                    'profile-address': profile.address,
+                    'profile-birth-day': profile.birthDay,
+                    'profile-birth-month': profile.birthMonth,
+                    'profile-birth-year': profile.birthYear
+                };
+                
+                Object.keys(fields).forEach(id => {
+                    const element = document.getElementById(id);
+                    if (element) {
+                        element.value = fields[id] || '';
+                    }
+                });
             }
         }
 
@@ -446,11 +468,24 @@
         // Handle logout
         handleLogout() {
             if (confirm('Do you want to log out?')) {
+                // Clear user session
                 localStorage.removeItem('loggedInUser');
                 localStorage.removeItem('userRole');
+                localStorage.removeItem('rememberedUser');
+                
+                // Close modal
                 this.closeModal();
+                
+                // Update profile button to default
+                const profileBtn = document.querySelector('.profile');
+                if (profileBtn) {
+                    profileBtn.innerHTML = '<i class="fa-solid fa-circle-user"></i>';
+                }
+                
+                // Show notification
                 this.showNotification('👋 Logged out successfully!', 'success');
                 
+                // Reload page after short delay
                 setTimeout(() => {
                     location.reload();
                 }, 1000);
@@ -478,17 +513,80 @@
 
     // ========================= INITIALIZE =========================
     document.addEventListener('DOMContentLoaded', () => {
-        // Only initialize if user is logged in
-        const loggedUser = localStorage.getItem('loggedInUser');
-        const userRole = localStorage.getItem('userRole');
+        // Wait a bit for login.js to complete
+        setTimeout(() => {
+            const loggedUser = localStorage.getItem('loggedInUser');
+            const userRole = localStorage.getItem('userRole');
 
-        if (loggedUser && userRole === 'user') {
-            window.profileModal = new ProfileModalController();
-            console.log('✅ Profile Manager initialized');
-        }
+            if (loggedUser && userRole === 'user') {
+                window.profileModal = new ProfileModalController();
+                console.log('✅ Profile Manager initialized for user:', loggedUser);
+            } else {
+                console.log('ℹ️ No user logged in, Profile Manager not initialized');
+            }
+        }, 300);
     });
 
     // Export for global access
     window.ProfileManager = ProfileManager;
+    window.ProfileModalController = ProfileModalController;
 
 })();
+
+// ========================= ADD NOTIFICATION CSS =========================
+const notificationStyles = document.createElement('style');
+notificationStyles.textContent = `
+.profile-notification {
+    position: fixed;
+    top: 100px;
+    right: 20px;
+    padding: 15px 25px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    z-index: 100000;
+    opacity: 0;
+    transform: translateX(400px);
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    backdrop-filter: blur(10px);
+}
+
+.profile-notification.show {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.profile-notification.success {
+    background: rgba(76, 175, 80, 0.95);
+    color: white;
+    border-left: 4px solid #388E3C;
+}
+
+.profile-notification.error {
+    background: rgba(244, 67, 54, 0.95);
+    color: white;
+    border-left: 4px solid #C62828;
+}
+
+.profile-notification.warning {
+    background: rgba(255, 152, 0, 0.95);
+    color: white;
+    border-left: 4px solid #E65100;
+}
+
+.profile-notification.info {
+    background: rgba(33, 150, 243, 0.95);
+    color: white;
+    border-left: 4px solid #1565C0;
+}
+
+@media (max-width: 768px) {
+    .profile-notification {
+        right: 10px;
+        left: 10px;
+        top: 80px;
+    }
+}
+`;
+document.head.appendChild(notificationStyles);
