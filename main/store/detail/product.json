@@ -1,6 +1,7 @@
 [
   {
   "id": 1,
+  "status": "ready",
   "title": "Attack On Titan Artisan Keycap - Eren Yeager Edition",
   "shortDesc": "Bring the warrior spirit to your keyboard! Inspired by Eren Yeager from Attack On Titan, this artisan keycap is hand-crafted with premium resin and detailed design.",
   "rating": "⭐⭐⭐⭐⭐ (1.2k reviews) | Sold 3.8k+",
@@ -24,6 +25,7 @@
 ,
   {
     "id": 2,
+    "status": "ready",
     "title": "Attack On Titan Artisan Keycap - Fight for Paradis Edition",
     "shortDesc": "Ignite the flames of resistance! Inspired by the epic battle to protect Paradis in Attack On Titan, this artisan keycap embodies courage and unyielding hope.",
     "rating": "⭐⭐⭐⭐⭐ (1k+ reviews) | Sold 3.2k+",
@@ -43,6 +45,7 @@
   },
   {
     "id": 3,
+    "status": "ready",
     "title": "Attack On Titan Artisan Keycap - Reiner Keycap",
     "shortDesc": "Unleash the storm within! Forged in the chaos of battle, this keycap channels the power of heroes who never surrender. Press it, and feel destiny move beneath your fingertips.",
     "rating": "⭐⭐⭐⭐⭐ (2k+ reviews) | Sold 3.7k+",
@@ -63,6 +66,7 @@
   },
   {
     "id": 4,
+    "status": "ready",
     "title": "Attack On Titan Artisan Keycap - Scout Keycap",
     "shortDesc": "Born from the heart of a dying star, this keycap burns with eternal fire. Each press ignites your spirit, reminding you that legends are not born—they’re forged.",
     "rating": "⭐⭐⭐⭐⭐ (2k+ reviews) | Sold 2.6k+",
@@ -83,6 +87,7 @@
   },
   {
     "id": 5,
+    "status": "outofstock",
     "title": "Attack On Titan Artisan Keycap - Spacebar Keycap",
     "shortDesc": "No sound. No mercy. With every strike, thunder answers your call. Let the storm of your will reshape the battlefield.",
     "rating": "⭐⭐⭐⭐⭐ (1.1k+ reviews) | Sold 2.3k+",
@@ -103,6 +108,7 @@
   },
   {
     "id": 6,
+    "status": "ready",
     "title": "LOTR Artisan Keycap - Durin's Axe Keycap",
     "shortDesc": "From the depths of forgotten realms, this keycap rises — a relic of power and purpose. With each press, echoes of ancient warriors awaken, urging your fingers toward victory eternal.",
     "rating": "⭐⭐⭐⭐⭐ (1.6k+ reviews) | Sold 2.4k+",
@@ -122,6 +128,7 @@
   },
   {
     "id": 7,
+    "status": "ready",
     "title": "LOTR Artisan Keycap - Durin's Folk Keycap",
     "shortDesc": "Tempered in lightning and silence, this keycap crackles with untamed will. Touch it, and feel the pulse of storms long caged — waiting only for your command to break free.",
     "rating": "⭐⭐⭐⭐⭐ (1.7k+ reviews) | Sold 2.6k+",
@@ -141,6 +148,7 @@
   },
   {
     "id": 8,
+    "status": "ready",
     "title": "LOTR Artisan Keycap - Durin's Helm Keycap",
     "shortDesc": "Beneath your fingertips lies the roar of a thousand battles. This keycap hums with defiance, daring you to press onward — for destiny bows only to those who never yield.",
     "rating": "⭐⭐⭐⭐⭐ (2.4k+ reviews) | Sold 3.7k+",
@@ -160,6 +168,7 @@
   },
   {
     "id": 9,
+    "status": "outofstock",
     "title": "LOTR Artisan Keycap - Horn of Gondor Keycap",
     "shortDesc": "Forged from shattered crowns and burning skies, this keycap bears the mark of conquerors. Each strike rekindles the flame of glory — a reminder that empires rise from a single press.",
     "rating": "⭐⭐⭐⭐⭐ (1.4k+ reviews) | Sold 3.2k+",
@@ -181,6 +190,7 @@
   },
   {
     "id": 10,
+    "status": "ready",
     "title": "LOTR Artisan Keycap - Palantir Keycap",
     "shortDesc": "Bound by runes of triumph, this keycap sings of battles yet to come. Each press summons the echo of victory — a promise carved in the language of heroes.",
     "rating": "⭐⭐⭐⭐⭐ (1.5k+ reviews) | Sold 2.8k+",
@@ -202,6 +212,7 @@
   },
   {
     "id": 11,
+    "status": "ready",
     "title": "LOTR Artisan Keycap - White Tree Keycap",
     "shortDesc": "Born from the heart of an ancient volcano, this keycap channels pure elemental power. Each press unleashes a surge of molten energy — crafted for those who thrive in the heat of creation.",
     "rating": "⭐⭐⭐⭐⭐ (1.9k+ reviews) | Sold 3.1k+",
@@ -223,6 +234,7 @@
   },
   {
     "id": 12,
+    "status": "outofstock",
     "title": "One Piece Artisan Keycap - One Piece Keycap 1",
     "shortDesc": "Glimmering like the first frost of winter, this keycap evokes quiet elegance and crisp clarity. Each press is a gentle whisper of serenity.",
     "rating": "⭐⭐⭐⭐⭐ (1.2k+ reviews) | Sold 3.1k+",
@@ -242,6 +254,7 @@
   },
   {
     "id": 13,
+    "status": "ready",
     "title": "One Piece Artisan Keycap - One Piece Keycap 2",
     "shortDesc": "Bathed in the glow of twilight, this keycap carries the mystery of dusk and the calm before nightfall. Every touch feels like capturing the last light of day.",
     "rating": "⭐⭐⭐⭐⭐ (980+ reviews) | Sold 2.4k+",
@@ -261,6 +274,7 @@
   },
   {
     "id": 14,
+    "status": "ready",
     "title": "YuGiOh Artisan Keycap - Yu-Gi-Oh! Keycap 1",
     "shortDesc": "Radiating the gentle warmth of spring morning, this keycap brings freshness and optimism with every press. It’s a small celebration of new beginnings.",
     "rating": "⭐⭐⭐⭐⭐ (1.4k+ reviews) | Sold 2.7k+",
@@ -281,6 +295,7 @@
   },
   {
     "id": 15,
+    "status": "ready",
     "title": "YuGiOh Artisan Keycap - Yu-Gi-Oh! Keycap 2",
     "shortDesc": "Shimmering like starlight on a quiet night, this keycap carries calm and wonder with every press. A tiny piece of the cosmos at your fingertips.",
     "rating": "⭐⭐⭐⭐⭐ (1.1k+ reviews) | Sold 2.5k+",
@@ -300,6 +315,7 @@
   },
   {
     "id": 16,
+    "status": "ready",
     "title": "YuGiOh Artisan Keycap - YGOv3 Ra 11 Keycap",
     "shortDesc": "Like morning dew on a quiet meadow, this keycap brings freshness and subtle brilliance. Each press feels like a gentle touch of nature’s calm.",
     "rating": "⭐⭐⭐⭐⭐ (1.3k+ reviews) | Sold 2.8k+",
@@ -319,6 +335,7 @@
   },
   {
     "id": 17,
+    "status": "outofstock",
     "title": "YuGiOh Artisan Keycap - YuGiOh DarkMagicianGirl 5 Keycap",
     "shortDesc": "Bathed in the soft glow of moonlight, this keycap exudes calm and quiet elegance. Each press feels like a gentle embrace of night’s serenity.",
     "rating": "⭐⭐⭐⭐⭐ (1k+ reviews) | Sold 2.6k+",
@@ -338,6 +355,7 @@
   },
   {
     "id": 18,
+    "status": "ready",
     "title": "YuGiOh Artisan Keycap - YuGiOh V2 Concept 11-4 Keycap",
     "shortDesc": "Awash in the colors of a gentle sunrise, this keycap inspires hope and tranquility. Each press feels like the first breath of a new day.",
     "rating": "⭐⭐⭐⭐⭐ (1.7k+ reviews) | Sold 3.2k+",
@@ -357,6 +375,7 @@
   },
   {
     "id": 19,
+    "status": "ready",
     "title": "YuGiOh Artisan Keycap - YuGiOh V2 Concept 11-6 Keycap",
     "shortDesc": "Glinting with the soft glow of morning frost, this keycap exudes a crisp, refreshing calm. Each press feels like a spark of clarity at the start of the day.",
     "rating": "⭐⭐⭐⭐⭐ (1.2k+ reviews) | Sold 2.9k+",
