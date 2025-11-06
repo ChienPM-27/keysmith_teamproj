@@ -1,4 +1,4 @@
-// ==================== MAIN/USER PAGE SCRIPT ====================
+// ==================== UPDATED LOGIN.JS ====================
 const profileBtn = document.querySelector('.profile');
 const modalOverlay = document.getElementById('modalOverlay');
 const closeModal = document.getElementById('closeModal');
@@ -15,8 +15,20 @@ const ADMIN_ACCOUNTS = [
 ];
 
 // ------------------ MỞ / ĐÓNG LOGIN ------------------
+// ONLY open login if user is NOT logged in
 profileBtn.addEventListener('click', (e) => {
     e.preventDefault();
+    
+    // Check if user is already logged in
+    const loggedUser = localStorage.getItem('loggedInUser');
+    const userRole = localStorage.getItem('userRole');
+    
+    // If user is logged in, don't open login modal (let profile manager handle it)
+    if (loggedUser && userRole === 'user') {
+        return; // Profile modal will handle this
+    }
+    
+    // If not logged in, open login modal
     modalOverlay.classList.add('active');
     document.body.style.overflow = 'hidden';
 });
@@ -151,15 +163,9 @@ function updateProfileDisplay() {
     if (loggedUser && userRole === 'user') {
         profile.innerHTML = `<i class="fa-solid fa-user-check"></i> <span style="font-size:14px;">${loggedUser}</span>`;
         profile.style.cursor = 'pointer';
-        profile.onclick = () => {
-            if (confirm("Do you want to log out?")) {
-                localStorage.removeItem('loggedInUser');
-                localStorage.removeItem('userRole');
-                localStorage.removeItem('rememberedUser');
-                alert('👋 Logged out!');
-                location.reload();
-            }
-        };
+        
+        // Remove the logout onclick - let profile modal handle this
+        profile.onclick = null;
     }
 }
 
