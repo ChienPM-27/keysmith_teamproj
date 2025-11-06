@@ -931,9 +931,6 @@ footer .form .input-group button:hover {
   #product-extra h3 {
     font-size: 22px;
   }
-<<<<<<< HEAD
-}
-=======
 }
 #back-btn {
   position: fixed;
@@ -961,4 +958,3 @@ footer .form .input-group button:hover {
   transform: scale(0.96);
   background: linear-gradient(135deg, #ff8c1a, #cc5500);
 }
->>>>>>> a719523727ad2e714b459b8d4b0e9258673fa3cb

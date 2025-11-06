@@ -1,3 +1,8 @@
+document.getElementById('mobileMenuToggle').addEventListener('click', function() {
+    var navbar = document.getElementById('navbar');
+    navbar.classList.toggle('active');
+});
+
 const quantityInput = document.getElementById('quantity');
 document.getElementById('increase').onclick = () => {
   quantityInput.value = parseInt(quantityInput.value) + 1;
