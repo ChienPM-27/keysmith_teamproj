@@ -574,3 +574,44 @@ footer .form .input-group button:hover {
   transform: scale(0.96);
   background: linear-gradient(135deg, #ff8c1a, #cc5500);
 }
+
+/* ===== Toast notifications (Add to Cart) ===== */
+#ks-toast-container{
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 2147483647;
+  pointer-events: none;
+}
+.ks-toast{
+  min-width: 220px;
+  max-width: 320px;
+  background: rgba(40,40,40,0.96);
+  color: #fff;
+  padding: 12px 14px;
+  border-radius: 8px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.4);
+  font-family: var(--font-main, Poppins, sans-serif);
+  font-size: 14px;
+  pointer-events: auto;
+  overflow: hidden;
+  opacity: 1;
+  transition: opacity 180ms ease;
+}
+.ks-toast-message{ margin-bottom: 8px; }
+.ks-toast-progress{ height: 4px; background: rgba(255,255,255,0.12); border-radius: 4px; overflow: hidden; }
+.ks-toast-progress-bar{ height: 100%; background: var(--color-primary, #ff8519); width: 100%; transition: width linear; }
+
+/* toast variants */
+.ks-toast--success { background: rgba(40,40,40,0.96); }
+.ks-toast--success .ks-toast-progress-bar { background: var(--color-primary, #ff8519); }
+.ks-toast--info { background: rgba(20,60,120,0.95); }
+.ks-toast--info .ks-toast-progress-bar { background: #4da6ff; }
+.ks-toast--error { background: rgba(120,20,20,0.95); }
+.ks-toast--error .ks-toast-progress-bar { background: #ff4d4d; }
+
+/* stack multiple toasts with a small gap */
+#ks-toast-container { display: flex; flex-direction: column; align-items: flex-end; }
