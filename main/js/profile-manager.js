@@ -11,7 +11,6 @@
             this.initializeProfile();
         }
 
-        // Initialize profile data structure
         initializeProfile() {
             if (!localStorage.getItem(this.storageKey)) {
                 const defaultProfile = {
@@ -28,7 +27,6 @@
             }
         }
 
-        // Get profile data
         getProfile() {
             try {
                 const data = localStorage.getItem(this.storageKey);
@@ -39,7 +37,6 @@
             }
         }
 
-        // Save profile data
         saveProfile(profileData) {
             try {
                 localStorage.setItem(this.storageKey, JSON.stringify(profileData));
@@ -50,7 +47,6 @@
             }
         }
 
-        // Update specific field
         updateField(fieldName, value) {
             const profile = this.getProfile();
             if (profile) {
@@ -60,7 +56,6 @@
             return false;
         }
 
-        // Clear profile data
         clearProfile() {
             localStorage.removeItem(this.storageKey);
             this.initializeProfile();
@@ -71,157 +66,35 @@
     class ProfileModalController {
         constructor() {
             this.profileManager = new ProfileManager();
-            this.modal = null;
+            // ❌ XÓA createModal() - Vì HTML đã có sẵn modal rồi!
+            this.modal = document.getElementById('profileModalOverlay');
             this.currentSection = 'profile-info';
             this.init();
         }
 
         init() {
-            this.createModal();
+            // Kiểm tra modal có tồn tại không
+            if (!this.modal) {
+                console.error('❌ Profile modal not found in HTML!');
+                return;
+            }
+            
             this.attachEventListeners();
             this.populateBirthdayOptions();
+            console.log('✅ Profile Modal Controller initialized');
         }
 
-        // Create profile modal HTML
-        createModal() {
-            const modalHTML = `
-                <div class="profile-modal-overlay" id="profileModalOverlay" style="display: none;">
-                    <div class="profile-modal">
-                        <div class="close-profile-modal" id="closeProfileModal">
-                            <i class="fa-solid fa-xmark"></i>
-                        </div>
-
-                        <div class="profile-container">
-                            <!-- SIDEBAR -->
-                            <div class="profile-sidebar">
-                                <div class="sidebar-header">
-                                    <div class="sidebar-avatar">
-                                        <i class="fa-solid fa-user-circle"></i>
-                                    </div>
-                                    <p class="sidebar-username" id="profileUsername">User</p>
-                                </div>
-                                
-                                <ul>
-                                    <li><a href="#" class="active" data-section="profile-info">
-                                        <i class="fa-solid fa-user"></i>
-                                        <span>Account Settings</span>
-                                    </a></li>
-                                    <li><a href="#" data-section="profile-orders">
-                                        <i class="fa-solid fa-box"></i>
-                                        <span>My Orders</span>
-                                    </a></li>
-                                    <li><a href="#" data-section="profile-password">
-                                        <i class="fa-solid fa-lock"></i>
-                                        <span>Change Password</span>
-                                    </a></li>
-                                    <li><a href="#" id="profileLogout">
-                                        <i class="fa-solid fa-right-from-bracket"></i>
-                                        <span>Log out</span>
-                                    </a></li>
-                                </ul>
-                            </div>
-
-                            <!-- CONTENT -->
-                            <div class="profile-content">
-                                <!-- ACCOUNT INFO SECTION -->
-                                <div class="profile-section active" data-section-name="profile-info">
-                                    <h2>ACCOUNT INFORMATION</h2>
-                                    <form id="profileInfoForm">
-                                        <div class="form-row">
-                                            <div class="form-group">
-                                                <label>Last Name</label>
-                                                <input type="text" id="profile-last-name" placeholder="Enter last name">
-                                            </div>
-                                            <div class="form-group">
-                                                <label>First Name</label>
-                                                <input type="text" id="profile-first-name" placeholder="Enter first name">
-                                            </div>
-                                        </div>
-
-                                        <div class="form-row">
-                                            <div class="form-group">
-                                                <label>Email</label>
-                                                <input type="email" id="profile-email" placeholder="Enter email">
-                                            </div>
-                                            <div class="form-group">
-                                                <label>Phone Number</label>
-                                                <input type="tel" id="profile-phone" placeholder="Enter phone number">
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label>Address</label>
-                                            <input type="text" id="profile-address" placeholder="Enter address">
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label>Date of Birth</label>
-                                            <div class="birthday-selectors">
-                                                <select id="profile-birth-day"><option value="">Day</option></select>
-                                                <select id="profile-birth-month"><option value="">Month</option></select>
-                                                <select id="profile-birth-year"><option value="">Year</option></select>
-                                            </div>
-                                        </div>
-
-                                        <button type="submit" class="profile-btn">Update Profile</button>
-                                    </form>
-                                </div>
-
-                                <!-- ORDERS SECTION -->
-                                <div class="profile-section" data-section-name="profile-orders">
-                                    <h2>YOUR ORDERS</h2>
-                                    <div class="order-table">
-                                        <div class="order-header-row">
-                                            <div class="order-col">Order ID</div>
-                                            <div class="order-col">Date</div>
-                                            <div class="order-col">Address</div>
-                                            <div class="order-col">Value</div>
-                                            <div class="order-col">Status</div>
-                                        </div>
-                                        <div class="order-empty-row">
-                                            <p>You have no orders yet.</p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- PASSWORD SECTION -->
-                                <div class="profile-section" data-section-name="profile-password">
-                                    <h2>CHANGE PASSWORD</h2>
-                                    <div class="password-form">
-                                        <form id="changePasswordForm">
-                                            <div class="form-group">
-                                                <label>Current Password</label>
-                                                <input type="password" id="current-password" placeholder="Enter current password" required>
-                                            </div>
-                                            <div class="form-group">
-                                                <label>New Password</label>
-                                                <input type="password" id="new-password" placeholder="Enter new password" required>
-                                            </div>
-                                            <div class="form-group">
-                                                <label>Confirm New Password</label>
-                                                <input type="password" id="confirm-password" placeholder="Re-enter new password" required>
-                                            </div>
-                                            <button type="submit" class="profile-btn">Change Password</button>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-
-            document.body.insertAdjacentHTML('beforeend', modalHTML);
-            this.modal = document.getElementById('profileModalOverlay');
-        }
-
-        // Populate birthday dropdown options
         populateBirthdayOptions() {
             const daySelect = document.getElementById('profile-birth-day');
             const monthSelect = document.getElementById('profile-birth-month');
             const yearSelect = document.getElementById('profile-birth-year');
 
             if (!daySelect || !monthSelect || !yearSelect) return;
+
+            // Clear existing options (except first one)
+            daySelect.innerHTML = '<option value="">Day</option>';
+            monthSelect.innerHTML = '<option value="">Month</option>';
+            yearSelect.innerHTML = '<option value="">Year</option>';
 
             // Days
             for (let i = 1; i <= 31; i++) {
@@ -243,15 +116,15 @@
         }
 
         attachEventListeners() {
-            // Open profile modal when clicking on profile button
+            // ✅ SỬA: Đợi DOM load xong mới attach profile button
             setTimeout(() => {
                 const profileBtn = document.querySelector('.profile');
                 if (profileBtn) {
-                    // Get fresh reference and remove all listeners
+                    // Clone để xóa tất cả listeners cũ
                     const newProfileBtn = profileBtn.cloneNode(true);
                     profileBtn.parentNode.replaceChild(newProfileBtn, profileBtn);
                     
-                    // Add profile modal click handler
+                    // Add new listener
                     newProfileBtn.addEventListener('click', (e) => {
                         e.preventDefault();
                         e.stopPropagation();
@@ -259,16 +132,16 @@
                         const loggedUser = localStorage.getItem('loggedInUser');
                         const userRole = localStorage.getItem('userRole');
                         
-                        // Only open if user is logged in as regular user
+                        // CHỈ mở modal nếu user đã login và là user thường
                         if (loggedUser && userRole === 'user') {
                             this.openModal();
                         }
-                        // If not logged in, login.js will handle it
+                        // Nếu chưa login, login.js sẽ xử lý
                     });
                     
-                    console.log('✅ Profile button click handler attached');
+                    console.log('✅ Profile button listener attached');
                 }
-            }, 200);
+            }, 300);
 
             // Close modal
             const closeBtn = document.getElementById('closeProfileModal');
@@ -286,12 +159,12 @@
             }
 
             // Section switching
-            const sectionLinks = document.querySelectorAll('.profile-sidebar ul li a');
+            const sectionLinks = document.querySelectorAll('.profile-sidebar a[data-section]');
             sectionLinks.forEach(link => {
                 link.addEventListener('click', (e) => {
+                    e.preventDefault();
                     const section = e.currentTarget.getAttribute('data-section');
                     if (section) {
-                        e.preventDefault();
                         this.switchSection(section);
                     }
                 });
@@ -320,17 +193,16 @@
 
             // ESC key to close
             document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape' && this.modal && this.modal.classList.contains('active')) {
+                if (e.key === 'Escape' && this.modal && this.modal.style.display === 'flex') {
                     this.closeModal();
                 }
             });
         }
 
-        // Open modal
         openModal() {
             if (!this.modal) return;
             
-            this.modal.classList.add('active');
+            this.modal.style.display = 'flex';
             document.body.style.overflow = 'hidden';
             this.loadProfileData();
             this.updateUsername();
@@ -338,21 +210,17 @@
             console.log('✅ Profile modal opened');
         }
 
-        // Close modal
         closeModal() {
             if (!this.modal) return;
             
-            this.modal.classList.remove('active');
+            this.modal.style.display = 'none';
             document.body.style.overflow = 'auto';
         }
 
-        // Switch between sections
         switchSection(sectionName) {
-            // Remove active from all sections and links
             document.querySelectorAll('.profile-section').forEach(s => s.classList.remove('active'));
-            document.querySelectorAll('.profile-sidebar ul li a').forEach(l => l.classList.remove('active'));
+            document.querySelectorAll('.profile-sidebar a[data-section]').forEach(l => l.classList.remove('active'));
 
-            // Add active to target section and link
             const targetSection = document.querySelector(`[data-section-name="${sectionName}"]`);
             const targetLink = document.querySelector(`[data-section="${sectionName}"]`);
             
@@ -360,7 +228,6 @@
             if (targetLink) targetLink.classList.add('active');
         }
 
-        // Load profile data into form
         loadProfileData() {
             const profile = this.profileManager.getProfile();
             if (profile) {
@@ -384,7 +251,6 @@
             }
         }
 
-        // Update username display
         updateUsername() {
             const loggedUser = localStorage.getItem('loggedInUser');
             const usernameDisplay = document.getElementById('profileUsername');
@@ -393,7 +259,6 @@
             }
         }
 
-        // Handle profile form submit
         handleProfileSubmit(e) {
             e.preventDefault();
 
@@ -409,13 +274,12 @@
             };
 
             if (this.profileManager.saveProfile(profileData)) {
-                this.showNotification('✓ Profile updated successfully!', 'success');
+                this.showNotification('✅ Profile updated successfully!', 'success');
             } else {
-                this.showNotification('✗ Failed to update profile', 'error');
+                this.showNotification('❌ Failed to update profile', 'error');
             }
         }
 
-        // Handle password change
         handlePasswordSubmit(e) {
             e.preventDefault();
 
@@ -423,33 +287,26 @@
             const newPassword = document.getElementById('new-password').value.trim();
             const confirmPassword = document.getElementById('confirm-password').value.trim();
 
-            // Validation
             if (!currentPassword || !newPassword || !confirmPassword) {
-                this.showNotification('⚠ Please fill in all fields!', 'warning');
+                this.showNotification('⚠️ Please fill in all fields!', 'warning');
                 return;
             }
 
-            if (newPassword.length < 8) {
-                this.showNotification('⚠ Password must be at least 8 characters!', 'warning');
-                return;
-            }
-
-            if (!/[A-Z]/.test(newPassword) || !/[a-z]/.test(newPassword) || !/\d/.test(newPassword)) {
-                this.showNotification('⚠ Password must contain uppercase, lowercase, and numbers!', 'warning');
+            if (newPassword.length < 6) {
+                this.showNotification('⚠️ Password must be at least 6 characters!', 'warning');
                 return;
             }
 
             if (newPassword !== confirmPassword) {
-                this.showNotification('⚠ Passwords do not match!', 'warning');
+                this.showNotification('⚠️ Passwords do not match!', 'warning');
                 return;
             }
 
             if (currentPassword === newPassword) {
-                this.showNotification('⚠ New password must be different!', 'warning');
+                this.showNotification('⚠️ New password must be different!', 'warning');
                 return;
             }
 
-            // Get current user
             const loggedUser = localStorage.getItem('loggedInUser');
             const users = JSON.parse(localStorage.getItem('users')) || [];
             const userIndex = users.findIndex(u => u.username === loggedUser);
@@ -459,42 +316,34 @@
                 localStorage.setItem('users', JSON.stringify(users));
                 
                 document.getElementById('changePasswordForm').reset();
-                this.showNotification('✓ Password changed successfully!', 'success');
+                this.showNotification('✅ Password changed successfully!', 'success');
             } else {
-                this.showNotification('✗ Current password is incorrect!', 'error');
+                this.showNotification('❌ Current password is incorrect!', 'error');
             }
         }
 
-        // Handle logout
         handleLogout() {
-            if (confirm('Do you want to log out?')) {
-                // Clear user session
+            if (confirm('Are you sure you want to log out?')) {
                 localStorage.removeItem('loggedInUser');
                 localStorage.removeItem('userRole');
                 localStorage.removeItem('rememberedUser');
                 
-                // Close modal
                 this.closeModal();
                 
-                // Update profile button to default
                 const profileBtn = document.querySelector('.profile');
                 if (profileBtn) {
                     profileBtn.innerHTML = '<i class="fa-solid fa-circle-user"></i>';
                 }
                 
-                // Show notification
                 this.showNotification('👋 Logged out successfully!', 'success');
                 
-                // Reload page after short delay
                 setTimeout(() => {
                     location.reload();
                 }, 1000);
             }
         }
 
-        // Show notification
         showNotification(message, type = 'info') {
-            // Remove existing notification
             const existing = document.querySelector('.profile-notification');
             if (existing) existing.remove();
 
@@ -513,27 +362,25 @@
 
     // ========================= INITIALIZE =========================
     document.addEventListener('DOMContentLoaded', () => {
-        // Wait a bit for login.js to complete
         setTimeout(() => {
             const loggedUser = localStorage.getItem('loggedInUser');
             const userRole = localStorage.getItem('userRole');
 
             if (loggedUser && userRole === 'user') {
                 window.profileModal = new ProfileModalController();
-                console.log('✅ Profile Manager initialized for user:', loggedUser);
+                console.log('✅ Profile Manager initialized for:', loggedUser);
             } else {
-                console.log('ℹ️ No user logged in, Profile Manager not initialized');
+                console.log('ℹ️ No user logged in');
             }
-        }, 300);
+        }, 500);
     });
 
-    // Export for global access
     window.ProfileManager = ProfileManager;
     window.ProfileModalController = ProfileModalController;
 
 })();
 
-// ========================= ADD NOTIFICATION CSS =========================
+// ========================= NOTIFICATION STYLES =========================
 const notificationStyles = document.createElement('style');
 notificationStyles.textContent = `
 .profile-notification {

@@ -231,19 +231,12 @@ function updateProfileDisplay() {
     // Chỉ hiển thị profile nếu là user thường
     if (loggedUser && userRole === 'user') {
         profile.innerHTML = `<i class="fa-solid fa-user-check"></i> <span style="font-size:14px;">${loggedUser}</span>`;
-        profile.style.cursor = 'pointer';
-        
-        // Remove any existing onclick handlers
-        profile.onclick = null;
-        
-        // Clone node to remove all event listeners
-        const newProfile = profile.cloneNode(true);
-        profile.parentNode.replaceChild(newProfile, profile);
     } else {
         // Not logged in - show default icon
         profile.innerHTML = '<i class="fa-solid fa-circle-user"></i>';
-        profile.style.cursor = 'pointer';
     }
+    
+    profile.style.cursor = 'pointer';
 }
 
 // Khi tải trang, kiểm tra và cập nhật
