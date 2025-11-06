@@ -114,69 +114,63 @@
             
             <div class="pro-container">
                 <div class="owl-carousel">
-                    <div class="pro">
+                    <div class="pro" data-product-id="1">
                         <img src="./img/keycap/LOTR/gondor/white_tree.jpg" alt="">
                         <div class="des">
                             <span>Lord Of The Rings</span>
                             <h4>White Tree<br>
                             Keycap Artisan</h4>
-                            <h5>55$</h5>
+                            <h5>85$</h5>
                         </div>
-                        <a href="#" class="buy"><i class="fa-solid fa-cart-shopping"></i></a>
                     </div>
 
-                    <div class="pro">
+                    <div class="pro" data-product-id="2">
                         <img src="./img/keycap/AttackOnTitan/spacebar.jpg" alt="">
                         <div class="des">
                             <span>Attack On Titan</span>
                             <h4>Wings of Freedom<br>
                             Keycap Artisan</h4>
-                            <h5>90$</h5>
+                            <h5>85$</h5>
                         </div>
-                        <a href="#" class="buy"><i class="fa-solid fa-cart-shopping"></i></a>
                     </div>
 
-                    <div class="pro">
+                    <div class="pro" data-product-id="3">
                         <img src="./img/keycap/LOTR/gondor/horn_of_gordor.jpg" alt="">
                         <div class="des">
                             <span>Lord Of The Rings</span>
                             <h4>Horn Of Gordor<br>
                             Keycap Artisan</h4>
-                            <h5>70$</h5>
+                            <h5>90$</h5>
                         </div>
-                        <a href="#" class="buy"><i class="fa-solid fa-cart-shopping"></i></a>
                     </div>
                     
 
-                    <div class="pro">
-                        <img src="./img/keycap/AttackOnTitan/Fight_for_Paradis.webp" alt="">
+                    <div class="pro" data-product-id="4">
+                        <img src="./img/keycap/AttackOnTitan/Eren.jpg" alt="">
                         <div class="des">
                             <span>Attack On Titan</span>
-                            <h4>Fight For Paradis<br>
+                            <h4>Attack Titan<br>
                             Keycap Artisan</h4>
-                            <h5>90$</h5>
+                            <h5>75$</h5>
                         </div>
-                        <a href="#" class="buy"><i class="fa-solid fa-cart-shopping"></i></a>
                     </div>
-                    <div class="pro">
+                    <div class="pro" data-product-id="5">
                         <img src="./img/keycap/LOTR/gondor/palantir.jpg" alt="">
                         <div class="des">
                             <span>Lord Of the Rings</span>
                             <h4>Palantir<br>
                             Keycap Artisan</h4>
-                            <h5>50$</h5>
+                            <h5>75$</h5>
                         </div>
-                        <a href="#" class="buy"><i class="fa-solid fa-cart-shopping"></i></a>
                     </div>
-                    <div class="pro">
+                    <div class="pro" data-product-id="6">
                         <img src="./img/keycap/AttackOnTitan/Fight_for_Paradis.webp" alt="">
                         <div class="des">
                             <span>Attack On Titan</span>
                             <h4>Fight For Paradis<br>
                             Keycap Artisan</h4>
-                            <h5>90$</h5>
+                            <h5>130$</h5>
                         </div>
-                        <a href="#" class="buy"><i class="fa-solid fa-cart-shopping"></i></a>
                     </div>
                 </div>
                 <div class="custom-dots" style="justify-content: center;"></div>
@@ -578,47 +572,63 @@
             });
         });
 
-        // PRODUCT CAROUSEL
+        // PRODUCT CAROUSEL with store redirection
         $('.pro-container').each(function(){
-        var product = $(this).find('.owl-carousel');
-        product.owlCarousel({
-            loop: true,
-            center: true,
-            dotsContainer: $(this).find('.custom-dots'),
-            autoplay: true,
-            autoplayTimeout: 3000,
-            margin: 20,
-            items: 3,
-            dotsEach: 1,
-            autoplayHoverPause: true,
-            responsive:{
-                0:{ items:1 },
-                600:{ items:2 },
-                1000:{ items:3 }
-            }
-        });
+            var container = $(this);
+            var carousel = container.find('.owl-carousel');
+            
+            // Initialize carousel
+            carousel.owlCarousel({
+                loop: true,
+                center: true,
+                dotsContainer: container.find('.custom-dots'),
+                autoplay: true,
+                autoplayTimeout: 3000,
+                margin: 20,
+                items: 3,
+                dotsEach: 1,
+                autoplayHoverPause: true,
+                responsive:{
+                    0:{ items:1 },
+                    600:{ items:2 },
+                    1000:{ items:3 }
+                }
+            });
+            
+            // Add click handler for products
+            container.on('click', '.pro', function(e) {
+                e.preventDefault();
+                window.location.href = './main/store/store.html';
+            });
+            
+            // Make product cards look clickable
+            container.find('.pro').css('cursor', 'pointer');
+            
+            // Also make carousel cloned items clickable
+            carousel.on('initialized.owl.carousel', function() {
+                $('.owl-item .pro').css('cursor', 'pointer');
+            });
         });
 
         // NEWS CAROUSEL
         $('.news-container').each(function(){
-        var product = $(this).find('.owl-carousel');
-        product.owlCarousel({
-            loop: true,
-            dotsContainer: $(this).find('.custom-dots'),
-            autoplay: true,
-            autoplayTimeout: 3000,
-            margin: 20, 
-            items: 3,
-            center: true,
-            autoplayHoverPause: true,
-            responsive:{
-                0:{ items:1 },
-                600:{ items:2 },
-                1000:{ items:3 }
-            }
+            var product = $(this).find('.owl-carousel');
+            product.owlCarousel({
+                loop: true,
+                dotsContainer: $(this).find('.custom-dots'),
+                autoplay: true,
+                autoplayTimeout: 3000,
+                margin: 20, 
+                items: 3,
+                center: true,
+                autoplayHoverPause: true,
+                responsive:{
+                    0:{ items:1 },
+                    600:{ items:2 },
+                    1000:{ items:3 }
+                }
+            });
         });
-        });
-
     </script>
 
     <script src="./main/js/404.js"></script>

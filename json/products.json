@@ -12,7 +12,7 @@
   {
     "id": 2,
     "name": "Fight for Paradis Keycap",
-    "price": 68,
+    "price": 130,
     "image": "../../img/keycap/AttackOnTitan/Fight_for_Paradis.webp",
     "category": "Attack on Titan",
     "stock": 2,
@@ -82,7 +82,7 @@
   {
     "id": 9,
     "name": "Horn of Gondor Keycap",
-    "price": 88,
+    "price": 90,
     "image": "../../img/keycap/LOTR/gondor/horn_of_gordor.jpg",
     "category": "The Lord of the Rings",
     "stock": 1,
@@ -112,7 +112,7 @@
   {
     "id": 12,
     "name": "Palantir Keycap",
-    "price": 95,
+    "price": 75,
     "image": "../../img/keycap/LOTR/gondor/palantir.jpg",
     "category": "The Lord of the Rings",
     "stock": 4,
