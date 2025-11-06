@@ -17,6 +17,8 @@ class DataManager {
             return this.getProducts();
         }
     }
+
+
     
     static getProducts() {
         try {
@@ -419,24 +421,51 @@ class DataManager {
             .sort((a, b) => b.totalSpent - a.totalSpent)
             .slice(0, 5);
 
-        // Customer growth
+        // Customer growth - FIX: Sử dụng dữ liệu thật từ customers
         const today = new Date();
+        today.setHours(0, 0, 0, 0); // Reset về đầu ngày để so sánh chính xác
+        
+        const todayStr = today.toISOString().split('T')[0]; // Format: YYYY-MM-DD
+        
+        console.log('🔍 Checking customer growth for date:', todayStr);
+        
         const newCustomersToday = this.data.customers.filter(c => {
+            if (!c.joinDate) return false;
+            
+            // Chuẩn hóa joinDate về dạng YYYY-MM-DD
             const joinDate = new Date(c.joinDate);
-            return joinDate.toDateString() === today.toDateString();
+            joinDate.setHours(0, 0, 0, 0);
+            const joinDateStr = joinDate.toISOString().split('T')[0];
+            
+            const isToday = joinDateStr === todayStr;
+            if (isToday) {
+                console.log('✅ Customer joined today:', c.username, joinDateStr);
+            }
+            return isToday;
         }).length;
 
         const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
         const newCustomersThisWeek = this.data.customers.filter(c => {
+            if (!c.joinDate) return false;
             const joinDate = new Date(c.joinDate);
-            return joinDate >= weekAgo;
+            joinDate.setHours(0, 0, 0, 0);
+            return joinDate >= weekAgo && joinDate <= today;
         }).length;
 
         const monthAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
         const newCustomersThisMonth = this.data.customers.filter(c => {
+            if (!c.joinDate) return false;
             const joinDate = new Date(c.joinDate);
-            return joinDate >= monthAgo;
+            joinDate.setHours(0, 0, 0, 0);
+            return joinDate >= monthAgo && joinDate <= today;
         }).length;
+
+        console.log('📊 Customer growth stats:', {
+            today: newCustomersToday,
+            thisWeek: newCustomersThisWeek,
+            thisMonth: newCustomersThisMonth,
+            totalCustomers: this.data.customers.length
+        });
 
         // Customer retention
         const loyalCustomers = Object.values(customerSpending).filter(c => c.orderCount >= 3).length;
@@ -603,6 +632,7 @@ addCustomer(customer) {
     return newCustomer;
 }
 
+
 updateCustomer(username, updates) {
     const index = this.data.customers.findIndex(c => c.username === username);
     if (index !== -1) {
@@ -752,14 +782,19 @@ deleteCustomer(username) {
     }
 
     // ==================== SAMPLE DATA GENERATORS ====================
+generateSampleCustomers() {
+        // Tạo ngày joinDate với format chuẩn ISO
+        const getDateAgo = (daysAgo) => {
+            const date = new Date();
+            date.setDate(date.getDate() - daysAgo);
+            return date.toISOString();
+        };
 
-
-    generateSampleCustomers() {
         const customers = [
             { 
                 username: 'nguyenvana', 
                 email: 'nguyenvana@email.com', 
-                joinDate: '2024-01-15', 
+                joinDate: getDateAgo(180), // ~6 months ago
                 phone: '0901234567', 
                 address: 'TPHCM', 
                 status: 'active' 
@@ -767,7 +802,7 @@ deleteCustomer(username) {
             { 
                 username: 'tranthib', 
                 email: 'tranthib@email.com', 
-                joinDate: '2024-02-20', 
+                joinDate: getDateAgo(150), // ~5 months ago
                 phone: '0902345678', 
                 address: 'Hà Nội', 
                 status: 'active' 
@@ -775,7 +810,7 @@ deleteCustomer(username) {
             { 
                 username: 'levanc', 
                 email: 'levanc@email.com', 
-                joinDate: '2024-03-10', 
+                joinDate: getDateAgo(120), // ~4 months ago
                 phone: '0903456789', 
                 address: 'Đà Nẵng', 
                 status: 'active' 
@@ -783,7 +818,7 @@ deleteCustomer(username) {
             { 
                 username: 'phamthid', 
                 email: 'phamthid@email.com', 
-                joinDate: '2024-04-05', 
+                joinDate: getDateAgo(90), // ~3 months ago
                 phone: '0904567890', 
                 address: 'TPHCM', 
                 status: 'active' 
@@ -791,12 +826,13 @@ deleteCustomer(username) {
             { 
                 username: 'hoangvane', 
                 email: 'hoangvane@email.com', 
-                joinDate: '2024-05-12', 
+                joinDate: getDateAgo(60), // ~2 months ago
                 phone: '0905678901', 
                 address: 'Hà Nội', 
                 status: 'active' 
             }
         ];
+        
         return customers;
     }
 
@@ -894,3 +930,106 @@ if (document.readyState === 'loading') {
 }
 
 console.log('🚀 Synchronized DataManager v2.0 loaded!');
+
+function updateCustomerGrowth(growth) {
+    const growthItems = document.querySelectorAll('.growth-item .growth-number');
+    
+    if (growthItems[0]) {
+        growthItems[0].innerHTML = `${growth.today} <span>khách hàng</span>`;
+    }
+    if (growthItems[1]) {
+        growthItems[1].innerHTML = `${growth.thisWeek} <span>khách hàng</span>`;
+    }
+    if (growthItems[2]) {
+        growthItems[2].innerHTML = `${growth.thisMonth} <span>khách hàng</span>`;
+    }
+    
+    console.log('📈 Customer growth updated:', {
+        today: growth.today,
+        thisWeek: growth.thisWeek,
+        thisMonth: growth.thisMonth
+    });
+}
+
+function handleAddCustomer(e) {
+    e.preventDefault();
+    
+    const username = document.getElementById('customer-username').value.trim();
+    const email = document.getElementById('customer-email').value.trim();
+    const phone = document.getElementById('customer-phone').value.trim();
+    const address = document.getElementById('customer-address').value.trim();
+    
+    if (!username || !email) {
+        alert('Vui lòng nhập tên người dùng và email!');
+        return;
+    }
+
+    // ensure username uniqueness in local customers (or users)
+    try {
+        const localCustomers = JSON.parse(localStorage.getItem('customers') || '[]');
+        if (Array.isArray(localCustomers) && localCustomers.some(c => c.username === username)) {
+            alert('Tên người dùng đã tồn tại!');
+            return;
+        }
+        // also check users list to avoid collisions if desired
+        const users = JSON.parse(localStorage.getItem('users') || '[]');
+        if (Array.isArray(users) && users.some(u => u.username === username)) {
+            // username exists as a user; still allow adding customer but warn
+            if (!confirm('Tên người dùng tồn tại trong hệ thống users. Bạn vẫn muốn thêm thông tin khách hàng?')) return;
+        }
+    } catch (err) {
+        console.error('Error reading local storage for uniqueness check', err);
+    }
+
+    // Tạo joinDate với định dạng ISO chuẩn (YYYY-MM-DD)
+    const today = new Date();
+    const joinDate = today.toISOString(); // ISO format đầy đủ
+    
+    console.log('🆕 Creating new customer:', {
+        username,
+        joinDate,
+        dateString: today.toISOString().split('T')[0]
+    });
+
+    const newCustomer = {
+        username,
+        email,
+        phone,
+        address,
+        joinDate: joinDate, // Lưu dạng ISO string
+        status: 'active'
+    };
+
+    // Save to localStorage.customers
+    try {
+        const customers = JSON.parse(localStorage.getItem('customers') || '[]');
+        customers.push(newCustomer);
+        localStorage.setItem('customers', JSON.stringify(customers));
+        
+        // Cập nhật DataManager và force refresh analytics cache
+        if (window.dataManager && window.dataManager.data) {
+            window.dataManager.data.customers = customers;
+            // Force update analytics cache ngay lập tức
+            window.dataManager.updateAnalyticsCache();
+            console.log('✅ Analytics cache updated after adding customer');
+        }
+
+        alert('Đã thêm khách hàng thành công!');
+        closeCustomerModal();
+        showCustomers();
+        
+        // Trigger analytics refresh nếu đang ở tab customer stats
+        if (document.getElementById('customer-stats')?.classList.contains('active')) {
+            setTimeout(() => {
+                if (typeof loadCustomerStats === 'function') {
+                    loadCustomerStats(true); // Force refresh
+                }
+            }, 100);
+        }
+        
+        return;
+    } catch (err) {
+        console.error('Lỗi khi lưu khách hàng vào localStorage:', err);
+        alert('Không thể lưu khách hàng. Xem console để biết chi tiết.');
+    }
+}
