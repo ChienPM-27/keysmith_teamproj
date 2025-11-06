@@ -1,19 +1,34 @@
 // ------------------- HEADER HIDE/SHOW -------------------
-let lastScroll = 0;
-const header = document.getElementById('header');
+document.addEventListener('DOMContentLoaded', function() {
+    let lastScroll = 0;
+    const header = document.getElementById('header');
 
-window.addEventListener('scroll', () => {
-    const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+    if (header) {
+        window.addEventListener('scroll', function() {
+            const currentScroll = window.pageYOffset;
 
-    if (currentScroll > lastScroll && currentScroll > 50) {
-        // cuộn xuống → ẩn header
-        header.style.top = "-100px";
-    } else {
-        // cuộn lên → hiện header
-        header.style.top = "0";
+            // Thêm/xóa class để theo dõi trạng thái scroll
+            if (currentScroll > 100) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+
+            // Xử lý ẩn/hiện header
+            if (currentScroll <= 0) {
+                // Ở đầu trang
+                header.classList.remove('hidden');
+            } else if (currentScroll > lastScroll && currentScroll > 100) {
+                // Đang cuộn xuống và đã cuộn đủ xa
+                header.classList.add('hidden');
+            } else {
+                // Đang cuộn lên
+                header.classList.remove('hidden');
+            }
+
+            lastScroll = currentScroll;
+        });
     }
-
-    lastScroll = currentScroll <= 0 ? 0 : currentScroll;
 });
 
 const button = document.querySelector(".profile");
