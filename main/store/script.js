@@ -1421,3 +1421,41 @@ document.addEventListener('DOMContentLoaded', function() {
     if (cartView) cartView.style.display = 'block';
   }
 });
+
+// ----- Initialize store (fetch + wire controls) -----
+  function initStore() {
+    // anchor elements
+    btn_top = $('#btn-top');
+    storeView = $('#store-view');
+    detailView = $('#product-detail');
+    pro_container = $('#pro-container');
+    backBtn = $('#back-btn');
+
+    // ===== CART ICON HANDLER =====
+    const cartIcon = document.getElementById('cartIcon');
+    if (cartIcon) {
+      cartIcon.addEventListener('click', (e) => {
+        e.preventDefault();
+        const loggedUser = localStorage.getItem('loggedInUser');
+        if (!loggedUser) {
+          // Chưa đăng nhập -> chuyển về index và mở login
+          window.location.href = '../../index.html?openLogin=1';
+          return;
+        }
+        // Đã đăng nhập -> mở cart view
+        showCartView();
+      });
+    }
+
+    // Ensure navbar login/profile icon opens login UI (like index.html)
+    try {
+      const profileIcon = document.querySelector('.profile');
+      if (profileIcon) {
+        profileIcon.addEventListener('click', (e) => {
+          // if it's a link, prevent navigation and open login UI
+          try { e.preventDefault(); } catch (err) {}
+          openLoginUI();
+        });
+      }
+    } catch (e) {}
+  } 
