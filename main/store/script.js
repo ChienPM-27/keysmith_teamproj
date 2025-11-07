@@ -34,6 +34,7 @@ const priceMaxInput = document.getElementById("price-max");
 const pro_container = document.getElementById("pro-container");
 const storeView = document.getElementById("store-view");
 const detailView = document.getElementById("product-detail");
+const cartView = document.getElementById("cart-view");
 const backBtn = document.getElementById("back-btn");
 
 // Pagination state
@@ -315,6 +316,7 @@ if (backBtn) {
     } catch (e) {}
     if (detailView) detailView.style.display = "none";
     if (storeView) storeView.style.display = "block";
+    if (cartView) cartView.style.display = "none";
     if (backBtn) backBtn.style.display = "none";
     window.scrollTo({ top: 0, behavior: "smooth" });
   });
@@ -329,7 +331,6 @@ try {
 
 // expose showCartView globally
 window.showCartView = function () {
-  const cartView = document.getElementById("cart-view");
   if (!cartView) return;
   if (storeView) storeView.style.display = "none";
   if (detailView) detailView.style.display = "none";
@@ -450,7 +451,6 @@ window.showProductDetail = function (id) {
 // ===== Cart initialization (merged from main/cart/script.js) =====
 function initCart() {
   if (initCart._inited) return;
-  const cartView = document.getElementById("cart-view");
   if (!cartView) return;
 
   const containerUl = cartView.querySelector("#Container ul");
@@ -818,7 +818,6 @@ function initCart() {
       try {
         originalInit && originalInit();
       } catch (e) {}
-      const cartView = document.getElementById("cart-view");
       if (!cartView) return;
       const tbody = cartView.querySelector("#cart-table tbody");
       if (!tbody) return;
@@ -833,7 +832,6 @@ function initCart() {
   async function newAddOrUpdateCartItem(productId, qty) {
     try {
       const pid = String(productId);
-      const cartView = document.getElementById("cart-view");
       if (!cartView) return;
       // ensure cart is initialized (popup, helpers, etc.) so notifications work
       try { if (typeof initCart === 'function') initCart(); } catch(e) {}
