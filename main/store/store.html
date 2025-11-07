@@ -25,7 +25,7 @@
 
     <div class="header-icons">
       <a href="#" class="cart" onclick="showCartView()"><i class="fa-solid fa-cart-shopping"></i></a>
-      <a href="Profile.html" class="profile"><i class="fa-solid fa-circle-user"></i></a>
+      <a href="/index.html" class="profile"><i class="fa-solid fa-circle-user"></i></a>
     </div>
   </section>
 
@@ -39,7 +39,7 @@
 
     <section id="store-search-bar">
       <input type="text" id="search-input" placeholder="Tìm kiếm sản phẩm..." />
-      <button id="search-button">
+      <button type="button" id="search-button">
         <i class="fa-solid fa-magnifying-glass"></i>
       </button>
     </section>
@@ -167,25 +167,35 @@
     <h1 class="title">Shopping Cart</h1>
     <hr />
 
-    <div id="Container">
-      <div id="general">
-        <label for="" class="Choose">Product</label>
-        <label for="" class="Price">Unit Price</label>
-        <label for="" class="Quantity">Quantity</label>
-        <label for="" class="TotalPrice">Total Price</label>
-        <label for="" class="Actions">Actions</label>
-      </div>
+    <table id="cart-table">
+      <thead>
+        <tr>
+          <th class="Choose">Choose</th>
+          <th class="ProductInfo">Product</th>
+          <th class="Price">Unit Price</th>
+          <th class="Quantity">Quantity</th>
+          <th class="TotalPrice">Total Price</th>
+          <th class="Actions">Actions</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+      <tfoot>
+        <tr class="cart-footer-row">
+          <td class="Choose"><input type="checkbox" id="chooseALL" /></td>
 
-      <ul></ul>
-      <div id="finalization">
-        <input type="checkbox" id="chooseALL" />
-        <label for="chooseALL" class="ChooseAll">Select All</label>
-        <div class="delete">Delete</div>
-        <div class="total"></div>
-        <div class="money"></div>
-        <button class="checkout">Check Out</button>
-      </div>
-    </div>
+          <td class="TotalPrice footer-total" colspan="3">
+            <div class="total">Total (0 items):</div>
+            <div class="money">0</div>
+          </td>
+
+          <td class="Actions footer-actions" colspan="2">
+            <button type="button" class="delete-icon" title="Delete selected"><i class="fa-solid fa-trash"></i></button>
+            <button type="button" class="checkout-visual">Check Out</button>
+          </td>
+        </tr>
+      </tfoot>
+    </table>
+    
   </section>
 
   <!-- ===== BACK TO TOP BUTTON ===== -->
