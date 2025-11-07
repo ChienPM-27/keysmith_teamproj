@@ -381,7 +381,7 @@ p { font-size: 15px; color: #465b52; margin: 5px 0 20px 0; }
     transition: 0.2s ease;
     position: relative;
     background: white;
-    margin-bottom: 0px;
+    margin-bottom: 20px;
 }
 #product1 .pro:hover {
     box-shadow: 20px 20px 30px rgba(102, 126, 234, 0.1);

@@ -6,10 +6,45 @@
     <title>KeySmith</title>
     <link rel="stylesheet" href="./style.css">
     <link rel="stylesheet" href="./responsive.css">
-    <link rel="icon" type="image/png" href="../../img/logo/logo_favicon.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="/img/logo/logo_favicon.png" sizes="32x32">
     <script src="https://kit.fontawesome.com/da0c4cdc9f.js" crossorigin="anonymous"></script>
 </head>
-<section class="account-page" style="margin-top: 150px; min-height: 60vh; text-align:center;">
+<body>
+    <!-- ======= HEADER ======= -->
+    <section id="header">
+    <a href="#">
+        <img
+        src="/img/logo/logo_full.png"
+        class="logo"
+        alt="logo"
+        style="width: 150px; height: 75px"
+        />
+    </a>
+
+    <button class="mobile-menu-btn" id="mobileMenuToggle"> <i class="fa-solid fa-bars"></i> </button>
+
+    <ul id="navbar">
+        <li><a href="/index.html">Home</a></li>
+        <li><a href="Store.html" class="active">Store</a></li>
+        <li><a href="Collections.html">Feature</a></li>
+        <li><a href="Contact.html">Contact</a></li>
+    </ul>
+
+    <div class="header-icons">
+        <a href="#" class="cart"
+    ><i class="fa-solid fa-magnifying-glass"></i
+        ></a>
+        <a href="Cart.html" class="cart"
+        ><i class="fa-solid fa-cart-shopping"></i
+        ></a>
+        <a href="Profile.html" class="profile"
+        ><i class="fa-solid fa-circle-user"></i
+        ></a>
+    </div>
+    </section>
+
+    <!-- ======= MAIN CONTENT======= -->
+    <section class="account-page" style="margin-top: 150px; min-height: 60vh; text-align:center;">
         <div class="account-container">
             <div class="account-sidebar">
                 <h3>ACCOUNT</h3>
@@ -124,24 +159,37 @@
     <h2 class="password-page-title">CHANGE PASSWORD</h2>
     
     <div class="password-form">
-        <form id="changePasswordForm">
-            <div class="form-group">
-                <label>Current Password</label>
-                <input type="password" id="current-password" placeholder="Enter current password" required>
-            </div>
-            
-            <div class="form-group">
-                <label>New Password</label>
-                <input type="password" id="new-password" placeholder="Enter new password" required>
-            </div>
-            
-            <div class="form-group">
-                <label>Confirm New Password</label>
-                <input type="password" id="confirm-password" placeholder="Re-enter new password" required>
-            </div>
-            
-            <button type="submit" class="reset">Change Password</button>
-        </form>
+        <!-- Password Form -->
+<form id="changePasswordForm" novalidate>
+    <div class="form-group">
+        <label for="current-password">Current Password</label>
+        <input type="password" 
+            id="current-password" 
+            placeholder="Enter current password"
+            required>
+        <span class="error-message"></span>
+    </div>
+    
+    <div class="form-group">
+        <label for="new-password">New Password</label>
+        <input type="password" 
+            id="new-password" 
+            placeholder="Enter new password"
+            required>
+        <span class="error-message"></span>
+    </div>
+    
+    <div class="form-group">
+        <label for="confirm-password">Confirm New Password</label>
+        <input type="password" 
+            id="confirm-password" 
+            placeholder="Re-enter new password"
+            required>
+        <span class="error-message"></span>
+    </div>
+    
+    <button type="submit" class="reset">Change Password</button>
+</form>
     </div>
 </div>
         </div>
@@ -158,24 +206,27 @@
         <div class="modal-body">
             <form id="newAddressForm">
                 <div class="form-group">
-                    <label for="modal-fullname">Full Name</label>
-                    <input type="text" id="modal-fullname" placeholder="Enter Full name" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="modal-phone">Phone Number</label>
-                    <input type="tel" id="modal-phone" placeholder="Enter Phone number" required>
-                </div>
+            <label for="modal-fullname">Full Name <span class="required-asterisk">*</span></label>
+            <input type="text" id="modal-fullname" placeholder="Enter Full name" required>
+            <span class="error-message">This field is required.</span>
+        </div>
+        
+        <div class="form-group">
+            <label for="modal-phone">Phone Number <span class="required-asterisk">*</span></label>
+            <input type="tel" id="modal-phone" placeholder="Enter Phone number" required>
+            <span class="error-message">This field is required.</span>
+        </div>
 
-                <div class="form-group">
-                    <label for="modal-company">Company (Optional)</label>
-                    <input type="text" id="modal-company" placeholder="Company" >
-                </div>
+        <div class="form-group">
+            <label for="modal-company">Company (Optional)</label>
+            <input type="text" id="modal-company" placeholder="Company" >
+        </div>
 
-                <div class="form-group">
-                    <label for="modal-address">Address</label>
-                    <input type="text" id="modal-address" placeholder="Street address, apartment, etc." required>
-                </div>
+        <div class="form-group">
+            <label for="modal-address">Address <span class="required-asterisk">*</span></label>
+            <input type="text" id="modal-address" placeholder="Street address, apartment, etc." required>
+            <span class="error-message">This field is required.</span>
+        </div>
                 
                 <div class="form-row">
                     <div class="form-group">
@@ -201,5 +252,72 @@
     </div>
 </div>
 
-<script src="./script.js"></script>
+    <!-- ======= FOOTER ======= -->
+    <footer class="section-p1" style="display: flex">
+        <div class="About">
+            <table border="1" cellspacing="0" cellpadding="8">
+                <tr>
+                    <td rowspan="4" style="width:20%; text-align: center;">
+                        <a href="#" style="font-family: Bebas Neue; font-size: 30px; font-weight: 700;">ABOUT US</a>
+                    </td>
+                    <td style="width:30%;">HELP CENTER</td>
+                    <td rowspan="2" style="width: 30%;">SHIPPING &<br>RETURN POLICY</td>
+                    <td rowspan="5" style="width:40%;">
+                        <img src="/img/logo/logo_full.png" alt="Logo" style="justify-content: center; max-width: 250px; height:auto;
+                        filter:
+                        drop-shadow(0 0 1px black)
+                        drop-shadow(0 0 1px black)
+                        drop-shadow(0 0 1px black)">
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>BLOG & NEWS</td>
+                </tr>
+
+                <tr>
+                    <td colspan="2" style="text-align: left;">DISCORD
+                        <a href="https://discord.com" target="_blank" style="float:right"><i class="fa-brands fa-discord"></i></a>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td colspan="2" style="text-align: left;">SOCIAL MEDIA
+<div style="float: right">
+                            <a href="https://www.instagram.com" target="_blank"><i class="fa-brands fa-square-instagram"></i></a>
+                            <a href="https://www.facebook.com" target="_blank"><i class="fa-brands fa-square-facebook"></i></a>
+                            <a href="https://www.tiktok.com" target="_blank"><i class="fa-brands fa-tiktok"></i></a>
+                            <a href="https://www.youtube.com" target="_blank"><i class="fa-brands fa-youtube"></i></a>
+                            <a href="https://twitter.com" target="_blank"><i class="fa-brands fa-square-x-twitter"></i></a>
+                        </div>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td colspan="3" style="text-align:left;">
+                        SUPPORT:
+                        <span style="float:right; font-family:Bebas Neue;">SUPPORT@KEYSMITH.COM</span>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="form">
+            <div class="subcribe">
+                <h3>SUBSCRIBE & GET INCENTIVES</h3>
+                <p>Sign up and get the latest news about new design, group buy, straight to your inbox.</p>
+            </div>
+
+            <div class="bonus">Bonus: Many hot offers and giveaway await!</div>
+
+            <div class="input-group">
+                <input type="email" placeholder="YOUR E-MAIL:" />
+                <button>SIGN UP</button>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+
+</body>
 </html>
