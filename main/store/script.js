@@ -192,8 +192,9 @@
 
       const logged = getLoggedInUser();
       if (!logged) {
-        // ask user to login
-        openLoginUI();
+        try { window.alert('Lỗi: Chưa đăng nhập'); } catch(e){}
+        // redirect user to index/login page after acknowledging
+        window.location.href = '../../index.html?openLogin=1';
         return;
       }
 
@@ -1260,11 +1261,7 @@ function initCart() {
 
     const logged = localStorage.getItem('loggedInUser');
     if (!logged) {
-      // open login UI or redirect
-      const modalOverlay = document.getElementById('modalOverlay') || document.getElementById('registerOverlay');
-      const legacyLogin = document.querySelector('.login');
-      if (modalOverlay) { modalOverlay.classList.add('active'); document.body.style.overflow = 'hidden'; return; }
-      if (legacyLogin) { legacyLogin.style.display = 'flex'; return; }
+      try { window.alert('Lỗi: Chưa đăng nhập'); } catch(e){}
       window.location.href = '../../index.html?openLogin=1';
       return;
     }
