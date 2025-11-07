@@ -107,7 +107,7 @@ body {
   margin-bottom: -5px;
 }
 
-.header-icons {
+#header .header-icons {
   margin-left: auto;
   /* auto đẩy logo sang phải */
   display: flex;
@@ -116,13 +116,13 @@ body {
   /* khoảng cách giữa cart và profile */
 }
 
-.header-icons a {
+#header .header-icons a {
   color: #ffffff;
   font-size: 20px;
   text-decoration: none;
 }
 
-.header-icons a:hover {
+#header .header-icons a:hover {
   color: #ff9f4a;
   transition: color 0.3s ease;
 }
@@ -135,7 +135,7 @@ body {
   justify-content: center;
 }
 
-#navbar .cart {
+#navbar .search, #navbar .cart {
   margin-left: 30px;
 }
 
@@ -176,7 +176,7 @@ body {
 
 /* ========================= Store page ======================*/
 
-#title {
+#store-view .title {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -545,4 +545,32 @@ footer .form .input-group button:hover {
   background-color: #ff6a00;
   color: white;
   font-weight: 600;
+}
+
+/* ===== NÚT BACK ===== */
+#back-btn {
+  position: fixed;
+  top: 100px;
+  left: 25px;
+  background: linear-gradient(135deg, #ff9f4a, #ff6a00);
+  color: #fff;
+  font-family: "Bebas Neue", sans-serif;
+  font-size: 17px;
+  padding: 10px 26px;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(255, 159, 74, 0.4);
+  transition: all 0.3s ease;
+  z-index: 9999;
+}
+
+#back-btn:hover {
+  background: linear-gradient(135deg, #ffb864, #ff852e);
+  transform: translateY(-2px);
+}
+
+#back-btn:active {
+  transform: scale(0.96);
+  background: linear-gradient(135deg, #ff8c1a, #cc5500);
 }
