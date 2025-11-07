@@ -69,7 +69,8 @@ if (homeBtn) {
             localStorage.removeItem('loggedInUser');
             localStorage.removeItem('userRole');
             localStorage.removeItem('rememberedUser');
-            window.location.href = './index.html';
+            // Redirect to site root index
+            window.location.href = '/index.html';
         }
     });
 }
@@ -84,7 +85,8 @@ if (logoutBtn) {
             localStorage.removeItem('userRole');
             localStorage.removeItem('rememberedUser');
             alert('👋 Logged out successfully!');
-            window.location.href = './index.html';
+            // Redirect to site root index
+            window.location.href = '/index.html';
         }
     });
 }
