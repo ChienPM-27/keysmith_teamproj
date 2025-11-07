@@ -115,8 +115,11 @@
       if (products.length === 0) {
         if (container) container.innerHTML = `\n        <div class="empty-cart">\n          <p>🛒 Chưa có sản phẩm nào trong giỏ hàng</p>\n        </div>\n      `;
         if (finalization) finalization.style.display = 'none';
+        // when cart becomes empty, mark back button so it can refresh the page
+        try { if (backBtn) backBtn.dataset.refreshOnEmpty = '1'; } catch (e) {}
       } else {
         if (finalization) finalization.style.display = 'flex';
+        try { if (backBtn) delete backBtn.dataset.refreshOnEmpty; } catch (e) {}
       }
     }
 
@@ -211,6 +214,9 @@
       if (totalPriceEl) totalPriceEl.innerHTML = (price * (prev + qty)) + '<i class="fa-solid fa-dollar-sign"></i>';
       safe(() => window.__cart_updateTotal && window.__cart_updateTotal());
       safe(() => window.__cart_showPopup && window.__cart_showPopup('✅ Đã cập nhật giỏ hàng'));
+      // also show bottom-right toast even when updating existing item
+      safe(() => window.showAddToCartToast && window.showAddToCartToast('Đã thêm sản phẩm vào giỏ hàng', 1000, 'success'));
+      try { if (backBtn) delete backBtn.dataset.refreshOnEmpty; } catch (e) {}
       return;
     }
 
@@ -240,9 +246,69 @@
     safe(() => window.__cart_updateTotal && window.__cart_updateTotal());
     safe(() => window.__cart_checkEmptyCart && window.__cart_checkEmptyCart());
     safe(() => window.__cart_showPopup && window.__cart_showPopup('✅ Đã thêm vào giỏ hàng'));
+    // also show bottom-right toast for quick feedback
+    safe(() => window.showAddToCartToast && window.showAddToCartToast('Đã thêm sản phẩm vào giỏ hàng'));
+    // adding an item should clear the "refresh on empty" flag
+    try { if (backBtn) delete backBtn.dataset.refreshOnEmpty; } catch (e) {}
   }
 
   // ----- Store / Product list -----
+  // ----- Toast / Notification (bottom-right) -----
+  // Creates a container+styles once and shows short toasts with progress bar
+  function _ensureToastContainer() {
+    if ($('#ks-toast-container')) return;
+    // create only the container; styles moved to `main/store/style.css`
+    const container = document.createElement('div');
+    container.id = 'ks-toast-container';
+    document.body.appendChild(container);
+  }
+
+  // message: text to show
+  // duration: ms to show before auto-dismiss
+  // type: 'success' | 'info' | 'error' — controls accent color
+  function showAddToCartToast(message = 'Đã thêm sản phẩm vào giỏ hàng', duration = 1000, type = 'success') {
+    try {
+      _ensureToastContainer();
+      const container = $('#ks-toast-container');
+      if (!container) return;
+
+      const toast = document.createElement('div');
+      toast.className = 'ks-toast ks-toast--' + (type || 'success');
+      toast.innerHTML = `
+        <div class="ks-toast-message">${message}</div>
+        <div class="ks-toast-progress"><div class="ks-toast-progress-bar"></div></div>
+      `;
+
+      // show multiple toasts: put newest at the top
+      container.prepend(toast);
+
+      // animate progress bar from 100% to 0% over duration
+      const bar = toast.querySelector('.ks-toast-progress-bar');
+      // force style calculation then set width to 0 to animate
+      requestAnimationFrame(() => {
+        if (bar) {
+          bar.style.transition = `width ${duration}ms linear`;
+          bar.style.width = '0%';
+        }
+      });
+
+      // remove after duration + small buffer
+      const removeAfter = duration + 150;
+      setTimeout(() => {
+        toast.style.transition = 'opacity 180ms ease';
+        toast.style.opacity = '0';
+        setTimeout(() => {
+          try { container.removeChild(toast); } catch (e) {}
+        }, 200);
+      }, removeAfter);
+    } catch (e) {
+      // swallow errors to keep add-to-cart flow safe
+      console.warn('toast error', e);
+    }
+  }
+
+  // expose for manual use or testing
+  try { window.showAddToCartToast = showAddToCartToast; } catch (e) {}
   function populateFilters(products, els) {
     const { brandsSelect, categorySelect, colorSelect } = els;
     const brands = new Set();
@@ -340,6 +406,8 @@
     pageItems.forEach((product) => {
       const pro = document.createElement('div');
       pro.className = 'pro';
+      // attach product id so delegation can use it
+      pro.dataset.productId = product.id;
       pro.innerHTML = `
         <img src="${product.mainImage}" alt="${product.title}">
         <div class="des">
@@ -349,13 +417,16 @@
         </div>
         <a href="#" class="buy"><i class="fa-solid fa-cart-shopping"></i></a>
       `;
-      pro.addEventListener('click', () => showProductDetail(product.id));
+  pro.addEventListener('click', () => showProductDetail(product.id));
+      // per-item buy handler may exist but we also use container delegation (see initStore)
       const buyA = pro.querySelector('.buy');
-      if (buyA) buyA.addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        try { if (storeView && getComputedStyle(storeView).display === 'block') addOrUpdateCartItem(product.id, 1); } catch (err) {}
-      });
+      if (buyA) {
+        buyA.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          try { if (storeView && getComputedStyle(storeView).display === 'block') addOrUpdateCartItem(product.id, 1); } catch (err) {}
+        });
+      }
       pro_container.appendChild(pro);
     });
 
@@ -450,6 +521,8 @@
   function wireBackButton() {
     if (!backBtn) return;
     backBtn.addEventListener('click', () => {
+      // if the cart was emptied and we've flagged the back button, refresh the page
+      try { if (backBtn && backBtn.dataset.refreshOnEmpty === '1') { window.location.reload(); return; } } catch (e) {}
       const cartOverlay = document.getElementById('cart-overlay');
       if (cartOverlay) {
         cartOverlay.remove();
@@ -512,6 +585,23 @@
       const priceMaxInput = $('#price-max');
 
       const els = { pro_container, pagination, searchInput, searchButton, statusSelect, brandsSelect, categorySelect, colorSelect, sortSelect, priceMinInput, priceMaxInput };
+
+      // Event delegation for buy buttons: ensures the buy button works reliably even after re-renders
+      try {
+        if (pro_container && !pro_container.__buyDelegation) {
+          pro_container.addEventListener('click', (e) => {
+            const buy = e.target.closest('.buy');
+            if (!buy) return;
+            e.preventDefault();
+            e.stopPropagation();
+            const pro = buy.closest('.pro');
+            const pid = pro?.dataset?.productId || null;
+            if (!pid) return;
+            try { if (storeView && getComputedStyle(storeView).display === 'block') addOrUpdateCartItem(pid, 1); } catch (err) {}
+          });
+          pro_container.__buyDelegation = true;
+        }
+      } catch (e) { }
 
       populateFilters(allProducts, { brandsSelect, categorySelect, colorSelect });
       renderPage(currentPage, els);
@@ -709,6 +799,7 @@ fetch("./detail/product.json")
       pageItems.forEach((product) => {
         const pro = document.createElement("div");
         pro.className = "pro";
+        pro.dataset.productId = product.id;
         pro.innerHTML = `
           <img src="${product.mainImage}" alt="${product.title}">
           <div class="des">
@@ -1033,8 +1124,10 @@ function initCart() {
     if (products.length === 0) {
       if (container) container.innerHTML = `\n        <div class="empty-cart">\n          <p>🛒 Chưa có sản phẩm nào trong giỏ hàng</p>\n        </div>\n      `;
       if (finalization) finalization.style.display = 'none';
+      try { if (backBtn) backBtn.dataset.refreshOnEmpty = '1'; } catch (e) {}
     } else {
       if (finalization) finalization.style.display = 'flex';
+      try { if (backBtn) delete backBtn.dataset.refreshOnEmpty; } catch (e) {}
     }
   };
 
@@ -1095,6 +1188,8 @@ function initCart() {
 // ===== Back to Store =====
 if (backBtn) {
   backBtn.addEventListener("click", () => {
+    // if cart was emptied and we've flagged the back button, refresh the page
+    try { if (backBtn && backBtn.dataset.refreshOnEmpty === '1') { window.location.reload(); return; } } catch (e) {}
     // If cart overlay is open, close it first
     const cartOverlay = document.getElementById("cart-overlay");
     if (cartOverlay) {
