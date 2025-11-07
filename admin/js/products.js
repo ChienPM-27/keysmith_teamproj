@@ -217,24 +217,110 @@ function changePage(page) {
 
 function openAddProductModal() {
     const modal = document.querySelector('.modal.add-product');
-    if (!modal) return;
-
+    if (!modal) {
+        // Fallback: create modal if missing (shouldn't happen because markup exists in admin.html)
+        createProductModal();
+        return;
+    }
     currentEditingId = null;
-    
-    const addElements = document.querySelectorAll('.add-product-e');
-    const editElements = document.querySelectorAll('.edit-product-e');
-    addElements.forEach(el => el.style.display = 'block');
-    editElements.forEach(el => el.style.display = 'none');
-    
-    document.getElementById('ten-mon').value = '';
-    document.getElementById('chon-the-loai').selectedIndex = 0;
-    document.getElementById('gia-moi').value = '';
-    document.getElementById('mo-ta').value = '';
-    
+    // Ensure hidden base64 input exists
+    try { if (typeof ensureBase64Field === 'function') ensureBase64Field(); } catch {}
+    // Use existing field IDs from admin.html
+    const nameEl = document.getElementById('ten-mon');
+    const catEl = document.getElementById('chon-the-loai');
+    const priceEl = document.getElementById('gia-moi');
+    const descEl = document.getElementById('mo-ta');
+    if (nameEl) nameEl.value = '';
+    if (catEl) catEl.selectedIndex = 0;
+    if (priceEl) priceEl.value = '';
+    if (descEl) descEl.value = '';
     const preview = document.querySelector('.upload-image-preview');
     if (preview) preview.src = './assets/img/blank-image.png';
-    
+    // clear hidden base64 field if exists
+    const imgBase64Field = document.getElementById('product-image-base64');
+    if (imgBase64Field) imgBase64Field.value = '';
+    // Toggle add/update controls (match existing classes in admin.html)
+    const addEls = document.querySelectorAll('.add-product-e');
+    const editEls = document.querySelectorAll('.edit-product-e');
+    addEls.forEach(el => el.style.display = '');
+    editEls.forEach(el => el.style.display = 'none');
     modal.style.display = 'flex';
+}
+
+function createProductModal() {
+    const modalHTML = `
+        <div class="modal add-product" style="display: none;">
+            <div class="modal-container">
+                <div class="modal-header">
+                    <h3 class="modal-title">Quản lý sản phẩm</h3>
+                    <button class="modal-close product-form" onclick="closeProductModal()">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form class="product-form" id="product-form">
+                        <div class="form-group">
+                            <label for="product-name">Tên sản phẩm <span style="color: red;">*</span></label>
+                            <input type="text" id="product-name" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="product-category">Thể loại <span style="color: red;">*</span></label>
+                            <select id="product-category" name="category" required>
+                                <option value="">Chọn thể loại</option>
+                                <option value="Attack on Titan">Attack on Titan</option>
+                                <option value="The Lord of the Rings">The Lord of the Rings</option>
+                                <option value="One Piece">One Piece</option>
+                                <option value="Yu-Gi-Oh!">Yu-Gi-Oh!</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="product-price">Giá <span style="color: red;">*</span></label>
+                            <input type="number" id="product-price" name="price" min="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="product-description">Mô tả</label>
+                            <textarea id="product-description" name="description" rows="3"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="product-image">Hình ảnh</label>
+                            <input type="file" id="product-image" name="image" accept="image/*" onchange="uploadImage(this)">
+                            <img class="upload-image-preview" src="./assets/img/blank-image.png" style="max-width: 120px; margin-top: 10px; border-radius: 8px; border: 1px solid #ccc;" />
+                        </div>
+                        <div class="form-actions" style="display: flex; gap: 10px; justify-content: flex-end;">
+                            <button type="submit" id="add-product-button" class="btn-primary" style="padding: 10px 20px; background: var(--color-primary); color: white; border: none; border-radius: 5px; cursor: pointer;">
+                                <i class="fa-solid fa-plus"></i> Thêm sản phẩm
+                            </button>
+                            <button type="submit" id="update-product-button" class="btn-primary" style="padding: 10px 20px; background: var(--color-primary); color: white; border: none; border-radius: 5px; cursor: pointer; display: none;">
+                                <i class="fa-solid fa-save"></i> Cập nhật
+                            </button>
+                            <button type="button" class="btn-secondary" onclick="closeProductModal()" style="padding: 10px 20px; background: #6c757d; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                                <i class="fa-solid fa-xmark"></i> Hủy
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+    const form = document.getElementById('product-form');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const addBtn = document.getElementById('add-product-button');
+            if (addBtn && addBtn.style.display !== 'none') {
+                handleAddProduct(e);
+            } else {
+                handleUpdateProduct(e);
+            }
+        });
+    }
+    const modal = document.querySelector('.modal.add-product');
+    if (modal) {
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeProductModal();
+        });
+    }
 }
 
 function closeProductModal() {
@@ -264,6 +350,9 @@ function editProduct(id) {
     
     const preview = document.querySelector('.upload-image-preview');
     if (preview && product.image) preview.src = product.image;
+    // Clear hidden base64 so a new upload overrides
+    const imgBase64Field = document.getElementById('product-image-base64');
+    if (imgBase64Field) imgBase64Field.value = '';
     
     modal.style.display = 'flex';
 }
@@ -293,68 +382,100 @@ function uploadImage(input) {
         reader.onload = function(e) {
             const preview = document.querySelector('.upload-image-preview');
             if (preview) preview.src = e.target.result;
+            // Save base64 string to a hidden field for later use
+            const imgBase64Field = document.getElementById('product-image-base64');
+            if (imgBase64Field) imgBase64Field.value = e.target.result;
         };
         reader.readAsDataURL(input.files[0]);
     }
 }
 
+// Simple refresh helper used by the Refresh button
+function refreshProducts() {
+    updateCategoryFilter();
+    currentPage = 1;
+    showProduct();
+}
+
+// In handleAddProduct, use base64 if available
 function handleAddProduct(e) {
     e.preventDefault();
-    
     const name = document.getElementById('ten-mon').value.trim();
     const category = document.getElementById('chon-the-loai').value;
     const price = parseFloat(document.getElementById('gia-moi').value);
     const description = document.getElementById('mo-ta').value.trim();
-    const imagePreview = document.querySelector('.upload-image-preview').src;
-    
+    let imagePreview = document.querySelector('.upload-image-preview').src;
+    const imgBase64Field = document.getElementById('product-image-base64');
+    if (imgBase64Field && imgBase64Field.value) {
+        imagePreview = imgBase64Field.value;
+    }
     if (!name || !category || !price || isNaN(price)) {
         alert('Please fill in all required fields with valid data');
         return;
     }
-
+    // Store both image and mainImage for store compatibility
+    const mainImage = imagePreview.includes('blank-image.png') ? '../../img/keycap/default.jpg' : imagePreview;
     const newProduct = {
         name,
         category,
         price,
         description,
-        image: imagePreview.includes('blank-image.png') ? '../../img/keycap/default.jpg' : imagePreview,
+        image: mainImage,
+        mainImage,
         stock: 0,
         sold: 0
     };
-
     DataManager.addProduct(newProduct);
     alert('Product added successfully!');
     closeProductModal();
     updateCategoryFilter();
-    currentPage = 1; // Reset về trang 1 khi thêm sản phẩm mới
+    currentPage = 1;
     showProduct();
 }
 
+// Update handler prefers hidden base64 image when available
 function handleUpdateProduct(e) {
     e.preventDefault();
-    
-    if (!currentEditingId) return;
+    if (!currentEditingId) {
+        alert('No product selected for update');
+        return;
+    }
 
     const name = document.getElementById('ten-mon').value.trim();
     const category = document.getElementById('chon-the-loai').value;
     const price = parseFloat(document.getElementById('gia-moi').value);
     const description = document.getElementById('mo-ta').value.trim();
-    const imagePreview = document.querySelector('.upload-image-preview').src;
-    
+
+    let imagePreview = document.querySelector('.upload-image-preview').src;
+    const imgBase64Field = document.getElementById('product-image-base64');
+    if (imgBase64Field && imgBase64Field.value) {
+        imagePreview = imgBase64Field.value;
+    }
+
     if (!name || !category || !price || isNaN(price)) {
         alert('Please fill in all required fields with valid data');
         return;
     }
 
+    // Fallback if preview is blank-image
+    if (imagePreview && imagePreview.includes('blank-image.png')) {
+        const existing = typeof DataManager.getProductById === 'function' ? DataManager.getProductById(currentEditingId) : null;
+        imagePreview = (existing && existing.image) ? existing.image : '../../img/keycap/default.jpg';
+    }
+
+    // Store both image and mainImage for store compatibility
+    const mainImage = imagePreview;
     const updatedProduct = {
         name,
         category,
         price,
         description,
-        image: imagePreview
+        image: mainImage,
+        mainImage
     };
 
-    if (DataManager.updateProduct(currentEditingId, updatedProduct)) {
+    const ok = typeof DataManager.updateProduct === 'function' ? DataManager.updateProduct(currentEditingId, updatedProduct) : false;
+    if (ok) {
         alert('Product updated successfully!');
         closeProductModal();
         updateCategoryFilter();
@@ -362,23 +483,31 @@ function handleUpdateProduct(e) {
     } else {
         alert('Failed to update product');
     }
+
+    if (imgBase64Field) imgBase64Field.value = '';
 }
 
-async function refreshProducts() {
-    await DataManager.loadProductsFromJSON();
-    updateCategoryFilter();
-    currentPage = 1; // Reset về trang 1 khi refresh
-    showProduct();
-    alert('Products refreshed from JSON!');
+// Add a hidden input for base64 image in modal if not present
+function ensureBase64Field() {
+    const form = document.querySelector('.add-product-form');
+    if (form && !document.getElementById('product-image-base64')) {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.id = 'product-image-base64';
+        form.appendChild(input);
+    }
 }
+document.addEventListener('DOMContentLoaded', ensureBase64Field);
 
 document.addEventListener('DOMContentLoaded', function() {
     setTimeout(async () => {
         await initializeProducts();
-
         const addBtn = document.getElementById('btn-add-product');
         if (addBtn) {
-            addBtn.addEventListener('click', openAddProductModal);
+            addBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                openAddProductModal();
+            });
         }
 
         const refreshBtn = document.getElementById('btn-refresh-product');
@@ -399,6 +528,21 @@ document.addEventListener('DOMContentLoaded', function() {
         const updateProductBtn = document.getElementById('update-product-button');
         if (updateProductBtn) {
             updateProductBtn.addEventListener('click', handleUpdateProduct);
+        }
+
+        // Prevent default submit and route to correct handler
+        const productForm = document.querySelector('.add-product-form');
+        if (productForm) {
+            productForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const addBtn = document.getElementById('add-product-button');
+                const addVisible = addBtn && getComputedStyle(addBtn).display !== 'none';
+                if (addVisible) {
+                    handleAddProduct(e);
+                } else {
+                    handleUpdateProduct(e);
+                }
+            });
         }
 
         const modal = document.querySelector('.modal.add-product');

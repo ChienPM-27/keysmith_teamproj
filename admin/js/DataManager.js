@@ -155,36 +155,26 @@ class DataManager {
     }
 
     async loadCustomers() {
+        // Read only from localStorage; do not generate samples
         const saved = localStorage.getItem('customers');
-        if (saved) {
-            this.data.customers = JSON.parse(saved);
-            // Migration: Thêm status 'active' cho customers cũ không có status
-            let needsSave = false;
-            this.data.customers = this.data.customers.map(customer => {
-                if (!customer.status) {
-                    needsSave = true;
-                    return { ...customer, status: 'active' };
-                }
-                return customer;
-            });
-            if (needsSave) {
-                this.saveCustomers();
+        this.data.customers = saved ? JSON.parse(saved) : [];
+        // Light migration: ensure status exists if stored data lacks it
+        let needsSave = false;
+        this.data.customers = this.data.customers.map(customer => {
+            if (!customer.status) {
+                needsSave = true;
+                return { ...customer, status: 'active' };
             }
-        } else {
-            this.data.customers = this.generateSampleCustomers();
-            this.saveCustomers();
-        }
+            return customer;
+        });
+        if (needsSave) this.saveCustomers();
         this.notifyListeners('customers');
     }
 
     async loadOrders() {
+        // Read only from localStorage; do not generate samples
         const saved = localStorage.getItem('orders');
-        if (saved) {
-            this.data.orders = JSON.parse(saved);
-        } else {
-            this.data.orders = this.generateSampleOrders();
-            this.saveOrders();
-        }
+        this.data.orders = saved ? JSON.parse(saved) : [];
         this.notifyListeners('orders');
     }
 
