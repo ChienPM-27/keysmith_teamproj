@@ -204,9 +204,25 @@ function renderPage(page) {
 
   if (pagination) {
     pagination.innerHTML = "";
+    // First page
+    const first = document.createElement("a");
+    first.href = "#";
+    first.innerHTML = `&laquo;`;
+    first.title = 'Trang đầu';
+    first.addEventListener("click", (e) => {
+      e.preventDefault();
+      if (currentPage !== 1) {
+        currentPage = 1;
+        renderPage(currentPage);
+      }
+    });
+    pagination.appendChild(first);
+
+    // Previous
     const left = document.createElement("a");
     left.href = "#";
     left.innerHTML = `<i class="fa-solid fa-arrow-left"></i>`;
+    left.title = 'Trang trước';
     left.addEventListener("click", (e) => {
       e.preventDefault();
       if (currentPage > 1) {
@@ -216,6 +232,7 @@ function renderPage(page) {
     });
     pagination.appendChild(left);
 
+    // Page numbers
     for (let i = 1; i <= totalPages; i++) {
       const a = document.createElement("a");
       a.href = "#";
@@ -229,9 +246,11 @@ function renderPage(page) {
       pagination.appendChild(a);
     }
 
+    // Next
     const right = document.createElement("a");
     right.href = "#";
     right.innerHTML = `<i class="fa-solid fa-arrow-right"></i>`;
+    right.title = 'Trang sau';
     right.addEventListener("click", (e) => {
       e.preventDefault();
       if (currentPage < totalPages) {
@@ -240,6 +259,20 @@ function renderPage(page) {
       }
     });
     pagination.appendChild(right);
+
+    // Last page
+    const last = document.createElement("a");
+    last.href = "#";
+    last.innerHTML = `&raquo;`;
+    last.title = 'Trang cuối';
+    last.addEventListener("click", (e) => {
+      e.preventDefault();
+      if (currentPage !== totalPages) {
+        currentPage = totalPages;
+        renderPage(currentPage);
+      }
+    });
+    pagination.appendChild(last);
   }
 }
 

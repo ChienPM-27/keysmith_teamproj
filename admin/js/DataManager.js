@@ -108,8 +108,10 @@ class DataManager {
         if (this.initialized) return;
         
         try {
+            // Ensure products are loaded first because warehouse import order samples
+            // may depend on product list (product ids/costs). Then load the rest in parallel.
+            await this.loadProducts();
             await Promise.all([
-                this.loadProducts(),
                 this.loadCustomers(),
                 this.loadOrders(),
                 this.loadWarehouse()
@@ -881,12 +883,16 @@ generateSampleCustomers() {
             const productCount = Math.floor(Math.random() * 3) + 1;
             
             for (let j = 0; j < productCount; j++) {
-                const product = this.data.products[Math.floor(Math.random() * this.data.products.length)];
+                // Pick a random product; if products not yet available, skip this item
+                const productsLen = (this.data.products || []).length;
+                if (productsLen === 0) continue;
+                const product = this.data.products[Math.floor(Math.random() * productsLen)];
+                if (!product) continue;
                 randomProducts.push({
-                    productId: product.id,
-                    productName: product.name,
+                    productId: product.id ?? 0,
+                    productName: product.name ?? 'Unknown',
                     quantity: Math.floor(Math.random() * 50) + 10,
-                    cost: product.cost
+                    cost: product.cost ?? (product.price ? product.price * 0.6 : 0)
                 });
             }
             
