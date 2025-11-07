@@ -46,8 +46,16 @@ p { font-size: 15px; color: #465b52; margin: 5px 0 20px 0; }
     left: 0;
     width: 100%;
     z-index: 100;
-    transition: top 0.3s ease, background-color 0.3s ease, border-bottom 0.3s ease;
+    transition: all 0.3s ease;
     border-bottom: 1px solid #ffffff29;
+}
+
+#header.scrolled {
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+#header.hidden {
+    transform: translateY(-100%);
 }
 
 #header::before {
