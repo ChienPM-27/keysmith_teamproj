@@ -1,37 +1,42 @@
 /*
- * KeySmith - Enhanced Single Page Application
- * Version: 2.0.0
- * Combined and optimized router with all features
+ * KeySmith - Main Application JavaScript
+ * Version: 1.0.0
+ * Description: Combined JS file for all main website functionality
  */
 
-// ==================== NAMESPACE & UTILITIES ====================
+// ==================== UTILITIES ====================
 const KeySmith = {
-    // Quick selectors
-    $: (sel) => document.querySelector(sel),
-    $$: (sel) => Array.from(document.querySelectorAll(sel)),
-    
     // Utility functions
     utils: {
+        // Show/hide element
         toggle: function(element, show) {
-            if (element) element.style.display = show ? 'flex' : 'none';
+            if (element) {
+                element.style.display = show ? 'flex' : 'none';
+            }
         },
         
+        // Add/remove class
         toggleClass: function(element, className, force) {
-            if (element) element.classList.toggle(className, force);
+            if (element) {
+                element.classList.toggle(className, force);
+            }
         },
         
+        // Get element by ID with null check
         getById: function(id) {
             return document.getElementById(id);
         }
     },
     
-    // Ready handler
-    ready: (fn) => {
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', fn);
-        } else {
-            fn();
-        }
+    // Initialize all modules
+    init: function() {
+        this.header.init();
+        this.profile.init();
+        this.login.init();
+        this.contact.init();
+        this.store.init();
+        this.subscriptionForm.init();
+        this.error404.init();
     }
 };
 
@@ -41,13 +46,13 @@ KeySmith.header = {
     lastScroll: 0,
     
     init: function() {
-        this.header = document.getElementById('header');
+        this.header = KeySmith.utils.getById('header');
         if (!this.header) return;
         
-        // Header scroll behavior
+        // Header scroll hide/show
         window.addEventListener('scroll', () => {
             const currentScroll = window.pageYOffset;
-            
+
             if (currentScroll <= 0) {
                 this.header.classList.remove('hidden');
             } else if (currentScroll > this.lastScroll && currentScroll > 100) {
@@ -55,23 +60,18 @@ KeySmith.header = {
             } else {
                 this.header.classList.remove('hidden');
             }
-            
+
             this.lastScroll = currentScroll;
         });
-        
+
         // Mobile menu
-        const bar = document.getElementById('bar');
-        const close = document.getElementById('close');
-        const nav = document.getElementById('navbar');
-        
-        if (bar && nav) {
-            bar.addEventListener('click', () => nav.classList.add('active'));
-        }
-        
-        if (close && nav) {
-            close.addEventListener('click', () => nav.classList.remove('active'));
-        }
-        
+        const bar = KeySmith.utils.getById('bar');
+        const close = KeySmith.utils.getById('close');
+        const nav = KeySmith.utils.getById('navbar');
+
+        if (bar) bar.addEventListener('click', () => nav.classList.add('active'));
+        if (close) close.addEventListener('click', () => nav.classList.remove('active'));
+
         // Close menu on outside click
         document.addEventListener('click', (e) => {
             if (nav && nav.classList.contains('active')) {
@@ -85,23 +85,26 @@ KeySmith.header = {
 
 // ==================== LOGIN MODULE ====================
 KeySmith.login = {
+    // Admin accounts list
     ADMIN_ACCOUNTS: [
         { username: 'admin', password: 'admin123' },
         { username: 'superadmin', password: 'super123' }
     ],
     
     init: function() {
+        // Login elements
         const profileBtn = document.querySelector('.profile');
-        const modalOverlay = document.getElementById('modalOverlay');
-        const closeModal = document.getElementById('closeModal');
-        const loginForm = document.getElementById('loginForm');
-        
-        const registerOverlay = document.getElementById('registerOverlay');
-        const closeRegister = document.getElementById('closeRegister');
-        const registerForm = document.getElementById('registerForm');
-        const openRegister = document.getElementById('openRegister');
-        const switchToLogin = document.getElementById('switchToLogin');
-        
+        const modalOverlay = KeySmith.utils.getById('modalOverlay');
+        const closeModal = KeySmith.utils.getById('closeModal');
+        const loginForm = KeySmith.utils.getById('loginForm');
+
+        // Register elements
+        const registerOverlay = KeySmith.utils.getById('registerOverlay');
+        const closeRegister = KeySmith.utils.getById('closeRegister');
+        const registerForm = KeySmith.utils.getById('registerForm');
+        const openRegister = KeySmith.utils.getById('openRegister');
+        const switchToLogin = KeySmith.utils.getById('switchToLogin');
+
         // Profile button click
         if (profileBtn) {
             profileBtn.addEventListener('click', (e) => {
@@ -110,111 +113,115 @@ KeySmith.login = {
                 const userRole = localStorage.getItem('userRole');
                 
                 if (loggedUser && userRole === 'user') {
-                    KeySmith.router.navigate('profile');
+                    KeySmith.profile.showProfileModal();
                 } else {
                     if (modalOverlay) {
-                        modalOverlay.style.display = 'flex';
+                        modalOverlay.classList.add('active');
                         document.body.style.overflow = 'hidden';
                     }
                 }
             });
         }
-        
+
         // Close login modal
-        if (closeModal && modalOverlay) {
+        if (closeModal) {
             closeModal.addEventListener('click', () => {
-                modalOverlay.style.display = 'none';
+                modalOverlay.classList.remove('active');
                 document.body.style.overflow = 'auto';
             });
-            
+        }
+
+        // Outside click close
+        if (modalOverlay) {
             modalOverlay.addEventListener('click', (e) => {
                 if (e.target === modalOverlay) {
-                    modalOverlay.style.display = 'none';
+                    modalOverlay.classList.remove('active');
                     document.body.style.overflow = 'auto';
                 }
             });
         }
-        
+
         // Register modal controls
-        if (openRegister && modalOverlay && registerOverlay) {
+        if (openRegister) {
             openRegister.addEventListener('click', (e) => {
                 e.preventDefault();
-                modalOverlay.style.display = 'none';
-                registerOverlay.style.display = 'flex';
+                modalOverlay.classList.remove('active');
+                registerOverlay.classList.add('active');
             });
         }
-        
-        if (closeRegister && registerOverlay) {
+
+        if (closeRegister) {
             closeRegister.addEventListener('click', () => {
-                registerOverlay.style.display = 'none';
+                registerOverlay.classList.remove('active');
                 document.body.style.overflow = 'auto';
             });
         }
-        
-        if (switchToLogin && registerOverlay && modalOverlay) {
+
+        if (switchToLogin) {
             switchToLogin.addEventListener('click', (e) => {
                 e.preventDefault();
-                registerOverlay.style.display = 'none';
-                modalOverlay.style.display = 'flex';
+                registerOverlay.classList.remove('active');
+                modalOverlay.classList.add('active');
             });
         }
-        
+
         // Form submissions
         if (registerForm) {
             registerForm.addEventListener('submit', (e) => this.handleRegister(e));
         }
-        
+
         if (loginForm) {
             loginForm.addEventListener('submit', (e) => this.handleLogin(e));
         }
-        
+
         // Update profile display on load
         this.updateProfileDisplay();
     },
-    
+
     handleRegister: function(e) {
         e.preventDefault();
-        const username = document.getElementById('registerUsername').value.trim();
-        const password = document.getElementById('registerPassword').value.trim();
-        
+        const username = KeySmith.utils.getById('registerUsername').value.trim();
+        const password = KeySmith.utils.getById('registerPassword').value.trim();
+
         if (!username || !password) {
             alert('Please enter all fields!');
             return;
         }
-        
+
+        // Check for admin username
         if (this.ADMIN_ACCOUNTS.some(admin => admin.username === username)) {
             alert('❌ This username is reserved for admin only!');
             return;
         }
-        
+
         let users = JSON.parse(localStorage.getItem('users')) || [];
         if (users.find(u => u.username === username)) {
             alert('Username already exists!');
             return;
         }
-        
+
         users.push({ username, password, role: 'user' });
         localStorage.setItem('users', JSON.stringify(users));
         alert('✅ Account created successfully!');
+
+        const registerOverlay = KeySmith.utils.getById('registerOverlay');
+        const modalOverlay = KeySmith.utils.getById('modalOverlay');
         
-        const registerOverlay = document.getElementById('registerOverlay');
-        const modalOverlay = document.getElementById('modalOverlay');
-        
-        if (registerOverlay) registerOverlay.style.display = 'none';
-        if (modalOverlay) modalOverlay.style.display = 'flex';
+        registerOverlay.classList.remove('active');
+        modalOverlay.classList.add('active');
     },
-    
+
     handleLogin: function(e) {
         e.preventDefault();
-        const username = document.getElementById('loginUsername').value.trim();
-        const password = document.getElementById('loginPassword').value.trim();
-        const rememberMe = document.getElementById('rememberMe')?.checked;
-        
+        const username = KeySmith.utils.getById('loginUsername').value.trim();
+        const password = KeySmith.utils.getById('loginPassword').value.trim();
+        const rememberMe = KeySmith.utils.getById('rememberMe').checked;
+
         // Check admin login
         const isAdmin = this.ADMIN_ACCOUNTS.find(admin => 
             admin.username === username && admin.password === password
         );
-        
+
         if (isAdmin) {
             localStorage.setItem('loggedInUser', username);
             localStorage.setItem('userRole', 'admin');
@@ -222,22 +229,22 @@ KeySmith.login = {
             
             alert('✅ Admin login successful! Redirecting to admin page...');
             
-            const modalOverlay = document.getElementById('modalOverlay');
+            const modalOverlay = KeySmith.utils.getById('modalOverlay');
             if (modalOverlay) {
-                modalOverlay.style.display = 'none';
+                modalOverlay.classList.remove('active');
                 document.body.style.overflow = 'auto';
             }
             
             setTimeout(() => {
-                window.location.href = '../admin.html';
+                window.location.href = '../admin/admin.html';
             }, 1000);
             return;
         }
-        
+
         // Check regular user login
         const users = JSON.parse(localStorage.getItem('users')) || [];
         const user = users.find(u => u.username === username && u.password === password);
-        
+
         if (user) {
             localStorage.setItem('loggedInUser', username);
             localStorage.setItem('userRole', 'user');
@@ -245,9 +252,9 @@ KeySmith.login = {
             
             alert('✅ Login successful!');
             
-            const modalOverlay = document.getElementById('modalOverlay');
+            const modalOverlay = KeySmith.utils.getById('modalOverlay');
             if (modalOverlay) {
-                modalOverlay.style.display = 'none';
+                modalOverlay.classList.remove('active');
                 document.body.style.overflow = 'auto';
             }
             
@@ -257,14 +264,14 @@ KeySmith.login = {
             alert('❌ Invalid username or password!');
         }
     },
-    
+
     updateProfileDisplay: function() {
         const loggedUser = localStorage.getItem('loggedInUser');
         const userRole = localStorage.getItem('userRole');
         const profile = document.querySelector('.profile');
-        
+
         if (!profile) return;
-        
+
         if (loggedUser && userRole === 'user') {
             profile.innerHTML = `<i class="fa-solid fa-user-check"></i> <span style="font-size:14px;">${loggedUser}</span>`;
         } else {
@@ -278,6 +285,7 @@ KeySmith.login = {
 // ==================== PROFILE MODULE ====================
 KeySmith.profile = {
     init: function() {
+        // Initialize only if user is logged in
         const loggedUser = localStorage.getItem('loggedInUser');
         const userRole = localStorage.getItem('userRole');
         
@@ -285,29 +293,32 @@ KeySmith.profile = {
             this.initProfileModal();
         }
     },
-    
+
     initProfileModal: function() {
-        const profileModal = document.getElementById('profileModalOverlay');
+        const profileModal = KeySmith.utils.getById('profileModalOverlay');
         if (!profileModal) return;
-        
-        const closeBtn = document.getElementById('closeProfileModal');
+
+        // Close button
+        const closeBtn = KeySmith.utils.getById('closeProfileModal');
         if (closeBtn) {
             closeBtn.addEventListener('click', () => {
                 profileModal.style.display = 'none';
                 document.body.style.overflow = 'auto';
-                KeySmith.router.navigate('home');
             });
         }
-        
+
+        // Section navigation
         const sidebarLinks = profileModal.querySelectorAll('.profile-sidebar a[data-section]');
         sidebarLinks.forEach(link => {
             link.addEventListener('click', (e) => {
                 e.preventDefault();
                 const targetSection = link.getAttribute('data-section');
                 
+                // Update active states
                 sidebarLinks.forEach(l => l.classList.remove('active'));
                 link.classList.add('active');
                 
+                // Show target section
                 const sections = profileModal.querySelectorAll('.profile-section');
                 sections.forEach(section => {
                     section.classList.toggle('active', 
@@ -315,8 +326,9 @@ KeySmith.profile = {
                 });
             });
         });
-        
-        const logoutBtn = document.getElementById('profileLogout');
+
+        // Logout
+        const logoutBtn = KeySmith.utils.getById('profileLogout');
         if (logoutBtn) {
             logoutBtn.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -326,40 +338,43 @@ KeySmith.profile = {
                 window.location.reload();
             });
         }
-        
+
+        // Forms
         this.initProfileForms();
     },
-    
+
     initProfileForms: function() {
-        const profileForm = document.getElementById('profileInfoForm');
+        // Profile info form
+        const profileForm = KeySmith.utils.getById('profileInfoForm');
         if (profileForm) {
             profileForm.addEventListener('submit', (e) => {
                 e.preventDefault();
                 alert('Profile updated successfully!');
             });
         }
-        
-        const passwordForm = document.getElementById('changePasswordForm');
+
+        // Password change form
+        const passwordForm = KeySmith.utils.getById('changePasswordForm');
         if (passwordForm) {
             passwordForm.addEventListener('submit', (e) => {
                 e.preventDefault();
-                const currentPass = document.getElementById('current-password').value;
-                const newPass = document.getElementById('new-password').value;
-                const confirmPass = document.getElementById('confirm-password').value;
-                
+                const currentPass = KeySmith.utils.getById('current-password').value;
+                const newPass = KeySmith.utils.getById('new-password').value;
+                const confirmPass = KeySmith.utils.getById('confirm-password').value;
+
                 if (newPass !== confirmPass) {
                     alert('New passwords do not match!');
                     return;
                 }
-                
+
                 alert('Password changed successfully!');
                 passwordForm.reset();
             });
         }
     },
-    
+
     showProfileModal: function() {
-        const profileModal = document.getElementById('profileModalOverlay');
+        const profileModal = KeySmith.utils.getById('profileModalOverlay');
         if (profileModal) {
             profileModal.style.display = 'flex';
             document.body.style.overflow = 'hidden';
@@ -370,27 +385,31 @@ KeySmith.profile = {
 // ==================== CONTACT MODULE ====================
 KeySmith.contact = {
     init: function() {
-        const contactLink = document.getElementById('contactLink');
-        const contactModal = document.getElementById('contactModalOverlay');
-        const closeContactModal = document.getElementById('closeContactModal');
-        
-        if (contactLink && contactModal) {
+        const contactLink = KeySmith.utils.getById('contactLink');
+        const contactModal = KeySmith.utils.getById('contactModalOverlay');
+        const closeContactModal = KeySmith.utils.getById('closeContactModal');
+
+        if (contactLink) {
             contactLink.addEventListener('click', (e) => {
                 e.preventDefault();
-                contactModal.style.display = 'flex';
-                document.body.style.overflow = 'hidden';
+                if (contactModal) {
+                    contactModal.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                }
             });
         }
-        
-        if (closeContactModal && contactModal) {
+
+        if (closeContactModal) {
             closeContactModal.addEventListener('click', () => {
-                contactModal.style.display = 'none';
+                contactModal.classList.remove('active');
                 document.body.style.overflow = 'auto';
             });
-            
+        }
+
+        if (contactModal) {
             contactModal.addEventListener('click', (e) => {
                 if (e.target === contactModal) {
-                    contactModal.style.display = 'none';
+                    contactModal.classList.remove('active');
                     document.body.style.overflow = 'auto';
                 }
             });
@@ -400,470 +419,105 @@ KeySmith.contact = {
 
 // ==================== STORE MODULE ====================
 KeySmith.store = {
-    inited: false,
-    
     init: function() {
+        // Cart functionality
         const cartBtn = document.querySelector('.cart');
         if (cartBtn) {
             cartBtn.addEventListener('click', (e) => {
                 e.preventDefault();
                 const loggedUser = localStorage.getItem('loggedInUser');
-                
                 if (!loggedUser) {
-                    const modalOverlay = document.getElementById('modalOverlay');
+                    const modalOverlay = KeySmith.utils.getById('modalOverlay');
                     if (modalOverlay) {
+                        modalOverlay.classList.add('active');
                         modalOverlay.style.display = 'flex';
                         document.body.style.overflow = 'hidden';
                     }
                 } else {
-                    KeySmith.router.navigate('cart');
+                    window.location.href = './main/store/Store.html?cart=1';
                 }
             });
         }
-    },
-    
-    initStorePage: function() {
-        const storeEl = document.getElementById('store');
-        if (!storeEl || this.inited) return;
-        
-        this.inited = true;
-        
-        // Back button
-        const backBtn = document.getElementById('back-btn');
-        if (backBtn) {
-            backBtn.addEventListener('click', () => {
-                KeySmith.router.navigate('home');
-            });
-        }
-        
-        // Demo products
-        const demoProducts = [
-            {id:101, title:'White Tree', collection:'Lord Of The Rings', price:'85$', img:'/img/keycap/LOTR/gondor/white_tree.jpg'},
-            {id:102, title:'Wings of Freedom', collection:'Attack On Titan', price:'85$', img:'/img/keycap/AttackOnTitan/spacebar.jpg'},
-            {id:103, title:'Horn Of Gordor', collection:'Lord Of The Rings', price:'90$', img:'/img/keycap/LOTR/gondor/horn_of_gordor.jpg'},
-            {id:104, title:'Attack Titan', collection:'Attack On Titan', price:'75$', img:'/img/keycap/AttackOnTitan/Eren.jpg'}
-        ];
-        
-        this.renderProducts(demoProducts);
-        this.initSearch();
-        this.initFilters();
-    },
-    
-    renderProducts: function(products) {
-        const proContainer = document.getElementById('pro-container');
-        if (!proContainer) return;
-        
-        proContainer.innerHTML = '';
-        
-        const carouselWrapper = document.createElement('div');
-        carouselWrapper.className = 'owl-carousel store-products-carousel';
-        
-        products.forEach(p => {
-            const productDiv = document.createElement('div');
-            productDiv.className = 'pro';
-            productDiv.dataset.productId = p.id;
-            productDiv.style.cursor = 'pointer';
-            productDiv.innerHTML = `
-                <img src="${p.img}" alt="${p.title}">
-                <div class="des">
-                    <span>${p.collection}</span>
-                    <h4>${p.title}<br>Keycap Artisan</h4>
-                    <h5>${p.price}</h5>
-                </div>
-            `;
-            
-            productDiv.addEventListener('click', () => {
-                this.showProductDetail(p);
-            });
-            
-            carouselWrapper.appendChild(productDiv);
-        });
-        
-        proContainer.appendChild(carouselWrapper);
-        
-        // Initialize Owl Carousel
-        try {
-            if (window.jQuery && jQuery().owlCarousel) {
-                $('.store-products-carousel').owlCarousel({
-                    loop: true,
-                    center: true,
-                    margin: 20,
-                    items: 3,
-                    autoplay: true,
-                    autoplayTimeout: 3000,
-                    autoplayHoverPause: true,
-                    responsive: {
-                        0: { items: 1 },
-                        600: { items: 2 },
-                        1000: { items: 3 }
-                    }
-                });
-            }
-        } catch (err) {
-            console.warn('Owl carousel initialization failed:', err);
-        }
-    },
-    
-    showProductDetail: function(product) {
-        const detailSection = document.getElementById('product-detail');
-        const storeView = document.getElementById('store-view');
-        
-        if (!detailSection) return;
-        
-        // Fill product details
-        const titleEl = document.getElementById('productTitle');
-        const descEl = document.getElementById('productDesc');
-        const priceEl = document.getElementById('productPrice');
-        
-        if (titleEl) titleEl.textContent = product.title;
-        if (descEl) descEl.textContent = `${product.collection} Collection - Premium Resin Keycap`;
-        if (priceEl) priceEl.textContent = product.price;
-        
-        // Show detail, hide list
-        if (storeView) storeView.style.display = 'none';
-        detailSection.style.display = 'block';
-        
-        // Scroll to top
-        detailSection.scrollIntoView({ behavior: 'smooth' });
-    },
-    
-    initSearch: function() {
-        const searchBtn = document.getElementById('search-button');
-        const searchInput = document.getElementById('search-input');
-        
-        if (searchBtn && searchInput) {
-            searchBtn.addEventListener('click', () => {
-                const query = searchInput.value.trim();
-                if (query) {
-                    console.log('Searching for:', query);
-                    alert(`Searching for: ${query}`);
+
+        // Product click handler (on home page)
+        const proContainer = document.querySelector('.pro-container');
+        if (proContainer) {
+            proContainer.addEventListener('click', (e) => {
+                const productCard = e.target.closest('.pro');
+                if (productCard) {
+                    window.location.href = './main/store/store.html';
                 }
             });
             
-            searchInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    searchBtn.click();
-                }
+            // Make products clickable
+            document.querySelectorAll('.pro').forEach(card => {
+                card.style.cursor = 'pointer';
             });
         }
-    },
-    
-    initFilters: function() {
-        const filterElements = [
-            'status', 'brands', 'category', 'color', 
-            'price-min', 'price-max', 'sort'
-        ];
-        
-        filterElements.forEach(id => {
-            const element = document.getElementById(id);
-            if (element) {
-                element.addEventListener('change', () => {
-                    console.log(`Filter changed: ${id}`);
-                });
-            }
-        });
     }
 };
 
 // ==================== SUBSCRIPTION FORM ====================
 KeySmith.subscriptionForm = {
     init: function() {
-        const form = document.getElementById('subscribeForm');
-        const message = document.getElementById('formMessage');
-        
-        if (!form) return;
-        
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const formData = new FormData(form);
-            
-            try {
-                const response = await fetch(form.action, {
-                    method: 'POST',
-                    body: formData
-                });
-                
-                if (response.ok) {
-                    if (message) {
+        const form = KeySmith.utils.getById('subscribeForm');
+        const message = KeySmith.utils.getById('formMessage');
+
+        if (form) {
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const formData = new FormData(form);
+
+                try {
+                    const response = await fetch(form.action, {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    if (response.ok) {
                         message.textContent = '✅ Thank you for subscribing!';
                         message.style.color = 'green';
-                        message.style.display = 'block';
+                        form.reset();
+                    } else {
+                        throw new Error('Subscription failed');
                     }
-                    form.reset();
-                } else {
-                    throw new Error('Subscription failed');
-                }
-            } catch (error) {
-                if (message) {
+                } catch (error) {
                     message.textContent = '❌ Something went wrong. Please try again.';
                     message.style.color = 'red';
-                    message.style.display = 'block';
                 }
-            }
-            
-            if (message) {
+
+                message.style.display = 'block';
                 setTimeout(() => {
                     message.style.display = 'none';
                 }, 3000);
-            }
-        });
+            });
+        }
     }
 };
 
 // ==================== 404 ERROR MODULE ====================
 KeySmith.error404 = {
     init: function() {
-        const errorOverlay = document.getElementById('error404Overlay');
-        const backHomeBtn = document.getElementById('backHomeBtn404');
-        
+        const errorOverlay = KeySmith.utils.getById('error404Overlay');
+        const backHomeBtn = KeySmith.utils.getById('backHomeBtn404');
+        const mainContent = KeySmith.utils.getById('mainContent');
+
+        // Check if page not found
+        if (document.body.classList.contains('error-page')) {
+            if (errorOverlay) errorOverlay.style.display = 'flex';
+            if (mainContent) mainContent.style.display = 'none';
+        }
+
+        // Back home button
         if (backHomeBtn) {
             backHomeBtn.addEventListener('click', () => {
-                KeySmith.router.navigate('home');
+                window.location.href = '/';
             });
-        }
-        
-        if (document.body.classList.contains('error-page') && errorOverlay) {
-            errorOverlay.style.display = 'flex';
         }
     }
 };
 
-// ==================== HOME CAROUSELS ====================
-KeySmith.homeCarousels = {
-    init: function() {
-        try {
-            if (!window.jQuery || !jQuery().owlCarousel) {
-                console.warn('jQuery or Owl Carousel not loaded');
-                return;
-            }
-            
-            // Making Of carousel
-            $('#homeMakingOf').owlCarousel({
-                loop: true,
-                nav: false,
-                dots: true,
-                autoplay: true,
-                autoplayTimeout: 3000,
-                autoplayHoverPause: true,
-                items: 1
-            });
-            
-            // Home products carousel
-            $('#homeProductsCarousel').owlCarousel({
-                loop: true,
-                center: true,
-                margin: 20,
-                items: 3,
-                autoplay: true,
-                autoplayTimeout: 3000,
-                autoplayHoverPause: true,
-                responsive: {
-                    0: { items: 1 },
-                    600: { items: 2 },
-                    1000: { items: 3 }
-                }
-            });
-            
-            // Product click handler - go to store
-            $('#homeProductsCarousel').on('click', '.pro', function(e) {
-                e.preventDefault();
-                KeySmith.router.navigate('store');
-            });
-            
-        } catch (err) {
-            console.warn('Home carousels initialization failed:', err);
-        }
-    }
-};
-
-// ==================== ENHANCED ROUTER ====================
-KeySmith.router = {
-    routes: {
-        '': 'home',
-        '#': 'home',
-        '#home': 'home',
-        '#store': 'store',
-        '#product-detail': 'product-detail',
-        '#cart': 'cart',
-        '#profile': 'profile'
-    },
-    
-    currentRoute: null,
-    
-    init: function() {
-        // Listen to hash changes
-        window.addEventListener('hashchange', () => {
-            this.handleRoute(location.hash);
-        });
-        
-        // Handle initial load
-        this.handleRoute(location.hash || '#home');
-        
-        // Intercept navigation links
-        document.body.addEventListener('click', (e) => {
-            const link = e.target.closest('a[href^="#"]');
-            if (link) {
-                const href = link.getAttribute('href');
-                if (href && this.routes[href]) {
-                    e.preventDefault();
-                    this.navigate(this.routes[href]);
-                }
-            }
-        });
-    },
-    
-    navigate: function(routeName) {
-        const hash = this.getHashByRoute(routeName);
-        if (hash) {
-            location.hash = hash;
-        }
-    },
-    
-    getHashByRoute: function(routeName) {
-        for (let [hash, route] of Object.entries(this.routes)) {
-            if (route === routeName) {
-                return hash || '#home';
-            }
-        }
-        return '#home';
-    },
-    
-    handleRoute: function(hash) {
-        const normalizedHash = hash || '#home';
-        const routeName = this.routes[normalizedHash] || 'home';
-        
-        // Prevent unnecessary re-renders
-        if (this.currentRoute === routeName) return;
-        
-        this.currentRoute = routeName;
-        
-        // Hide all views first
-        this.hideAllViews();
-        
-        // Show the appropriate view
-        switch(routeName) {
-            case 'home':
-                this.showHome();
-                break;
-            case 'store':
-                this.showStore();
-                break;
-            case 'product-detail':
-                this.showProductDetail();
-                break;
-            case 'cart':
-                this.showCart();
-                break;
-            case 'profile':
-                this.showProfile();
-                break;
-            default:
-                this.showHome();
-        }
-    },
-    
-    hideAllViews: function() {
-        const views = ['store', 'product-detail', 'cart-view', 'mainContent'];
-        views.forEach(id => {
-            const el = document.getElementById(id);
-            if (el) el.style.display = 'none';
-        });
-        
-        // Hide modals
-        const profileModal = document.getElementById('profileModalOverlay');
-        if (profileModal) profileModal.style.display = 'none';
-        
-        document.body.style.overflow = 'auto';
-    },
-    
-    showHome: function() {
-        const mainContent = document.getElementById('mainContent');
-        if (mainContent) {
-            mainContent.style.display = '';
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-    },
-    
-    showStore: function() {
-        const storeEl = document.getElementById('store');
-        if (storeEl) {
-            storeEl.style.display = '';
-            
-            // Lazy init store
-            KeySmith.store.initStorePage();
-            
-            // Show store view, hide product detail
-            const storeView = document.getElementById('store-view');
-            const productDetail = document.getElementById('product-detail');
-            
-            if (storeView) storeView.style.display = '';
-            if (productDetail) productDetail.style.display = 'none';
-            
-            // Scroll to store
-            storeEl.scrollIntoView({ behavior: 'smooth' });
-        }
-    },
-    
-    showProductDetail: function() {
-        const storeEl = document.getElementById('store');
-        const productDetail = document.getElementById('product-detail');
-        
-        if (storeEl) storeEl.style.display = '';
-        if (productDetail) productDetail.style.display = '';
-    },
-    
-    showCart: function() {
-        const cartView = document.getElementById('cart-view');
-        if (cartView) {
-            cartView.style.display = '';
-        } else {
-            alert('Cart feature - Coming soon!');
-            this.navigate('home');
-        }
-    },
-    
-    showProfile: function() {
-        const loggedUser = localStorage.getItem('loggedInUser');
-        const userRole = localStorage.getItem('userRole');
-        
-        if (loggedUser && userRole === 'user') {
-            KeySmith.profile.showProfileModal();
-        } else {
-            // Redirect to login
-            const modalOverlay = document.getElementById('modalOverlay');
-            if (modalOverlay) {
-                modalOverlay.style.display = 'flex';
-                document.body.style.overflow = 'hidden';
-            }
-            this.navigate('home');
-        }
-    }
-};
-
-// ==================== APP INITIALIZATION ====================
-KeySmith.init = function() {
-    console.log('🔧 KeySmith SPA initializing...');
-    
-    // Initialize all modules
-    this.header.init();
-    this.login.init();
-    this.profile.init();
-    this.contact.init();
-    this.subscriptionForm.init();
-    this.store.init();
-    this.error404.init();
-    this.homeCarousels.init();
-    
-    // Initialize router (must be last)
-    this.router.init();
-    
-    console.log('✅ KeySmith SPA ready!');
-};
-
-// Start the application when DOM is ready
-KeySmith.ready(() => {
+// Initialize everything when DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
     KeySmith.init();
 });
-
-// Export for debugging
-window.KeySmith = KeySmith;
