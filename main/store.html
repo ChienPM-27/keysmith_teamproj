@@ -5,14 +5,18 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>KeySmith</title>
-  <link rel="stylesheet" href="./style.css" />
-  <link rel="icon" type="image/png" href="/img/logo/logo_favicon.png" sizes="32x32" />
+
+  <!-- CSS Stylesheets -->
+  <link rel="stylesheet" href="/css/main/store.css" />
+
+  <!-- JavaScript Libraries -->
+  <script src="/js/main/store.js" defer></script>
+
   <script src="https://kit.fontawesome.com/da0c4cdc9f.js" crossorigin="anonymous"></script>
-  <script src="./script.js" defer></script>
 </head>
 
 <body>
-  <!-- ===== HEADER ===== -->
+  <!-- Header -->
   <section id="header">
     <a href="#">
       <img src="/img/logo/logo_full.png" class="logo" alt="logo" style="width: 150px; height: 75px" />
@@ -20,25 +24,28 @@
 
     <ul id="navbar">
       <li><a href="/index.html">Home</a></li>
+
       <li><a href="Store.html" class="active">Store</a></li>
     </ul>
 
     <div class="header-icons">
       <a href="#" class="cart" onclick="showCartView()"><i class="fa-solid fa-cart-shopping"></i></a>
+
       <a href="/index.html" class="profile"><i class="fa-solid fa-circle-user"></i></a>
     </div>
   </section>
 
-  <!-- ===== BACK TO STORE BUTTON ===== -->
+  <!-- Back to store button -->
   <button id="back-btn">⬅ BACK TO STORE</button>
 
-  <!-- ===== STORE VIEW ===== -->
+  <!-- Store view -->
   <section id="store-view">
     <h1 class="title">In stock products</h1>
     <hr />
 
     <section id="store-search-bar">
       <input type="text" id="search-input" placeholder="Tìm kiếm sản phẩm..." />
+
       <button type="button" id="search-button">
         <i class="fa-solid fa-magnifying-glass"></i>
       </button>
@@ -55,12 +62,10 @@
         <option value="" selected>Hãng sản xuất</option>
       </select>
 
-      <!-- Category (parsed from specs.Category) -->
       <select name="category" id="category">
-        <option value="" selected>Danh mục / Bộ sưu tập</option>
+        <option value="" selected>Bộ sưu tập</option>
       </select>
 
-      <!-- Color filter (parsed from specs.Color) -->
       <select name="color" id="color">
         <option value="" selected>Màu sắc</option>
       </select>
@@ -82,48 +87,58 @@
       <div class="pro-container" id="pro-container"></div>
     </section>
 
-    <section id="pagination">
-      <a href="#">1</a>
-      <a href="#">2</a>
-      <a href="#"><i class="fa-solid fa-arrow-right"></i></a>
-    </section>
+    <!-- Phân trang -->
+    <div class="page-nav">
+      <ul class="page-nav-list">
+        <!-- JavaScript sẽ tự động tạo các nút ở đây -->
+      </ul>
+    </div>
   </section>
 
-  <!-- ===== DETAIL VIEW ===== -->
+  <!-- Detail view -->
   <section id="product-detail" style="display: none">
     <div class="product-wrapper">
-      <!-- ===== PRODUCT IMAGE SLIDER (tối đa 3 hình) ===== -->
       <div class="product-images">
         <div class="thumbnail-list">
           <div class="image-slider" id="imageSlider">
             <div class="slides"></div>
           </div>
+
           <div class="slider-dots" id="sliderDots"></div>
         </div>
       </div>
 
       <div class="product-info">
         <h2 id="productTitle"></h2>
+
         <p class="short-desc" id="productDesc"></p>
+
         <p class="rating" id="productRating"></p>
 
         <div class="price">
           <span class="current" id="productPrice"></span>
+
           <span class="old" id="productOldPrice"></span>
+
           <span class="discount" id="productDiscount"></span>
         </div>
 
         <div class="share-like">
           <span class="share-label">Share:</span>
+
           <div class="share-icons">
             <a class="share-fb" href="#" target="_blank" title="Share on Facebook"><i
                 class="fa-brands fa-facebook"></i></a>
+
             <a class="share-pinterest" href="#" target="_blank" title="Share on Pinterest"><i
                 class="fa-brands fa-pinterest"></i></a>
+
             <a class="share-tiktok" href="#" target="_blank" title="Share on TikTok"><i
                 class="fa-brands fa-tiktok"></i></a>
+
             <a class="share-twitter" href="#" target="_blank" title="Share on Twitter"><i
                 class="fa-brands fa-twitter"></i></a>
+
             <a class="share-instagram" href="#" target="_blank" title="Share on Instagram"><i
                 class="fa-brands fa-instagram"></i></a>
           </div>
@@ -131,15 +146,19 @@
 
         <div class="quantity-container">
           <label for="quantity">Quantity:</label>
+
           <div class="quantity-box">
             <button class="qty-btn" id="decrease">−</button>
+
             <input type="number" id="quantity" value="1" min="1" />
+
             <button class="qty-btn" id="increase">+</button>
           </div>
         </div>
 
         <div class="buy-buttons">
           <button class="add-cart">Add to Cart</button>
+
           <button class="buy-now">Buy Now</button>
         </div>
       </div>
@@ -149,18 +168,20 @@
       <div class="desc-wrapper">
         <div class="product-specs">
           <h3>Product Details</h3>
+
           <table id="productSpecs"></table>
         </div>
 
         <div class="product-desc-text">
           <h3>Product Description</h3>
+
           <p id="productLongDesc"></p>
         </div>
       </div>
     </section>
   </section>
 
-  <!-- ===== CART VIEW ===== -->
+  <!-- Cart view -->
   <section id="cart-view" style="display: none">
     <img src="/img/bg/blueprint_rotate.png" alt="" class="bg" />
 
@@ -178,30 +199,34 @@
           <th class="Actions">Actions</th>
         </tr>
       </thead>
+
       <tbody></tbody>
+
       <tfoot>
         <tr class="cart-footer-row">
           <td class="Choose"><input type="checkbox" id="chooseALL" /></td>
 
           <td class="TotalPrice footer-total" colspan="3">
             <div class="total">Total (0 items):</div>
+
             <div class="money">0</div>
           </td>
 
           <td class="Actions footer-actions" colspan="2">
             <button type="button" class="delete-icon" title="Delete selected"><i class="fa-solid fa-trash"></i></button>
+
             <button type="button" class="checkout-visual">Check Out</button>
           </td>
         </tr>
       </tfoot>
     </table>
-    
+
   </section>
 
-  <!-- ===== BACK TO TOP BUTTON ===== -->
+  <!-- Back to top button -->
   <button id="btn-top"><i class="fa-solid fa-arrow-up"></i></button>
 
-  <!-- ===== FOOTER ===== -->
+  <!-- Footer -->
   <footer class="section-p1" style="display: flex">
     <div class="About">
       <table border="1" cellspacing="0" cellpadding="8">

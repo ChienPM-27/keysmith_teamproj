@@ -1,1201 +1,1276 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Admin Dashboard - KeySmith</title>
-    <link rel="stylesheet" href="./assets/css/style.css" />
-    <link rel="stylesheet" href="./assets/css/responsive.css" />
-    <link rel="stylesheet" href="./assets/css/analytics.css" />
-    <link rel="stylesheet" href="./assets/css/warehouse.css" />
-    <link rel="stylesheet" href="./assets/css/dashboard.css" />
-    <link rel="stylesheet" href="./assets/css/products.css" />
-    <link rel="stylesheet" href="./assets/css/customers.css" />
-    <link rel="stylesheet" href="./assets/css/orders.css" />
-    <script
-      src="https://kit.fontawesome.com/da0c4cdc9f.js"
-      crossorigin="anonymous"
-    ></script>
-  </head>
-  <body>
-    <!-- Container -->
-    <header class="header">
-      <button class="menu-icon-btn">
-        <div class="menu-icon"><i class="fa-solid fa-bars"></i></div>
-      </button>
-    </header>
-    <div class="container">
-      <!-- Sidebar Aside -->
-      <aside class="sidebar open" id="sidebar">
-        <div class="top-sidebar">
-          <img src="../img/logo/logo_full.png" alt="logo_key_smith" />
-        </div>
-        <div class="middle-sidebar">
-          <ul class="sidebar-list">
-            <li class="sidebar-list-item tab-content active">
-              <a href="#" class="sidebar-link">
-                <div class="sidebar-icon">
-                  <i class="fa-solid fa-house"></i>
-                </div>
-                <div class="sidebar-hidden">Dashboard</div>
-              </a>
-            </li>
-            <li class="sidebar-list-item tab-content">
-              <a href="#" class="sidebar-link">
-                <div class="sidebar-icon">
-                  <i class="fa-solid fa-keyboard"></i>
-                </div>
-                <div class="sidebar-hidden">Products</div>
-              </a>
-            </li>
-            <li class="sidebar-list-item tab-content">
-              <a href="#" class="sidebar-link">
-                <div class="sidebar-icon">
-                  <i class="fa-solid fa-users"></i>
-                </div>
-                <div class="sidebar-hidden">Customers</div>
-              </a>
-            </li>
-            <li class="sidebar-list-item tab-content">
-              <a href="#" class="sidebar-link">
-                <div class="sidebar-icon">
-                  <i class="fa-solid fa-cart-shopping"></i>
-                </div>
-                <div class="sidebar-hidden">Orders</div>
-              </a>
-            </li>
-            <li class="sidebar-list-item tab-content">
-              <a href="#" class="sidebar-link">
-                <div class="sidebar-icon">
-                  <i class="fa-solid fa-chart-simple"></i>
-                </div>
-                <div class="sidebar-hidden">Analytics</div>
-              </a>
-            </li>
-            <li class="sidebar-list-item tab-content">
-              <a href="#" class="sidebar-link">
-                <div class="sidebar-icon">
-                  <i class="fa-solid fa-warehouse"></i>
-                </div>
-                <div class="sidebar-hidden">Ware House</div>
-              </a>
-            </li>
-          </ul>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard - KeySmith</title>
+
+  <!-- CSS Stylesheets -->
+  <link rel="stylesheet" href="/css/admin/admin.css" />
+  <link rel="stylesheet" href="/css/admin/responsive.css" />
+  <link rel="stylesheet" href="/css/admin/analytics.css" />
+  <link rel="stylesheet" href="/css/admin/warehouse.css" />
+  <link rel="stylesheet" href="/css/admin/dashboard.css" />
+  <link rel="stylesheet" href="/css/admin/products.css" />
+  <link rel="stylesheet" href="/css/admin/customers.css" />
+  <link rel="stylesheet" href="/css/admin/orders.css" />
+
+  <!-- JavaScript Libraries -->
+  <!-- Đã khai báo defer nên script sẽ được tải song song với HTML
+      và chỉ chạy sau khi HTML được phân tích xong -->
+  <script src="/js/admin/admin.js" defer></script>
+  <script src="/js/admin/DataManager.js" defer></script>
+
+  <script src="https://kit.fontawesome.com/da0c4cdc9f.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+  <!-- Header -->
+  <header class="header">
+    <button class="menu-icon-btn">
+      <div class="menu-icon"><i class="fa-solid fa-bars"></i></div>
+    </button>
+  </header>
+  <div class="container">
+    <!-- Sidebar Aside -->
+    <aside class="sidebar open" id="sidebar">
+
+      <div class="top-sidebar">
+        <img src="/img/logo/logo_full.png" alt="logo_key_smith" />
+      </div>
+
+      <div class="middle-sidebar">
+        <ul class="sidebar-list">
+          <li class="sidebar-list-item tab-content active">
+            <a href="#" class="sidebar-link">
+              <div class="sidebar-icon">
+                <i class="fa-solid fa-house"></i>
+              </div>
+              <div class="sidebar-hidden">Dashboard</div>
+            </a>
+          </li>
+
+          <li class="sidebar-list-item tab-content">
+            <a href="#" class="sidebar-link">
+              <div class="sidebar-icon">
+                <i class="fa-solid fa-keyboard"></i>
+              </div>
+              <div class="sidebar-hidden">Products</div>
+            </a>
+          </li>
+
+          <li class="sidebar-list-item tab-content">
+            <a href="#" class="sidebar-link">
+              <div class="sidebar-icon">
+                <i class="fa-solid fa-users"></i>
+              </div>
+              <div class="sidebar-hidden">Customers</div>
+            </a>
+          </li>
+
+          <li class="sidebar-list-item tab-content">
+            <a href="#" class="sidebar-link">
+              <div class="sidebar-icon">
+                <i class="fa-solid fa-cart-shopping"></i>
+              </div>
+              <div class="sidebar-hidden">Orders</div>
+            </a>
+          </li>
+
+          <li class="sidebar-list-item tab-content">
+            <a href="#" class="sidebar-link">
+              <div class="sidebar-icon">
+                <i class="fa-solid fa-chart-simple"></i>
+              </div>
+              <div class="sidebar-hidden">Analytics</div>
+            </a>
+          </li>
+
+          <li class="sidebar-list-item tab-content">
+            <a href="#" class="sidebar-link">
+              <div class="sidebar-icon">
+                <i class="fa-solid fa-warehouse"></i>
+              </div>
+              <div class="sidebar-hidden">Ware House</div>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="bottom-sidebar">
+        <ul class="sidebar-list">
+          <li class="sidebar-list-item user-logout">
+            <a href="#" class="sidebar-link">
+              <div class="sidebar-icon">
+                <i class="fa-solid fa-arrow-left"></i>
+              </div>
+              <div class="sidebar-hidden">Home page</div>
+            </a>
+          </li>
+
+          <li class="sidebar-list-item user-logout">
+            <a href="#" class="sidebar-link">
+              <div class="sidebar-icon">
+                <i class="fa-solid fa-user-shield"></i>
+              </div>
+              <div class="sidebar-hidden">Admin</div>
+            </a>
+          </li>
+
+          <li class="sidebar-list-item user-logout">
+            <a href="#" class="sidebar-link">
+              <div class="sidebar-icon">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+              </div>
+              <div class="sidebar-hidden">Log out</div>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </aside>
+
+    <main class="content">
+      <!-- Dashboard -->
+      <div id="dashboard-section" class="section active dashboard-wrapper">
+        <div class="section-header">
+          <h1>
+            <i class="fa-solid fa-house"></i>
+            Dashboard
+          </h1>
+
+          <p>Trang tổng quát của KeySmith</p>
         </div>
 
-        <div class="bottom-sidebar">
-          <ul class="sidebar-list">
-            <li class="sidebar-list-item user-logout">
-              <a href="#" class="sidebar-link">
-                <div class="sidebar-icon">
-                  <i class="fa-solid fa-arrow-left"></i>
-                </div>
-                <div class="sidebar-hidden">Home page</div>
-              </a>
-            </li>
-            <li class="sidebar-list-item user-logout">
-              <a href="#" class="sidebar-link">
-                <div class="sidebar-icon">
-                  <i class="fa-solid fa-user-shield"></i>
-                </div>
-                <div class="sidebar-hidden">Admin</div>
-              </a>
-            </li>
-            <li class="sidebar-list-item user-logout">
-              <a href="#" class="sidebar-link">
-                <div class="sidebar-icon">
-                  <i class="fa-solid fa-arrow-right-from-bracket"></i>
-                </div>
-                <div class="sidebar-hidden">Log out</div>
-              </a>
-            </li>
-          </ul>
-        </div>
-      </aside>
+        <div class="dashboard-body">
+          <div class="cards">
+            <div class="card-single">
+              <div class="box">
+                <div class="box-container">
+                  <div class="box-title">
+                    <div class="title-name">Customers</div>
 
-      <main class="content">
-        <!-- Dashboard -->
-        <div id="dashboard-section" class="section active dashboard-wrapper">
-          <div class="section-header">
-            <h1>
-              <i class="fa-solid fa-house"></i>
-              Dashboard
-            </h1>
-            <p>Trang tổng quát của KeySmith</p>
-          </div>
+                    <div class="title-logo">
+                      <i class="fa-solid fa-users"></i>
+                    </div>
+                  </div>
 
-          <div class="dashboard-body">
-            <div class="cards">
-              <div class="card-single">
-                <div class="box">
-                  <div class="box-container">
-                    <div class="box-title">
-                      <div class="title-name">Customers</div>
-                      <div class="title-logo">
-                        <i class="fa-solid fa-users"></i>
-                      </div>
-                    </div>
-                    <div class="box-content">
-                      <div class="amount-user" id="userCount">6</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="card-single">
-                <div class="box">
-                  <div class="box-container">
-                    <div class="box-title">
-                      <div class="title-name">Products</div>
-                      <div class="title-logo">
-                        <i class="fa-solid fa-cart-shopping"></i>
-                      </div>
-                    </div>
-                    <div class="box-content">
-                      <div class="amount-product" id="productCount">10</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="card-single">
-                <div class="box">
-                  <div class="box-container">
-                    <div class="box-title">
-                      <div class="title-name">Revenue</div>
-                      <div class="title-logo">
-                        <i class="fa-solid fa-money-bill"></i>
-                      </div>
-                    </div>
-                    <div class="box-content">
-                      <div class="amount" id="revenueTotal">100000</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="card-single">
-                <div class="box">
-                  <div class="box-container">
-                    <div class="box-title">
-                      <div class="title-name">Inventory</div>
-                      <div class="title-logo">
-                        <i class="fa-solid fa-warehouse"></i>
-                      </div>
-                    </div>
-                    <div class="box-content">
-                      <div class="amount" id="stockTotal">10</div>
-                    </div>
+                  <div class="box-content">
+                    <!-- JavaScript tự động điền vào đây -->
+                    <div class="amount-user" id="userCount"></div>
                   </div>
                 </div>
               </div>
             </div>
-      
-            <!-- Hidden placeholder for orders count (script expects this id). Kept hidden to avoid layout changes -->
-            <div id="ordersCount" style="display: none">0</div>
-            <div>
-              <canvas id="myChart"></canvas>
+
+            <div class="card-single">
+              <div class="box">
+                <div class="box-container">
+                  <div class="box-title">
+                    <div class="title-name">Products</div>
+
+                    <div class="title-logo">
+                      <i class="fa-solid fa-cart-shopping"></i>
+                    </div>
+                  </div>
+
+                  <div class="box-content">
+                    <!-- JavaScript tự động điền vào đây -->
+                    <div class="amount-product" id="productCount"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card-single">
+              <div class="box">
+                <div class="box-container">
+                  <div class="box-title">
+                    <div class="title-name">Revenue</div>
+
+                    <div class="title-logo">
+                      <i class="fa-solid fa-money-bill"></i>
+                    </div>
+                  </div>
+
+                  <div class="box-content">
+                    <!-- JavaScript tự động điền vào đây -->
+                    <div class="amount" id="revenueTotal"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card-single">
+              <div class="box">
+                <div class="box-container">
+                  <div class="box-title">
+                    <div class="title-name">Inventory</div>
+
+                    <div class="title-logo">
+                      <i class="fa-solid fa-warehouse"></i>
+                    </div>
+                  </div>
+
+                  <div class="box-content">
+                    <!-- JavaScript tự động điền vào đây -->
+                    <div class="amount" id="stockTotal"></div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
+
+          <!-- // Hidden placeholder for orders count (script expects this id). Kept hidden to avoid layout changes
+          <div id="ordersCount" style="display: none">0</div>
+          <div>
+            <canvas id="myChart"></canvas>
+          </div> -->
+        </div>
+      </div>
+
+      <!-- Products -->
+      <div id="products-section" class="section products-wrapper">
+        <div class="section-header">
+          <h1><i class="fa-solid fa-keyboard"></i>Quản lý sản phẩm</h1>
+
+          <p>Quản lý và theo dõi các sản phẩm trong cửa hàng của bạn.</p>
         </div>
 
-        <!-- Products -->
-        <div id="products-section" class="section products-wrapper">
-          <div class="section-header">
-            <h1><i class="fa-solid fa-keyboard"></i>Quản lý sản phẩm</h1>
-            <p>Quản lý và theo dõi các sản phẩm trong cửa hàng của bạn.</p>
-          </div>
-
-          <div class="product-body">
-            <div class="product-control">
-              <div class="product-control-left">
-                <select name="the-loai" id="the-loai" onchange="showProduct()">
-                  <option value="">Tất cả</option>
-                  <option value="Attack on Titan">Attack On Titan</option>
-                  <option value="The Lord of the Rings">
-                    The Lord of the Rings
-                  </option>
-                  <option value="One Piece">One Piece</option>
-                  <option value="Yugioh">Yugioh</option>
-                </select>
-              </div>
-              <div class="product-control-center">
-                <form action="" class="form-search">
-                  <input
-                    type="text"
-                    id="form-search-product"
-                    placeholder="Tìm kiếm sản phẩm"
-                    oninput="showProduct()"
-                  />
-                  <div class="search-btn">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                  </div>
-                </form>
-              </div>
-              <div class="product-control-right">
-                <button class="btn-control" id="btn-add-product">
-                  <i class="fa-solid fa-plus"></i>Thêm sản phẩm
-                </button>
-                <button class="btn-control" id="btn-refresh-product">
-                  <i class="fa-solid fa-arrows-rotate"></i> Làm mới
-                </button>
-              </div>
+        <div class="product-body">
+          <div class="product-control">
+            <div class="product-control-left">
+              <!-- JavaScript tự động lấy danh sách thể loại sản phẩm -->
+              <select name="the-loai" id="the-loai" onchange="showProduct()">
+                <option value="">Thể loại</option>
+                <!-- <option value="Attack on Titan">Attack On Titan</option>
+                <option value="The Lord of the Rings">The Lord of the Rings</option>
+                <option value="One Piece">One Piece</option>
+                <option value="Yugioh">Yugioh</option> -->
+              </select>
             </div>
 
-            <!-- Container sẽ được JavaScript tự động fill vào -->
-            <div class="show-product"></div>
+            <div class="product-control-center">
+              <form action="" class="form-search">
+                <input type="text" id="form-search-product" placeholder="Tìm kiếm sản phẩm" oninput="showProduct()" />
 
-            <!-- Phân trang -->
-            <div class="page-nav">
-              <ul class="page-nav-list">
-                <!-- JavaScript sẽ tự động tạo các nút ở đây -->
-              </ul>
+                <div class="search-btn">
+                  <i class="fa-solid fa-magnifying-glass"></i>
+                </div>
+              </form>
             </div>
-          </div>
 
-          <!-- Modal thêm/sửa sản phẩm (giữ nguyên) -->
-          <div class="modal add-product">
-            <div class="modal-container" style="max-width: 600px; border-radius: 12px; box-shadow: 0 8px 32px rgba(0,0,0,0.18); background: #fff;">
-              <h3 class="modal-container-title add-product-e" style="margin-top: 24px;">
-                THÊM MỚI SẢN PHẨM
-              </h3>
-              <h3 class="modal-container-title edit-product-e" style="margin-top: 24px;">
-                CHỈNH SỬA SẢN PHẨM
-              </h3>
-              <button class="modal-close product-form">
-                <i class="fa-solid fa-xmark"></i>
+            <div class="product-control-right">
+              <button class="btn-control" id="btn-add-product">
+                <i class="fa-solid fa-plus"></i>Thêm sản phẩm
               </button>
-              <div class="modal-content">
-                <form action="" class="add-product-form" onsubmit="return false;" style="display: flex; gap: 24px; align-items: flex-start;">
-                  <div class="modal-content-left">
-                    <div style="display: flex; flex-direction: column; align-items: center; gap: 12px;">
-                      <img
-                        src="./assets/img/blank-image.png"
-                        alt=""
-                        class="upload-image-preview"
-                        style="width: 120px; height: 120px; object-fit: cover; border-radius: 8px; border: 1px solid #ccc; background: #f8f8f8;"
-                      />
-                      <label for="up-hinh-anh" class="form-label-file" style="cursor: pointer; color: var(--color-primary-hover); font-weight: 500;">
-                        <i class="fa-solid fa-image"></i> Chọn hình ảnh
-                        <input
-                          accept="image/jpeg, image/png, image/jpg"
-                          id="up-hinh-anh"
-                          name="up-hinh-anh"
-                          type="file"
-                          class="form-control"
-                          style="display: none;"
-                          onchange="uploadImage(this)"
-                        />
-                      </label>
-                    </div>
-                  </div>
-                  <div class="modal-content-right">
-                    <div style="display: flex; flex-direction: column; gap: 16px; width: 100%;">
-                      <div class="form-group">
-                        <label for="ten-mon" class="form-label">Tên sản phẩm</label>
-                        <input
-                          id="ten-mon"
-                          name="ten-mon"
-                          type="text"
-                          placeholder="Nhập tên sản phẩm"
-                          class="form-control"
-                          style="border-radius: 6px; border: 1px solid #ccc; padding: 8px;"
-                        />
-                        <span class="form-message"></span>
-                      </div>
-                      <div class="form-group">
-                        <label for="category" class="form-label">Chọn thể loại</label>
-                        <select name="category" id="chon-the-loai" style="border-radius: 6px; border: 1px solid #ccc; padding: 8px;">
-                          <option value="Attack on Titan">Attack On Titan</option>
-                          <option value="The Lord of the Rings">The Lord of the Rings</option>
-                          <option value="One Piece">One Piece</option>
-                          <option value="Yugioh">Yugioh</option>
-                        </select>
-                        <span class="form-message"></span>
-                      </div>
-                      <div class="form-group">
-                        <label for="gia-moi" class="form-label">Giá bán</label>
-                        <input
-                          id="gia-moi"
-                          name="gia-moi"
-                          type="text"
-                          placeholder="Nhập giá bán"
-                          class="form-control"
-                          style="border-radius: 6px; border: 1px solid #ccc; padding: 8px;"
-                        />
-                        <span class="form-message"></span>
-                      </div>
-                      <div class="form-group">
-                        <label for="mo-ta" class="form-label">Mô tả</label>
-                        <textarea
-                          class="product-desc"
-                          id="mo-ta"
-                          placeholder="Nhập mô tả sản phẩm..."
-                          style="border-radius: 6px; border: 1px solid #ccc; padding: 8px; min-height: 60px;"
-                        ></textarea>
-                        <span class="form-message"></span>
-                      </div>
-                      <div style="display: flex; gap: 12px; justify-content: flex-end;">
-                        <button
-                          type="button"
-                          class="form-submit btn-add-product-form add-product-e"
-                          id="add-product-button"
-                          style="background: var(--color-primary); color: #fff; border-radius: 6px; border: none; padding: 10px 20px; font-weight: 500; cursor: pointer;"
-                        >
-                          <i class="fa-regular fa-plus"></i>
-                          <span>THÊM SẢN PHẨM</span>
-                        </button>
-                        <button
-                          type="button"
-                          class="form-submit btn-update-product-form edit-product-e"
-                          id="update-product-button"
-                          style="background: #28a745; color: #fff; border-radius: 6px; border: none; padding: 10px 20px; font-weight: 500; cursor: pointer;"
-                        >
-                          <i class="fa-light fa-pencil"></i>
-                          <span>LƯU THAY ĐỔI</span>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </form>
-              </div>
-            </div>
-          </div>
-        </div>
 
-        <!-- Customers -->
-        <div id="customer-section" class="section customer-wrapper">
-          <!-- Customer Section -->
-          <div class="section-header">
-            <h1><i class="fa-solid fa-users"></i> Quản lý khách hàng</h1>
-            <p>Quản lý và theo dõi khách hàng của cửa hàng.</p>
-          </div>
-
-          <div class="customer-body">
-            <div class="customer-control">
-              <div class="customer-control-left">
-                <select name="user-status" id="filter-user-status">
-                  <option value="">Tất cả</option>
-                  <option value="active">Đang hoạt động</option>
-                  <option value="locked">Bị khóa</option>
-                </select>
-              </div>
-              <div class="customer-control-center">
-                <form action="" class="form-search" onsubmit="return false;">
-                  <input
-                    type="text"
-                    id="form-search-user"
-                    placeholder="Tìm kiếm khách hàng..."
-                  />
-                  <div class="search-btn">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                  </div>
-                </form>
-              </div>
-              <div class="customer-control-right">
-                <button class="btn-control" id="btn-add-user">
-                  <i class="fa-solid fa-plus"></i> Thêm khách hàng
-                </button>
-                <button class="btn-control" id="btn-refresh-user">
-                  <i class="fa-solid fa-arrows-rotate"></i> Làm mới
-                </button>
-              </div>
-            </div>
-
-            <!-- Container sẽ được JavaScript tự động fill vào -->
-            <div
-              class="show-customer-container"
-              id="show-customer-container"
-            ></div>
-          </div>
-        </div>
-
-        <!-- Orders -->
-        <div id="orders-section" class="section orders-wrapper">
-          <!-- Orders Section -->
-          <div class="section-header">
-            <h1><i class="fa-solid fa-cart-shopping"></i> Quản lý đơn hàng</h1>
-            <p>Quản lý và theo dõi đơn hàng của cửa hàng.</p>
-          </div>
-
-          <div class="order-body">
-            <div class="order-control">
-              <div class="order-control-left">
-                <select name="order-status" id="filter-order-status">
-                  <option value="">Tất cả trạng thái</option>
-                  <option value="new">Đơn mới</option>
-                  <option value="processing">Đang xử lý</option>
-                  <option value="delivered">Đã giao</option>
-                  <option value="cancelled">Đã hủy</option>
-                </select>
-              </div>
-              <div class="order-control-center">
-                <form action="" class="form-search" onsubmit="return false;">
-                  <input
-                    type="text"
-                    id="form-search-order"
-                    placeholder="Tìm kiếm theo mã đơn, khách hàng..."
-                  />
-                  <div class="search-btn">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                  </div>
-                </form>
-              </div>
-              <div class="order-control-right">
-                <div class="filter-date">
-                  <label for="time-start-order">Từ</label>
-                  <input type="date" id="time-start-order" />
-                </div>
-                <div class="filter-date">
-                  <label for="time-end-order">Đến</label>
-                  <input type="date" id="time-end-order" />
-                </div>
-                <button class="btn-control" id="btn-refresh-order">
-                  <i class="fa-solid fa-arrows-rotate"></i> Làm mới
-                </button>
-              </div>
-            </div>
-
-            <!-- Container sẽ được JavaScript tự động fill vào -->
-            <div class="show-order-container" id="show-order-container"></div>
-          </div>
-        </div>
-
-        <!-- Analytics -->
-        <div id="analytics-section" class="section analytics-wrapper">
-          <!-- Analytics Section -->
-          <div class="section-header">
-            <h1><i class="fa-solid fa-chart-simple"></i> Analytics</h1>
-            <p>Phân tích dữ liệu và quản lý giá bán</p>
-          </div>
-
-          <!-- Analytics Tabs -->
-          <div class="analytics-tabs">
-            <button class="analytics-tab-btn active" data-tab="sales-report">
-              <i class="fa-solid fa-chart-line"></i> Báo cáo Bán hàng
-            </button>
-            <button class="analytics-tab-btn" data-tab="customer-stats">
-              <i class="fa-solid fa-users-gear"></i> Thống kê Khách hàng
-            </button>
-          </div>
-
-          <!-- Tab 1: Báo cáo Bán hàng -->
-          <div class="analytics-tab-content active" id="sales-report">
-            <!-- Filters -->
-            <div class="analytics-filters">
-              <div class="filter-group">
-                <label><i class="fa-solid fa-calendar"></i> Từ ngày:</label>
-                <input type="date" class="filter-input" id="salesDateFrom" />
-              </div>
-              <div class="filter-group">
-                <label><i class="fa-solid fa-calendar"></i> Đến ngày:</label>
-                <input type="date" class="filter-input" id="salesDateTo" />
-              </div>
-              <button class="btn-primary">
-                <i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm
+              <button class="btn-control" id="btn-refresh-product">
+                <i class="fa-solid fa-arrows-rotate"></i> Làm mới
               </button>
             </div>
+          </div>
 
-            <!-- Stats Cards -->
-            <div class="stats-grid">
-              <div class="stat-card">
-                <div
-                  class="stat-icon"
-                  style="
+          <!-- JavaScript tự động hiển thị sản phẩm -->
+          <div class="show-product"></div>
+
+          <!-- Phân trang -->
+          <div class="page-nav">
+            <ul class="page-nav-list">
+              <!-- JavaScript sẽ tự động tạo các nút ở đây -->
+            </ul>
+          </div>
+        </div>
+
+        <!-- Modal thêm/sửa sản phẩm -->
+        <div class="modal add-product">
+          <div class="modal-container" style="
+                max-width: 600px;
+                border-radius: 12px;
+                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+                background: #fff;
+              ">
+            <h3 class="modal-container-title add-product-e" style="margin-top: 24px">
+              THÊM MỚI SẢN PHẨM
+            </h3>
+
+            <h3 class="modal-container-title edit-product-e" style="margin-top: 24px">
+              CHỈNH SỬA SẢN PHẨM
+            </h3>
+
+            <button class="modal-close product-form">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="modal-content">
+              <form action="" class="add-product-form" onsubmit="return false;"
+                style="display: flex; gap: 24px; align-items: flex-start">
+                <div class="modal-content-left">
+                  <div style="
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        gap: 12px;
+                      ">
+                    <img src="./assets/img/blank-image.png" alt="" class="upload-image-preview" style="
+                          width: 120px;
+                          height: 120px;
+                          object-fit: cover;
+                          border-radius: 8px;
+                          border: 1px solid #ccc;
+                          background: #f8f8f8;
+                        " />
+
+                    <label for="up-hinh-anh" class="form-label-file" style="
+                          cursor: pointer;
+                          color: var(--color-primary-hover);
+                          font-weight: 500;
+                        ">
+
+                      <i class="fa-solid fa-image"></i> Chọn hình ảnh
+
+                      <input accept="image/jpeg, image/png, image/jpg" id="up-hinh-anh" name="up-hinh-anh" type="file"
+                        class="form-control" style="display: none" onchange="uploadImage(this)" />
+                    </label>
+                  </div>
+                </div>
+
+                <div class="modal-content-right">
+                  <div style="
+                        display: flex;
+                        flex-direction: column;
+                        gap: 16px;
+                        width: 100%;
+                      ">
+                    <div class="form-group">
+                      <label for="ten-mon" class="form-label">Tên sản phẩm</label>
+
+                      <input id="ten-mon" name="ten-mon" type="text" placeholder="Nhập tên sản phẩm"
+                        class="form-control" style="
+                            border-radius: 6px;
+                            border: 1px solid #ccc;
+                            padding: 8px;
+                          " />
+
+                      <span class="form-message"></span>
+                    </div>
+
+                    <div class="form-group">
+                      <label for="category" class="form-label">Chọn thể loại</label>
+
+                      <!-- JavaScript tự động lấy danh sách thể loại sản phẩm -->
+                      <select name="category" id="chon-the-loai" style="
+                            border-radius: 6px;
+                            border: 1px solid #ccc;
+                            padding: 8px;
+                          ">
+                        <!-- <option value="Attack on Titan">
+                          Attack On Titan
+                        </option>
+                        <option value="The Lord of the Rings">
+                          The Lord of the Rings
+                        </option>
+                        <option value="One Piece">One Piece</option>
+                        <option value="Yugioh">Yugioh</option> -->
+                      </select>
+
+                      <span class="form-message"></span>
+                    </div>
+
+                    <div class="form-group">
+                      <label for="gia-moi" class="form-label">Giá bán</label>
+
+                      <input id="gia-moi" name="gia-moi" type="text" placeholder="Nhập giá bán" class="form-control"
+                        style="
+                            border-radius: 6px;
+                            border: 1px solid #ccc;
+                            padding: 8px;
+                          " />
+
+                      <span class="form-message"></span>
+                    </div>
+                    <div class="form-group">
+                      <label for="mo-ta" class="form-label">Mô tả</label>
+
+                      <textarea class="product-desc" id="mo-ta" placeholder="Nhập mô tả sản phẩm..." style="
+                            border-radius: 6px;
+                            border: 1px solid #ccc;
+                            padding: 8px;
+                            min-height: 60px;
+                          "></textarea>
+
+                      <span class="form-message"></span>
+                    </div>
+                    <div style="
+                          display: flex;
+                          gap: 12px;
+                          justify-content: flex-end;
+                        ">
+                      <button type="button" class="form-submit btn-add-product-form add-product-e"
+                        id="add-product-button" style="
+                            background: var(--color-primary);
+                            color: #fff;
+                            border-radius: 6px;
+                            border: none;
+                            padding: 10px 20px;
+                            font-weight: 500;
+                            cursor: pointer;
+                          ">
+                        <i class="fa-regular fa-plus"></i>
+
+                        <span>THÊM SẢN PHẨM</span>
+                      </button>
+
+                      <button type="button" class="form-submit btn-update-product-form edit-product-e"
+                        id="update-product-button" style="
+                            background: #28a745;
+                            color: #fff;
+                            border-radius: 6px;
+                            border: none;
+                            padding: 10px 20px;
+                            font-weight: 500;
+                            cursor: pointer;
+                          ">
+                        <i class="fa-light fa-pencil"></i>
+
+                        <span>LƯU THAY ĐỔI</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Customers -->
+      <div id="customer-section" class="section customer-wrapper">
+        <div class="section-header">
+          <h1><i class="fa-solid fa-users"></i> Quản lý khách hàng</h1>
+
+          <p>Quản lý và theo dõi khách hàng của cửa hàng.</p>
+        </div>
+
+        <div class="customer-body">
+          <div class="customer-control">
+            <div class="customer-control-left">
+              <select name="user-status" id="filter-user-status">
+                <!-- Khách hàng chỉ có 2 trạng thái nên không cần JavaScript để lấy danh sách -->
+                <option value="">Tất cả</option>
+                <option value="active">Đang hoạt động</option>
+                <option value="locked">Bị khóa</option>
+              </select>
+            </div>
+
+            <div class="customer-control-center">
+              <form action="" class="form-search" onsubmit="return false;">
+                <input type="text" id="form-search-user" placeholder="Tìm kiếm khách hàng..." />
+
+                <div class="search-btn">
+                  <i class="fa-solid fa-magnifying-glass"></i>
+                </div>
+              </form>
+            </div>
+
+            <div class="customer-control-right">
+              <button class="btn-control" id="btn-add-user">
+                <i class="fa-solid fa-plus"></i> Thêm khách hàng
+              </button>
+
+              <button class="btn-control" id="btn-refresh-user">
+                <i class="fa-solid fa-arrows-rotate"></i> Làm mới
+              </button>
+            </div>
+          </div>
+
+          <!-- JavaScript tự động hiển thị danh sách khách hàng -->
+          <div class="show-customer-container" id="show-customer-container"></div>
+        
+          <!-- Phân trang -->
+          <div class="page-nav">
+            <ul class="page-nav-list">
+              <!-- JavaScript sẽ tự động tạo các nút ở đây -->
+            </ul>
+          </div>
+
+          <!-- Model thêm/sửa khách hàng -->
+        </div>
+      </div>
+
+      <!-- Orders -->
+      <div id="orders-section" class="section orders-wrapper">
+        <div class="section-header">
+          <h1><i class="fa-solid fa-cart-shopping"></i> Quản lý đơn hàng</h1>
+
+          <p>Quản lý và theo dõi đơn hàng của cửa hàng.</p>
+        </div>
+
+        <div class="order-body">
+          <div class="order-control">
+            <div class="order-control-left">
+              <!-- Đơn hàng chỉ có 4 trạng thái nên không cần JavaScript để lấy danh sách -->
+              <select name="order-status" id="filter-order-status">
+                <option value="">Tất cả trạng thái</option>
+                <option value="new">Đơn mới</option>
+                <option value="processing">Đang xử lý</option>
+                <option value="delivered">Đã giao</option>
+                <option value="cancelled">Đã hủy</option>
+              </select>
+            </div>
+
+            <div class="order-control-center">
+              <form action="" class="form-search" onsubmit="return false;">
+                <input type="text" id="form-search-order" placeholder="Tìm kiếm theo mã đơn, khách hàng..." />
+                
+                <div class="search-btn">
+                  <i class="fa-solid fa-magnifying-glass"></i>
+                </div>
+              </form>
+            </div>
+            <div class="order-control-right">
+              <div class="filter-date">
+                <label for="time-start-order">Từ</label>
+                
+                <input type="date" id="time-start-order" />
+              </div>
+
+              <div class="filter-date">
+                <label for="time-end-order">Đến</label>
+                
+                <input type="date" id="time-end-order" />
+              </div>
+              
+              <button class="btn-control" id="btn-refresh-order">
+                <i class="fa-solid fa-arrows-rotate"></i> Làm mới
+              </button>
+            </div>
+          </div>
+
+          <!-- JavaScript tự động hiển thị danh sách đơn hàng -->
+          <div class="show-order-container" id="show-order-container"></div>
+
+          <!-- Phân trang -->
+          <div class="page-nav">
+            <ul class="page-nav-list">
+              <!-- JavaScript sẽ tự động tạo các nút ở đây -->
+            </ul>
+          </div>
+
+          <!-- Model thêm/sửa đơn hàng, xem chi tiết đơn hàng -->
+        </div>
+      </div>
+
+      <!-- Analytics -->
+      <div id="analytics-section" class="section analytics-wrapper">
+        <!-- Analytics Section -->
+        <div class="section-header">
+          <h1><i class="fa-solid fa-chart-simple"></i> Analytics</h1>
+
+          <p>Phân tích dữ liệu và quản lý giá bán</p>
+        </div>
+
+        <!-- Analytics Tabs -->
+        <div class="analytics-tabs">
+          <button class="analytics-tab-btn active" data-tab="sales-report">
+            <i class="fa-solid fa-chart-line"></i> Báo cáo Bán hàng
+          </button>
+
+          <button class="analytics-tab-btn" data-tab="customer-stats">
+            <i class="fa-solid fa-users-gear"></i> Thống kê Khách hàng
+          </button>
+        </div>
+
+        <!-- Tab 1: Báo cáo Bán hàng -->
+        <div class="analytics-tab-content active" id="sales-report">
+          <!-- Filters -->
+          <div class="analytics-filters">
+            <div class="filter-group">
+              <label><i class="fa-solid fa-calendar"></i> Từ ngày:</label>
+              <input type="date" class="filter-input" id="salesDateFrom" />
+            </div>
+
+            <div class="filter-group">
+              <label><i class="fa-solid fa-calendar"></i> Đến ngày:</label>
+              <input type="date" class="filter-input" id="salesDateTo" />
+            </div>
+
+            <button class="btn-primary">
+              <i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm
+            </button>
+          </div>
+
+          <!-- Stats Cards -->
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-icon" style="
                     background: linear-gradient(
                       135deg,
                       #667eea 0%,
                       #764ba2 100%
                     );
-                  "
-                >
-                  <i class="fa-solid fa-dollar-sign"></i>
-                </div>
-                <div class="stat-info">
-                  <h3>Tổng Doanh Thu</h3>
-                  <p class="stat-value">125,500,000đ</p>
-                  <span class="stat-change positive"
-                    ><i class="fa-solid fa-arrow-up"></i> +12.5%</span
-                  >
-                </div>
+                  ">
+                <i class="fa-solid fa-dollar-sign"></i>
               </div>
 
-              <div class="stat-card">
-                <div
-                  class="stat-icon"
-                  style="
+              <div class="stat-info">
+                <h3>Tổng Doanh Thu</h3>
+
+                <!-- JavaScript tự động điền vào đây -->
+                <p class="stat-value"></p>
+
+                <!-- JavaScript tự động điền vào đây -->
+                <span class="stat-change positive"><i class="fa-solid fa-arrow-up"></i></span>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-icon" style="
                     background: linear-gradient(
                       135deg,
                       #f093fb 0%,
                       #f5576c 100%
                     );
-                  "
-                >
-                  <i class="fa-solid fa-cart-shopping"></i>
-                </div>
-                <div class="stat-info">
-                  <h3>Tổng Đơn Hàng</h3>
-                  <p class="stat-value">342</p>
-                  <span class="stat-change positive"
-                    ><i class="fa-solid fa-arrow-up"></i> +8.2%</span
-                  >
-                </div>
+                  ">
+                <i class="fa-solid fa-cart-shopping"></i>
               </div>
 
-              <div class="stat-card">
-                <div
-                  class="stat-icon"
-                  style="
+              <div class="stat-info">
+                <h3>Tổng Đơn Hàng</h3>
+
+                <!-- JavaScript tự động điền vào đây -->
+                <p class="stat-value"></p>
+
+                <!-- JavaScript tự động điền vào đây -->
+                <span class="stat-change positive"><i class="fa-solid fa-arrow-up"></i></span>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-icon" style="
                     background: linear-gradient(
                       135deg,
                       #4facfe 0%,
                       #00f2fe 100%
                     );
-                  "
-                >
-                  <i class="fa-solid fa-chart-line"></i>
-                </div>
-                <div class="stat-info">
-                  <h3>Giá Trị TB/Đơn</h3>
-                  <p class="stat-value">367,000đ</p>
-                  <span class="stat-change negative"
-                    ><i class="fa-solid fa-arrow-down"></i> -2.1%</span
-                  >
-                </div>
+                  ">
+                <i class="fa-solid fa-chart-line"></i>
               </div>
 
-              <div class="stat-card">
-                <div
-                  class="stat-icon"
-                  style="
+              <div class="stat-info">
+                <h3>Giá Trị TB/Đơn</h3>
+
+                <!-- JavaScript tự động điền vào đây -->
+                <p class="stat-value"></p>
+
+                <!-- JavaScript tự động điền vào đây -->
+                <span class="stat-change negative"><i class="fa-solid fa-arrow-down"></i></span>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-icon" style="
                     background: linear-gradient(
                       135deg,
                       #43e97b 0%,
                       #38f9d7 100%
                     );
-                  "
-                >
-                  <i class="fa-solid fa-percent"></i>
-                </div>
-                <div class="stat-info">
-                  <h3>Lợi Nhuận</h3>
-                  <p class="stat-value">35,200,000đ</p>
-                  <span class="stat-change positive"
-                    ><i class="fa-solid fa-arrow-up"></i> +15.3%</span
-                  >
-                </div>
+                  ">
+                <i class="fa-solid fa-percent"></i>
               </div>
-            </div>
 
-            <!-- Top Products -->
-            <div class="top-products">
-              <h3><i class="fa-solid fa-fire"></i> Top 5 Sản phẩm bán chạy</h3>
-              <div class="product-list">
-                <div class="product-item">
-                  <div class="product-rank">1</div>
-                  <img
-                    src="../../img/keycap/AttackOnTitan/Eren.jpg"
-                    alt="Product"
-                  />
-                  <div class="product-details">
-                    <h4>Attack Titan Keycap</h4>
-                    <p>Đã bán: <strong>156 sản phẩm</strong></p>
-                  </div>
-                  <div class="product-revenue">7,800,000đ</div>
-                </div>
-                <div class="product-item">
-                  <div class="product-rank">2</div>
-                  <img
-                    src="../../img/keycap/AttackOnTitan/Scout.jpg"
-                    alt="Product"
-                  />
-                  <div class="product-details">
-                    <h4>Scout Regiment Keycap</h4>
-                    <p>Đã bán: <strong>142 sản phẩm</strong></p>
-                  </div>
-                  <div class="product-revenue">6,390,000đ</div>
-                </div>
-                <div class="product-item">
-                  <div class="product-rank">3</div>
-                  <img
-                    src="../../img/keycap/AttackOnTitan/Reiner.jpg"
-                    alt="Product"
-                  />
-                  <div class="product-details">
-                    <h4>Armored Titan Keycap</h4>
-                    <p>Đã bán: <strong>128 sản phẩm</strong></p>
-                  </div>
-                  <div class="product-revenue">5,120,000đ</div>
-                </div>
-                <div class="product-item">
-                  <div class="product-rank">4</div>
-                  <img
-                    src="../../img/keycap/AttackOnTitan/spacebar.jpg"
-                    alt="Product"
-                  />
-                  <div class="product-details">
-                    <h4>Wings of Freedom Keycap</h4>
-                    <p>Đã bán: <strong>95 sản phẩm</strong></p>
-                  </div>
-                  <div class="product-revenue">8,550,000đ</div>
-                </div>
-                <div class="product-item">
-                  <div class="product-rank">5</div>
-                  <img
-                    src="../../img/keycap/AttackOnTitan/Fight_for_Paradis.webp"
-                    alt="Product"
-                  />
-                  <div class="product-details">
-                    <h4>Fight For Paradis Keycap</h4>
-                    <p>Đã bán: <strong>87 sản phẩm</strong></p>
-                  </div>
-                  <div class="product-revenue">7,830,000đ</div>
-                </div>
-              </div>
-            </div>
+              <div class="stat-info">
+                <h3>Lợi Nhuận</h3>
 
-            <!-- Order Status Stats -->
-            <div class="order-status-grid">
-              <div class="status-card new">
-                <i class="fa-solid fa-clock"></i>
-                <div>
-                  <h4>Mới đặt</h4>
-                  <p class="status-count">24</p>
-                </div>
-              </div>
-              <div class="status-card processing">
-                <i class="fa-solid fa-spinner"></i>
-                <div>
-                  <h4>Đang xử lý</h4>
-                  <p class="status-count">18</p>
-                </div>
-              </div>
-              <div class="status-card delivered">
-                <i class="fa-solid fa-check-circle"></i>
-                <div>
-                  <h4>Đã giao</h4>
-                  <p class="status-count">285</p>
-                </div>
-              </div>
-              <div class="status-card cancelled">
-                <i class="fa-solid fa-times-circle"></i>
-                <div>
-                  <h4>Đã hủy</h4>
-                  <p class="status-count">15</p>
-                </div>
+                <!-- JavaScript tự động điền vào đây -->
+                <p class="stat-value"></p>
+
+                <!-- JavaScript tự động điền vào đây -->
+                <span class="stat-change positive"><i class="fa-solid fa-arrow-up"></i></span>
               </div>
             </div>
           </div>
 
-          <!-- Tab 3: Thống kê Khách hàng -->
-          <div class="analytics-tab-content" id="customer-stats">
-            <div class="customer-stats-grid">
-              <!-- Top Customers -->
-              <div class="stats-panel">
-                <h3>
-                  <i class="fa-solid fa-crown"></i> Top Khách hàng chi tiêu
-                </h3>
-                <div class="top-customer-list">
-                  <div class="customer-rank-item rank-1">
-                    <div class="rank-badge">🥇</div>
-                    <div class="customer-info">
-                      <h4>nguyenvana</h4>
-                      <p>25 đơn hàng</p>
-                    </div>
-                    <div class="customer-spending">12,500,000đ</div>
-                  </div>
-                  <div class="customer-rank-item rank-2">
-                    <div class="rank-badge">🥈</div>
-                    <div class="customer-info">
-                      <h4>tranthib</h4>
-                      <p>18 đơn hàng</p>
-                    </div>
-                    <div class="customer-spending">8,900,000đ</div>
-                  </div>
-                  <div class="customer-rank-item rank-3">
-                    <div class="rank-badge">🥉</div>
-                    <div class="customer-info">
-                      <h4>levanc</h4>
-                      <p>15 đơn hàng</p>
-                    </div>
-                    <div class="customer-spending">7,200,000đ</div>
-                  </div>
-                  <div class="customer-rank-item">
-                    <div class="rank-badge">4</div>
-                    <div class="customer-info">
-                      <h4>phamthid</h4>
-                      <p>12 đơn hàng</p>
-                    </div>
-                    <div class="customer-spending">5,800,000đ</div>
-                  </div>
-                  <div class="customer-rank-item">
-                    <div class="rank-badge">5</div>
-                    <div class="customer-info">
-                      <h4>hoangvane</h4>
-                      <p>10 đơn hàng</p>
-                    </div>
-                    <div class="customer-spending">4,500,000đ</div>
-                  </div>
+          <!-- Top Products -->
+          <div class="top-products">
+            <h3><i class="fa-solid fa-fire"></i> Top 5 Sản phẩm bán chạy</h3>
+
+            <!-- JavaScript tự động điền vào đây -->
+            <div class="product-list">
+              <!-- <div class="product-item">
+                <div class="product-rank">1</div>
+
+                <img src="" alt="Product" />
+                
+                <div class="product-details">
+                  <h4></h4>
+
+                  <p>Đã bán: <strong></strong></p>
                 </div>
+
+                <div class="product-revenue"></div>
+              </div>               -->
+            </div>
+          </div>
+
+          <!-- Order Status Stats -->
+          <div class="order-status-grid">
+            <div class="status-card new">
+              <i class="fa-solid fa-clock"></i>
+
+              <div>
+                <h4>Mới đặt</h4>
+
+                <!-- JavaScript tự động điền vào đây -->
+                <p class="status-count"></p>
               </div>
+            </div>
 
-              <!-- Customer Growth -->
-              <div class="stats-panel">
-                <h3><i class="fa-solid fa-user-plus"></i> Khách hàng mới</h3>
-                <div class="growth-stats">
-                  <div class="growth-item">
-                    <div class="growth-period">Hôm nay</div>
-                    <div class="growth-number">5 <span>khách hàng</span></div>
-                  </div>
-                  <div class="growth-item">
-                    <div class="growth-period">Tuần này</div>
-                    <div class="growth-number">32 <span>khách hàng</span></div>
-                  </div>
-                  <div class="growth-item">
-                    <div class="growth-period">Tháng này</div>
-                    <div class="growth-number">128 <span>khách hàng</span></div>
-                  </div>
-                </div>
+            <div class="status-card processing">
+              <i class="fa-solid fa-spinner"></i>
 
-                <div class="chart-placeholder small">
-                  <i class="fa-solid fa-chart-bar"></i>
-                  <p>Biểu đồ tăng trưởng khách hàng</p>
-                </div>
+              <div>
+                <h4>Đang xử lý</h4>
+
+                <!-- JavaScript tự động điền vào đây -->
+                <p class="status-count"></p>
               </div>
+            </div>
 
-              <!-- Customer Retention -->
-              <div class="stats-panel full-width">
-                <h3>
-                  <i class="fa-solid fa-repeat"></i> Tỷ lệ khách hàng quay lại
-                </h3>
-                <div class="retention-grid">
-                  <div class="retention-card">
-                    <div class="retention-icon">
-                      <i class="fa-solid fa-user-check"></i>
-                    </div>
-                    <div class="retention-data">
-                      <h4>Khách hàng trung thành</h4>
-                      <p class="retention-value">156 khách hàng</p>
-                      <small>≥ 3 đơn hàng</small>
-                    </div>
-                    <div class="retention-percent">45.6%</div>
-                  </div>
-                  <div class="retention-card">
-                    <div class="retention-icon">
-                      <i class="fa-solid fa-user"></i>
-                    </div>
-                    <div class="retention-data">
-                      <h4>Khách hàng quay lại</h4>
-                      <p class="retention-value">89 khách hàng</p>
-                      <small>2 đơn hàng</small>
-                    </div>
-                    <div class="retention-percent">26.0%</div>
-                  </div>
-                  <div class="retention-card">
-                    <div class="retention-icon">
-                      <i class="fa-solid fa-user-plus"></i>
-                    </div>
-                    <div class="retention-data">
-                      <h4>Khách hàng mới</h4>
-                      <p class="retention-value">97 khách hàng</p>
-                      <small>1 đơn hàng</small>
-                    </div>
-                    <div class="retention-percent">28.4%</div>
-                  </div>
-                </div>
+            <div class="status-card delivered">
+              <i class="fa-solid fa-check-circle"></i>
+
+              <div>
+                <h4>Đã giao</h4>
+
+                <!-- JavaScript tự động điền vào đây -->
+                <p class="status-count"></p>
+              </div>
+            </div>
+
+            <div class="status-card cancelled">
+              <i class="fa-solid fa-times-circle"></i>
+              
+              <div>
+                <h4>Đã hủy</h4>
+
+                <!-- JavaScript tự động điền vào đây -->
+                <p class="status-count"></p>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Warehouse -->
-        <div id="warehouse-section" class="section warehouse-wrapper">
-          <div class="container">
-            <!-- Header -->
-            <div class="header">
-              <h1><i class="fas fa-warehouse"></i> Warehouse Management</h1>
-              <div class="header-actions">
-                <button class="btn btn-primary" onclick="openImportModal()">
-                  <i class="fas fa-plus"></i> New Import Order
+        <!-- Tab 3: Thống kê Khách hàng -->
+        <div class="analytics-tab-content" id="customer-stats">
+          <div class="customer-stats-grid">
+            <!-- Top Customers -->
+            <div class="stats-panel">
+              <h3><i class="fa-solid fa-crown"></i> Top Khách hàng chi tiêu</h3>
+              
+              <div class="top-customer-list">
+                <!-- JavaScript tự động điền vào đây -->
+                <div class="customer-rank-item rank-1">
+                  <div class="rank-badge">🥇</div>
+
+                  <div class="customer-info">
+                    <h4></h4>
+
+                    <p></p>
+                  </div>
+
+                  <div class="customer-spending"></div>
+                </div>
+
+                <!-- JavaScript tự động điền vào đây -->
+                <div class="customer-rank-item rank-2">
+                  <div class="rank-badge">🥈</div>
+
+                  <div class="customer-info">
+                    <h4></h4>
+
+                    <p></p>
+                  </div>
+
+                  <div class="customer-spending"></div>
+                </div>
+
+                <!-- JavaScript tự động điền vào đây -->
+                <div class="customer-rank-item rank-3">
+                  <div class="rank-badge">🥉</div>
+
+                  <div class="customer-info">
+                    <h4></h4>
+
+                    <p></p>
+                  </div>
+
+                  <div class="customer-spending"></div>
+                </div>
+
+                <!-- JavaScript tự động điền vào đây -->
+                <div class="customer-rank-item">
+                  <div class="rank-badge">4</div>
+
+                  <div class="customer-info">
+                    <h4></h4>
+
+                    <p></p>
+                  </div>
+
+                  <div class="customer-spending"></div>
+                </div>
+
+                <!-- JavaScript tự động điền vào đây -->
+                <div class="customer-rank-item">
+                  <div class="rank-badge">5</div>
+                  <div class="customer-info">
+                    <h4></h4>
+
+                    <p></p>
+                  </div>
+
+                  <div class="customer-spending"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Customer Growth -->
+            <div class="stats-panel">
+              <h3><i class="fa-solid fa-user-plus"></i> Khách hàng mới</h3>
+
+              <div class="growth-stats">
+                <div class="growth-item">
+                  <div class="growth-period">Hôm nay</div>
+
+                  <!-- JavaScript tự động điền vào đây -->
+                  <div class="growth-number"> <span>khách hàng</span></div>
+                </div>
+
+                <div class="growth-item">
+                  <div class="growth-period">Tuần này</div>
+
+                  <!-- JavaScript tự động điền vào đây -->
+                  <div class="growth-number"> <span>khách hàng</span></div>
+                </div>
+
+                <div class="growth-item">
+                  <div class="growth-period">Tháng này</div>
+
+                  <!-- JavaScript tự động điền vào đây -->
+                  <div class="growth-number"> <span>khách hàng</span></div>
+                </div>
+              </div>
+
+              <!-- <div class="chart-placeholder small">
+                <i class="fa-solid fa-chart-bar"></i>
+                <p>Biểu đồ tăng trưởng khách hàng</p>
+              </div> -->
+            </div>
+
+            <!-- Customer Retention -->
+            <div class="stats-panel full-width">
+              <h3><i class="fa-solid fa-repeat"></i> Tỷ lệ khách hàng quay lại</h3>
+              
+              <div class="retention-grid">
+                <div class="retention-card">
+                  <div class="retention-icon">
+                    <i class="fa-solid fa-user-check"></i>
+                  </div>
+
+                  <div class="retention-data">
+                    <h4>Khách hàng thân thiết</h4>
+
+                    <!-- JavaScript tự động điền vào đây -->
+                    <p class="retention-value"> khách hàng</p>
+                    <!-- Đã sửa số lượng đơn hàng để thành khách hàng thân thiết -->
+                    <small>≥ 5 đơn hàng</small> 
+                  </div>
+                  
+                  <!-- JavaScript tự động điền vào đây -->
+                  <div class="retention-percent"></div>
+                </div>
+                
+                <div class="retention-card">
+                  <div class="retention-icon">
+                    <i class="fa-solid fa-user"></i>
+                  </div>
+                
+                  <div class="retention-data">
+                    <h4>Khách hàng quay lại</h4>
+
+                    <!-- JavaScript tự động điền vào đây -->
+                    <p class="retention-value"> khách hàng</p>
+                    <small>2 đơn hàng</small>
+                  </div>
+
+                  <!-- JavaScript tự động điền vào đây -->
+                  <div class="retention-percent"></div>
+                </div>
+
+                <div class="retention-card">
+                  <div class="retention-icon">
+                    <i class="fa-solid fa-user-plus"></i>
+                  </div>
+                
+                  <div class="retention-data">
+                    <h4>Khách hàng mới</h4>
+
+                    <!-- JavaScript tự động điền vào đây -->
+                    <p class="retention-value"> khách hàng</p>
+                    <small>1 đơn hàng</small>
+                  </div>
+
+                  <!-- JavaScript tự động điền vào đây -->
+                  <div class="retention-percent"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Warehouse -->
+      <div id="warehouse-section" class="section warehouse-wrapper">
+        <div class="container">
+          <!-- Header -->
+          <div class="header">
+            <h1><i class="fas fa-warehouse"></i> Warehouse Management</h1>
+
+            <div class="header-actions">
+              <button class="btn btn-primary" onclick="openImportModal()">
+                <i class="fas fa-plus"></i> New Import Order
+              </button>
+            </div>
+          </div>
+
+          <!-- Alert Section -->
+          <div class="alert-section" id="alertSection">
+            <!-- Sẽ được populate bởi JavaScript -->
+          </div>
+
+          <!-- Tabs Navigation -->
+          <div class="tabs">
+            <button class="tab active" onclick="switchTab('inventory')">
+              <i class="fas fa-boxes"></i> Inventory Overview
+            </button>
+            
+            <button class="tab" onclick="switchTab('import')">
+              <i class="fas fa-file-import"></i> Import Orders
+            </button>
+            
+            <button class="tab" onclick="switchTab('transactions')">
+              <i class="fas fa-exchange-alt"></i> Transactions History
+            </button>
+            
+            <button class="tab" onclick="switchTab('margins')">
+              <i class="fas fa-percent"></i> Profit Margins
+            </button>
+          </div>
+
+          <!-- Tab Content: Inventory Overview -->
+          <div id="inventoryTab" class="tab-content active">
+            <div class="filters">
+              <div class="search-box">
+                <input type="text" id="searchInventory" placeholder="Search products..." onkeyup="filterInventory()" />
+                <i class="fas fa-search"></i>
+              </div>
+
+              <!-- JavaScript tự động lấy danh sách thể loại sản phẩm -->
+              <select class="filter-select" id="categoryFilter" onchange="filterInventory()">
+                <option value="all">All Categories</option>
+                <!-- <option value="Attack on Titan">Attack on Titan</option>
+                <option value="The Lord of the Rings">
+                  The Lord of the Rings
+                </option>
+                <option value="One Piece">One Piece</option>
+                <option value="Yu-Gi-Oh!">Yu-Gi-Oh!</option> -->
+              </select>
+            </div>
+
+            <div class="table-container">
+              <table id="inventoryTable">
+                <thead>
+                  <tr>
+                    <th>Product Name</th>
+                    <th>Category</th>
+                    <th>Stock</th>
+                    <th>Status</th>
+                    <th>Cost Price</th>
+                    <th>Sell Price</th>
+                    <th>Profit %</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+
+                <tbody id="inventoryTableBody">
+                  <tr>
+                    <td colspan="8" style="text-align: center; padding: 40px">
+                      Loading...
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Tab Content: Import Orders -->
+          <div id="importTab" class="tab-content">
+            <div class="stats-grid">
+              <div class="stat-card">
+                <div class="stat-icon" style="background: rgba(76, 175, 80, 0.2); color: #4caf50">
+                  <i class="fas fa-check-circle"></i>
+                </div>
+                
+                <div class="stat-info">
+                  <h3 id="completedOrders">0</h3>
+                
+                  <p>Completed Orders</p>
+                </div>
+              </div>
+              
+              <div class="stat-card">
+                <div class="stat-icon" style="background: rgba(255, 193, 7, 0.2); color: #ffc107">
+                  <i class="fas fa-clock"></i>
+                </div>
+              
+                <div class="stat-info">
+                  <!-- JavaScript tự động điền vào đây -->
+                  <h3 id="pendingOrders"></h3>
+
+                  <p>Pending Orders</p>
+                </div>
+              </div>
+              
+              <div class="stat-card">
+                <div class="stat-icon" style="background: rgba(33, 150, 243, 0.2); color: #2196f3">
+                  <i class="fas fa-dollar-sign"></i>
+                </div>
+              
+                <div class="stat-info">
+                  <!-- JavaScript tự động điền vào đây -->
+                  <h3 id="totalImportValue"></h3>
+
+                  <p>Total Import Value</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="table-container" style="margin-top: 20px">
+              <table id="importTable">
+                <thead>
+                  <tr>
+                    <th>Order ID</th>
+                    <th>Date</th>
+                    <th>Products</th>
+                    <th>Total Value</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+
+                <tbody id="importTableBody">
+                  <tr>
+                    <td colspan="6" style="text-align: center; padding: 40px">
+                      Loading...
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Tab Content: Transactions History -->
+          <div id="transactionsTab" class="tab-content">
+            <div class="filters">
+              <div class="date-filter">
+                <label>From:</label>
+                <input type="date" id="dateFrom" onchange="filterTransactions()" />
+                
+                <label>To:</label>
+                <input type="date" id="dateTo" onchange="filterTransactions()" />
+                
+                <button class="btn btn-secondary" onclick="resetDateFilter()">
+                  <i class="fas fa-redo"></i> Reset
                 </button>
               </div>
             </div>
 
-            <!-- Alert Section -->
-            <div class="alert-section" id="alertSection">
+            <div class="table-container">
+              <table id="transactionsTable">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Product</th>
+                    <th>Type</th>
+                    <th>Quantity</th>
+                    <th>Notes</th>
+                  </tr>
+                </thead>
+                
+                <tbody id="transactionsTableBody">
+                  <tr>
+                    <td colspan="5" style="text-align: center; padding: 40px">
+                      Loading...
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Tab Content: Profit Margins -->
+          <div id="marginsTab" class="tab-content">
+            <h2 style="margin-bottom: 20px">Category Profit Margins</h2>
+            
+            <div class="margins-grid" id="categoryMarginsGrid">
               <!-- Sẽ được populate bởi JavaScript -->
             </div>
 
-            <!-- Tabs Navigation -->
-            <div class="tabs">
-              <button class="tab active" onclick="switchTab('inventory')">
-                <i class="fas fa-boxes"></i> Inventory Overview
-              </button>
-              <button class="tab" onclick="switchTab('import')">
-                <i class="fas fa-file-import"></i> Import Orders
-              </button>
-              <button class="tab" onclick="switchTab('transactions')">
-                <i class="fas fa-exchange-alt"></i> Transactions History
-              </button>
-              <button class="tab" onclick="switchTab('margins')">
-                <i class="fas fa-percent"></i> Profit Margins
-              </button>
-            </div>
-
-            <!-- Tab Content: Inventory Overview -->
-            <div id="inventoryTab" class="tab-content active">
-              <div class="filters">
-                <div class="search-box">
-                  <input
-                    type="text"
-                    id="searchInventory"
-                    placeholder="Search products..."
-                    onkeyup="filterInventory()"
-                  />
-                  <i class="fas fa-search"></i>
-                </div>
-                <select
-                  class="filter-select"
-                  id="categoryFilter"
-                  onchange="filterInventory()"
-                >
-                  <option value="all">All Categories</option>
-                  <option value="Attack on Titan">Attack on Titan</option>
-                  <option value="The Lord of the Rings">
-                    The Lord of the Rings
-                  </option>
-                  <option value="One Piece">One Piece</option>
-                  <option value="Yu-Gi-Oh!">Yu-Gi-Oh!</option>
-                </select>
-              </div>
-
-              <div class="table-container">
-                <table id="inventoryTable">
-                  <thead>
-                    <tr>
-                      <th>Product Name</th>
-                      <th>Category</th>
-                      <th>Stock</th>
-                      <th>Status</th>
-                      <th>Cost Price</th>
-                      <th>Sell Price</th>
-                      <th>Profit %</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody id="inventoryTableBody">
-                    <tr>
-                      <td colspan="8" style="text-align: center; padding: 40px">
-                        Loading...
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            <!-- Tab Content: Import Orders -->
-            <div id="importTab" class="tab-content">
-              <div class="stats-grid">
-                <div class="stat-card">
-                  <div
-                    class="stat-icon"
-                    style="background: rgba(76, 175, 80, 0.2); color: #4caf50"
-                  >
-                    <i class="fas fa-check-circle"></i>
-                  </div>
-                  <div class="stat-info">
-                    <h3 id="completedOrders">0</h3>
-                    <p>Completed Orders</p>
-                  </div>
-                </div>
-                <div class="stat-card">
-                  <div
-                    class="stat-icon"
-                    style="background: rgba(255, 193, 7, 0.2); color: #ffc107"
-                  >
-                    <i class="fas fa-clock"></i>
-                  </div>
-                  <div class="stat-info">
-                    <h3 id="pendingOrders">0</h3>
-                    <p>Pending Orders</p>
-                  </div>
-                </div>
-                <div class="stat-card">
-                  <div
-                    class="stat-icon"
-                    style="background: rgba(33, 150, 243, 0.2); color: #2196f3"
-                  >
-                    <i class="fas fa-dollar-sign"></i>
-                  </div>
-                  <div class="stat-info">
-                    <h3 id="totalImportValue">$0</h3>
-                    <p>Total Import Value</p>
-                  </div>
-                </div>
-              </div>
-
-              <div class="table-container" style="margin-top: 20px">
-                <table id="importTable">
-                  <thead>
-                    <tr>
-                      <th>Order ID</th>
-                      <th>Date</th>
-                      <th>Products</th>
-                      <th>Total Value</th>
-                      <th>Status</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody id="importTableBody">
-                    <tr>
-                      <td colspan="6" style="text-align: center; padding: 40px">
-                        Loading...
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            <!-- Tab Content: Transactions History -->
-            <div id="transactionsTab" class="tab-content">
-              <div class="filters">
-                <div class="date-filter">
-                  <label>From:</label>
-                  <input
-                    type="date"
-                    id="dateFrom"
-                    onchange="filterTransactions()"
-                  />
-                  <label>To:</label>
-                  <input
-                    type="date"
-                    id="dateTo"
-                    onchange="filterTransactions()"
-                  />
-                  <button class="btn btn-secondary" onclick="resetDateFilter()">
-                    <i class="fas fa-redo"></i> Reset
-                  </button>
-                </div>
-              </div>
-
-              <div class="table-container">
-                <table id="transactionsTable">
-                  <thead>
-                    <tr>
-                      <th>Date</th>
-                      <th>Product</th>
-                      <th>Type</th>
-                      <th>Quantity</th>
-                      <th>Notes</th>
-                    </tr>
-                  </thead>
-                  <tbody id="transactionsTableBody">
-                    <tr>
-                      <td colspan="5" style="text-align: center; padding: 40px">
-                        Loading...
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            <!-- Tab Content: Profit Margins -->
-            <div id="marginsTab" class="tab-content">
-              <h2 style="margin-bottom: 20px">Category Profit Margins</h2>
-              <div class="margins-grid" id="categoryMarginsGrid">
-                <!-- Sẽ được populate bởi JavaScript -->
-              </div>
-
-              <h2 style="margin: 30px 0 20px 0">Product Profit Margins</h2>
-              <div class="table-container">
-                <table id="productMarginsTable">
-                  <thead>
-                    <tr>
-                      <th>Product Name</th>
-                      <th>Category</th>
-                      <th>Cost Price</th>
-                      <th>Sell Price</th>
-                      <th>Profit Margin %</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody id="productMarginsTableBody">
-                    <tr>
-                      <td colspan="6" style="text-align: center; padding: 40px">
-                        Loading...
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-
-          <!-- Modal: New/Edit Import Order -->
-          <div id="importModal" class="modal">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h2 id="importModalTitle">New Import Order</h2>
-                <span class="close" onclick="closeImportModal()">&times;</span>
-              </div>
-              <div class="modal-body">
-                <form id="importForm">
-                  <input type="hidden" id="importOrderId" />
-
-                  <div class="form-group">
-                    <label>Import Date</label>
-                    <input type="date" id="importDate" required />
-                  </div>
-
-                  <div class="form-group">
-                    <label>Products</label>
-                    <div id="importProductsList">
-                      <div class="import-product-item">
-                        <select class="product-select" required>
-                          <option value="">Select Product</option>
-                        </select>
-                        <input
-                          type="number"
-                          placeholder="Quantity"
-                          min="1"
-                          required
-                        />
-                        <input
-                          type="number"
-                          placeholder="Cost Price ($)"
-                          step="0.01"
-                          min="0"
-                          required
-                        />
-                        <button
-                          type="button"
-                          class="btn-icon btn-remove"
-                          onclick="removeProductLine(this)"
-                        >
-                          <i class="fas fa-trash"></i>
-                        </button>
-                      </div>
-                    </div>
-                    <button
-                      type="button"
-                      class="btn btn-secondary"
-                      onclick="addProductLine()"
-                    >
-                      <i class="fas fa-plus"></i> Add Product
-                    </button>
-                  </div>
-
-                  <div class="form-group">
-                    <label
-                      >Total Value:
-                      <span id="totalImportValueDisplay">$0.00</span></label
-                    >
-                  </div>
-
-                  <div class="modal-actions">
-                    <button
-                      type="button"
-                      class="btn btn-secondary"
-                      onclick="closeImportModal()"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="button"
-                      class="btn btn-primary"
-                      onclick="saveImportOrder(false)"
-                      id="saveDraftBtn"
-                    >
-                      Save as Draft
-                    </button>
-                    <button type="submit" class="btn btn-primary">
-                      Complete Order
-                    </button>
-                  </div>
-                </form>
-              </div>
-            </div>
-          </div>
-
-          <!-- Modal: Edit Margin -->
-          <div id="marginModal" class="modal">
-            <div class="modal-content modal-small">
-              <div class="modal-header">
-                <h2>Edit Profit Margin</h2>
-                <span class="close" onclick="closeMarginModal()">&times;</span>
-              </div>
-              <div class="modal-body">
-                <form id="marginForm">
-                  <input type="hidden" id="marginProductId" />
-
-                  <div class="form-group">
-                    <label id="marginProductName">Product Name</label>
-                  </div>
-
-                  <div class="form-group">
-                    <label>Cost Price ($)</label>
-                    <input
-                      type="number"
-                      id="marginCost"
-                      step="0.01"
-                      min="0"
-                      required
-                      onkeyup="calculateMargin()"
-                    />
-                  </div>
-
-                  <div class="form-group">
-                    <label>Sell Price ($)</label>
-                    <input
-                      type="number"
-                      id="marginPrice"
-                      step="0.01"
-                      min="0"
-                      required
-                      onkeyup="calculateMargin()"
-                    />
-                  </div>
-
-                  <div class="form-group">
-                    <label
-                      >Profit Margin:
-                      <span
-                        id="calculatedMargin"
-                        style="color: #ff8519; font-weight: 700"
-                        >0%</span
-                      ></label
-                    >
-                  </div>
-
-                  <div class="modal-actions">
-                    <button
-                      type="button"
-                      class="btn btn-secondary"
-                      onclick="closeMarginModal()"
-                    >
-                      Cancel
-                    </button>
-                    <button type="submit" class="btn btn-primary">
-                      Save Changes
-                    </button>
-                  </div>
-                </form>
-              </div>
+            <h2 style="margin: 30px 0 20px 0">Product Profit Margins</h2>
+            
+            <div class="table-container">
+              <table id="productMarginsTable">
+                <thead>
+                  <tr>
+                    <th>Product Name</th>
+                    <th>Category</th>
+                    <th>Cost Price</th>
+                    <th>Sell Price</th>
+                    <th>Profit Margin %</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                
+                <tbody id="productMarginsTableBody">
+                  <tr>
+                    <td colspan="6" style="text-align: center; padding: 40px">
+                      Loading...
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
-      </main>
-    </div>
 
-    <script src="./js/DataManager.js"></script>
-    <script src="./js/include.js"></script>
-    <script src="./js/analytics.js"></script>
-    <script src="./js/warehouse-data.js"></script>
-    <script src="./js/warehouse.js"></script>
-    <script src="./script.js"></script>
-    <script src="./js/dashboard.js"></script>
-    <script src="./js/products.js"></script>
-    <script src="./js/customers.js"></script>
-    <script src="./js/orders.js"></script>
-  </body>
+        <!-- Modal: New/Edit Import Order -->
+        <div id="importModal" class="modal">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h2 id="importModalTitle">New Import Order</h2>
+              <span class="close" onclick="closeImportModal()">&times;</span>
+            </div>
+            
+            <div class="modal-body">
+              <form id="importForm">
+                <input type="hidden" id="importOrderId" />
+
+                <div class="form-group">
+                  <label>Import Date</label>
+                  <input type="date" id="importDate" required />
+                </div>
+
+                <div class="form-group">
+                  <label>Products</label>
+                  
+                  <div id="importProductsList">
+                    <div class="import-product-item">
+                      <select class="product-select" required>
+                        <option value="">Select Product</option>
+                      </select>
+                      
+                      <input type="number" placeholder="Quantity" min="1" required />
+                      <input type="number" placeholder="Cost Price ($)" step="0.01" min="0" required />
+                      
+                      <button type="button" class="btn-icon btn-remove" onclick="removeProductLine(this)">
+                        <i class="fas fa-trash"></i>
+                      </button>
+                    </div>
+                  </div>
+                  
+                  <button type="button" class="btn btn-secondary" onclick="addProductLine()">
+                    <i class="fas fa-plus"></i> Add Product
+                  </button>
+                </div>
+
+                <div class="form-group">
+                  <label>Total Value:
+                    <!-- JavaScript tự động điền vào đây -->
+                    <span id="totalImportValueDisplay"></span>
+                  </label>
+                </div>
+
+                <div class="modal-actions">
+                  <button type="button" class="btn btn-secondary" onclick="closeImportModal()">
+                    Cancel
+                  </button>
+                  
+                  <button type="button" class="btn btn-primary" onclick="saveImportOrder(false)" id="saveDraftBtn">
+                    Save as Draft
+                  </button>
+                  
+                  <button type="submit" class="btn btn-primary">
+                    Complete Order
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modal: Edit Margin -->
+        <div id="marginModal" class="modal">
+          <div class="modal-content modal-small">
+            <div class="modal-header">
+              <h2>Edit Profit Margin</h2>
+              
+              <span class="close" onclick="closeMarginModal()">&times;</span>
+            </div>
+            
+            <div class="modal-body">
+              <form id="marginForm">
+                <input type="hidden" id="marginProductId" />
+
+                <div class="form-group">
+                  <label id="marginProductName">Product Name</label>
+                </div>
+
+                <div class="form-group">
+                  <label>Cost Price ($)</label>
+                  
+                  <input type="number" id="marginCost" step="0.01" min="0" required onkeyup="calculateMargin()" />
+                </div>
+
+                <div class="form-group">
+                  <label>Sell Price ($)</label>
+                  
+                  <input type="number" id="marginPrice" step="0.01" min="0" required onkeyup="calculateMargin()" />
+                </div>
+
+                <div class="form-group">
+                  <label>Profit Margin:
+                    <!-- JavaScript tự động điền vào đây -->
+                    <span id="calculatedMargin" style="color: #ff8519; font-weight: 700"></span>
+                  </label>
+                </div>
+
+                <div class="modal-actions">
+                  <button type="button" class="btn btn-secondary" onclick="closeMarginModal()">
+                    Cancel
+                  </button>
+                  
+                  <button type="submit" class="btn btn-primary">
+                    Save Changes
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+
 </html>
