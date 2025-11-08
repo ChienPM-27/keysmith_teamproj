@@ -141,8 +141,15 @@ RESET & BASE STYLES
 }
 
 @keyframes warehousePulse {
-    0%, 100% { border-color: #ff6b35; }
-    50% { border-color: #ff8519; }
+
+    0%,
+    100% {
+        border-color: #ff6b35;
+    }
+
+    50% {
+        border-color: #ff8519;
+    }
 }
 
 .warehouse-wrapper .alert-icon {
@@ -252,13 +259,14 @@ RESET & BASE STYLES
 }
 
 @keyframes warehouseFadeIn {
-    from { 
-        opacity: 0; 
-        transform: translateY(10px); 
+    from {
+        opacity: 0;
+        transform: translateY(10px);
     }
-    to { 
-        opacity: 1; 
-        transform: translateY(0); 
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }
 
@@ -728,6 +736,7 @@ RESET & BASE STYLES
         transform: translateY(-50px);
         opacity: 0;
     }
+
     to {
         transform: translateY(0);
         opacity: 1;
@@ -952,7 +961,7 @@ RESET & BASE STYLES
     .warehouse-wrapper .margins-grid {
         grid-template-columns: 1fr;
     }
-    
+
     .warehouse-wrapper .margin-card {
         padding: 20px;
     }
@@ -1016,8 +1025,13 @@ RESET & BASE STYLES
 }
 
 @keyframes warehouseSpin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 .warehouse-wrapper *:focus-visible {

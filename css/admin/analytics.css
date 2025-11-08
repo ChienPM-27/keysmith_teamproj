@@ -4,30 +4,7 @@
     padding: 20px;
 }
 
-.analytics-wrapper .section-header {
-    margin-bottom: 2rem;
-    border-bottom: 2px solid var(--color-primary);
-    padding-bottom: 1rem;
-}
-
-.analytics-wrapper .section-header h1 {
-    color: var(--color-text-dark);
-    font-size: 2rem;
-    margin-bottom: 0.5rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.analytics-wrapper .section-header h1 i {
-    color: var(--color-primary);
-}
-
-.analytics-wrapper .section-header p {
-    color: #666;
-    font-size: 0.95rem;
-    margin: 0;
-}
+/* header styling uses consolidated .section-header present in admin.css */
 
 /* Analytics Tabs */
 .analytics-wrapper .analytics-tabs {
@@ -74,8 +51,15 @@
 }
 
 @keyframes analyticsFadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* Filters */
@@ -362,10 +346,21 @@
     opacity: 0.7;
 }
 
-.analytics-wrapper .status-card.new i { color: #3b82f6; }
-.analytics-wrapper .status-card.processing i { color: #f59e0b; }
-.analytics-wrapper .status-card.delivered i { color: #10b981; }
-.analytics-wrapper .status-card.cancelled i { color: #ef4444; }
+.analytics-wrapper .status-card.new i {
+    color: #3b82f6;
+}
+
+.analytics-wrapper .status-card.processing i {
+    color: #f59e0b;
+}
+
+.analytics-wrapper .status-card.delivered i {
+    color: #10b981;
+}
+
+.analytics-wrapper .status-card.cancelled i {
+    color: #ef4444;
+}
 
 .analytics-wrapper .status-card h4 {
     font-size: 0.9rem;
@@ -596,11 +591,11 @@
     .analytics-wrapper .pricing-container {
         grid-template-columns: 1fr;
     }
-    
+
     .analytics-wrapper .customer-stats-grid {
         grid-template-columns: 1fr;
     }
-    
+
     .analytics-wrapper .retention-grid {
         grid-template-columns: 1fr;
     }
@@ -610,44 +605,44 @@
     .analytics-wrapper .section-header h1 {
         font-size: 1.5rem;
     }
-    
+
     .analytics-wrapper .analytics-tabs {
         flex-direction: column;
     }
-    
+
     .analytics-wrapper .analytics-tab-btn {
         justify-content: center;
     }
-    
+
     .analytics-wrapper .analytics-filters {
         flex-direction: column;
     }
-    
+
     .analytics-wrapper .stats-grid {
         grid-template-columns: 1fr;
     }
-    
+
     .analytics-wrapper .chart-header {
         flex-direction: column;
         align-items: flex-start;
     }
-    
+
     .analytics-wrapper .order-status-grid {
         grid-template-columns: 1fr;
     }
-    
+
     .analytics-wrapper .lookup-filters {
         flex-direction: column;
     }
-    
+
     .analytics-wrapper .growth-stats {
         grid-template-columns: 1fr;
     }
-    
+
     .analytics-wrapper .data-table {
         font-size: 0.8rem;
     }
-    
+
     .analytics-wrapper .data-table th,
     .analytics-wrapper .data-table td {
         padding: 0.5rem 0.5rem;
@@ -658,23 +653,23 @@
     .analytics-wrapper .section {
         padding: 1rem;
     }
-    
+
     .analytics-wrapper .stat-card {
         flex-direction: column;
         text-align: center;
     }
-    
+
     .analytics-wrapper .product-item {
         flex-wrap: wrap;
         justify-content: center;
     }
-    
+
     .analytics-wrapper .product-rank {
         width: 30px;
         height: 30px;
         font-size: 1rem;
     }
-    
+
     .analytics-wrapper .product-item img {
         width: 50px;
         height: 50px;

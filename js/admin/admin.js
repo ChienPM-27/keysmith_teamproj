@@ -1,103 +1,95 @@
-// ==================== ADMIN PAGE SCRIPT ====================
-// Script này đặt trong admin.html
+// ADMIN SCRIPT
 
-// Kiểm tra xác thực khi tải trang
-window.addEventListener('DOMContentLoaded', () => {
-    const loggedInUser = localStorage.getItem('loggedInUser');
-    const userRole = localStorage.getItem('userRole');
 
-    // Nếu không phải admin hoặc chưa đăng nhập, chuyển về trang chủ
-    if (!loggedInUser || userRole !== 'admin') {
-        alert('⚠️ Access denied! Admin authentication required.');
+// ===============================
+// ❌️ KHÔNG ĐƯỢC SỬA ĐỔI (báo lên nhóm nếu cần thay đổi)
+// ===============================
+
+// Kiểm tra quyền truy cập admin
+document.addEventListener('DOMContentLoaded', () => {
+    const user = localStorage.getItem('loggedInUser');
+    const role = localStorage.getItem('userRole');
+    if (!user || role !== 'admin') {
+        alert('⚠️ Truy cập bị từ chối. Vui lòng đăng nhập bằng tài khoản quản trị.');
         localStorage.removeItem('loggedInUser');
         localStorage.removeItem('userRole');
         localStorage.removeItem('rememberedUser');
         window.location.href = '/index.html';
-        return;
     }
 
-    // Cập nhật tên admin
-    updateAdminDisplay();
+    // Hiển thị/ẩn các section khi bấm vào sidebar (chỉ phần middle-sidebar)
+    try {
+        const sidebarItems = Array.from(document.querySelectorAll('.sidebar .middle-sidebar .sidebar-list .sidebar-list-item.tab-content'));
+        const sections = Array.from(document.querySelectorAll('main .section'));
+        if (sidebarItems.length && sections.length) {
+            sidebarItems.forEach((item, idx) => {
+                item.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    // xóa active trước đó
+                    sidebarItems.forEach(si => si.classList.remove('active'));
+                    sections.forEach(sec => sec.classList.remove('active'));
+
+                    // bật active cho item và section tương ứng (theo chỉ số)
+                    item.classList.add('active');
+                    if (sections[idx]) sections[idx].classList.add('active');
+                });
+            });
+        }
+    } catch (err) {
+        // im lặng nếu DOM khác cấu trúc
+        console.warn('Sidebar show/hide init failed:', err);
+    }
+
+    // Xử lý 3 nút phía dưới (Home, Admin, Log out)
+    try {
+        const bottomItems = Array.from(document.querySelectorAll('.sidebar .bottom-sidebar .sidebar-list .sidebar-list-item.user-logout'));
+        // bottomItems[0] = Home page, [1] = Admin (display), [2] = Log out
+        if (bottomItems.length) {
+            const clearAuthAndRedirect = (msg) => {
+                if (msg && !confirm(msg)) return;
+                localStorage.removeItem('loggedInUser');
+                localStorage.removeItem('userRole');
+                localStorage.removeItem('rememberedUser');
+                window.location.href = '/index.html';
+            };
+
+            if (bottomItems[0]) {
+                bottomItems[0].addEventListener('click', (e) => {
+                    e.preventDefault();
+                    clearAuthAndRedirect('Bạn có muốn quay về trang chủ? Bạn sẽ bị đăng xuất khỏi trang quản trị.');
+                });
+            }
+
+            if (bottomItems[1]) {
+                bottomItems[1].addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const current = localStorage.getItem('loggedInUser') || 'Admin';
+                    alert('Người dùng hiện tại: ' + current);
+                });
+            }
+
+            if (bottomItems[2]) {
+                bottomItems[2].addEventListener('click', (e) => {
+                    e.preventDefault();
+                    if (confirm('Bạn có chắc muốn đăng xuất không?')) {
+                        localStorage.removeItem('loggedInUser');
+                        localStorage.removeItem('userRole');
+                        localStorage.removeItem('rememberedUser');
+                        alert('👋 Đăng xuất thành công!');
+                        window.location.href = '/index.html';
+                    }
+                });
+            }
+        }
+    } catch (err) {
+        console.warn('Bottom sidebar handlers init failed:', err);
+    }
 });
 
-// Cập nhật hiển thị tên admin
-function updateAdminDisplay() {
-    const loggedInUser = localStorage.getItem('loggedInUser');
-    const adminNameElement = document.querySelector('.bottom-sidebar .user-logout:nth-child(2) .sidebar-hidden');
-    
-    if (adminNameElement && loggedInUser) {
-        adminNameElement.textContent = loggedInUser;
-    }
-}
+// ===============================
+// ✔️ ĐƯỢC PHÉP SỬA ĐỔI
+// ===============================
 
-// Xử lý sidebar toggle
-const burgerBtn = document.querySelector('.menu-icon-btn');
-const sidebar = document.querySelector('.sidebar');
-
-if (burgerBtn && sidebar) {
-    burgerBtn.addEventListener('click', () => {
-        sidebar.classList.toggle('open');
-    });
-}
-const sidebars = document.querySelectorAll(".sidebar-list-item.tab-content");
-const sections = document.querySelectorAll(".section");
-
-for(let i = 0; i < sidebars.length; i++) {
-    sidebars[i].onclick = function () {
-        document.querySelector(".sidebar-list-item.active").classList.remove("active");
-        document.querySelector(".section.active").classList.remove("active");
-        sidebars[i].classList.add("active");
-        sections[i].classList.add("active");
-    };
-}
-
-const closeBtn = document.querySelectorAll('.section');
-console.log(closeBtn[0])
-for(let i=0;i<closeBtn.length;i++){
-    closeBtn[i].addEventListener('click',(e) => {
-        sidebar.classList.add("open");
-    })
-}
-
-
-// Xử lý nút Home page
-const homeBtn = document.querySelector('.bottom-sidebar .user-logout:nth-child(1) a');
-if (homeBtn) {
-    homeBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        if (confirm('Do you want to return to home page? You will be logged out from admin panel.')) {
-            localStorage.removeItem('loggedInUser');
-            localStorage.removeItem('userRole');
-            localStorage.removeItem('rememberedUser');
-            // Redirect to site root index
-            window.location.href = '/index.html';
-        }
-    });
-}
-
-// Xử lý nút Log out
-const logoutBtn = document.querySelector('.bottom-sidebar .user-logout:nth-child(3) a');
-if (logoutBtn) {
-    logoutBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        if (confirm('Are you sure you want to log out?')) {
-            localStorage.removeItem('loggedInUser');
-            localStorage.removeItem('userRole');
-            localStorage.removeItem('rememberedUser');
-            alert('👋 Logged out successfully!');
-            // Redirect to site root index
-            window.location.href = '/index.html';
-        }
-    });
-}
-
-// Ngăn chặn truy cập trái phép qua console
-Object.defineProperty(window, 'bypassAuth', {
-    get: function() {
-        console.warn('⚠️ Unauthorized access attempt detected!');
-        return false;
-    },
-    set: function() {
-        console.warn('⚠️ Cannot bypass authentication!');
-    }
-});
+// ===============================
+// <TITLE>
+// ===============================

@@ -3,24 +3,27 @@
         z-index: 100;
         display: flex;
     }
+
     .sidebar {
         height: calc(100vh - 60px);
     }
 }
 
 @media only screen and (max-width: 615px) {
-    .header{
+    .header {
         position: fixed;
     }
-    
+
     .sidebar.open {
         display: none;
     }
+
     .sidebar .top-sidebar {
         opacity: 1;
         height: 150px;
         margin-left: -12em;
     }
+
     .sidebar {
         overflow: hidden;
         width: 55%;
@@ -29,6 +32,7 @@
         z-index: 99;
         height: 100vh;
     }
+
     .sidebar .sidebar-hidden {
         margin-left: 1em;
         opacity: 1;
@@ -36,8 +40,9 @@
         line-height: 0rem;
     }
 }
+
 @media (max-width: 768px) {
-        .chart-box {
-            max-width: 100%;
-        }
+    .chart-box {
+        max-width: 100%;
     }
+}

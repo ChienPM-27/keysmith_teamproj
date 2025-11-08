@@ -8,30 +8,7 @@
     padding: 20px;
 }
 
-.dashboard-wrapper .section-header {
-    margin-bottom: 2rem;
-    border-bottom: 2px solid var(--color-primary);
-    padding-bottom: 1rem;
-}
-
-.dashboard-wrapper .section-header h1 {
-    color: var(--color-text-dark);
-    font-size: 2rem;
-    margin-bottom: 0.5rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.dashboard-wrapper .section-header h1 i {
-    color: var(--color-primary);
-}
-
-.dashboard-wrapper .section-header p {
-    color: #666;
-    font-size: 0.95rem;
-    margin: 0;
-}
+/* header uses consolidated .section-header styles in admin.css */
 
 /* .dashboard-body {
 
@@ -44,6 +21,7 @@
     margin-bottom: 2rem;
     height: 150px;
 }
+
 .card-single {
     width: 25%;
     margin: 0 24px;
@@ -52,7 +30,7 @@
 }
 
 .card-single:hover {
-transform: scale(1.05) translateY(-5px);
+    transform: scale(1.05) translateY(-5px);
 }
 
 .box {
@@ -61,23 +39,29 @@ transform: scale(1.05) translateY(-5px);
     border-radius: 1rem;
     padding: 1.25rem 1.25rem;
     height: 100%;
-    background: linear-gradient(320deg,#fff4df 0,#fff 70% );}
+    background: linear-gradient(320deg, #fff4df 0, #fff 70%);
+}
+
 .box-container {
     display: flex;
     gap: 2rem;
     flex-direction: column;
 }
+
 .box-title {
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
+
 .title-name {
     font-weight: 600;
 }
+
 .title-logo {
     color: var(--color-primary);
 }
+
 .box-content {
     line-height: 1;
     font-size: 35px;
@@ -94,7 +78,7 @@ transform: scale(1.05) translateY(-5px);
     border-radius: 1rem;
     padding: 1.25rem 1.25rem;
     margin: 0 24px;
-    background: linear-gradient(320deg,#f69697 0, #fff 90%);
+    background: linear-gradient(320deg, #f69697 0, #fff 90%);
 
 }
 
@@ -123,6 +107,7 @@ transform: scale(1.05) translateY(-5px);
     cursor: pointer;
 
 }
+
 #view-details:hover {
     text-decoration: underline;
     color: red;
@@ -150,6 +135,7 @@ transform: scale(1.05) translateY(-5px);
 .status-card:hover {
     transform: scale(1.05) translateY(-5px);
 }
+
 .status-card .status-card-left {
     padding-left: 16px;
     font-size: 24px;
@@ -172,6 +158,7 @@ transform: scale(1.05) translateY(-5px);
 .processing .status-card-left {
     color: #f59e0b;
 }
+
 .processing {
     background: linear-gradient(320deg, #fbbf24 0, #fff 60%);
 }
