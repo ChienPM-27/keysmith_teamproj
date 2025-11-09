@@ -1,0 +1,156 @@
+/* ==================== ADMIN LOGIN STYLES ====================
+   Thêm đoạn CSS này vào cuối file /css/main/main.css
+   ========================================================== */
+
+#adminLogin {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    z-index: 10000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.admin-login-wrapper {
+    width: 100%;
+    max-width: 450px;
+    padding: 20px;
+}
+
+.admin-login-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    animation: slideInUp 0.5s ease-out;
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.admin-login-card h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    color: #333;
+    margin-bottom: 30px;
+    text-align: center;
+    letter-spacing: 2px;
+}
+
+.admin-login-card .input-box {
+    position: relative;
+    margin-bottom: 25px;
+}
+
+.admin-login-card .input-box input {
+    width: 100%;
+    padding: 15px 20px;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    background: #f8f9fa;
+}
+
+.admin-login-card .input-box input:focus {
+    outline: none;
+    border-color: #667eea;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.admin-login-card .input-box input::placeholder {
+    color: #999;
+}
+
+.admin-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.btn-admin,
+.btn-admin-secondary {
+    flex: 1;
+    padding: 15px;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Bebas Neue', sans-serif;
+    letter-spacing: 1px;
+}
+
+.btn-admin {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.btn-admin:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+}
+
+.btn-admin:active {
+    transform: translateY(0);
+}
+
+.btn-admin-secondary {
+    background: #f0f0f0;
+    color: #666;
+}
+
+.btn-admin-secondary:hover {
+    background: #e0e0e0;
+    transform: translateY(-2px);
+}
+
+#adminMessage {
+    text-align: center;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 10px;
+    border-radius: 8px;
+    background: #f8f9fa;
+    min-height: 20px;
+    margin-top: 15px;
+}
+
+#adminMessage:empty {
+    display: none;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .admin-login-wrapper {
+        max-width: 90%;
+    }
+
+    .admin-login-card {
+        padding: 30px 20px;
+    }
+
+    .admin-login-card h2 {
+        font-size: 28px;
+    }
+
+    .admin-actions {
+        flex-direction: column;
+    }
+}

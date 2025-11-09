@@ -37,6 +37,7 @@ const KeySmith = {
         this.store.init();
         this.subscriptionForm.init();
         this.error404.init();
+        this.admin.init();
     }
 };
 
@@ -517,6 +518,116 @@ KeySmith.error404 = {
     }
 };
 
+// ==================== ADMIN MODULE ====================
+KeySmith.admin = {
+    init: function() {
+        this.mainContent = KeySmith.utils.getById('mainContent');
+        this.adminSection = KeySmith.utils.getById('adminLogin');
+        this.adminForm = KeySmith.utils.getById('adminLoginForm');
+        this.adminBack = KeySmith.utils.getById('adminBack');
+        this.adminMessage = KeySmith.utils.getById('adminMessage');
+
+        // Nếu không có admin section thì return
+        if (!this.adminSection) return;
+
+        // Lắng nghe sự kiện hashchange
+        window.addEventListener('hashchange', () => this.checkHash());
+        
+        // Kiểm tra hash khi trang load
+        this.checkHash();
+
+        // Nút Back
+        if (this.adminBack) {
+            this.adminBack.addEventListener('click', (e) => {
+                e.preventDefault();
+                // Xóa hash và quay về trang chính
+                window.location.hash = '';
+            });
+        }
+
+        // Form đăng nhập admin
+        if (this.adminForm) {
+            this.adminForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                this.handleAdminLogin();
+            });
+        }
+    },
+
+    showAdmin: function(show) {
+        if (this.mainContent) {
+            this.mainContent.style.display = show ? 'none' : 'block';
+        }
+        if (this.adminSection) {
+            this.adminSection.style.display = show ? 'flex' : 'none';
+            if (show) {
+                document.body.style.overflow = 'hidden';
+                window.scrollTo(0, 0);
+            } else {
+                document.body.style.overflow = 'auto';
+            }
+        }
+    },
+
+    checkHash: function() {
+        const hash = window.location.hash.toLowerCase();
+        if (hash === '#admin') {
+            this.showAdmin(true);
+        } else {
+            this.showAdmin(false);
+        }
+    },
+
+    handleAdminLogin: function() {
+        const usernameInput = document.getElementById('adminUsername');
+        const passwordInput = document.getElementById('adminPassword');
+        
+        if (!usernameInput || !passwordInput) return;
+
+        const username = usernameInput.value.trim();
+        const password = passwordInput.value.trim();
+
+        // Lấy danh sách admin từ KeySmith.login.ADMIN_ACCOUNTS
+        const accounts = KeySmith.login && KeySmith.login.ADMIN_ACCOUNTS ? 
+                         KeySmith.login.ADMIN_ACCOUNTS : [];
+
+        // Kiểm tra đăng nhập
+        const match = accounts.find(a => 
+            a.username === username && a.password === password
+        );
+
+        if (match) {
+            // Đăng nhập thành công
+            localStorage.setItem('loggedInUser', username);
+            localStorage.setItem('userRole', 'admin');
+
+            if (this.adminMessage) {
+                this.adminMessage.style.color = '#4caf50';
+                this.adminMessage.textContent = '✅ Đăng nhập thành công! Đang chuyển hướng...';
+            }
+
+            // Chuyển hướng sau 1 giây
+            setTimeout(() => {
+                window.location.href = '/admin.html';
+            }, 1000);
+        } else {
+            // Đăng nhập thất bại
+            if (this.adminMessage) {
+                this.adminMessage.style.color = '#f44336';
+                this.adminMessage.textContent = '❌ Sai tên đăng nhập hoặc mật khẩu!';
+            }
+            
+            // Xóa thông báo sau 3 giây
+            setTimeout(() => {
+                if (this.adminMessage) {
+                    this.adminMessage.textContent = '';
+                }
+            }, 3000);
+        }
+    }
+};
+
+// ==================== INITIALIZE ====================
 // Initialize everything when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
     KeySmith.init();
