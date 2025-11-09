@@ -28,20 +28,21 @@
 *     ...
 *   ],
 *
-*   customers: [
-*     {
-*       username: String,          // Tên đăng nhập
-*       password: String,          // Mật khẩu
-*       firstName: String,         // Tên
-*       lastName: String,          // Họ
-*       email: String,             // Email
-*       phone: String,             // Số điện thoại
-*       address: String,           // Địa chỉ
-*       dateOfBirth: String,       // Ngày sinh (yyyy-mm-dd)
-*       status: String             // "active" hoặc "inactive"
-*     },
-*     ...
-*   ],
+        customers: [
+         {
+             username: String,          // Tên đăng nhập
+             password: String,          // Mật khẩu
+             img: String,               // Ảnh đại diện (data URL hoặc đường dẫn)
+             firstName: String,         // Tên
+             lastName: String,          // Họ
+             email: String,             // Email
+             phone: String,             // Số điện thoại
+             address: String,           // Địa chỉ
+             dateOfBirth: String,       // Ngày sinh (yyyy-mm-dd)
+             status: String             // "active" hoặc "inactive"
+         },
+         ...
+     ],
 *
 *   orders: [
 *     {
@@ -486,7 +487,7 @@ class DatabaseManager {
 // ===============================
 // 🔹 Khởi tạo và xuất đối tượng
 // ===============================
-import { sampleData } from "./sampleData.js";
+import { sampleData } from "../sampledata/sampleData.js";
 
 export const dataManager = new DatabaseManager(sampleData);
 window.dataManager = dataManager; // Truy cập từ console
