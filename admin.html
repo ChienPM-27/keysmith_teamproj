@@ -20,6 +20,7 @@
   <!-- Đã khai báo defer nên script sẽ được tải song song với HTML
       và chỉ chạy sau khi HTML được phân tích xong -->
   <script type="module" src="/js/admin/admin.js" defer></script>
+  <script type="module" src="/js/admin/customers.js" defer></script>
 
   <script src="https://kit.fontawesome.com/da0c4cdc9f.js" crossorigin="anonymous"></script>
 </head>
@@ -311,7 +312,7 @@
                         align-items: center;
                         gap: 12px;
                       ">
-                    <img src="./assets/img/blank-image.png" alt="" class="upload-image-preview" style="
+                    <img src="/img/blank-image.png" alt="" class="upload-image-preview" style="
                           width: 120px;
                           height: 120px;
                           object-fit: cover;
@@ -473,10 +474,6 @@
             </div>
 
             <div class="customer-control-right">
-              <button class="btn-control" id="btn-add-user">
-                <i class="fa-solid fa-plus"></i> Thêm khách hàng
-              </button>
-
               <button class="btn-control" id="btn-refresh-user">
                 <i class="fa-solid fa-arrows-rotate"></i> Làm mới
               </button>
@@ -485,6 +482,53 @@
 
           <!-- JavaScript tự động hiển thị danh sách khách hàng -->
           <div class="show-customer-container" id="show-customer-container"></div>
+          
+          <!-- Template cho item customer -->
+          <template id="customer-item-template">
+            <div class="customer-item">
+              <div class="customer-info">
+                <div class="customer-avatar">
+                  <img src="/img/blank-image.png" alt="" />
+                </div>
+
+                <div class="customer-details">
+                  <h3 class="customer-name">Name</h3>
+
+                  <p class="customer-email">example@example.com</p>
+
+                  <p class="customer-phone">0123456789</p>
+                </div>
+              </div>
+
+              <div class="customer-status">
+                <span class="status-badge active">Đang hoạt động</span>
+              </div>
+
+              <div class="customer-actions">
+                <button class="btn-view-customer">
+                  <i class="fa-solid fa-eye"></i>
+                </button>
+
+                <button class="btn-lock-unlock-customer">
+                  <i class="fa-solid fa-lock-open"></i>
+                </button>
+
+                <button class="btn-delete-customer">
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+              </div>
+            </div>
+          </template>
+
+          <!-- Thanh chọn số sản phẩm hiển thị -->
+          <div id="page-control">
+            <label for="per-page">Hiển thị:</label>
+            <select id="per-page">
+              <option value="4">4</option>
+              <option value="8" selected>8</option>
+              <option value="12">12</option>
+            </select> khách hàng mỗi trang
+          </div>
         
           <!-- Phân trang -->
           <div class="page-nav">
@@ -493,7 +537,78 @@
             </ul>
           </div>
 
-          <!-- Model thêm/sửa khách hàng -->
+          <!-- Modal: Chi tiết khách hàng -->
+          <div id="customerDetailModal" class="modal customer-detail-modal" aria-hidden="true">
+            <div class="modal-container">
+              <div class="modal-header">
+                <h3>Chi tiết khách hàng</h3>
+
+                <button class="modal-close" aria-label="Đóng">
+                  <i class="fa-solid fa-xmark"></i>
+                </button>
+              </div>
+
+              <div class="modal-body">
+                <div class="detail-grid">
+                  <div class="detail-left">
+                    <div class="avatar-preview">
+                      <img src="/img/logo/logo_full.png" alt="avatar" id="customer-detail-avatar" />
+                    </div>
+
+                    <button type="button" id="btn-change-avatar" class="upload-btn">Thay ảnh</button>
+                    <input id="customer-avatar-input" type="file" accept="image/*" style="display:none" />
+                  </div>
+
+                  <div class="detail-right">
+                    <form class="detail-form" onsubmit="return false;">
+                      <!-- hidden field to hold current username for modal actions -->
+                      <input id="detail-username" type="hidden" readonly />
+                      <div class="form-row two-cols">
+                        <div>
+                          <label for="detail-firstname">Tên</label>
+                          <input id="detail-firstname" type="text" readonly />
+                        </div>
+
+                        <div>
+                          <label for="detail-lastname">Họ</label>
+                          <input id="detail-lastname" type="text" readonly />
+                        </div>
+                      </div>
+
+                      <div class="form-row">
+                        <label for="detail-email">Email</label>
+                        <input id="detail-email" type="email" readonly />
+                      </div>
+
+                      <div class="form-row">
+                        <label for="detail-phone">Số điện thoại</label>
+                        <input id="detail-phone" type="tel" readonly />
+                      </div>
+
+                      <div class="form-row">
+                        <label for="detail-address">Địa chỉ</label>
+                        <input id="detail-address" type="text" readonly />
+                      </div>
+
+                      <div class="form-row">
+                        <label for="detail-dob">Ngày sinh</label>
+                        <input id="detail-dob" type="date" readonly />
+                      </div>
+                    </form>
+                  </div>
+                </div>
+
+                <div class="modal-footer-row">
+                  <span id="modal-detail-status-badge" class="status-badge detail-status-badge">Đang hoạt động</span>
+
+                  <div class="modal-actions">
+                    <button class="btn btn-reset" id="btn-reset-password">Reset mật khẩu</button>
+                    <button class="btn btn-lock" id="btn-lock-account">Khóa tài khoản</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
