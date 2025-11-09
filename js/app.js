@@ -236,7 +236,7 @@ KeySmith.login = {
             }
             
             setTimeout(() => {
-                window.location.href = '../admin/admin.html';
+                window.location.href = '../admin.html';
             }, 1000);
             return;
         }
