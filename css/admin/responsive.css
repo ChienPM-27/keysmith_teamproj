@@ -4,7 +4,7 @@
         display: flex;
     }
 
-    .sidebar {
+    .admin-sidebar {
         height: calc(100vh - 60px);
     }
 }
@@ -14,17 +14,17 @@
         position: fixed;
     }
 
-    .sidebar.open {
+    .admin-sidebar.open {
         display: none;
     }
 
-    .sidebar .top-sidebar {
+    .admin-sidebar .admin-sidebar__brand {
         opacity: 1;
         height: 150px;
         margin-left: -12em;
     }
 
-    .sidebar {
+    .admin-sidebar {
         overflow: hidden;
         width: 55%;
         flex-direction: column;
@@ -33,7 +33,7 @@
         height: 100vh;
     }
 
-    .sidebar .sidebar-hidden {
+    .admin-sidebar .admin-sidebar__label {
         margin-left: 1em;
         opacity: 1;
         text-align: center;

@@ -17,9 +17,9 @@ document.addEventListener('DOMContentLoaded', () => {
         window.location.href = '/index.html';
     }
 
-    // Hiển thị/ẩn các section khi bấm vào sidebar (chỉ phần middle-sidebar)
+    // Hiển thị/ẩn các section khi bấm vào sidebar (chỉ phần điều hướng)
     try {
-        const sidebarItems = Array.from(document.querySelectorAll('.sidebar .middle-sidebar .sidebar-list .sidebar-list-item.tab-content'));
+        const sidebarItems = Array.from(document.querySelectorAll('.admin-sidebar .admin-sidebar__nav .admin-sidebar__list .admin-sidebar__item.tab-content'));
         const sections = Array.from(document.querySelectorAll('main .section'));
         if (sidebarItems.length && sections.length) {
             sidebarItems.forEach((item, idx) => {
@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Xử lý 3 nút phía dưới (Home, Admin, Log out)
     try {
-        const bottomItems = Array.from(document.querySelectorAll('.sidebar .bottom-sidebar .sidebar-list .sidebar-list-item.user-logout'));
+        const bottomItems = Array.from(document.querySelectorAll('.admin-sidebar .admin-sidebar__actions .admin-sidebar__list .admin-sidebar__item.user-logout'));
         // bottomItems[0] = Home page, [1] = Admin (display), [2] = Log out
         if (bottomItems.length) {
             const clearAuthAndRedirect = (msg) => {
@@ -85,7 +85,6 @@ document.addEventListener('DOMContentLoaded', () => {
         console.warn('Bottom sidebar handlers init failed:', err);
     }
 });
-
 // ===============================
 // ✔️ ĐƯỢC PHÉP SỬA ĐỔI
 // ===============================
