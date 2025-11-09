@@ -292,6 +292,7 @@ export const sampleData = {
 		{
 			username: "cust01",
 			password: "pass123",
+			img: "/img/blank-image.png",
 			firstName: "An",
 			lastName: "Nguyen",
 			email: "an.nguyen@example.com",
@@ -303,6 +304,7 @@ export const sampleData = {
 		{
 			username: "cust02",
 			password: "pass123",
+			img: "/img/blank-image.png",
 			firstName: "Binh",
 			lastName: "Tran",
 			email: "binh.tran@example.com",
@@ -314,6 +316,7 @@ export const sampleData = {
 		{
 			username: "cust03",
 			password: "pass123",
+			img: "/img/blank-image.png",
 			firstName: "Chi",
 			lastName: "Le",
 			email: "chi.le@example.com",
@@ -325,6 +328,7 @@ export const sampleData = {
 		{
 			username: "cust04",
 			password: "pass123",
+			img: "/img/blank-image.png",
 			firstName: "Dung",
 			lastName: "Pham",
 			email: "dung.pham@example.com",
@@ -336,6 +340,7 @@ export const sampleData = {
 		{
 			username: "cust05",
 			password: "pass123",
+			img: "/img/blank-image.png",
 			firstName: "Em",
 			lastName: "Ho",
 			email: "em.ho@example.com",
@@ -347,6 +352,7 @@ export const sampleData = {
 		{
 			username: "cust06",
 			password: "pass123",
+			img: "/img/blank-image.png",
 			firstName: "Minh",
 			lastName: "Vo",
 			email: "minh.vo@example.com",
@@ -358,6 +364,7 @@ export const sampleData = {
 		{
 			username: "cust07",
 			password: "pass123",
+			img: "/img/blank-image.png",
 			firstName: "Hoa",
 			lastName: "Pham",
 			email: "hoa.pham@example.com",
@@ -369,6 +376,7 @@ export const sampleData = {
 		{
 			username: "cust08",
 			password: "pass123",
+			img: "/img/blank-image.png",
 			firstName: "Khanh",
 			lastName: "Do",
 			email: "khanh.do@example.com",
@@ -380,6 +388,7 @@ export const sampleData = {
 		{
 			username: "cust09",
 			password: "pass123",
+			img: "/img/blank-image.png",
 			firstName: "Lan",
 			lastName: "Nguyen",
 			email: "lan.nguyen@example.com",
@@ -391,6 +400,7 @@ export const sampleData = {
 		{
 			username: "cust10",
 			password: "pass123",
+			img: "/img/blank-image.png",
 			firstName: "Quynh",
 			lastName: "Pham",
 			email: "quynh.pham@example.com",
