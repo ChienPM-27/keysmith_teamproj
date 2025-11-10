@@ -238,10 +238,13 @@
         </div>
       </div>
 
-      <!-- trang loại sản phẩm -->
-      <div id="products-section" class="section wrapper">
+      <!-- Products Section -->
+      <div id="products-section" class="section products-wrapper">
         <div class="section-header">
-          <h1><i class="fa-solid fa-keyboard"></i>Quản lý sản phẩm</h1>
+          <h1>
+            <i class="fa-solid fa-keyboard"></i>
+            Quản lý sản phẩm
+          </h1>
         </div>
 
         <div class="product-body">
@@ -249,18 +252,19 @@
             <div class="product-control-left">
               <!-- JavaScript tự động lấy danh sách thể loại sản phẩm -->
               <select name="the-loai" id="the-loai" onchange="showProduct()">
-                <option value="">Thể loại</option>
-                <!-- <option value="Attack on Titan">Attack On Titan</option>
-                <option value="The Lord of the Rings">The Lord of the Rings</option>
-                <option value="One Piece">One Piece</option>
-                <option value="Yugioh">Yugioh</option> -->
+                <option value="" class="product-type">Thể loại</option>
+                <!-- Options will be populated by JavaScript -->
               </select>
             </div>
 
             <div class="product-control-center">
               <form action="" class="form-search">
-                <input type="text" id="form-search-product" placeholder="Tìm kiếm sản phẩm" oninput="showProduct()" />
-
+                <input 
+                  type="text" 
+                  id="form-search-product" 
+                  placeholder="Tìm kiếm sản phẩm" 
+                  oninput="showProduct()" 
+                />
                 <div class="search-btn">
                   <i class="fa-solid fa-magnifying-glass"></i>
                 </div>
@@ -269,17 +273,34 @@
 
             <div class="product-control-right">
               <button class="btn-control" id="btn-add-product">
-                <i class="fa-solid fa-plus"></i>Thêm sản phẩm
+                <i class="fa-solid fa-plus"></i>
+                Add
               </button>
-
               <button class="btn-control" id="btn-refresh-product">
-                <i class="fa-solid fa-arrows-rotate"></i> Làm mới
+                <i class="fa-solid fa-arrows-rotate"></i>
+                Refresh
               </button>
             </div>
           </div>
 
           <!-- JavaScript tự động hiển thị sản phẩm -->
-          <div class="show-product"></div>
+          <div class="show-product">
+            <table class="product-table">
+              <thead>
+                <tr>
+                  <th>Hình ảnh</th>
+                  <th>Tên sản phẩm</th>
+                  <th>Thể loại</th>
+                  <th>Giá bán</th>
+                  <th>Trạng thái</th>
+                  <th>Hành động</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- JavaScript tự động hiển thị danh sách sản phẩm -->
+              </tbody>
+            </table>
+          </div>
 
           <!-- Phân trang -->
           <div class="page-nav">
@@ -291,17 +312,11 @@
 
         <!-- Modal thêm/sửa sản phẩm -->
         <div class="modal add-product">
-          <div class="modal-container" style="
-                max-width: 600px;
-                border-radius: 12px;
-                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
-                background: #fff;
-              ">
-            <h3 class="modal-container-title add-product-e" style="margin-top: 24px">
+          <div class="modal-container">
+            <h3 class="modal-container-title add-product-e">
               THÊM MỚI SẢN PHẨM
             </h3>
-
-            <h3 class="modal-container-title edit-product-e" style="margin-top: 24px">
+            <h3 class="modal-container-title edit-product-e">
               CHỈNH SỬA SẢN PHẨM
             </h3>
 
@@ -310,136 +325,85 @@
             </button>
 
             <div class="modal-content">
-              <form action="" class="add-product-form" onsubmit="return false;"
-                style="display: flex; gap: 24px; align-items: flex-start">
+              <form action="" class="add-product-form" onsubmit="return false;">
                 <div class="modal-content-left">
-                  <div style="
-                        display: flex;
-                        flex-direction: column;
-                        align-items: center;
-                        gap: 12px;
-                      ">
-                    <img src="./assets/img/blank-image.png" alt="" class="upload-image-preview" style="
-                          width: 120px;
-                          height: 120px;
-                          object-fit: cover;
-                          border-radius: 8px;
-                          border: 1px solid #ccc;
-                          background: #f8f8f8;
-                        " />
-
-                    <label for="up-hinh-anh" class="form-label-file" style="
-                          cursor: pointer;
-                          color: var(--color-primary-hover);
-                          font-weight: 500;
-                        ">
-
-                      <i class="fa-solid fa-image"></i> Chọn hình ảnh
-
-                      <input accept="image/jpeg, image/png, image/jpg" id="up-hinh-anh" name="up-hinh-anh" type="file"
-                        class="form-control" style="display: none" onchange="uploadImage(this)" />
+                  <div>
+                    <img src="img/blank-image.png" alt="" class="upload-image-preview" />
+                    <label for="up-hinh-anh" class="form-label-file">
+                      <i class="fa-solid fa-image"></i>
+                      Chọn hình ảnh
+                      <input 
+                        accept="image/jpeg, image/png, image/jpg" 
+                        id="up-hinh-anh" 
+                        name="up-hinh-anh" 
+                        type="file"
+                        class="form-control" 
+                        style="display: none" 
+                        onchange="uploadImage(this)" 
+                      />
                     </label>
                   </div>
                 </div>
 
                 <div class="modal-content-right">
-                  <div style="
-                        display: flex;
-                        flex-direction: column;
-                        gap: 16px;
-                        width: 100%;
-                      ">
+                  <div>
                     <div class="form-group">
                       <label for="ten-mon" class="form-label">Tên sản phẩm</label>
-
-                      <input id="ten-mon" name="ten-mon" type="text" placeholder="Nhập tên sản phẩm"
-                        class="form-control" style="
-                            border-radius: 6px;
-                            border: 1px solid #ccc;
-                            padding: 8px;
-                          " />
-
+                      <input 
+                        id="ten-mon" 
+                        name="ten-mon" 
+                        type="text" 
+                        placeholder="Nhập tên sản phẩm"
+                        class="form-control" 
+                      />
                       <span class="form-message"></span>
                     </div>
 
                     <div class="form-group">
                       <label for="category" class="form-label">Chọn thể loại</label>
-
-                      <!-- JavaScript tự động lấy danh sách thể loại sản phẩm -->
-                      <select name="category" id="chon-the-loai" style="
-                            border-radius: 6px;
-                            border: 1px solid #ccc;
-                            padding: 8px;
-                          ">
-                        <!-- <option value="Attack on Titan">
-                          Attack On Titan
-                        </option>
-                        <option value="The Lord of the Rings">
-                          The Lord of the Rings
-                        </option>
-                        <option value="One Piece">One Piece</option>
-                        <option value="Yugioh">Yugioh</option> -->
+                      <select name="category" id="chon-the-loai">
+                        <!-- Options will be populated by JavaScript -->
                       </select>
-
                       <span class="form-message"></span>
                     </div>
 
                     <div class="form-group">
                       <label for="gia-moi" class="form-label">Giá bán</label>
-
-                      <input id="gia-moi" name="gia-moi" type="text" placeholder="Nhập giá bán" class="form-control"
-                        style="
-                            border-radius: 6px;
-                            border: 1px solid #ccc;
-                            padding: 8px;
-                          " />
-
+                      <input 
+                        id="gia-moi" 
+                        name="gia-moi" 
+                        type="text" 
+                        placeholder="Nhập giá bán" 
+                        class="form-control" 
+                      />
                       <span class="form-message"></span>
                     </div>
+
                     <div class="form-group">
                       <label for="mo-ta" class="form-label">Mô tả</label>
-
-                      <textarea class="product-desc" id="mo-ta" placeholder="Nhập mô tả sản phẩm..." style="
-                            border-radius: 6px;
-                            border: 1px solid #ccc;
-                            padding: 8px;
-                            min-height: 60px;
-                          "></textarea>
-
+                      <textarea 
+                        class="product-desc" 
+                        id="mo-ta" 
+                        placeholder="Nhập mô tả sản phẩm..."
+                      ></textarea>
                       <span class="form-message"></span>
                     </div>
-                    <div style="
-                          display: flex;
-                          gap: 12px;
-                          justify-content: flex-end;
-                        ">
-                      <button type="button" class="form-submit btn-add-product-form add-product-e"
-                        id="add-product-button" style="
-                            background: var(--color-primary);
-                            color: #fff;
-                            border-radius: 6px;
-                            border: none;
-                            padding: 10px 20px;
-                            font-weight: 500;
-                            cursor: pointer;
-                          ">
-                        <i class="fa-regular fa-plus"></i>
 
+                    <div class="form-actions">
+                      <button 
+                        type="button" 
+                        class="form-submit btn-add-product-form add-product-e"
+                        id="add-product-button"
+                      >
+                        <i class="fa-regular fa-plus"></i>
                         <span>THÊM SẢN PHẨM</span>
                       </button>
-
-                      <button type="button" class="form-submit btn-update-product-form edit-product-e"
-                        id="update-product-button" style="
-                            background: #28a745;
-                            color: #fff;
-                            border-radius: 6px;
-                            border: none;
-                            padding: 10px 20px;
-                            font-weight: 500;
-                            cursor: pointer;
-                          ">
+                      <button 
+                        type="button" 
+                        class="form-submit btn-update-product-form edit-product-e"
+                        id="update-product-button"
+                      >
                         <i class="fa-light fa-pencil"></i>
-
                         <span>LƯU THAY ĐỔI</span>
                       </button>
                     </div>
@@ -450,18 +414,35 @@
           </div>
         </div>
       </div>
-      <!-- Product Types -->
-      <div id="product-types-section" class="section wrapper">
+
+      <!-- Product Types Section -->
+      <div id="product-types-section" class="section product-types-wrapper">
         <div class="section-header">
-          <h1><i class="fa-solid fa-boxes-stacked"></i> Quản lý loại sản phẩm</h1>
-        </div>
-        <!-- them xoa sua an loai san pham -->
-        <div class="pt-toolbar">
-          <input id="pt-category-filter" class="pt-toolbar__search" type="text" placeholder="Find name">
-          <button id="pt-add-btn" class="btn-control">Add</button>
-          <button id="pt-refresh-btn" class="btn-control">Refresh</button>
+          <h1>
+            <i class="fa-solid fa-boxes-stacked"></i>
+            Quản lý loại sản phẩm
+          </h1>
         </div>
 
+        <!-- Toolbar -->
+        <div class="pt-toolbar">
+          <input 
+            id="pt-category-filter" 
+            class="pt-toolbar__search" 
+            type="text" 
+            placeholder="Tìm kiếm tên loại..."
+          />
+          <button id="pt-add-btn" class="btn-control">
+            <i class="fa-solid fa-plus"></i>
+            Add type
+          </button>
+          <button id="pt-refresh-btn" class="btn-control">
+            <i class="fa-solid fa-arrows-rotate"></i>
+            Refresh
+          </button>
+        </div>
+
+        <!-- Table -->
         <table class="pt-table">
           <thead>
             <tr>
@@ -476,14 +457,60 @@
           </tbody>
         </table>
 
-        <!-- modal thêm/sửa loại sản phẩm -->
+        <!-- Modal thêm/sửa loại sản phẩm -->
         <div id="pt-modal" class="modal">
           <div class="modal-container pt-modal__container">
-            <button class="modal-close-btn"></button>
-            <h3 class="modal-title pt-modal__title">Thêm loại sản phẩm</h3>
-            
+            <button class="modal-close" data-pt-close>
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+            <h3 class="modal-container-title pt-modal__title">
+              Thêm loại sản phẩm
+            </h3>
+
+            <div class="modal-content">
+              <form id="pt-form">
+                <div class="form-group">
+                  <label for="pt-form-name" class="form-label">Tên loại</label>
+                  <input 
+                    id="pt-form-name" 
+                    type="text" 
+                    class="form-control"
+                    placeholder="Nhập tên loại sản phẩm"
+                    required
+                  />
+                  <span class="form-message" id="pt-form-error"></span>
+                </div>
+
+                <div class="form-group">
+                  <label for="pt-form-order" class="form-label">Thứ tự hiển thị</label>
+                  <input 
+                    id="pt-form-order" 
+                    type="number" 
+                    class="form-control"
+                    min="0" 
+                    value="100"
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label class="form-checkbox">
+                    <input type="checkbox" id="pt-form-active" checked />
+                    Kích hoạt
+                  </label>
+                </div>
+
+                <div class="form-actions">
+                  <button type="button" class="form-submit" data-pt-cancel>
+                    Hủy
+                  </button>
+                  <button type="submit" class="form-submit" id="pt-form-submit">
+                    Lưu
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
-      </div>
+        </div>
       </div>
 
       <!-- Customers -->
