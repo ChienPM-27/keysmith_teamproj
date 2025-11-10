@@ -1,3 +1,7 @@
+@keyframes modalFadeIn { from { transform: translateY(-140px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+.modal.add-product {
+    animation: modalFadeIn 0.5s ease-in-out;
+}
 .product-body {
     padding: 20px 0;
     /* use consolidated admin animation */
