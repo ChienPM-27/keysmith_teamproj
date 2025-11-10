@@ -1,4 +1,4 @@
-@keyframes modalFadeIn { from { transform: translateY(-140px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
 .modal.add-product {
     animation: modalFadeIn 0.5s ease-in-out;
 }
@@ -18,7 +18,7 @@
 }
 
 .product-control-left {
-    flex: 1;
+    flex: 2;
     margin-left: 10px;
 }
 
@@ -31,13 +31,14 @@
 }
 
 .product-control-center {
-    flex: 3;
+    flex: 10;
 }
 
 .product-control-right {
     display: flex;
-    flex: 2;
+    flex: 1;
     align-items: center;
+    justify-content: flex-end;
 }
 
 .product-table {

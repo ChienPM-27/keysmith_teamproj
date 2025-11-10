@@ -423,39 +423,40 @@
             Quản lý loại sản phẩm
           </h1>
         </div>
-
-        <!-- Toolbar -->
-        <div class="pt-toolbar">
-          <input 
-            id="pt-category-filter" 
-            class="pt-toolbar__search" 
-            type="text" 
-            placeholder="Tìm kiếm tên loại..."
-          />
-          <button id="pt-add-btn" class="btn-control">
-            <i class="fa-solid fa-plus"></i>
-            Add type
-          </button>
-          <button id="pt-refresh-btn" class="btn-control">
-            <i class="fa-solid fa-arrows-rotate"></i>
-            Refresh
-          </button>
+        <div class="product-types-body">
+          <!-- Toolbar -->
+          <div class="pt-toolbar">
+            <input 
+              id="pt-category-filter" 
+              class="pt-toolbar__search" 
+              type="text" 
+              placeholder="Tìm kiếm tên loại..."
+            />
+            <button id="pt-add-btn" class="btn-control">
+              <i class="fa-solid fa-plus"></i>
+              Add type
+            </button>
+            <button id="pt-refresh-btn" class="btn-control">
+              <i class="fa-solid fa-arrows-rotate"></i>
+              Refresh
+            </button>
+          </div>
+  
+          <!-- Table -->
+          <table class="pt-table">
+            <thead>
+              <tr>
+                <th>Thứ tự</th>
+                <th>Tên loại sản phẩm</th>
+                <th>Trạng thái</th>
+                <th>Hành động</th>
+              </tr>
+            </thead>
+            <tbody id="pt-table-body">
+              <!-- JavaScript tự động hiển thị danh sách loại sản phẩm -->
+            </tbody>
+          </table>
         </div>
-
-        <!-- Table -->
-        <table class="pt-table">
-          <thead>
-            <tr>
-              <th>Thứ tự</th>
-              <th>Tên loại sản phẩm</th>
-              <th>Trạng thái</th>
-              <th>Hành động</th>
-            </tr>
-          </thead>
-          <tbody id="pt-table-body">
-            <!-- JavaScript tự động hiển thị danh sách loại sản phẩm -->
-          </tbody>
-        </table>
 
         <!-- Modal thêm/sửa loại sản phẩm -->
         <div id="pt-modal" class="modal">

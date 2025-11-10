@@ -2,6 +2,12 @@
     padding: 20px 20px;
 }
 
+.product-types-body {
+    padding: 20px 0;
+    /* use consolidated admin animation */
+    animation: adminFadeIn 0.5s ease-in-out;
+}
+
 .pt-toolbar {
     display: flex;
     gap: 10px;
@@ -11,6 +17,10 @@
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
+        background-color: #F5F5F5;
+    /* border-collapse: collapse; */
+    border-radius: 5px;
+    border: none;
 }
 .pt-table {
     width: 100%;
