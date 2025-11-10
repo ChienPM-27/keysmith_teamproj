@@ -539,6 +539,7 @@ export const sampleData = {
       username: "cust01",
       items: [{ id: 1, quantity: 1, unitPrice: 75, amountPrice: 75 }],
       totalPrice: 75,
+      date: "2025-11-10T00:00:00.000Z",
       status: "đơn mới",
     },
     {
@@ -546,6 +547,7 @@ export const sampleData = {
       username: "cust02",
       items: [{ id: 2, quantity: 2, unitPrice: 68, amountPrice: 136 }],
       totalPrice: 136,
+      date: "2025-11-09T00:00:00.000Z",
       status: "đang xử lý",
     },
     {
@@ -556,6 +558,7 @@ export const sampleData = {
         { id: 5, quantity: 1, unitPrice: 85, amountPrice: 85 },
       ],
       totalPrice: 157,
+      date: "2025-11-08T00:00:00.000Z",
       status: "đã giao",
     },
     {
@@ -563,6 +566,7 @@ export const sampleData = {
       username: "cust04",
       items: [{ id: 4, quantity: 3, unitPrice: 65, amountPrice: 195 }],
       totalPrice: 195,
+      date: "2025-11-07T00:00:00.000Z",
       status: "đã hủy",
     },
     {
@@ -570,6 +574,7 @@ export const sampleData = {
       username: "cust05",
       items: [{ id: 6, quantity: 1, unitPrice: 78, amountPrice: 78 }],
       totalPrice: 78,
+      date: "2025-11-06T00:00:00.000Z",
       status: "đơn mới",
     },
     {
@@ -577,6 +582,7 @@ export const sampleData = {
       username: "cust06",
       items: [{ id: 7, quantity: 2, unitPrice: 82, amountPrice: 164 }],
       totalPrice: 164,
+      date: "2025-11-05T00:00:00.000Z",
       status: "đang xử lý",
     },
     {
@@ -584,6 +590,7 @@ export const sampleData = {
       username: "cust07",
       items: [{ id: 8, quantity: 1, unitPrice: 76, amountPrice: 76 }],
       totalPrice: 76,
+      date: "2025-11-04T00:00:00.000Z",
       status: "đã giao",
     },
     {
@@ -591,6 +598,7 @@ export const sampleData = {
       username: "cust08",
       items: [{ id: 9, quantity: 1, unitPrice: 88, amountPrice: 88 }],
       totalPrice: 88,
+      date: "2025-11-03T00:00:00.000Z",
       status: "đã hủy",
     },
     {
@@ -598,6 +606,7 @@ export const sampleData = {
       username: "cust09",
       items: [{ id: 10, quantity: 1, unitPrice: 95, amountPrice: 95 }],
       totalPrice: 95,
+      date: "2025-11-02T00:00:00.000Z",
       status: "đơn mới",
     },
     {
@@ -605,6 +614,7 @@ export const sampleData = {
       username: "cust10",
       items: [{ id: 11, quantity: 2, unitPrice: 85, amountPrice: 170 }],
       totalPrice: 170,
+      date: "2025-11-01T00:00:00.000Z",
       status: "đang xử lý",
     },
     // 10
@@ -613,6 +623,7 @@ export const sampleData = {
       username: "cust01",
       items: [{ id: 12, quantity: 1, unitPrice: 62, amountPrice: 62 }],
       totalPrice: 62,
+      date: "2025-10-31T00:00:00.000Z",
       status: "đã giao",
     },
     {
@@ -623,6 +634,7 @@ export const sampleData = {
         { id: 1, quantity: 1, unitPrice: 75, amountPrice: 75 },
       ],
       totalPrice: 139,
+      date: "2025-10-30T00:00:00.000Z",
       status: "đã hủy",
     },
     {
@@ -630,6 +642,7 @@ export const sampleData = {
       username: "cust03",
       items: [{ id: 14, quantity: 1, unitPrice: 70, amountPrice: 70 }],
       totalPrice: 70,
+      date: "2025-10-29T00:00:00.000Z",
       status: "đơn mới",
     },
     {
@@ -637,6 +650,7 @@ export const sampleData = {
       username: "cust04",
       items: [{ id: 15, quantity: 2, unitPrice: 73, amountPrice: 146 }],
       totalPrice: 146,
+      date: "2025-10-28T00:00:00.000Z",
       status: "đang xử lý",
     },
     {
@@ -644,6 +658,7 @@ export const sampleData = {
       username: "cust05",
       items: [{ id: 16, quantity: 1, unitPrice: 80, amountPrice: 80 }],
       totalPrice: 80,
+      date: "2025-10-27T00:00:00.000Z",
       status: "đã giao",
     },
     {
@@ -651,6 +666,7 @@ export const sampleData = {
       username: "cust06",
       items: [{ id: 17, quantity: 1, unitPrice: 86, amountPrice: 86 }],
       totalPrice: 86,
+      date: "2025-10-26T00:00:00.000Z",
       status: "đã hủy",
     },
     {
@@ -658,6 +674,7 @@ export const sampleData = {
       username: "cust07",
       items: [{ id: 18, quantity: 3, unitPrice: 55, amountPrice: 165 }],
       totalPrice: 165,
+      date: "2025-10-25T00:00:00.000Z",
       status: "đơn mới",
     },
     {
@@ -665,6 +682,7 @@ export const sampleData = {
       username: "cust08",
       items: [{ id: 19, quantity: 2, unitPrice: 58, amountPrice: 116 }],
       totalPrice: 116,
+      date: "2025-10-24T00:00:00.000Z",
       status: "đang xử lý",
     },
     {
@@ -675,6 +693,7 @@ export const sampleData = {
         { id: 2, quantity: 1, unitPrice: 68, amountPrice: 68 },
       ],
       totalPrice: 153,
+      date: "2025-10-23T00:00:00.000Z",
       status: "đã giao",
     },
     {
@@ -682,6 +701,7 @@ export const sampleData = {
       username: "cust10",
       items: [{ id: 3, quantity: 2, unitPrice: 72, amountPrice: 144 }],
       totalPrice: 144,
+      date: "2025-10-22T00:00:00.000Z",
       status: "đã hủy",
     },
     // 20
@@ -690,6 +710,7 @@ export const sampleData = {
       username: "cust01",
       items: [{ id: 4, quantity: 1, unitPrice: 65, amountPrice: 65 }],
       totalPrice: 65,
+      date: "2025-10-21T00:00:00.000Z",
       status: "đơn mới",
     },
     {
@@ -697,6 +718,7 @@ export const sampleData = {
       username: "cust02",
       items: [{ id: 6, quantity: 2, unitPrice: 78, amountPrice: 156 }],
       totalPrice: 156,
+      date: "2025-10-20T00:00:00.000Z",
       status: "đang xử lý",
     },
     {
@@ -704,6 +726,7 @@ export const sampleData = {
       username: "cust03",
       items: [{ id: 7, quantity: 1, unitPrice: 82, amountPrice: 82 }],
       totalPrice: 82,
+      date: "2025-10-19T00:00:00.000Z",
       status: "đã giao",
     },
     {
@@ -711,6 +734,7 @@ export const sampleData = {
       username: "cust04",
       items: [{ id: 8, quantity: 2, unitPrice: 76, amountPrice: 152 }],
       totalPrice: 152,
+      date: "2025-10-18T00:00:00.000Z",
       status: "đã hủy",
     },
     {
@@ -718,6 +742,7 @@ export const sampleData = {
       username: "cust05",
       items: [{ id: 9, quantity: 1, unitPrice: 88, amountPrice: 88 }],
       totalPrice: 88,
+      date: "2025-10-17T00:00:00.000Z",
       status: "đơn mới",
     },
     {
@@ -725,6 +750,7 @@ export const sampleData = {
       username: "cust06",
       items: [{ id: 10, quantity: 1, unitPrice: 95, amountPrice: 95 }],
       totalPrice: 95,
+      date: "2025-10-16T00:00:00.000Z",
       status: "đang xử lý",
     },
     {
@@ -732,6 +758,7 @@ export const sampleData = {
       username: "cust07",
       items: [{ id: 11, quantity: 1, unitPrice: 85, amountPrice: 85 }],
       totalPrice: 85,
+      date: "2025-10-15T00:00:00.000Z",
       status: "đã giao",
     },
     {
@@ -739,6 +766,7 @@ export const sampleData = {
       username: "cust08",
       items: [{ id: 12, quantity: 3, unitPrice: 62, amountPrice: 186 }],
       totalPrice: 186,
+      date: "2025-10-14T00:00:00.000Z",
       status: "đã hủy",
     },
     {
@@ -746,6 +774,7 @@ export const sampleData = {
       username: "cust09",
       items: [{ id: 13, quantity: 1, unitPrice: 64, amountPrice: 64 }],
       totalPrice: 64,
+      date: "2025-10-13T00:00:00.000Z",
       status: "đơn mới",
     },
     {
@@ -753,6 +782,7 @@ export const sampleData = {
       username: "cust10",
       items: [{ id: 14, quantity: 2, unitPrice: 70, amountPrice: 140 }],
       totalPrice: 140,
+      date: "2025-10-12T00:00:00.000Z",
       status: "đang xử lý",
     },
     // 30
@@ -761,6 +791,7 @@ export const sampleData = {
       username: "cust01",
       items: [{ id: 15, quantity: 1, unitPrice: 73, amountPrice: 73 }],
       totalPrice: 73,
+      date: "2025-10-11T00:00:00.000Z",
       status: "đã giao",
     },
     {
@@ -768,6 +799,7 @@ export const sampleData = {
       username: "cust02",
       items: [{ id: 16, quantity: 2, unitPrice: 80, amountPrice: 160 }],
       totalPrice: 160,
+      date: "2025-10-10T00:00:00.000Z",
       status: "đã hủy",
     },
     {
@@ -775,6 +807,7 @@ export const sampleData = {
       username: "cust03",
       items: [{ id: 17, quantity: 1, unitPrice: 86, amountPrice: 86 }],
       totalPrice: 86,
+      date: "2025-10-09T00:00:00.000Z",
       status: "đơn mới",
     },
     {
@@ -785,6 +818,7 @@ export const sampleData = {
         { id: 19, quantity: 1, unitPrice: 58, amountPrice: 58 },
       ],
       totalPrice: 113,
+      date: "2025-10-08T00:00:00.000Z",
       status: "đang xử lý",
     },
     {
@@ -792,6 +826,7 @@ export const sampleData = {
       username: "cust05",
       items: [{ id: 1, quantity: 2, unitPrice: 75, amountPrice: 150 }],
       totalPrice: 150,
+      date: "2025-10-07T00:00:00.000Z",
       status: "đã giao",
     },
     {
@@ -799,6 +834,7 @@ export const sampleData = {
       username: "cust06",
       items: [{ id: 2, quantity: 1, unitPrice: 68, amountPrice: 68 }],
       totalPrice: 68,
+      date: "2025-10-06T00:00:00.000Z",
       status: "đã hủy",
     },
     {
@@ -806,6 +842,7 @@ export const sampleData = {
       username: "cust07",
       items: [{ id: 3, quantity: 1, unitPrice: 72, amountPrice: 72 }],
       totalPrice: 72,
+      date: "2025-10-05T00:00:00.000Z",
       status: "đơn mới",
     },
     {
@@ -813,6 +850,7 @@ export const sampleData = {
       username: "cust08",
       items: [{ id: 4, quantity: 1, unitPrice: 65, amountPrice: 65 }],
       totalPrice: 65,
+      date: "2025-10-04T00:00:00.000Z",
       status: "đang xử lý",
     },
     {
@@ -820,6 +858,7 @@ export const sampleData = {
       username: "cust09",
       items: [{ id: 5, quantity: 1, unitPrice: 85, amountPrice: 85 }],
       totalPrice: 85,
+      date: "2025-10-03T00:00:00.000Z",
       status: "đã giao",
     },
     {
@@ -827,6 +866,7 @@ export const sampleData = {
       username: "cust10",
       items: [{ id: 6, quantity: 1, unitPrice: 78, amountPrice: 78 }],
       totalPrice: 78,
+      date: "2025-10-02T00:00:00.000Z",
       status: "đã hủy",
     },
   ],
@@ -837,6 +877,7 @@ export const sampleData = {
       quantity: 10,
       unitImportPrice: 45,
       amountPrice: 450,
+      date: "2025-09-30T00:00:00.000Z",
       status: "đang xử lý",
     },
     {
@@ -845,6 +886,7 @@ export const sampleData = {
       quantity: 8,
       unitImportPrice: 41,
       amountPrice: 328,
+      date: "2025-09-29T00:00:00.000Z",
       status: "đã giao",
     },
     {
@@ -853,6 +895,7 @@ export const sampleData = {
       quantity: 12,
       unitImportPrice: 43,
       amountPrice: 516,
+      date: "2025-09-28T00:00:00.000Z",
       status: "đã giao",
     },
     {
@@ -861,6 +904,7 @@ export const sampleData = {
       quantity: 6,
       unitImportPrice: 39,
       amountPrice: 234,
+      date: "2025-09-27T00:00:00.000Z",
       status: "đang xử lý",
     },
     {
@@ -869,6 +913,7 @@ export const sampleData = {
       quantity: 15,
       unitImportPrice: 51,
       amountPrice: 765,
+      date: "2025-09-26T00:00:00.000Z",
       status: "đã giao",
     },
     {
@@ -877,6 +922,7 @@ export const sampleData = {
       quantity: 7,
       unitImportPrice: 47,
       amountPrice: 329,
+      date: "2025-09-25T00:00:00.000Z",
       status: "đang xử lý",
     },
     {
@@ -885,6 +931,7 @@ export const sampleData = {
       quantity: 9,
       unitImportPrice: 49,
       amountPrice: 441,
+      date: "2025-09-24T00:00:00.000Z",
       status: "đã giao",
     },
     {
@@ -893,6 +940,7 @@ export const sampleData = {
       quantity: 10,
       unitImportPrice: 46,
       amountPrice: 460,
+      date: "2025-09-23T00:00:00.000Z",
       status: "đang xử lý",
     },
     {
@@ -901,6 +949,7 @@ export const sampleData = {
       quantity: 5,
       unitImportPrice: 53,
       amountPrice: 265,
+      date: "2025-09-22T00:00:00.000Z",
       status: "đã giao",
     },
     {
@@ -909,6 +958,7 @@ export const sampleData = {
       quantity: 6,
       unitImportPrice: 57,
       amountPrice: 342,
+      date: "2025-09-21T00:00:00.000Z",
       status: "đang xử lý",
     },
     {
@@ -917,6 +967,7 @@ export const sampleData = {
       quantity: 8,
       unitImportPrice: 51,
       amountPrice: 408,
+      date: "2025-09-20T00:00:00.000Z",
       status: "đã giao",
     },
     {
@@ -925,6 +976,7 @@ export const sampleData = {
       quantity: 10,
       unitImportPrice: 37,
       amountPrice: 370,
+      date: "2025-09-19T00:00:00.000Z",
       status: "đang xử lý",
     },
     {
@@ -933,6 +985,7 @@ export const sampleData = {
       quantity: 9,
       unitImportPrice: 38,
       amountPrice: 342,
+      date: "2025-09-18T00:00:00.000Z",
       status: "đã giao",
     },
     {
@@ -941,6 +994,7 @@ export const sampleData = {
       quantity: 7,
       unitImportPrice: 42,
       amountPrice: 294,
+      date: "2025-09-17T00:00:00.000Z",
       status: "đang xử lý",
     },
     {
@@ -949,6 +1003,7 @@ export const sampleData = {
       quantity: 6,
       unitImportPrice: 44,
       amountPrice: 264,
+      date: "2025-09-16T00:00:00.000Z",
       status: "đã giao",
     },
     {
@@ -957,6 +1012,7 @@ export const sampleData = {
       quantity: 11,
       unitImportPrice: 48,
       amountPrice: 528,
+      date: "2025-09-15T00:00:00.000Z",
       status: "đang xử lý",
     },
     {
@@ -965,6 +1021,7 @@ export const sampleData = {
       quantity: 5,
       unitImportPrice: 52,
       amountPrice: 260,
+      date: "2025-09-14T00:00:00.000Z",
       status: "đã giao",
     },
     {
@@ -973,6 +1030,7 @@ export const sampleData = {
       quantity: 12,
       unitImportPrice: 33,
       amountPrice: 396,
+      date: "2025-09-13T00:00:00.000Z",
       status: "đang xử lý",
     },
     {
@@ -981,6 +1039,7 @@ export const sampleData = {
       quantity: 8,
       unitImportPrice: 35,
       amountPrice: 280,
+      date: "2025-09-12T00:00:00.000Z",
       status: "đã giao",
     },
     {
@@ -989,6 +1048,7 @@ export const sampleData = {
       quantity: 6,
       unitImportPrice: 45,
       amountPrice: 270,
+      date: "2025-09-11T00:00:00.000Z",
       status: "đã giao",
     },
     {
@@ -997,6 +1057,7 @@ export const sampleData = {
       quantity: 7,
       unitImportPrice: 41,
       amountPrice: 287,
+      date: "2025-09-10T00:00:00.000Z",
       status: "đang xử lý",
     },
     {
@@ -1005,6 +1066,7 @@ export const sampleData = {
       quantity: 5,
       unitImportPrice: 43,
       amountPrice: 215,
+      date: "2025-09-09T00:00:00.000Z",
       status: "đã giao",
     },
     {
@@ -1013,6 +1075,7 @@ export const sampleData = {
       quantity: 9,
       unitImportPrice: 39,
       amountPrice: 351,
+      date: "2025-09-08T00:00:00.000Z",
       status: "đang xử lý",
     },
     {
@@ -1021,6 +1084,7 @@ export const sampleData = {
       quantity: 10,
       unitImportPrice: 51,
       amountPrice: 510,
+      date: "2025-09-07T00:00:00.000Z",
       status: "đã giao",
     },
     {
@@ -1029,6 +1093,7 @@ export const sampleData = {
       quantity: 8,
       unitImportPrice: 47,
       amountPrice: 376,
+      date: "2025-09-06T00:00:00.000Z",
       status: "đang xử lý",
     },
     {
@@ -1037,6 +1102,7 @@ export const sampleData = {
       quantity: 6,
       unitImportPrice: 49,
       amountPrice: 294,
+      date: "2025-09-05T00:00:00.000Z",
       status: "đã giao",
     },
     {
@@ -1045,6 +1111,7 @@ export const sampleData = {
       quantity: 14,
       unitImportPrice: 46,
       amountPrice: 644,
+      date: "2025-09-04T00:00:00.000Z",
       status: "đang xử lý",
     },
     {
@@ -1053,6 +1120,7 @@ export const sampleData = {
       quantity: 7,
       unitImportPrice: 53,
       amountPrice: 371,
+      date: "2025-09-03T00:00:00.000Z",
       status: "đã giao",
     },
     {
@@ -1061,6 +1129,7 @@ export const sampleData = {
       quantity: 5,
       unitImportPrice: 57,
       amountPrice: 285,
+      date: "2025-09-02T00:00:00.000Z",
       status: "đang xử lý",
     },
     {
@@ -1069,6 +1138,7 @@ export const sampleData = {
       quantity: 9,
       unitImportPrice: 51,
       amountPrice: 459,
+      date: "2025-09-01T00:00:00.000Z",
       status: "đã giao",
     },
     {
@@ -1077,6 +1147,7 @@ export const sampleData = {
       quantity: 6,
       unitImportPrice: 37,
       amountPrice: 222,
+      date: "2025-08-31T00:00:00.000Z",
       status: "đang xử lý",
     },
     {
@@ -1085,6 +1156,7 @@ export const sampleData = {
       quantity: 8,
       unitImportPrice: 38,
       amountPrice: 304,
+      date: "2025-08-30T00:00:00.000Z",
       status: "đã giao",
     },
     {
@@ -1093,7 +1165,8 @@ export const sampleData = {
       quantity: 10,
       unitImportPrice: 42,
       amountPrice: 420,
-      status: "đang xử lý",
+      date: "2025-08-14T00:00:00.000Z",
+      status: "đã giao",
     },
     {
       id: 15,
@@ -1101,6 +1174,7 @@ export const sampleData = {
       quantity: 7,
       unitImportPrice: 44,
       amountPrice: 308,
+      date: "2025-08-13T00:00:00.000Z",
       status: "đã giao",
     },
     {
@@ -1109,6 +1183,7 @@ export const sampleData = {
       quantity: 5,
       unitImportPrice: 48,
       amountPrice: 240,
+      date: "2025-08-12T00:00:00.000Z",
       status: "đang xử lý",
     },
     {
@@ -1117,6 +1192,7 @@ export const sampleData = {
       quantity: 6,
       unitImportPrice: 52,
       amountPrice: 312,
+      date: "2025-08-11T00:00:00.000Z",
       status: "đã giao",
     },
     {
@@ -1125,6 +1201,7 @@ export const sampleData = {
       quantity: 9,
       unitImportPrice: 33,
       amountPrice: 297,
+      date: "2025-08-10T00:00:00.000Z",
       status: "đang xử lý",
     },
     {
@@ -1133,6 +1210,7 @@ export const sampleData = {
       quantity: 11,
       unitImportPrice: 35,
       amountPrice: 385,
+      date: "2025-08-09T00:00:00.000Z",
       status: "đã giao",
     },
   ],
