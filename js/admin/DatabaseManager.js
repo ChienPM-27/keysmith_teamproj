@@ -47,16 +47,13 @@
  *   orders: [
  *     {
  *       idOrder: Number,          // Mã đơn hàng (numeric id)
- *       orderNumber: String,      // Human-friendly reference (o_12345) - generated when missing
  *       username: String,         // Người mua (tham chiếu đến customers.username)
  *       items: [                  // Danh sách sản phẩm trong đơn
  *         { id: Number, quantity: Number, unitPrice: Number, amountPrice: Number }
  *       ],
  *       totalPrice: Number,       // Tổng tiền đơn hàng
  *       date: String,             // Ngày tạo đơn hàng (ISO string)
- *       status: String,           // Trạng thái (ví dụ: "Đơn mới", "Đang xử lý", "đã giao", "Đã hủy")
- *
- *       // Additional delivery/contact fields (added to sample data):
+ *       status: String,           // Trạng thái: "new", "processing", "delivered", "cancelled"
  *       userDeliveryPhone: String,   // Số điện thoại nhận hàng (tồn tại trên từng order)
  *       userDeliveryAdress: String,  // Địa chỉ nhận hàng (tồn tại trên từng order)
  *     }
@@ -70,7 +67,7 @@
  *       quantity: Number,         // Số lượng nhập
  *       unitImportPrice: Number,  // Giá nhập mỗi sản phẩm
  *       amountPrice: Number,      // Thành tiền nhập
- *       status: String            // "Đang xử lý", "đã giao", "Đã hủy"
+ *       status: String            // "processing", "delivered", "canceled"
  *     }
  *   ]
  * }
@@ -386,7 +383,7 @@ class DatabaseManager {
    * @param {string} status
    * @returns {Array<Object>}
    * @example
-   * const pending = dataManager.getOrdersByStatus("Đơn mới");
+   * const pending = dataManager.getOrdersByStatus("new");
    */
   getOrdersByStatus(status) {
     return this.data.orders.filter((o) => o.status === status);
@@ -401,7 +398,7 @@ class DatabaseManager {
    * @param {string} status
    * @returns {Array<Object>}
    * @example
-   * const waitingImports = dataManager.getImportOrdersByStatus("Đang xử lý");
+   * const waitingImports = dataManager.getImportOrdersByStatus("processing");
    */
   getImportOrdersByStatus(status) {
     return this.data.importOrders.filter((io) => io.status === status);
@@ -412,19 +409,18 @@ class DatabaseManager {
   // ===============================
 
   /**
-   * Cập nhật trạng thái đơn hàng (Đơn mới → Đang xử lý → đã giao → Đã hủy)
-   * Nếu chuyển sang "Đã hủy" thì cộng lại tồn kho và giảm sold
+   * Cập nhật trạng thái đơn hàng
    * @param {number} orderId
-   * @param {string} status
+   * @param {string} status - "new", "processing", "delivered", "cancelled"
    * @returns {Object|null}
    * @example
-   * dataManager.updateOrderStatus(1, "Đã hủy");
+   * dataManager.updateOrderStatus(1, "cancelled");
    */
   updateOrderStatus(orderId, status) {
     const order = this.getById("orders", orderId);
     if (!order) return null;
 
-    if (status === "Đã hủy" && order.status !== "Đã hủy") {
+    if (status === "cancelled" && order.status !== "cancelled") {
       order.items.forEach((item) => {
         const product = this.getById("products", item.id);
         if (product) {
@@ -441,18 +437,17 @@ class DatabaseManager {
 
   /**
    * Cập nhật trạng thái đơn nhập hàng
-   * Nếu chuyển sang "Đã hủy" thì trừ lại tồn kho đã cộng trước đó
    * @param {number} importOrderId
-   * @param {string} status
+   * @param {string} status - "processing", "delivered", "cancelled"
    * @returns {Object|null}
    * @example
-   * dataManager.updateImportOrderStatus(2, "Đã hủy");
+   * dataManager.updateImportOrderStatus(2, "cancelled");
    */
   updateImportOrderStatus(importOrderId, status) {
     const imp = this.getById("importOrders", importOrderId);
     if (!imp) return null;
 
-    if (status === "Đã hủy" && imp.status !== "Đã hủy") {
+    if (status === "cancelled" && imp.status !== "cancelled") {
       // product reference may be in productId (preferred) or legacy id
       const prodRef = imp.productId || imp.id;
       const product = this.getById("products", prodRef);
@@ -488,8 +483,7 @@ class DatabaseManager {
       (sum, it) => sum + (it.amountPrice || 0),
       0
     );
-    order.total = order.totalPrice;
-    order.status = order.status || "Đơn mới";
+    order.status = order.status || "new";
 
     const maxId = this.data.orders.reduce(
       (m, x) => Math.max(m, Number(x.idOrder) || 0),
@@ -505,9 +499,6 @@ class DatabaseManager {
       const parsed = Number(order.idOrder);
       if (!Number.isNaN(parsed)) order.idOrder = parsed;
     }
-    order.id = order.idOrder;
-
-    if (!order.orderNumber) order.orderNumber = "o_" + Date.now();
 
     if (!order.date) order.date = new Date().toISOString();
 
@@ -535,7 +526,7 @@ class DatabaseManager {
   #handleNewImportOrder(importOrder) {
     importOrder.amountPrice =
       (importOrder.quantity || 0) * (importOrder.unitImportPrice || 0);
-    importOrder.status = importOrder.status || "Đang xử lý";
+    importOrder.status = importOrder.status || "processing";
 
     let productIdRef = null;
     if (typeof importOrder.productId !== "undefined") {

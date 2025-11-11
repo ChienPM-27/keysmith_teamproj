@@ -43,7 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
           // lazy-init modules when their section becomes active (idempotent)
           const activated = sections[idx];
           if (activated) {
-            // Customer section: ensure init (once) then always render when activated
+            // Customer section: đảm bảo init (một lần) rồi luôn render khi activated
             if (
               activated.id === "customer-section" ||
               activated.classList.contains("customer-wrapper")
@@ -52,7 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
               renderCustomers();
             }
 
-            // Orders section: ensure init (once) then always render when activated
+            // Orders section: đảm bảo init (một lần) rồi luôn render khi activated
             if (
               activated.id === "orders-section" ||
               activated.classList.contains("orders-wrapper")
@@ -76,7 +76,7 @@ document.addEventListener("DOMContentLoaded", () => {
         ".sidebar .bottom-sidebar .sidebar-list .sidebar-list-item.user-logout"
       )
     );
-    // bottomItems[0] = Home page, [1] = Admin (display), [2] = Log out
+    // bottomItems[0] = Trang chủ, [1] = Admin (hiển thị), [2] = Đăng xuất
     if (bottomItems.length) {
       const clearAuthAndRedirect = (msg) => {
         if (msg && !confirm(msg)) return;
@@ -148,17 +148,17 @@ let modalCustomerDetail = null;
 // Lưu trữ tham chiếu đến input ẩn chứa tên người dùng bên trong modal
 let detailUsernameEl = null;
 
-// Pagination state
+// Trạng thái pagination
 let currentCustomerPage = 1;
 let perCustomerPage = 8; // default
 let perCustomerPageSelectEl = null;
 let pageCustomerNavListEl = null;
 
-// Customer control state (filters/search)
+// Trạng thái bộ lọc/tìm kiếm khách hàng
 let currentCustomerFilterStatus = "";
 let currentCustomerSearchQuery = "";
 
-// small debounce helper for search input
+// helper nhỏ debounce cho input tìm kiếm
 function debounce(fn, wait = 250) {
   let t = null;
   return (...args) => {
@@ -168,16 +168,61 @@ function debounce(fn, wait = 250) {
 }
 
 // Render toàn bộ danh sách khách hàng
-// --- small helpers for Customers module ---
+// --- các helper nhỏ cho module Customers ---
 function getAllCustomers() {
   try {
-    return dataManager && typeof dataManager.getAll === "function"
-      ? dataManager.getAll("customers") || []
-      : dataManager?.data?.customers || [];
+    return dmGetAll("customers");
   } catch (e) {
-    // fallback to empty list on unexpected error
+    // fallback về list rỗng nếu gặp lỗi
     return [];
   }
+}
+
+// Chuẩn hóa customer record cho UI và đảm bảo các trường theo DatabaseManager
+function normalizeCustomerForUI(c) {
+  if (!c) return c;
+  // đảm bảo các trường canonical tồn tại
+  c.username = c.username || "";
+  c.password = c.password || "";
+  c.img = c.img || "";
+  c.firstName = c.firstName || "";
+  c.lastName = c.lastName || "";
+  c.email = c.email || "";
+  c.phone = c.phone || "";
+  c.address = c.address || "";
+  c.dateOfBirth = c.dateOfBirth || "";
+  // chuẩn hóa status: 'active', 'inactive', hoặc 'locked'
+  if (!c.status) c.status = "active";
+  // đảm bảo kiểu string
+  c.username = String(c.username || "");
+  c.firstName = String(c.firstName || "");
+  c.lastName = String(c.lastName || "");
+  c.email = String(c.email || "");
+  c.phone = String(c.phone || "");
+  c.address = String(c.address || "");
+  c.dateOfBirth = String(c.dateOfBirth || "");
+  return c;
+}
+
+// Truy vấn customer theo username (wrapper nhỏ)
+function dmGetCustomerByUsername(username) {
+  try {
+    if (window.dataManager && typeof window.dataManager.getCustomerByUsername === "function")
+      return window.dataManager.getCustomerByUsername(username) || null;
+    return (dmGetAll("customers") || []).find((c) => c.username === username) || null;
+  } catch (e) {
+    return null;
+  }
+}
+
+// Xóa customer theo username (nhỏ gọn)
+function dmDeleteCustomerByUsername(username) {
+  const arr = dmGetAll("customers");
+  const idx = arr.findIndex((x) => x.username === username);
+  if (idx === -1) return false;
+  arr.splice(idx, 1);
+  dmSave();
+  return true;
 }
 
 function applyCustomerFilters(list) {
@@ -210,6 +255,8 @@ function paginateCustomers(list, page, pageSize) {
 }
 
 function createCustomerNode(c) {
+  // chuẩn hóa trước khi render để UI có thể dựa vào các trường canonical
+  normalizeCustomerForUI(c);
   const frag = templateCustomerItem.content.cloneNode(true);
   const item = frag.querySelector(".customer-item");
   if (!item) return frag;
@@ -245,8 +292,8 @@ function createCustomerNode(c) {
 
 function renderCustomers() {
   if (!containerCustomer || !templateCustomerItem) return;
-  // only render when the customer section is active to avoid interfering
-  // with other modules that may share DOM ids/selectors
+  // chỉ render khi customer section đang active để tránh xung đột
+  // với các module khác có thể dùng chung DOM ids/selectors
   const customerSection =
     containerCustomer?.closest(".customer-wrapper") ||
     document.getElementById("customer-section");
@@ -256,7 +303,7 @@ function renderCustomers() {
   const allCustomers = getAllCustomers();
   const customers = applyCustomerFilters(allCustomers);
 
-  // ensure perCustomerPage is valid
+  // đảm bảo perCustomerPage hợp lệ
   perCustomerPage = Math.max(1, parseInt(perCustomerPage, 10) || 8);
 
   const { items, total, page } = paginateCustomers(
@@ -277,7 +324,7 @@ function renderCustomers() {
 
 function renderPaginationControls(totalItems, page, pageSize) {
   if (!pageCustomerNavListEl) {
-    // Prefer the pagination list inside the customer section to avoid picking other sections'
+    // Ưu tiên pagination list bên trong customer section để tránh lấy nhầm section khác
     pageCustomerNavListEl =
       containerCustomer
         ?.closest(".customer-wrapper")
@@ -288,7 +335,7 @@ function renderPaginationControls(totalItems, page, pageSize) {
   pageCustomerNavListEl.innerHTML = "";
   const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
 
-  // Helper to create li > a
+  // Helper để tạo li > a
   const makeItem = (text, targetPage, opts = {}) => {
     const li = document.createElement("li");
     li.className = "page-nav-item" + (opts.active ? " active" : "");
@@ -301,14 +348,14 @@ function renderPaginationControls(totalItems, page, pageSize) {
     return li;
   };
 
-  // First
+  // Đầu tiên
   pageCustomerNavListEl.appendChild(makeItem("<<", 1, { disabled: page <= 1 }));
-  // Prev
+  // Trước
   pageCustomerNavListEl.appendChild(
     makeItem("<", Math.max(1, page - 1), { disabled: page <= 1 })
   );
 
-  // page buttons (limit to reasonable number)
+  // các nút trang (giới hạn số lượng hợp lý)
   const maxButtons = 7;
   let startPage = 1;
   let endPage = totalPages;
@@ -328,13 +375,13 @@ function renderPaginationControls(totalItems, page, pageSize) {
     );
   }
 
-  // Next
+  // Tiếp theo
   pageCustomerNavListEl.appendChild(
     makeItem(">", Math.min(totalPages, page + 1), {
       disabled: page >= totalPages,
     })
   );
-  // Last
+  // Cuối cùng
   pageCustomerNavListEl.appendChild(
     makeItem(">>", totalPages, { disabled: page >= totalPages })
   );
@@ -347,7 +394,7 @@ function setPerPage(n) {
   renderCustomers();
 }
 
-// --- Customer control helpers (scoped) ---
+// --- Các helper điều khiển khách hàng (scoped) ---
 function setFilterStatus(status) {
   currentCustomerFilterStatus = status || "";
   currentCustomerPage = 1;
@@ -361,20 +408,20 @@ function setSearchQuery(q) {
 }
 
 function refreshCustomers() {
-  // reload data from storage if available (avoid throwing; use safe checks)
+  // tải lại dữ liệu từ storage nếu có (tránh throw lỗi; dùng kiểm tra an toàn)
   const reloaded =
     dataManager && typeof dataManager.load === "function"
       ? dataManager.load()
       : null;
   if (reloaded) dataManager.data = reloaded;
 
-  // reset controls to defaults (scoped to the customer section if available)
+  // đặt lại các control về giá trị mặc định (giới hạn trong customer section nếu có)
   currentCustomerFilterStatus = "";
   currentCustomerSearchQuery = "";
   currentCustomerPage = 1;
-  perCustomerPage = 8; // default per-page
+  perCustomerPage = 8; // mặc định số item mỗi trang
 
-  // update DOM controls if present (use cached select when available)
+  // cập nhật các control DOM nếu có (dùng cached select khi có sẵn)
   const customerSection =
     containerCustomer?.closest(".customer-wrapper") ||
     document.getElementById("customer-section");
@@ -394,7 +441,7 @@ function refreshCustomers() {
 }
 
 function goToPage(p) {
-  const total = dataManager.getAll("customers")?.length || 0;
+  const total = dmGetAll("customers")?.length || 0;
   const totalPages = Math.max(1, Math.ceil(total / perCustomerPage));
   let page = parseInt(p, 10) || 1;
   page = Math.min(Math.max(1, page), totalPages);
@@ -405,8 +452,10 @@ function goToPage(p) {
 // Mở modal chi tiết cho khách hàng cụ thể
 // Truy cập detailUsernameEl để biết đang hiển thị khách hàng nào
 function openModalFor(username) {
-  const c = dataManager.getCustomerByUsername(username);
+  const c = dmGetCustomerByUsername(username);
   if (!c || !modalCustomerDetail) return;
+  // chuẩn hóa record cho modal sử dụng
+  normalizeCustomerForUI(c);
 
   const set = (id, value) => {
     const el = modalCustomerDetail.querySelector(`#${id}`);
@@ -416,7 +465,7 @@ function openModalFor(username) {
   const avatar = modalCustomerDetail.querySelector("#customer-detail-avatar");
   if (avatar) avatar.src = c.img || "/img/blank-image.png";
 
-  // keep the username in a hidden field so modal actions know which user is active
+  // lưu username trong trường ẩn để các modal action biết user nào đang active
   if (detailUsernameEl) detailUsernameEl.value = c.username || "";
 
   set("detail-firstname", c.firstName || "");
@@ -448,7 +497,7 @@ function closeCustomerDetailModal() {
 function updateBadgeElement(badgeEl, status) {
   if (!badgeEl) return;
   const isLocked = status === "locked" || status === "inactive";
-  badgeEl.textContent = isLocked ? "Bị khóa" : "Đang hoạt động";
+  badgeEl.textContent = isLocked ? "Locked" : "Active";
   badgeEl.classList.remove("locked", "active");
   badgeEl.classList.add(isLocked ? "locked" : "active");
 }
@@ -458,8 +507,8 @@ function updateLockButtonElement(btnEl, status) {
   if (!btnEl) return;
   const isLocked = status === "locked" || status === "inactive";
   btnEl.innerHTML = isLocked
-    ? '<i class="fa-solid fa-lock-open"></i> Mở tài khoản'
-    : '<i class="fa-solid fa-lock"></i> Khóa tài khoản';
+    ? '<i class="fa-solid fa-lock-open"></i> Unlock Account'
+    : '<i class="fa-solid fa-lock"></i> Lock Account';
   btnEl.classList.remove("locked", "unlocked");
   btnEl.classList.add(isLocked ? "locked" : "unlocked");
 }
@@ -500,10 +549,10 @@ function updateCustomerUI(username, customerObj) {
 
 // Chỉnh sửa trạng thái khóa/mở khóa khách hàng
 export function setCustomerLock(username, locked) {
-  const c = dataManager.getCustomerByUsername(username);
+  const c = dmGetCustomerByUsername(username);
   if (!c) return null;
   c.status = locked ? "locked" : "active";
-  dataManager.save();
+  dmSave();
 
   // Cập nhập giao diện cả danh sách và modal cho khách hàng này
   updateCustomerUI(username, c);
@@ -512,28 +561,24 @@ export function setCustomerLock(username, locked) {
 }
 
 export function toggleLock(username) {
-  const c = dataManager.getCustomerByUsername(username);
+  const c = dmGetCustomerByUsername(username);
   if (!c) return null;
   const isLocked = c.status === "locked" || c.status === "inactive";
   return setCustomerLock(username, !isLocked);
 }
 
 export function resetPassword(username) {
-  const c = dataManager.getCustomerByUsername(username);
+  const c = dmGetCustomerByUsername(username);
   if (!c) return false;
   c.password = "123";
-  dataManager.save();
+  dmSave();
   return true;
 }
 
 function deleteCustomer(username, itemEl) {
-  if (!confirm("Bạn có chắc muốn xóa khách hàng này không?")) return;
-  const idx = dataManager.data.customers.findIndex(
-    (x) => x.username === username
-  );
-  if (idx === -1) return;
-  dataManager.data.customers.splice(idx, 1);
-  dataManager.save();
+  if (!confirm("Are you sure you want to delete this customer?")) return;
+  const ok = dmDeleteCustomerByUsername(username);
+  if (!ok) return;
 
   if (itemEl && itemEl.parentElement) {
     itemEl.parentElement.removeChild(itemEl);
@@ -556,7 +601,7 @@ function wireModalActions() {
       const username = detailUsernameEl?.value;
       if (!username) return;
       const ok = resetPassword(username);
-      if (ok) alert("Mật khẩu đã được đặt lại về: 123");
+      if (ok) alert("Password has been reset to: 123");
     });
   }
 
@@ -569,7 +614,7 @@ function wireModalActions() {
   }
 }
 
-// Wire file input and change-avatar button inside modal
+// Wire input file và nút change-avatar trong modal
 function wireAvatarUpload() {
   if (!modalCustomerDetail) return;
   const changeBtn = modalCustomerDetail.querySelector("#btn-change-avatar");
@@ -586,11 +631,11 @@ function wireAvatarUpload() {
         const dataUrl = e.target.result;
         const username = detailUsernameEl?.value;
         if (!username) return;
-        const c = dataManager.getCustomerByUsername(username);
-        if (!c) return;
-        c.img = dataUrl;
-        dataManager.save();
-        // update modal avatar and list item
+  const c = dmGetCustomerByUsername(username);
+  if (!c) return;
+  c.img = dataUrl;
+  dmSave();
+        // cập nhật avatar trong modal và item trong list
         const avatar = modalCustomerDetail.querySelector(
           "#customer-detail-avatar"
         );
@@ -604,7 +649,7 @@ function wireAvatarUpload() {
 
 // Quản lý module khách hàng
 function initCustomerModule() {
-  // idempotent init: avoid wiring listeners multiple times
+  // init idempotent: tránh wire listener nhiều lần
   if (window._customerModuleInited) return;
 
   const customerSection =
@@ -617,14 +662,14 @@ function initCustomerModule() {
   );
   modalCustomerDetail = customerSection.querySelector("#customerDetailModal");
 
-  // cache per-page select and pagination container scoped to this section
+  // cache select per-page và pagination container trong section này
   perCustomerPageSelectEl = customerSection.querySelector("#per-page");
   pageCustomerNavListEl = customerSection.querySelector(".page-nav-list");
 
-  // cache hidden username input inside modal (scoped)
+  // cache input username ẩn trong modal (scoped)
   detailUsernameEl = customerSection.querySelector("#detail-username");
 
-  // initialize per-page from select if present
+  // khởi tạo per-page từ select nếu có
   if (perCustomerPageSelectEl) {
     const v = parseInt(perCustomerPageSelectEl.value, 10);
     if (!Number.isNaN(v)) perCustomerPage = v;
@@ -633,7 +678,7 @@ function initCustomerModule() {
     });
   }
 
-  // customer-control: filter, search, refresh (scoped)
+  // customer-control: filter, search, refresh (scoped trong section này)
   const filterSelect = customerSection.querySelector("#filter-user-status");
   const searchInput = customerSection.querySelector("#form-search-user");
   const refreshBtn = customerSection.querySelector("#btn-refresh-user");
@@ -656,7 +701,7 @@ function initCustomerModule() {
     });
   }
 
-  // delegate clicks on pagination controls (scoped)
+  // ủy quyền clicks trên pagination controls (scoped)
   if (pageCustomerNavListEl) {
     pageCustomerNavListEl.addEventListener("click", (ev) => {
       const el = ev.target.closest && ev.target.closest("[data-page]");
@@ -693,12 +738,12 @@ function initCustomerModule() {
     if (modalCloseBtn)
       modalCloseBtn.addEventListener("click", closeCustomerDetailModal);
 
-    // close when clicking on overlay (outside .modal-container)
+    // đóng khi click vào overlay (ngoài .modal-container)
     modalCustomerDetail.addEventListener("click", (ev) => {
       if (ev.target === modalCustomerDetail) closeCustomerDetailModal();
     });
 
-    // close on ESC when modal is open
+    // đóng khi nhấn ESC khi modal đang mở
     document.addEventListener("keydown", (ev) => {
       if (
         ev.key === "Escape" &&
@@ -711,11 +756,11 @@ function initCustomerModule() {
 
   wireModalActions();
   wireAvatarUpload();
-  // mark as initialized so subsequent calls are no-ops
+  // đánh dấu đã khởi tạo để các lần gọi tiếp theo không làm gì
   window._customerModuleInited = true;
 }
 
-// Initial render should remain as-is
+// Render ban đầu giữ nguyên
 document.addEventListener("DOMContentLoaded", () => {
   initCustomerModule();
   renderCustomers();
@@ -734,33 +779,8 @@ function formatCurrency(v) {
   return fmtCurrency.format(n);
 }
 
-// Normalize various possible status representations (english keys, localized labels,
-// different casing) into the canonical option keys used by the select/options.
-function normalizeStatus(raw) {
-  if (raw === undefined || raw === null) return "new";
-  const s = ("" + raw).toString().toLowerCase().trim();
-  const map = {
-    // english keys (already lowercased)
-    new: "new",
-    processing: "processing",
-    delivered: "delivered",
-    cancelled: "cancelled",
-    // vietnamese common labels -> canonical (lowercased keys)
-    "đơn mới": "new",
-    mới: "new",
-    "đang xử lý": "processing",
-    "xử lý": "processing",
-    "đã giao": "delivered",
-    giao: "delivered",
-    "đã hủy": "cancelled",
-    hủy: "cancelled",
-    cancelled: "cancelled",
-  };
-  return map[s] || s;
-}
-
-// --- small helper functions to split responsibilities ---
-// module-scoped DOM/state references (must be declared before use)
+// --- các helper nhỏ để tách trách nhiệm ---
+// tham chiếu DOM/state ở module-scope (phải khai báo trước khi dùng)
 let ordersSection = null;
 let containerOrders = null;
 let templateOrderItem = null;
@@ -768,7 +788,7 @@ let modalOrderDetail = null;
 let perOrderPageSelectEl = null;
 let pageOrderNavListEl = null;
 
-// pagination / filter state
+// trạng thái pagination / filter
 let perOrderPage = 8;
 let currentOrderPage = 1;
 let currentOrderFilterStatus = "";
@@ -789,10 +809,66 @@ function getProductById(id) {
         null;
 }
 
+// -----------------------------
+// Helpers chung cho truy cập dataManager
+// - gom các thao tác đọc/ghi vào hàm nhỏ, nhất quán
+// -----------------------------
+function dmGetAll(collection) {
+  try {
+    return window.dataManager && typeof window.dataManager.getAll === "function"
+      ? window.dataManager.getAll(collection) || []
+      : window.dataManager?.data?.[collection] || [];
+  } catch (e) {
+    return [];
+  }
+}
+
+function dmGetById(collection, id) {
+  try {
+    return window.dataManager && typeof window.dataManager.getById === "function"
+      ? window.dataManager.getById(collection, id)
+      : (window.dataManager?.data?.[collection] || []).find((x) => x.id == id) || null;
+  } catch (e) {
+    return null;
+  }
+}
+
+function dmAdd(collection, obj) {
+  if (window.dataManager && typeof window.dataManager.add === "function") {
+    window.dataManager.add(collection, obj);
+    return true;
+  }
+  if (window.dataManager && window.dataManager.data && Array.isArray(window.dataManager.data[collection])) {
+    window.dataManager.data[collection].push(obj);
+    return true;
+  }
+  return false;
+}
+
+function dmSave() {
+  if (window.dataManager && typeof window.dataManager.save === "function") window.dataManager.save();
+}
+
+// Chuẩn hóa tên trường đơn hàng để dùng chung trong UI
+function normalizeOrderForUI(o) {
+  if (!o) return o;
+  // đảm bảo dùng totalPrice và idOrder theo schema
+  if (o.totalPrice === undefined) o.totalPrice = 0;
+  if (o.idOrder === undefined) o.idOrder = 0;
+  return o;
+}
+
+// Trả về chuỗi hiển thị id đơn hàng (dùng idOrder numeric theo schema)
+function displayOrderId(o) {
+  if (!o) return "";
+  const id = o.idOrder ?? "";
+  return "#" + id;
+}
+
 function applyOrderFilters(list) {
   return (list || []).filter((o) => {
     if (currentOrderFilterStatus) {
-      if (normalizeStatus(o.status) !== currentOrderFilterStatus) return false;
+      if (o.status !== currentOrderFilterStatus) return false;
     }
     if (currentOrderSearchQuery) {
       const q = currentOrderSearchQuery.toLowerCase();
@@ -800,10 +876,7 @@ function applyOrderFilters(list) {
         o.username,
         o.userDeliveryPhone,
         o.userDeliveryAdress,
-        o.phone,
-        o.address,
-        String(o.idOrder || o.id || ""),
-        String(o.orderNumber || ""),
+        String(o.idOrder || ""),
       ]
         .filter(Boolean)
         .join(" ")
@@ -812,7 +885,7 @@ function applyOrderFilters(list) {
     }
     // date range filtering
     if (currentOrderStartDate || currentOrderEndDate) {
-      const od = o.date || o.createdAt || null;
+      const od = o.date || null;
       if (!od) return false;
       const dt = new Date(od);
       if (currentOrderStartDate) {
@@ -830,7 +903,7 @@ function applyOrderFilters(list) {
   });
 }
 
-// Orders-specific paginator (rename to avoid clashing with the customers paginator)
+// Phân trang riêng cho Orders (đổi tên để tránh xung đột với paginator của customers)
 function paginateOrders(list, page, pageSize) {
   // simple paginator: returns items for given page and totals
   const total = (list || []).length;
@@ -841,29 +914,31 @@ function paginateOrders(list, page, pageSize) {
   return { items, total, totalPages, page: p };
 }
 
-// readOrders: small convenience wrapper (kept for compatibility)
+// readOrders: wrapper nhỏ tiện lợi (giữ lại cho tương thích)
 function readOrders() {
   return getAllOrders();
 }
 
-// createOrderNode: create a DOM fragment from the template and populate known fields
+// createOrderNode: tạo DOM fragment từ template và điền các trường đã biết
 function createOrderNode(o) {
   if (!templateOrderItem) return null;
+  // chuẩn hóa object order để UI dùng chung các trường (idOrder, totalPrice)
+  normalizeOrderForUI(o);
   const frag = templateOrderItem.content.cloneNode(true);
   const item = frag.querySelector(".order-item");
   if (item) item.dataset.orderId = String(o.idOrder || o.id || "");
 
   const orderNumEl = frag.querySelector(".order-number");
-  if (orderNumEl)
-    orderNumEl.textContent = "#" + (o.orderNumber || o.idOrder || o.id || "");
+  if (orderNumEl) orderNumEl.textContent = displayOrderId(o);
 
   const userEl = frag.querySelector(".order-username");
   if (userEl) userEl.textContent = o.username || "-";
 
   const phoneEl = frag.querySelector(".order-phone");
-  if (phoneEl) phoneEl.textContent = o.userDeliveryPhone || o.phone || "-";
+  if (phoneEl) phoneEl.textContent = o.userDeliveryPhone || "-";
 
   const totalEl = frag.querySelector(".order-total");
+  // đảm bảo dùng totalPrice (normalizeOrderForUI có thể đã set trước đó)
   if (totalEl) totalEl.textContent = formatCurrency(o.totalPrice || 0);
 
   const dateEl = frag.querySelector(".order-date");
@@ -877,21 +952,19 @@ function createOrderNode(o) {
 
   const sel = frag.querySelector(".status-select");
   if (sel) {
-    const canonical = normalizeStatus(o.status);
-    sel.value = canonical;
-    sel.className = "status-select status-badge " + canonical;
+    sel.value = o.status || "new";
+    sel.className = "status-select status-badge " + (o.status || "new");
   } else {
     const badge = frag.querySelector(".status-badge");
     if (badge) {
-      const canonical = normalizeStatus(o.status);
       const map = {
-        new: "Đơn mới",
-        processing: "Đang xử lý",
-        delivered: "Đã giao",
-        cancelled: "Đã hủy",
+        new: "New",
+        processing: "Processing",
+        delivered: "Delivered",
+        cancelled: "Cancelled",
       };
-      badge.textContent = map[canonical] || o.status || "-";
-      badge.className = "status-badge " + canonical;
+      badge.textContent = map[o.status] || o.status || "-";
+      badge.className = "status-badge " + (o.status || "new");
     }
   }
 
@@ -900,7 +973,7 @@ function createOrderNode(o) {
 
 function renderOrders() {
   if (!containerOrders || !templateOrderItem) return;
-  // only render when orders section is visible/active
+  // chỉ render khi orders section đang visible/active
   const section =
     ordersSection ||
     containerOrders?.closest(".orders-wrapper") ||
@@ -926,7 +999,7 @@ function renderOrders() {
   renderOrderPaginationControls(total, currentOrderPage, perOrderPage);
 }
 
-// --- filter/search/reset helpers (scoped to orders) ---
+// --- các helper filter/search/reset (scoped cho orders) ---
 function setOrderFilterStatus(status) {
   currentOrderFilterStatus = status || "";
   currentOrderPage = 1;
@@ -955,12 +1028,12 @@ function refreshOrders() {
   const reloaded = window.dataManager?.load?.();
   if (reloaded) window.dataManager.data = reloaded;
 
-  // reset controls/state
+  // đặt lại controls/state
   currentOrderFilterStatus = "";
   currentOrderSearchQuery = "";
   currentOrderPage = 1;
   perOrderPage = 8;
-  // update DOM controls if present
+  // cập nhật DOM controls nếu có
   const filterEl = ordersSection?.querySelector("#filter-order-status");
   if (filterEl) filterEl.value = "";
   const searchEl = ordersSection?.querySelector("#form-search-order");
@@ -995,7 +1068,7 @@ function renderOrderPaginationControls(totalItems, page, pageSize) {
     return li;
   };
 
-  // first / prev
+  // đầu tiên / trước
   pageOrderNavListEl.appendChild(makeItem("<<", 1, { disabled: page <= 1 }));
   pageOrderNavListEl.appendChild(
     makeItem("<", Math.max(1, page - 1), { disabled: page <= 1 })
@@ -1020,7 +1093,7 @@ function renderOrderPaginationControls(totalItems, page, pageSize) {
     );
   }
 
-  // next / last
+  // tiếp theo / cuối cùng
   pageOrderNavListEl.appendChild(
     makeItem(">", Math.min(totalPages, page + 1), {
       disabled: page >= totalPages,
@@ -1051,24 +1124,21 @@ function goToOrderPage(p) {
 function openOrderDetail(orderId) {
   const orders = readOrders();
   const o = orders.find(
-    (x) => (x.idOrder || x.id || "").toString() === orderId.toString()
+    (x) => (x.idOrder || "").toString() === orderId.toString()
   );
   if (!o || !modalOrderDetail) return;
+  // chuẩn hóa trước khi hiển thị
+  normalizeOrderForUI(o);
   const setText = (id, v) => {
     const el = modalOrderDetail.querySelector("#" + id);
     if (el) el.textContent = v;
   };
-  setText("detail-order-id", "#" + (o.orderNumber || o.idOrder || o.id));
-  setText("detail-order-customer", o.username || o.customerName || "-");
-  // Prefer delivery-specific fields when available (added to sample data)
-  setText(
-    "detail-order-phone",
-    o.userDeliveryPhone || o.phone || o.customerPhone || "-"
-  );
-  setText(
-    "detail-order-address",
-    o.userDeliveryAdress || o.address || o.shippingAddress || "-"
-  );
+  // dùng idOrder cho display theo schema
+  setText("detail-order-id", displayOrderId(o));
+  setText("detail-order-customer", o.username || "-");
+  // dùng các trường delivery theo schema
+  setText("detail-order-phone", o.userDeliveryPhone || "-");
+  setText("detail-order-address", o.userDeliveryAdress || "-");
 
   // items
   const itemsContainer = modalOrderDetail.querySelector(".order-detail-items");
@@ -1078,7 +1148,7 @@ function openOrderDetail(orderId) {
     const row = document.createElement("div");
     row.className = "order-detail-row";
 
-    // resolve product details from the products table by id
+    // resolve chi tiết sản phẩm từ bảng products theo id
     const product = getProductById(it.id);
 
     const name = it.name || it.title || product?.title || product?.name || "-";
@@ -1108,22 +1178,21 @@ function openOrderDetail(orderId) {
   });
 
   const totalEl = modalOrderDetail.querySelector("#detail-order-total");
-  if (totalEl) totalEl.textContent = formatCurrency(o.totalPrice ?? total ?? 0);
+  if (totalEl) totalEl.textContent = formatCurrency(o.totalPrice ?? 0);
 
   const badge = modalOrderDetail.querySelector("#modal-order-status-badge");
   if (badge) {
-    const canonical = normalizeStatus(o.status);
     const map = {
-      new: "Đơn mới",
-      processing: "Đang xử lý",
-      delivered: "Đã giao",
-      cancelled: "Đã hủy",
+      new: "New",
+      processing: "Processing",
+      delivered: "Delivered",
+      cancelled: "Cancelled",
     };
-    badge.textContent = map[canonical] || o.status || "-";
-    badge.className = "status-badge detail-status-badge " + canonical;
+    badge.textContent = map[o.status] || o.status || "-";
+    badge.className = "status-badge detail-status-badge " + (o.status || "new");
   }
 
-  // wire close button
+  // wire nút đóng
   const closeBtn = modalOrderDetail.querySelector("#btn-close-order");
   if (closeBtn) closeBtn.onclick = () => closeOrderModal(modalOrderDetail);
   const headerClose = modalOrderDetail.querySelector(".modal-close");
@@ -1139,7 +1208,7 @@ function closeOrderModal(modalEl) {
 }
 
 // -------------------------
-// Add Order modal behavior
+// Hành vi modal Add Order
 // -------------------------
 function openAddOrderModal() {
   const addModal = ordersSection.querySelector("#addOrderModal");
@@ -1150,18 +1219,18 @@ function openAddOrderModal() {
       ? window.dataManager.getAll("products")
       : [];
 
-  // clear and add initial row
+  // xóa và thêm dòng đầu tiên
   itemsContainer.innerHTML = "";
   addProductRow(itemsContainer, prodList);
 
-  // auto-generate next numeric idOrder and display it in the readonly input
+  // tự động tạo idOrder numeric tiếp theo và hiển thị trong input readonly
   const orders = getAllOrders();
   const maxId = orders.reduce((m, x) => Math.max(m, Number(x.idOrder) || 0), 0);
   const nextId = maxId + 1;
   const idInput = addModal.querySelector("#add-order-id");
   if (idInput) idInput.value = String(nextId);
 
-  // wire buttons
+  // wire các nút bấm
   const addRowBtn = addModal.querySelector("#btn-add-product-row");
   if (addRowBtn)
     addRowBtn.onclick = () => addProductRow(itemsContainer, prodList);
@@ -1172,7 +1241,7 @@ function openAddOrderModal() {
   const headerClose = addModal.querySelector(".modal-close");
   if (headerClose) headerClose.onclick = () => closeOrderModal(addModal);
 
-  // enforce phone input attributes and basic numeric-only behavior
+  // áp dụng thuộc tính cho input phone và hành vi chỉ chấp nhận số
   const phoneInput = addModal.querySelector("#add-order-phone");
   if (phoneInput) {
     phoneInput.setAttribute("inputmode", "numeric");
@@ -1183,8 +1252,8 @@ function openAddOrderModal() {
         const v = phoneInput.value || "";
         const digits = v.replace(/[^0-9]/g, "");
         if (digits !== v) phoneInput.value = digits;
-        // enforce starting 0 automatically if user types without
-        // (do not auto-insert, just keep content)
+        // áp dụng bắt đầu bằng 0 tự động nếu user gõ không có
+        // (không tự động chèn, chỉ giữ nội dung)
         if (phoneInput.value.length > 10)
           phoneInput.value = phoneInput.value.slice(0, 10);
       });
@@ -1204,13 +1273,13 @@ function addProductRow(container, prodList, defaultId) {
   row.style.gap = "12px";
   row.style.marginTop = "8px";
 
-  // select
+  // select dropdown
   const select = document.createElement("select");
   select.className = "add-order-product-select";
   select.style.minWidth = "200px";
   const emptyOpt = document.createElement("option");
   emptyOpt.value = "";
-  emptyOpt.textContent = "-- Chọn sản phẩm --";
+  emptyOpt.textContent = "-- Select Product --";
   select.appendChild(emptyOpt);
   prodList.forEach((p) => {
     const o = document.createElement("option");
@@ -1222,7 +1291,7 @@ function addProductRow(container, prodList, defaultId) {
   });
   if (defaultId) select.value = String(defaultId);
 
-  // image
+  // hình ảnh
   const img = document.createElement("img");
   img.src = "/img/blank-image.png";
   img.alt = "";
@@ -1230,12 +1299,12 @@ function addProductRow(container, prodList, defaultId) {
   img.style.height = "48px";
   img.style.objectFit = "cover";
 
-  // unit price
+  // đơn giá
   const unitSpan = document.createElement("span");
   unitSpan.className = "add-order-unit";
   unitSpan.dataset.price = "0";
 
-  // qty
+  // số lượng
   const qty = document.createElement("input");
   qty.type = "number";
   qty.min = "1";
@@ -1244,17 +1313,17 @@ function addProductRow(container, prodList, defaultId) {
   qty.style.width = "80px";
   qty.setAttribute("inputmode", "numeric");
 
-  // line total
+  // tổng dòng
   const lineSpan = document.createElement("span");
   lineSpan.className = "add-order-line";
 
-  // remove
+  // nút xóa
   const remBtn = document.createElement("button");
   remBtn.type = "button";
   remBtn.className = "btn-remove-order-row";
   remBtn.innerHTML = '<i class="fa-solid fa-trash"></i>';
 
-  // assemble in requested order: image, select, unit price, quantity, line total, remove
+  // sắp xếp theo thứ tự: hình ảnh, select, đơn giá, số lượng, tổng dòng, xóa
   row.appendChild(img);
   row.appendChild(select);
   row.appendChild(unitSpan);
@@ -1262,7 +1331,7 @@ function addProductRow(container, prodList, defaultId) {
   row.appendChild(lineSpan);
   row.appendChild(remBtn);
 
-  // events
+  // sự kiện
   function updateRow() {
     const pid = Number(select.value) || null;
     const prod = pid
@@ -1274,20 +1343,20 @@ function addProductRow(container, prodList, defaultId) {
       img.src = prod.mainImage || prod.image || "/img/blank-image.png";
       unitSpan.textContent = formatCurrency(prod.price || 0);
       unitSpan.dataset.price = String(prod.price || 0);
-      // enforce stock constraint if product provides stock
+      // áp dụng ràng buộc stock nếu product cung cấp stock
       const stock = Number(prod.stock || 0);
       if (stock > 0) {
         qty.max = String(stock);
-        qty.title = `Tối đa ${stock}`;
-        // clamp if current value exceeds stock
+        qty.title = `Max ${stock}`;
+        // giới hạn nếu giá trị hiện tại vượt quá stock
         if (Number(qty.value || 0) > stock) qty.value = String(stock);
         qty.disabled = false;
       } else {
-        // out of stock -> set max to 0 and disable qty
+        // hết hàng -> set max thành 0 và disable qty
         qty.max = "0";
         qty.value = "0";
         qty.disabled = true;
-        qty.title = "Hết hàng";
+        qty.title = "Out of stock";
       }
     } else {
       img.src = "/img/blank-image.png";
@@ -1305,7 +1374,7 @@ function addProductRow(container, prodList, defaultId) {
 
   select.addEventListener("change", updateRow);
   qty.addEventListener("input", (e) => {
-    // clamp to max if provided
+    // giới hạn theo max nếu được cung cấp
     const m = Number(qty.max || Infinity);
     const v = Number(qty.value || 0);
     if (v > m) {
@@ -1319,7 +1388,7 @@ function addProductRow(container, prodList, defaultId) {
   });
 
   container.appendChild(row);
-  // initial update
+  // cập nhật ban đầu
   updateRow();
   return row;
 }
@@ -1347,16 +1416,16 @@ function saveNewOrder(modalEl) {
     modalEl.querySelector("#add-order-address")?.value || ""
   ).trim();
   if (!username) {
-    alert("Vui lòng nhập username");
+    alert("Please enter username");
     return;
   }
-  // validate phone: must be 10 digits and start with 0
+  // kiểm tra phone: phải có 10 chữ số và bắt đầu bằng 0
   const phoneRe = /^0\d{9}$/;
   if (!phoneRe.test(phone)) {
     const ip = modalEl.querySelector("#add-order-phone");
     if (ip) ip.focus();
     alert(
-      "Số điện thoại không hợp lệ. Vui lòng nhập 10 chữ số và bắt đầu bằng số 0."
+      "Invalid phone number. Please enter 10 digits starting with 0."
     );
     return;
   }
@@ -1378,12 +1447,12 @@ function saveNewOrder(modalEl) {
     const unit = prod
       ? Number(prod.price || 0)
       : Number(r.querySelector(".add-order-unit")?.dataset.price || 0);
-    // validate against stock when available
+    // kiểm tra so với stock nếu có
     const stock = prod ? Number(prod.stock || 0) : undefined;
     if (stock !== undefined && !Number.isNaN(stock) && qty > stock) {
       const name = prod?.title || prod?.name || "#" + pid;
       alert(
-        `Số lượng cho sản phẩm "${name}" vượt quá tồn kho (${stock}). Vui lòng điều chỉnh.`
+        `Quantity for product "${name}" exceeds stock (${stock}). Please adjust.`
       );
       return;
     }
@@ -1395,13 +1464,18 @@ function saveNewOrder(modalEl) {
     });
   }
   if (items.length === 0) {
-    alert("Vui lòng thêm ít nhất 1 sản phẩm với số lượng > 0");
+    alert("Please add at least 1 product with quantity > 0");
     return;
   }
   const total = items.reduce((s, it) => s + (it.amountPrice || 0), 0);
+
+  // Sinh idOrder numeric theo schema
+  const existing = dmGetAll("orders") || [];
+  const maxExistingId = existing.reduce((m, x) => Math.max(m, Number(x.idOrder) || 0), 0);
+  const generatedId = maxExistingId + 1;
+
   const newOrder = {
-    // idOrder: use the generated numeric id (if present); DatabaseManager may also assign one
-    idOrder: Number(modalEl.querySelector("#add-order-id")?.value) || undefined,
+    idOrder: generatedId,
     username: username,
     items: items,
     totalPrice: total,
@@ -1409,34 +1483,27 @@ function saveNewOrder(modalEl) {
     status: "new",
     userDeliveryPhone: phone || null,
     userDeliveryAdress: address || null,
+    // flag để chỉ ra rằng stock đã được điều chỉnh cho đơn hàng này
+    _stockAdjusted: true,
   };
-  // adjust product stock when creating a new order (idempotent by marking _stockAdjusted)
+
+  // điều chỉnh tồn kho sản phẩm khi tạo đơn hàng mới
   (newOrder.items || []).forEach((it) => {
-    const p = getProductById(it.id);
-    if (p)
-      p.stock = Math.max(0, Number(p.stock || 0) - Number(it.quantity || 0));
+    const p = dmGetById("products", it.id) || getProductById(it.id);
+    if (p) p.stock = Math.max(0, Number(p.stock || 0) - Number(it.quantity || 0));
   });
-  newOrder._stockAdjusted = true;
-  if (window.dataManager && typeof window.dataManager.add === "function") {
-    window.dataManager.add("orders", newOrder);
-  } else if (
-    window.dataManager &&
-    window.dataManager.data &&
-    Array.isArray(window.dataManager.data.orders)
-  ) {
-    window.dataManager.data.orders.push(newOrder);
-    if (typeof window.dataManager.save === "function")
-      window.dataManager.save();
-  }
-  if (window.dataManager && typeof window.dataManager.save === "function")
-    window.dataManager.save();
+
+  // Lưu trữ qua dataManager wrapper
+  dmAdd("orders", newOrder);
+  dmSave();
+
   renderOrders();
   closeOrderModal(modalEl);
 }
 
 function wireListActions() {
   if (!containerOrders) return;
-  // click handler for buttons
+  // click handler cho các nút bấm
   containerOrders.addEventListener("click", (e) => {
     const viewBtn = e.target.closest(".btn-view-order");
     if (viewBtn) {
@@ -1444,15 +1511,15 @@ function wireListActions() {
       if (item) openOrderDetail(item.dataset.orderId);
       return;
     }
-    // removed edit button handling (no longer present in DOM)
+    // đã xóa xử lý nút edit (không còn trong DOM nữa)
     const delBtn = e.target.closest(".btn-delete-order");
     if (delBtn) {
       const item = delBtn.closest(".order-item");
       if (item) {
-        if (confirm("Bạn có chắc muốn xóa hóa đơn này không?")) {
+        if (confirm("Are you sure you want to delete this order?")) {
           const arr = window.dataManager?.data?.orders || [];
           const idx = arr.findIndex(
-            (x) => (x.idOrder || x.id || "").toString() === item.dataset.orderId
+            (x) => (x.idOrder || "").toString() === item.dataset.orderId
           );
           if (idx !== -1) {
             arr.splice(idx, 1);
@@ -1466,7 +1533,7 @@ function wireListActions() {
     }
   });
 
-  // handle status select changes (delegated)
+  // xử lý thay đổi status select (delegated)
   containerOrders.addEventListener("change", (e) => {
     const sel = e.target.closest(".status-select");
     if (!sel) return;
@@ -1474,17 +1541,17 @@ function wireListActions() {
     if (!item) return;
     const newStatus = (sel.value || "").toString().toLowerCase();
 
-    // update CSS class on the select to preserve colored badge look
+    // cập nhật CSS class trên select để giữ giao diện badge màu
     sel.className = "status-select status-badge " + newStatus;
 
-    // update underlying data and persist
+    // cập nhật dữ liệu nền và lưu trữ
     const arr = window.dataManager?.data?.orders || [];
     const idx = arr.findIndex(
-      (x) => (x.idOrder || x.id || "").toString() === item.dataset.orderId
+      (x) => (x.idOrder || "").toString() === item.dataset.orderId
     );
     if (idx !== -1) {
-      const prevStatus = normalizeStatus(arr[idx].status);
-      const targetStatus = normalizeStatus(newStatus);
+      const prevStatus = arr[idx].status;
+      const targetStatus = newStatus;
 
       if (targetStatus === "cancelled" && arr[idx]._stockAdjusted) {
         (arr[idx].items || []).forEach((it) => {
@@ -1495,16 +1562,16 @@ function wireListActions() {
       }
 
       if (targetStatus === "delivered" && !arr[idx]._stockAdjusted) {
-        // validate availability
+        // kiểm tra khả năng có sẵn
         for (const it of arr[idx].items || []) {
           const p = getProductById(it.id);
           const avail = Number(p?.stock || 0);
           const need = Number(it.quantity || 0);
           if (p && avail < need) {
             alert(
-              `Không đủ tồn kho cho sản phẩm "${
+              `Not enough stock for product "${
                 p.title || p.name || "#" + it.id
-              }". Còn ${avail}, cần ${need}.`
+              }". Available: ${avail}, needed: ${need}.`
             );
             sel.value = prevStatus || "";
             sel.className =
@@ -1512,7 +1579,7 @@ function wireListActions() {
             return;
           }
         }
-        // deduct
+        // trừ đi
         (arr[idx].items || []).forEach((it) => {
           const p = getProductById(it.id);
           if (p) p.stock = Number(p.stock || 0) - Number(it.quantity || 0);
@@ -1529,7 +1596,7 @@ function wireListActions() {
 }
 
 function initOrderModule() {
-  // idempotent init: avoid wiring twice
+  // init idempotent: tránh wire hai lần
   if (window._orderModuleInited) return;
 
   ordersSection =
@@ -1539,14 +1606,14 @@ function initOrderModule() {
   containerOrders = ordersSection.querySelector("#show-order-container");
   templateOrderItem = ordersSection.querySelector("#order-item-template");
   modalOrderDetail = ordersSection.querySelector("#orderDetailModal");
-  // addOrder modal reference will be used when opening
+  // tham chiếu addOrder modal sẽ được dùng khi mở
   const addOrderBtn = document.getElementById("btn-add-order");
   if (addOrderBtn)
     addOrderBtn.addEventListener("click", (ev) => {
       ev.preventDefault();
       openAddOrderModal();
     });
-  // wire per-page select scoped to orders section
+  // wire select per-page scoped trong orders section
   perOrderPageSelectEl = ordersSection.querySelector("#per-page");
   pageOrderNavListEl = ordersSection.querySelector(".page-nav-list");
 
@@ -1558,7 +1625,7 @@ function initOrderModule() {
     );
   }
 
-  // optional: wire filter, search and refresh controls scoped to orders section
+  // tùy chọn: wire các control filter, search và refresh scoped trong orders section
   const filterSelect = ordersSection.querySelector("#filter-order-status");
   const searchInput = ordersSection.querySelector("#form-search-order");
   const refreshBtn = ordersSection.querySelector("#btn-refresh-order");
@@ -1575,7 +1642,7 @@ function initOrderModule() {
     );
   }
 
-  // wire date inputs
+  // wire các input ngày
   const startInput = ordersSection.querySelector("#time-start-order");
   const endInput = ordersSection.querySelector("#time-end-order");
   if (startInput)
@@ -1594,7 +1661,7 @@ function initOrderModule() {
     });
   }
 
-  // delegate clicks on the page nav inside orders section
+  // ủy quyền clicks trên page nav trong orders section
   if (pageOrderNavListEl) {
     pageOrderNavListEl.addEventListener("click", (ev) => {
       const el = ev.target.closest && ev.target.closest("[data-page]");
