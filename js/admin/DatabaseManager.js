@@ -577,3 +577,4 @@ import { sampleData } from "../sampledata/sampleData.js";
 
 export const dataManager = new DatabaseManager(sampleData);
 window.dataManager = dataManager; // Truy cập từ console
+

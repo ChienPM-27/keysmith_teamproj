@@ -1687,3 +1687,12 @@ document.addEventListener("DOMContentLoaded", initOrderModule);
 // ===============================
 // WAREHOUSE SCRIPT
 // ===============================
+
+// Import warehouse module
+import { initWarehouseModule, renderWarehouse } from './warehouse.js';
+
+// Trong phần sidebar click handler, thêm:
+if (activated.id === 'warehouse-section' || activated.classList.contains('warehouse-wrapper')) {
+  if (!window._warehouseModuleInited) initWarehouseModule();
+  renderWarehouse();
+}
