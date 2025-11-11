@@ -1,12 +1,890 @@
 .orders-wrapper {
-
-    padding: 20px;
+  padding: 20px;
 }
 
-/* order-body uses shared animation */
 .orders-wrapper .order-body {
-    padding: 20px 80px;
-    animation: adminFadeIn 0.5s ease-in-out;
+  padding: 20px;
+  animation: adminFadeIn 0.5s ease-in-out;
 }
 
-/* order-specific status cards and responsive rules kept below */
+/* Controls */
+.orders-wrapper .order-control {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+  gap: 1rem;
+}
+
+.orders-wrapper .order-control-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.orders-wrapper .order-control-row .order-control-left select {
+  border: 1px solid var(--color-secondary);
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: #fff;
+  cursor: pointer;
+  min-width: 180px;
+}
+
+.orders-wrapper .order-control-row .order-control-left select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 8px rgba(255, 133, 25, 0.3);
+}
+
+.orders-wrapper .order-control-row .order-control-center {
+  flex: 1 1 auto;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 1rem;
+}
+
+.orders-wrapper .order-control-row .order-control-center .form-search {
+  width: 100%;
+  max-width: 720px;
+  display: flex;
+  align-items: center;
+}
+
+.orders-wrapper .order-control-row .order-control-center .form-search input {
+  width: 70%;
+  padding: 10px 12px;
+  border: 1px solid var(--color-secondary);
+  border-right: none;
+  border-radius: 8px 0 0 8px;
+  background: #f9f9f9;
+}
+
+.orders-wrapper
+  .order-control-row
+  .order-control-center
+  .form-search
+  input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 8px rgba(255, 133, 25, 0.3);
+}
+
+.orders-wrapper
+  .order-control-row
+  .order-control-center
+  .form-search
+  .search-btn {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 0 8px 8px 0;
+  background: var(--color-primary);
+  color: #fff;
+  cursor: pointer;
+}
+
+.orders-wrapper
+  .order-control-row
+  .order-control-center
+  .form-search
+  .search-btn:hover {
+  background: var(--color-primary-hover);
+  transform: translateY(-1px);
+}
+
+.orders-wrapper .filter-date {
+  display: flex;
+  flex-direction: row;
+  gap: 3px;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.orders-wrapper .filter-date label {
+  font-size: 0.92rem;
+  color: var(--color-text-dark, #333);
+  font-weight: 600;
+  margin-right: 4px;
+}
+
+.orders-wrapper .filter-date input[type="date"] {
+  -webkit-appearance: none;
+  appearance: none;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--color-secondary);
+  background: #fff;
+  color: #222;
+  cursor: pointer;
+  min-width: 140px;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.03);
+}
+
+.orders-wrapper .filter-date input[type="date"]:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 8px rgba(255, 133, 25, 0.12);
+}
+
+.orders-wrapper .order-control-right {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+  gap: 1rem;
+  flex: 0 0 auto;
+  align-items: center;
+}
+
+.orders-wrapper .order-control-right .btn-control {
+  padding: 10px 20px;
+  border-radius: 8px;
+  background: var(--color-primary);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
+.orders-wrapper .order-control-right .btn-control:hover {
+  background: var(--color-primary-hover);
+  transform: translateY(-1px);
+}
+
+/* ensure form-search content is left aligned */
+.orders-wrapper .order-control-row .order-control-center .form-search,
+.orders-wrapper .order-control-center .form-search {
+  justify-content: flex-start;
+  align-items: center;
+}
+
+/* Order list container */
+.orders-wrapper .show-order-container {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* Order item template */
+.orders-wrapper .order-item {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-rows: auto auto;
+  gap: 8px 12px;
+  align-items: center;
+  padding: 12px;
+  background: #fff;
+  border-radius: 8px;
+  border: 1px solid var(--color-secondary);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.04);
+}
+
+.orders-wrapper .order-item .order-info {
+  grid-column: 1;
+  grid-row: 1 / 3;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto auto auto;
+  gap: 6px;
+}
+
+.orders-wrapper .order-item .order-info .order-id {
+  grid-column: 1;
+  grid-row: 1 / 4;
+  font-weight: 700;
+  color: var(--color-text-dark);
+}
+
+.orders-wrapper .order-item .order-info .order-customer {
+  grid-column: 2;
+  grid-row: 1;
+  color: #666;
+  font-size: 0.95rem;
+}
+
+.orders-wrapper .order-item .order-info .order-date {
+  grid-column: 2;
+  grid-row: 2;
+  color: #666;
+  font-size: 0.95rem;
+}
+
+.orders-wrapper .order-item .order-info .order-total {
+  grid-column: 1 / 3;
+  grid-row: 3;
+  color: var(--color-primary);
+  font-size: 0.98rem;
+  font-weight: 700;
+}
+
+.orders-wrapper .order-item .order-status {
+  grid-column: 2;
+  grid-row: 1;
+  justify-self: end;
+  align-items: center;
+  height: fit-content;
+  margin: 0;
+}
+
+.orders-wrapper .order-item .status-badge {
+  display: inline-block;
+  height: fit-content;
+  padding: 4px 8px;
+  border-radius: 10px;
+  border: 1px solid var(--color-secondary);
+  background: transparent;
+  color: var(--color-primary);
+  font-weight: 600;
+  font-size: 0.82rem;
+}
+
+/* Style select elements that act as status badges so they visually match the badge appearance */
+.orders-wrapper .order-item select.status-badge,
+.orders-wrapper .order-item select.status-select {
+  -webkit-appearance: none;
+  appearance: none;
+  padding: 4px 8px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  background: transparent;
+  font-weight: 600;
+  font-size: 0.82rem;
+  color: inherit;
+  cursor: pointer;
+}
+
+.orders-wrapper .order-item select.status-badge:focus,
+.orders-wrapper .order-item select.status-select:focus {
+  outline: none;
+  border-color: transparent;
+  box-shadow: 0 0 6px rgba(255, 133, 25, 0.12);
+}
+
+/* narrow the select to fit the badge layout */
+.orders-wrapper .order-item select.status-badge {
+  min-width: 110px;
+}
+
+.orders-wrapper .order-item .order-actions {
+  grid-column: 2;
+  grid-row: 2;
+  justify-self: end;
+  display: flex;
+  gap: 8px;
+}
+
+.orders-wrapper .order-item .order-actions button {
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  background: #eee;
+}
+
+/* Action button variants to match customers styling */
+.orders-wrapper .order-item .order-actions .btn-view-order {
+  background: #eee;
+  color: #000;
+}
+
+.orders-wrapper .order-item .order-actions .btn-edit-order {
+  background: var(--color-primary);
+  color: #fff;
+}
+
+.orders-wrapper .order-item .order-actions .btn-delete-order {
+  background: #ff4d4d;
+  color: #fff;
+}
+
+/* Status badge variants similar in tone to customer badges */
+.orders-wrapper .order-item .status-badge.new {
+  color: var(--color-primary);
+  border-color: rgba(255, 133, 25, 0.16);
+  background: rgba(255, 133, 25, 0.06);
+}
+
+.orders-wrapper .order-item .status-badge.processing {
+  color: #ff9800;
+  border-color: rgba(255, 152, 0, 0.18);
+  background: rgba(255, 152, 0, 0.06);
+}
+
+.orders-wrapper .order-item .status-badge.delivered {
+  color: #2e7d32;
+  border-color: rgba(46, 125, 50, 0.18);
+  background: rgba(76, 175, 80, 0.06);
+}
+
+.orders-wrapper .order-item .status-badge.cancelled {
+  color: #c62828;
+  border-color: rgba(198, 40, 40, 0.18);
+  background: rgba(255, 77, 77, 0.06);
+}
+
+/* Make modal status badge visually match the inline badges used in the list */
+.orders-wrapper .order-detail-status .status-badge,
+.orders-wrapper .order-detail-summary .status-badge,
+.orders-wrapper .order-detail-summary .detail-status-badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 10px;
+  border: 1px solid var(--color-secondary);
+  background: transparent;
+  color: var(--color-primary);
+  font-weight: 600;
+  font-size: 0.82rem;
+}
+
+/* Adjust sizing to match list badges */
+.orders-wrapper .order-detail-status .status-badge {
+  min-width: 110px;
+}
+
+/* Variant colors for modal badge — reuse the same tones as list */
+.orders-wrapper .order-detail-status .status-badge.new {
+  color: var(--color-primary);
+  border-color: rgba(255, 133, 25, 0.16);
+  background: rgba(255, 133, 25, 0.06);
+}
+
+.orders-wrapper .order-detail-status .status-badge.processing {
+  color: #ff9800;
+  border-color: rgba(255, 152, 0, 0.18);
+  background: rgba(255, 152, 0, 0.06);
+}
+
+.orders-wrapper .order-detail-status .status-badge.delivered {
+  color: #2e7d32;
+  border-color: rgba(46, 125, 50, 0.18);
+  background: rgba(76, 175, 80, 0.06);
+}
+
+.orders-wrapper .order-detail-status .status-badge.cancelled {
+  color: #c62828;
+  border-color: rgba(198, 40, 40, 0.18);
+  background: rgba(255, 77, 77, 0.06);
+}
+
+/* Pagination and page-control reuse customer styles */
+.orders-wrapper #page-control {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  margin: 12px 0;
+}
+
+.orders-wrapper .page-nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 18px;
+}
+
+.orders-wrapper .page-nav-list {
+  display: flex;
+  gap: 8px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  align-items: center;
+}
+
+.orders-wrapper .page-nav-list .page-nav-item a {
+  display: inline-block;
+  width: 36px;
+  height: 36px;
+  line-height: 34px;
+  text-align: center;
+  border-radius: 50%;
+  text-decoration: none;
+  color: var(--color-text-dark);
+  border: 1px solid var(--color-secondary);
+  background: transparent;
+}
+
+.orders-wrapper .page-nav-list .page-nav-item.active a,
+.orders-wrapper .page-nav-list .page-nav-item a:hover {
+  color: #fff;
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+/* Order modals */
+.orders-wrapper .order-detail-modal,
+.orders-wrapper .order-form-modal {
+  display: none;
+}
+
+.orders-wrapper .order-detail-modal[aria-hidden="false"],
+.orders-wrapper .order-form-modal[aria-hidden="false"] {
+  display: flex;
+  position: fixed;
+  inset: 0;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 1050;
+}
+
+.orders-wrapper .order-detail-modal .modal-container,
+.orders-wrapper .order-detail-modal .modal-container,
+.orders-wrapper .order-form-modal .modal-container {
+  /* modal should be a fixed-sized panel; order detail requires a tall viewport-friendly modal */
+  width: 900px;
+  max-width: 95vw; /* fallback on narrow viewports */
+  height: 90vh;
+  max-height: 90vh;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.28);
+  overflow: hidden; /* keep scrolling inside inner list */
+}
+
+.orders-wrapper .order-detail-modal .modal-header h3,
+.orders-wrapper .order-form-modal .modal-header h3 {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--color-primary);
+}
+
+.orders-wrapper .modal-close {
+  background: transparent;
+  border: none;
+  font-size: 1.1rem;
+  cursor: pointer;
+  color: #333;
+}
+
+/* Ensure the modal body layout allocates a fixed area for header/footer and a scrollable middle for items */
+.orders-wrapper .order-detail-modal .modal-body,
+.orders-wrapper .order-form-modal .modal-body {
+  display: flex;
+  flex-direction: column;
+  height: calc(90vh - 64px); /* subtract approximate header height */
+  padding: 16px 20px;
+  box-sizing: border-box;
+}
+
+.orders-wrapper .order-detail-head {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto auto;
+  gap: 8px 20px;
+  align-items: start;
+  margin-bottom: 12px;
+}
+
+.orders-wrapper .order-detail-items {
+  /* this area scrolls when content is large; we limit its height to fill available space */
+  overflow: auto;
+  flex: 1 1 auto;
+  padding-right: 8px;
+  max-height: 50vh;
+}
+
+.orders-wrapper .order-detail-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px dashed #eee;
+  gap: 12px;
+}
+
+.orders-wrapper .order-detail-left {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.orders-wrapper .order-detail-left img {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.orders-wrapper .order-detail-meta .order-detail-name {
+  font-weight: 600;
+}
+
+.orders-wrapper .order-detail-meta .order-detail-qty {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.orders-wrapper .order-detail-price {
+  text-align: right;
+  min-width: 130px;
+}
+
+.orders-wrapper .order-detail-summary {
+  margin-top: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.orders-wrapper .order-detail-total {
+  font-size: 1.02rem;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.orders-wrapper .order-detail-status {
+  text-align: left;
+  margin-top: 6px;
+}
+
+.orders-wrapper .modal-footer-row {
+  margin-top: 12px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* Layout tweak: place status under total on the left and action buttons on the right, same line */
+.orders-wrapper .order-detail-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.orders-wrapper .order-detail-summary .left {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.orders-wrapper .order-detail-summary .right {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+/* Buttons styling in modal footer/modal actions */
+.orders-wrapper .modal-actions .btn {
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.orders-wrapper .modal-actions .btn-edit {
+  background: var(--color-primary);
+  color: #fff;
+}
+
+.orders-wrapper .modal-actions .btn-close {
+  background: #f3f4f6;
+  color: #111;
+}
+
+.orders-wrapper .modal-actions .btn:hover {
+  filter: brightness(0.98);
+}
+
+@media (max-width: 768px) {
+  #orders-section {
+    padding: 12px;
+    padding-top: 100px;
+  }
+
+  .orders-wrapper .order-item {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+  }
+
+  .orders-wrapper .order-control-right {
+    flex: 1 1 auto;
+    gap: 8px;
+  }
+
+  .orders-wrapper .order-control-row .order-control-center {
+    flex-direction: column;
+  }
+
+  .orders-wrapper .filter-date {
+    flex-direction: row;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .orders-wrapper .filter-date input[type="date"] {
+    min-width: 110px;
+    padding: 8px 10px;
+  }
+
+  .orders-wrapper .order-control {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: stretch;
+  }
+
+  .orders-wrapper .order-control-row,
+  .orders-wrapper .order-control {
+    width: 100%;
+  }
+
+  .orders-wrapper .order-control-row .order-control-left,
+  .orders-wrapper .order-control-left {
+    order: 1;
+    width: 100%;
+  }
+
+  .orders-wrapper .order-control-row .order-control-center,
+  .orders-wrapper .order-control-center {
+    order: 2;
+    width: 100%;
+    justify-content: flex-start;
+    align-items: flex-start;
+  }
+
+  .orders-wrapper .order-control-right .filter-date,
+  .orders-wrapper .filter-date {
+    flex: 0 0 100%;
+    width: 100%;
+    margin: 0 0 6px 0;
+  }
+
+  .orders-wrapper .order-control-right {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 8px;
+  }
+
+  .orders-wrapper .order-control-right .btn-control {
+    flex: 0 0 auto;
+  }
+}
+
+/* Adjust order item layout on very small screens to match customer template behavior
+   - move badge and actions to bottom-right row, while order info spans full width on top */
+@media (max-width: 520px) {
+  .orders-wrapper .order-item {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+    gap: 8px 10px;
+    align-items: start;
+  }
+
+  .orders-wrapper .order-item .order-info {
+    grid-column: 1 / 3;
+    grid-row: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    align-items: flex-start; /* ensure left/top alignment on very small screens */
+  }
+
+  /* Place badge and actions together on the bottom-right cell */
+  .orders-wrapper .order-item .order-status {
+    grid-column: 1;
+    grid-row: 2;
+    justify-self: start;
+    display: inline-flex;
+  }
+
+  .orders-wrapper .order-item .order-actions {
+    grid-column: 2;
+    grid-row: 2;
+    justify-self: end;
+    display: inline-flex;
+    gap: 8px;
+  }
+
+  /* Ensure buttons keep compact sizing */
+  .orders-wrapper .order-item .order-actions button {
+    padding: 6px 8px;
+    font-size: 0.9rem;
+  }
+}
+
+/* Styles for the "Add Order" modal (create) — mirror order-detail-modal and customerDetailModal */
+.orders-wrapper .add-order-modal {
+  display: none;
+}
+
+.orders-wrapper .add-order-modal[aria-hidden="false"] {
+  display: flex;
+  position: fixed;
+  inset: 0;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 1050;
+}
+
+.orders-wrapper .add-order-modal .modal-container {
+  width: 900px;
+  max-width: 95vw;
+  height: 90vh;
+  max-height: 90vh;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.28);
+  overflow: hidden;
+}
+
+/* reuse modal body layout used by order-detail */
+.orders-wrapper .add-order-modal .modal-body {
+  display: flex;
+  flex-direction: column;
+  height: calc(90vh - 64px);
+  padding: 16px 20px;
+  box-sizing: border-box;
+}
+
+.orders-wrapper .add-order-modal .order-detail-head {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto auto;
+  gap: 8px 20px;
+  align-items: start;
+  margin-bottom: 12px;
+}
+.orders-wrapper .add-order-modal .order-detail-head input {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--color-secondary);
+  color: #222;
+}
+
+.orders-wrapper #add-order-id {
+  background: #f6f6f6; /* looks editable but locked */
+}
+
+.customer-wrapper .customer-detail-modal .form-row input[readonly] {
+  caret-color: transparent;
+}
+
+.orders-wrapper .add-order-items {
+  flex: 1 1 auto;
+  padding-right: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 40vh;
+  overflow: auto;
+}
+
+.orders-wrapper .add-order-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  background: #fff;
+}
+
+.orders-wrapper .add-order-row img {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.orders-wrapper .add-order-product-select {
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--color-secondary);
+  background: #fff;
+  min-width: 220px;
+  cursor: pointer;
+}
+
+.orders-wrapper .add-order-product-name {
+  font-weight: 600;
+  color: var(--color-text-dark);
+  flex: 1 1 auto;
+}
+
+.orders-wrapper .add-order-unit,
+.orders-wrapper .add-order-line {
+  min-width: 120px;
+  text-align: right;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.orders-wrapper .add-order-qty {
+  width: 80px;
+  padding: 6px 8px;
+  border-radius: 8px;
+  border: 1px solid var(--color-secondary);
+}
+
+.orders-wrapper .btn-remove-order-row {
+  background: #ff4d4d;
+  color: #fff;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+}
+
+.orders-wrapper #btn-add-product-row {
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: var(--color-primary);
+  color: #fff;
+  border: none;
+  width: 100%;
+  margin: 0;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-align: center;
+}
+
+.orders-wrapper #btn-add-product-row:hover {
+  background: var(--color-primary-hover);
+  transform: translateY(-1px);
+}
+
+.orders-wrapper .add-order-modal .modal-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.orders-wrapper .add-order-modal .btn-save {
+  background: var(--color-primary);
+  color: #fff;
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.orders-wrapper .add-order-modal .btn-close {
+  background: #f3f4f6;
+  color: #111;
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .orders-wrapper .add-order-modal .modal-container {
+    width: 95vw;
+    height: 85vh;
+  }
+  .orders-wrapper .add-order-product-select {
+    min-width: 140px;
+  }
+}
