@@ -542,7 +542,7 @@ export const sampleData = {
       date: "2025-11-10T00:00:00.000Z",
       userDeliveryPhone: "0901000001",
       userDeliveryAdress: "Hanoi, Vietnam",
-      status: "Đơn mới",
+      status: "new",
     },
     {
       idOrder: 2,
@@ -552,7 +552,7 @@ export const sampleData = {
       date: "2025-11-09T00:00:00.000Z",
       userDeliveryPhone: "0901000002",
       userDeliveryAdress: "Ho Chi Minh City, Vietnam",
-      status: "Đang xử lý",
+      status: "processing",
     },
     {
       idOrder: 3,
@@ -565,7 +565,7 @@ export const sampleData = {
       date: "2025-11-08T00:00:00.000Z",
       userDeliveryPhone: "0901000003",
       userDeliveryAdress: "Da Nang, Vietnam",
-      status: "Đã giao",
+      status: "delivered",
     },
     {
       idOrder: 4,
@@ -575,7 +575,7 @@ export const sampleData = {
       date: "2025-11-07T00:00:00.000Z",
       userDeliveryPhone: "0901000004",
       userDeliveryAdress: "Hai Phong, Vietnam",
-      status: "Đã hủy",
+      status: "cancelled",
     },
     {
       idOrder: 5,
@@ -585,7 +585,7 @@ export const sampleData = {
       date: "2025-11-06T00:00:00.000Z",
       userDeliveryPhone: "0901000005",
       userDeliveryAdress: "Can Tho, Vietnam",
-      status: "Đơn mới",
+      status: "new",
     },
     {
       idOrder: 6,
@@ -595,7 +595,7 @@ export const sampleData = {
       date: "2025-11-05T00:00:00.000Z",
       userDeliveryPhone: "0901000006",
       userDeliveryAdress: "Nha Trang, Vietnam",
-      status: "Đang xử lý",
+      status: "processing",
     },
     {
       idOrder: 7,
@@ -605,7 +605,7 @@ export const sampleData = {
       date: "2025-11-04T00:00:00.000Z",
       userDeliveryPhone: "0901000007",
       userDeliveryAdress: "Hue, Vietnam",
-      status: "Đã giao",
+      status: "delivered",
     },
     {
       idOrder: 8,
@@ -615,7 +615,7 @@ export const sampleData = {
       date: "2025-11-03T00:00:00.000Z",
       userDeliveryPhone: "0901000008",
       userDeliveryAdress: "Vung Tau, Vietnam",
-      status: "Đã hủy",
+      status: "cancelled",
     },
     {
       idOrder: 9,
@@ -625,7 +625,7 @@ export const sampleData = {
       date: "2025-11-02T00:00:00.000Z",
       userDeliveryPhone: "0901000009",
       userDeliveryAdress: "Da Lat, Vietnam",
-      status: "Đơn mới",
+      status: "new",
     },
     {
       idOrder: 10,
@@ -635,7 +635,7 @@ export const sampleData = {
       date: "2025-11-01T00:00:00.000Z",
       userDeliveryPhone: "0901000010",
       userDeliveryAdress: "Bien Hoa, Vietnam",
-      status: "Đang xử lý",
+      status: "processing",
     },
     // 10
     {
@@ -646,7 +646,7 @@ export const sampleData = {
       date: "2025-10-31T00:00:00.000Z",
       userDeliveryPhone: "0901000001",
       userDeliveryAdress: "Hanoi, Vietnam",
-      status: "Đã giao",
+      status: "delivered",
     },
     {
       idOrder: 12,
@@ -659,7 +659,7 @@ export const sampleData = {
       date: "2025-10-30T00:00:00.000Z",
       userDeliveryPhone: "0901000002",
       userDeliveryAdress: "Ho Chi Minh City, Vietnam",
-      status: "Đã hủy",
+      status: "cancelled",
     },
     {
       idOrder: 13,
@@ -669,7 +669,7 @@ export const sampleData = {
       date: "2025-10-29T00:00:00.000Z",
       userDeliveryPhone: "0901000003",
       userDeliveryAdress: "Da Nang, Vietnam",
-      status: "Đơn mới",
+      status: "new",
     },
     {
       idOrder: 14,
@@ -679,7 +679,7 @@ export const sampleData = {
       date: "2025-10-28T00:00:00.000Z",
       userDeliveryPhone: "0901000004",
       userDeliveryAdress: "Hai Phong, Vietnam",
-      status: "Đang xử lý",
+      status: "processing",
     },
     {
       idOrder: 15,
@@ -689,7 +689,7 @@ export const sampleData = {
       date: "2025-10-27T00:00:00.000Z",
       userDeliveryPhone: "0901000005",
       userDeliveryAdress: "Can Tho, Vietnam",
-      status: "Đã giao",
+      status: "delivered",
     },
     {
       idOrder: 16,
@@ -699,7 +699,7 @@ export const sampleData = {
       date: "2025-10-26T00:00:00.000Z",
       userDeliveryPhone: "0901000006",
       userDeliveryAdress: "Nha Trang, Vietnam",
-      status: "Đã hủy",
+      status: "cancelled",
     },
     {
       idOrder: 17,
@@ -709,7 +709,7 @@ export const sampleData = {
       date: "2025-10-25T00:00:00.000Z",
       userDeliveryPhone: "0901000007",
       userDeliveryAdress: "Hue, Vietnam",
-      status: "Đơn mới",
+      status: "new",
     },
     {
       idOrder: 18,
@@ -719,7 +719,7 @@ export const sampleData = {
       date: "2025-10-24T00:00:00.000Z",
       userDeliveryPhone: "0901000008",
       userDeliveryAdress: "Vung Tau, Vietnam",
-      status: "Đang xử lý",
+      status: "processing",
     },
     {
       idOrder: 19,
@@ -732,7 +732,7 @@ export const sampleData = {
       date: "2025-10-23T00:00:00.000Z",
       userDeliveryPhone: "0901000009",
       userDeliveryAdress: "Da Lat, Vietnam",
-      status: "Đã giao",
+      status: "delivered",
     },
     {
       idOrder: 20,
@@ -742,7 +742,7 @@ export const sampleData = {
       date: "2025-10-22T00:00:00.000Z",
       userDeliveryPhone: "0901000010",
       userDeliveryAdress: "Bien Hoa, Vietnam",
-      status: "Đã hủy",
+      status: "cancelled",
     },
     // 20
     {
@@ -753,7 +753,7 @@ export const sampleData = {
       date: "2025-10-21T00:00:00.000Z",
       userDeliveryPhone: "0901000001",
       userDeliveryAdress: "Hanoi, Vietnam",
-      status: "Đơn mới",
+      status: "new",
     },
     {
       idOrder: 22,
@@ -763,7 +763,7 @@ export const sampleData = {
       date: "2025-10-20T00:00:00.000Z",
       userDeliveryPhone: "0901000002",
       userDeliveryAdress: "Ho Chi Minh City, Vietnam",
-      status: "Đang xử lý",
+      status: "processing",
     },
     {
       idOrder: 23,
@@ -773,7 +773,7 @@ export const sampleData = {
       date: "2025-10-19T00:00:00.000Z",
       userDeliveryPhone: "0901000003",
       userDeliveryAdress: "Da Nang, Vietnam",
-      status: "Đã giao",
+      status: "delivered",
     },
     {
       idOrder: 24,
@@ -783,7 +783,7 @@ export const sampleData = {
       date: "2025-10-18T00:00:00.000Z",
       userDeliveryPhone: "0901000004",
       userDeliveryAdress: "Hai Phong, Vietnam",
-      status: "Đã hủy",
+      status: "cancelled",
     },
     {
       idOrder: 25,
@@ -793,7 +793,7 @@ export const sampleData = {
       date: "2025-10-17T00:00:00.000Z",
       userDeliveryPhone: "0901000005",
       userDeliveryAdress: "Can Tho, Vietnam",
-      status: "Đơn mới",
+      status: "new",
     },
     {
       idOrder: 26,
@@ -803,7 +803,7 @@ export const sampleData = {
       date: "2025-10-16T00:00:00.000Z",
       userDeliveryPhone: "0901000006",
       userDeliveryAdress: "Nha Trang, Vietnam",
-      status: "Đang xử lý",
+      status: "processing",
     },
     {
       idOrder: 27,
@@ -813,7 +813,7 @@ export const sampleData = {
       date: "2025-10-15T00:00:00.000Z",
       userDeliveryPhone: "0901000007",
       userDeliveryAdress: "Hue, Vietnam",
-      status: "Đã giao",
+      status: "delivered",
     },
     {
       idOrder: 28,
@@ -823,7 +823,7 @@ export const sampleData = {
       date: "2025-10-14T00:00:00.000Z",
       userDeliveryPhone: "0901000008",
       userDeliveryAdress: "Vung Tau, Vietnam",
-      status: "Đã hủy",
+      status: "cancelled",
     },
     {
       idOrder: 29,
@@ -833,7 +833,7 @@ export const sampleData = {
       date: "2025-10-13T00:00:00.000Z",
       userDeliveryPhone: "0901000009",
       userDeliveryAdress: "Da Lat, Vietnam",
-      status: "Đơn mới",
+      status: "new",
     },
     {
       idOrder: 30,
@@ -843,7 +843,7 @@ export const sampleData = {
       date: "2025-10-12T00:00:00.000Z",
       userDeliveryPhone: "0901000010",
       userDeliveryAdress: "Bien Hoa, Vietnam",
-      status: "Đang xử lý",
+      status: "processing",
     },
     // 30
     {
@@ -854,7 +854,7 @@ export const sampleData = {
       date: "2025-10-11T00:00:00.000Z",
       userDeliveryPhone: "0901000001",
       userDeliveryAdress: "Hanoi, Vietnam",
-      status: "Đã giao",
+      status: "delivered",
     },
     {
       idOrder: 32,
@@ -864,7 +864,7 @@ export const sampleData = {
       date: "2025-10-10T00:00:00.000Z",
       userDeliveryPhone: "0901000002",
       userDeliveryAdress: "Ho Chi Minh City, Vietnam",
-      status: "Đã hủy",
+      status: "cancelled",
     },
     {
       idOrder: 33,
@@ -874,7 +874,7 @@ export const sampleData = {
       date: "2025-10-09T00:00:00.000Z",
       userDeliveryPhone: "0901000003",
       userDeliveryAdress: "Da Nang, Vietnam",
-      status: "Đơn mới",
+      status: "new",
     },
     {
       idOrder: 34,
@@ -887,7 +887,7 @@ export const sampleData = {
       date: "2025-10-08T00:00:00.000Z",
       userDeliveryPhone: "0901000004",
       userDeliveryAdress: "Hai Phong, Vietnam",
-      status: "Đang xử lý",
+      status: "processing",
     },
     {
       idOrder: 35,
@@ -897,7 +897,7 @@ export const sampleData = {
       date: "2025-10-07T00:00:00.000Z",
       userDeliveryPhone: "0901000005",
       userDeliveryAdress: "Can Tho, Vietnam",
-      status: "Đã giao",
+      status: "delivered",
     },
     {
       idOrder: 36,
@@ -907,7 +907,7 @@ export const sampleData = {
       date: "2025-10-06T00:00:00.000Z",
       userDeliveryPhone: "0901000006",
       userDeliveryAdress: "Nha Trang, Vietnam",
-      status: "Đã hủy",
+      status: "cancelled",
     },
     {
       idOrder: 37,
@@ -917,7 +917,7 @@ export const sampleData = {
       date: "2025-10-05T00:00:00.000Z",
       userDeliveryPhone: "0901000007",
       userDeliveryAdress: "Hue, Vietnam",
-      status: "Đơn mới",
+      status: "new",
     },
     {
       idOrder: 38,
@@ -927,7 +927,7 @@ export const sampleData = {
       date: "2025-10-04T00:00:00.000Z",
       userDeliveryPhone: "0901000008",
       userDeliveryAdress: "Vung Tau, Vietnam",
-      status: "Đang xử lý",
+      status: "processing",
     },
     {
       idOrder: 39,
@@ -937,7 +937,7 @@ export const sampleData = {
       date: "2025-10-03T00:00:00.000Z",
       userDeliveryPhone: "0901000009",
       userDeliveryAdress: "Da Lat, Vietnam",
-      status: "Đã giao",
+      status: "delivered",
     },
     {
       idOrder: 40,
@@ -947,7 +947,7 @@ export const sampleData = {
       date: "2025-10-02T00:00:00.000Z",
       userDeliveryPhone: "0901000010",
       userDeliveryAdress: "Bien Hoa, Vietnam",
-      status: "Đã hủy",
+      status: "cancelled",
     },
   ],
   importOrders: [
@@ -958,7 +958,7 @@ export const sampleData = {
       unitImportPrice: 45,
       amountPrice: 450,
       date: "2025-09-30T00:00:00.000Z",
-      status: "Đang xử lý",
+      status: "processing",
     },
     {
       id: 2,
@@ -967,7 +967,7 @@ export const sampleData = {
       unitImportPrice: 41,
       amountPrice: 328,
       date: "2025-09-29T00:00:00.000Z",
-      status: "Đã giao",
+      status: "delivered",
     },
     {
       id: 3,
@@ -976,7 +976,7 @@ export const sampleData = {
       unitImportPrice: 43,
       amountPrice: 516,
       date: "2025-09-28T00:00:00.000Z",
-      status: "Đã giao",
+      status: "delivered",
     },
     {
       id: 4,
@@ -985,7 +985,7 @@ export const sampleData = {
       unitImportPrice: 39,
       amountPrice: 234,
       date: "2025-09-27T00:00:00.000Z",
-      status: "Đang xử lý",
+      status: "processing",
     },
     {
       id: 5,
@@ -994,7 +994,7 @@ export const sampleData = {
       unitImportPrice: 51,
       amountPrice: 765,
       date: "2025-09-26T00:00:00.000Z",
-      status: "Đã giao",
+      status: "delivered",
     },
     {
       id: 6,
@@ -1003,7 +1003,7 @@ export const sampleData = {
       unitImportPrice: 47,
       amountPrice: 329,
       date: "2025-09-25T00:00:00.000Z",
-      status: "Đang xử lý",
+      status: "processing",
     },
     {
       id: 7,
@@ -1012,7 +1012,7 @@ export const sampleData = {
       unitImportPrice: 49,
       amountPrice: 441,
       date: "2025-09-24T00:00:00.000Z",
-      status: "Đã giao",
+      status: "delivered",
     },
     {
       id: 8,
@@ -1021,7 +1021,7 @@ export const sampleData = {
       unitImportPrice: 46,
       amountPrice: 460,
       date: "2025-09-23T00:00:00.000Z",
-      status: "Đang xử lý",
+      status: "processing",
     },
     {
       id: 9,
@@ -1030,7 +1030,7 @@ export const sampleData = {
       unitImportPrice: 53,
       amountPrice: 265,
       date: "2025-09-22T00:00:00.000Z",
-      status: "Đã giao",
+      status: "delivered",
     },
     {
       id: 10,
@@ -1039,7 +1039,7 @@ export const sampleData = {
       unitImportPrice: 57,
       amountPrice: 342,
       date: "2025-09-21T00:00:00.000Z",
-      status: "Đang xử lý",
+      status: "processing",
     },
     {
       id: 11,
@@ -1048,7 +1048,7 @@ export const sampleData = {
       unitImportPrice: 51,
       amountPrice: 408,
       date: "2025-09-20T00:00:00.000Z",
-      status: "Đã giao",
+      status: "delivered",
     },
     {
       id: 12,
@@ -1057,7 +1057,7 @@ export const sampleData = {
       unitImportPrice: 37,
       amountPrice: 370,
       date: "2025-09-19T00:00:00.000Z",
-      status: "Đang xử lý",
+      status: "processing",
     },
     {
       id: 13,
@@ -1066,7 +1066,7 @@ export const sampleData = {
       unitImportPrice: 38,
       amountPrice: 342,
       date: "2025-09-18T00:00:00.000Z",
-      status: "Đã giao",
+      status: "delivered",
     },
     {
       id: 14,
@@ -1075,7 +1075,7 @@ export const sampleData = {
       unitImportPrice: 42,
       amountPrice: 294,
       date: "2025-09-17T00:00:00.000Z",
-      status: "Đang xử lý",
+      status: "processing",
     },
     {
       id: 15,
@@ -1084,7 +1084,7 @@ export const sampleData = {
       unitImportPrice: 44,
       amountPrice: 264,
       date: "2025-09-16T00:00:00.000Z",
-      status: "Đã giao",
+      status: "delivered",
     },
     {
       id: 16,
@@ -1093,7 +1093,7 @@ export const sampleData = {
       unitImportPrice: 48,
       amountPrice: 528,
       date: "2025-09-15T00:00:00.000Z",
-      status: "Đang xử lý",
+      status: "processing",
     },
     {
       id: 17,
@@ -1102,7 +1102,7 @@ export const sampleData = {
       unitImportPrice: 52,
       amountPrice: 260,
       date: "2025-09-14T00:00:00.000Z",
-      status: "Đã giao",
+      status: "delivered",
     },
     {
       id: 18,
@@ -1111,7 +1111,7 @@ export const sampleData = {
       unitImportPrice: 33,
       amountPrice: 396,
       date: "2025-09-13T00:00:00.000Z",
-      status: "Đang xử lý",
+      status: "processing",
     },
     {
       id: 19,
@@ -1120,7 +1120,7 @@ export const sampleData = {
       unitImportPrice: 35,
       amountPrice: 280,
       date: "2025-09-12T00:00:00.000Z",
-      status: "Đã giao",
+      status: "delivered",
     },
     {
       id: 1,
@@ -1129,7 +1129,7 @@ export const sampleData = {
       unitImportPrice: 45,
       amountPrice: 270,
       date: "2025-09-11T00:00:00.000Z",
-      status: "Đã giao",
+      status: "delivered",
     },
     {
       id: 2,
@@ -1138,7 +1138,7 @@ export const sampleData = {
       unitImportPrice: 41,
       amountPrice: 287,
       date: "2025-09-10T00:00:00.000Z",
-      status: "Đang xử lý",
+      status: "processing",
     },
     {
       id: 3,
@@ -1147,7 +1147,7 @@ export const sampleData = {
       unitImportPrice: 43,
       amountPrice: 215,
       date: "2025-09-09T00:00:00.000Z",
-      status: "Đã giao",
+      status: "delivered",
     },
     {
       id: 4,
@@ -1156,7 +1156,7 @@ export const sampleData = {
       unitImportPrice: 39,
       amountPrice: 351,
       date: "2025-09-08T00:00:00.000Z",
-      status: "Đang xử lý",
+      status: "processing",
     },
     {
       id: 5,
@@ -1165,7 +1165,7 @@ export const sampleData = {
       unitImportPrice: 51,
       amountPrice: 510,
       date: "2025-09-07T00:00:00.000Z",
-      status: "Đã giao",
+      status: "delivered",
     },
     {
       id: 6,
@@ -1174,7 +1174,7 @@ export const sampleData = {
       unitImportPrice: 47,
       amountPrice: 376,
       date: "2025-09-06T00:00:00.000Z",
-      status: "Đang xử lý",
+      status: "processing",
     },
     {
       id: 7,
@@ -1183,7 +1183,7 @@ export const sampleData = {
       unitImportPrice: 49,
       amountPrice: 294,
       date: "2025-09-05T00:00:00.000Z",
-      status: "Đã giao",
+      status: "delivered",
     },
     {
       id: 8,
@@ -1192,7 +1192,7 @@ export const sampleData = {
       unitImportPrice: 46,
       amountPrice: 644,
       date: "2025-09-04T00:00:00.000Z",
-      status: "Đang xử lý",
+      status: "processing",
     },
     {
       id: 9,
@@ -1201,7 +1201,7 @@ export const sampleData = {
       unitImportPrice: 53,
       amountPrice: 371,
       date: "2025-09-03T00:00:00.000Z",
-      status: "Đã giao",
+      status: "delivered",
     },
     {
       id: 10,
@@ -1210,7 +1210,7 @@ export const sampleData = {
       unitImportPrice: 57,
       amountPrice: 285,
       date: "2025-09-02T00:00:00.000Z",
-      status: "Đang xử lý",
+      status: "processing",
     },
     {
       id: 11,
@@ -1219,7 +1219,7 @@ export const sampleData = {
       unitImportPrice: 51,
       amountPrice: 459,
       date: "2025-09-01T00:00:00.000Z",
-      status: "Đã giao",
+      status: "delivered",
     },
     {
       id: 12,
@@ -1228,7 +1228,7 @@ export const sampleData = {
       unitImportPrice: 37,
       amountPrice: 222,
       date: "2025-08-31T00:00:00.000Z",
-      status: "Đang xử lý",
+      status: "processing",
     },
     {
       id: 13,
@@ -1237,7 +1237,7 @@ export const sampleData = {
       unitImportPrice: 38,
       amountPrice: 304,
       date: "2025-08-30T00:00:00.000Z",
-      status: "Đã giao",
+      status: "delivered",
     },
     {
       id: 14,
@@ -1246,7 +1246,7 @@ export const sampleData = {
       unitImportPrice: 42,
       amountPrice: 420,
       date: "2025-08-14T00:00:00.000Z",
-      status: "Đã giao",
+      status: "delivered",
     },
     {
       id: 15,
@@ -1255,7 +1255,7 @@ export const sampleData = {
       unitImportPrice: 44,
       amountPrice: 308,
       date: "2025-08-13T00:00:00.000Z",
-      status: "Đã giao",
+      status: "delivered",
     },
     {
       id: 16,
@@ -1264,7 +1264,7 @@ export const sampleData = {
       unitImportPrice: 48,
       amountPrice: 240,
       date: "2025-08-12T00:00:00.000Z",
-      status: "Đang xử lý",
+      status: "processing",
     },
     {
       id: 17,
@@ -1273,7 +1273,7 @@ export const sampleData = {
       unitImportPrice: 52,
       amountPrice: 312,
       date: "2025-08-11T00:00:00.000Z",
-      status: "Đã giao",
+      status: "delivered",
     },
     {
       id: 18,
@@ -1282,7 +1282,7 @@ export const sampleData = {
       unitImportPrice: 33,
       amountPrice: 297,
       date: "2025-08-10T00:00:00.000Z",
-      status: "Đang xử lý",
+      status: "processing",
     },
     {
       id: 19,
@@ -1291,7 +1291,7 @@ export const sampleData = {
       unitImportPrice: 35,
       amountPrice: 385,
       date: "2025-08-09T00:00:00.000Z",
-      status: "Đã giao",
+      status: "delivered",
     },
   ],
 };
