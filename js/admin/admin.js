@@ -1687,12 +1687,689 @@ document.addEventListener("DOMContentLoaded", initOrderModule);
 // ===============================
 // WAREHOUSE SCRIPT
 // ===============================
+// ===============================
+// WAREHOUSE MODULE - Thêm vào cuối file admin.js
+// ===============================
 
-// Import warehouse module
-import { initWarehouseModule, renderWarehouse } from './warehouse.js';
+// Warehouse state variables
+let warehouseSection = null;
+let currentWarehouseTab = 'inventory'; // 'inventory', 'import', 'transactions', 'margins'
+let warehouseSearchQuery = '';
+let warehouseCategoryFilter = 'all';
 
-// Trong phần sidebar click handler, thêm:
-if (activated.id === 'warehouse-section' || activated.classList.contains('warehouse-wrapper')) {
-  if (!window._warehouseModuleInited) initWarehouseModule();
-  renderWarehouse();
+// Format currency helper
+function formatWarehouseCurrency(value) {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD'
+  }).format(value || 0);
 }
+
+// ===============================
+// WAREHOUSE DATA HELPERS
+// ===============================
+
+function getAllImportOrders() {
+  try {
+    return window.dataManager?.getAll('importOrders') || [];
+  } catch (e) {
+    console.error('Error getting import orders:', e);
+    return [];
+  }
+}
+
+function getImportOrderById(id) {
+  try {
+    return window.dataManager?.getById('importOrders', id);
+  } catch (e) {
+    console.error('Error getting import order:', e);
+    return null;
+  }
+}
+
+// Helper để lấy tất cả products (dùng hàm đã có hoặc tạo mới)
+function getAllProducts() {
+  try {
+    return window.dataManager?.getAll('products') || [];
+  } catch (e) {
+    console.error('Error getting products:', e);
+    return [];
+  }
+}
+
+// ===============================
+// TAB SWITCHING
+// ===============================
+
+function switchWarehouseTab(tabName) {
+  if (!warehouseSection) return;
+  
+  currentWarehouseTab = tabName;
+  
+  // Update tab buttons
+  const tabs = warehouseSection.querySelectorAll('.tab');
+  tabs.forEach(tab => {
+    if (tab.textContent.toLowerCase().includes(tabName)) {
+      tab.classList.add('active');
+    } else {
+      tab.classList.remove('active');
+    }
+  });
+  
+  // Update tab content
+  const contents = warehouseSection.querySelectorAll('.tab-content');
+  contents.forEach(content => {
+    if (content.id === `${tabName}Tab`) {
+      content.classList.add('active');
+    } else {
+      content.classList.remove('active');
+    }
+  });
+  
+  // Render appropriate content
+  switch(tabName) {
+    case 'inventory':
+      renderInventoryTab();
+      break;
+    case 'import':
+      renderImportTab();
+      break;
+    case 'transactions':
+      renderTransactionsTab();
+      break;
+    case 'margins':
+      renderMarginsTab();
+      break;
+  }
+}
+
+// ===============================
+// INVENTORY TAB
+// ===============================
+
+function renderInventoryTab() {
+  const tbody = warehouseSection.querySelector('#inventoryTableBody');
+  if (!tbody) return;
+  
+  tbody.innerHTML = '';
+  
+  let products = getAllProducts();
+  
+  // Apply filters
+  if (warehouseCategoryFilter !== 'all') {
+    products = products.filter(p => p.specs?.category === warehouseCategoryFilter);
+  }
+  
+  if (warehouseSearchQuery) {
+    const query = warehouseSearchQuery.toLowerCase();
+    products = products.filter(p => 
+      (p.title || '').toLowerCase().includes(query) ||
+      (p.specs?.category || '').toLowerCase().includes(query)
+    );
+  }
+  
+  if (products.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 40px;">No products found</td></tr>';
+    return;
+  }
+  
+  products.forEach(product => {
+    const row = document.createElement('tr');
+    
+    const stock = product.stock || 0;
+    const importPrice = product.importPrice || 0;
+    const sellPrice = product.price || 0;
+    const profitMargin = sellPrice > 0 ? (((sellPrice - importPrice) / sellPrice) * 100).toFixed(1) : 0;
+    
+    let statusClass = 'status-ok';
+    let statusText = 'In Stock';
+    if (stock === 0) {
+      statusClass = 'status-out';
+      statusText = 'Out of Stock';
+    } else if (stock < 5) {
+      statusClass = 'status-low';
+      statusText = 'Low Stock';
+    }
+    
+    row.innerHTML = `
+      <td>${product.title || 'Unknown'}</td>
+      <td>${product.specs?.category || '-'}</td>
+      <td>${stock}</td>
+      <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+      <td>${formatWarehouseCurrency(importPrice)}</td>
+      <td>${formatWarehouseCurrency(sellPrice)}</td>
+      <td>${profitMargin}%</td>
+      <td>
+        <button class="btn-icon" onclick="editWarehouseProduct(${product.id})" title="Edit">
+          <i class="fas fa-edit"></i>
+        </button>
+      </td>
+    `;
+    
+    tbody.appendChild(row);
+  });
+}
+
+// ===============================
+// IMPORT ORDERS TAB
+// ===============================
+
+function renderImportTab() {
+  const tbody = warehouseSection.querySelector('#importTableBody');
+  if (!tbody) return;
+  
+  tbody.innerHTML = '';
+  
+  const importOrders = getAllImportOrders();
+  
+  if (importOrders.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 40px;">No import orders found</td></tr>';
+    updateImportStats(0, 0, 0);
+    return;
+  }
+  
+  // Calculate stats
+  let completedCount = 0;
+  let pendingCount = 0;
+  let totalValue = 0;
+  
+  importOrders.forEach(io => {
+    if (io.status === 'delivered') completedCount++;
+    if (io.status === 'processing') pendingCount++;
+    totalValue += io.amountPrice || 0;
+  });
+  
+  updateImportStats(completedCount, pendingCount, totalValue);
+  
+  // Render table
+  importOrders.forEach(order => {
+    const row = document.createElement('tr');
+    const product = getProductById(order.productId || order.id);
+    const productName = product?.title || 'Unknown Product';
+    const statusClass = order.status === 'delivered' ? 'status-ok' : 
+                       order.status === 'processing' ? 'status-low' : 'status-out';
+    
+    row.innerHTML = `
+      <td>#${order.idImportOrders || order.id}</td>
+      <td>${formatDate(order.date)}</td>
+      <td>${productName} (x${order.quantity || 0})</td>
+      <td>${formatWarehouseCurrency(order.amountPrice)}</td>
+      <td><span class="status-badge ${statusClass}">${capitalizeFirst(order.status)}</span></td>
+      <td>
+        <button class="btn-icon" onclick="viewImportOrder(${order.idImportOrders || order.id})" title="View">
+          <i class="fas fa-eye"></i>
+        </button>
+        <button class="btn-icon" onclick="deleteImportOrder(${order.idImportOrders || order.id})" title="Delete">
+          <i class="fas fa-trash"></i>
+        </button>
+      </td>
+    `;
+    
+    tbody.appendChild(row);
+  });
+}
+
+function updateImportStats(completed, pending, total) {
+  const completedEl = warehouseSection.querySelector('#completedOrders');
+  const pendingEl = warehouseSection.querySelector('#pendingOrders');
+  const totalEl = warehouseSection.querySelector('#totalImportValue');
+  
+  if (completedEl) completedEl.textContent = completed;
+  if (pendingEl) pendingEl.textContent = pending;
+  if (totalEl) totalEl.textContent = formatWarehouseCurrency(total);
+}
+
+// ===============================
+// TRANSACTIONS TAB
+// ===============================
+
+function renderTransactionsTab() {
+  const tbody = warehouseSection.querySelector('#transactionsTableBody');
+  if (!tbody) return;
+  
+  tbody.innerHTML = '';
+  
+  const importOrders = getAllImportOrders();
+  
+  if (importOrders.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 40px;">No transactions found</td></tr>';
+    return;
+  }
+  
+  importOrders.forEach(order => {
+    const row = document.createElement('tr');
+    const product = getProductById(order.productId || order.id);
+    
+    row.innerHTML = `
+      <td>${formatDate(order.date)}</td>
+      <td>${product?.title || 'Unknown Product'}</td>
+      <td><span class="status-badge status-ok">Import</span></td>
+      <td>+${order.quantity || 0}</td>
+      <td>${formatWarehouseCurrency(order.amountPrice)}</td>
+    `;
+    
+    tbody.appendChild(row);
+  });
+}
+
+// ===============================
+// MARGINS TAB
+// ===============================
+
+function renderMarginsTab() {
+  renderCategoryMargins();
+  renderProductMargins();
+}
+
+function renderCategoryMargins() {
+  const container = warehouseSection.querySelector('#categoryMarginsGrid');
+  if (!container) return;
+  
+  container.innerHTML = '';
+  
+  const products = getAllProducts();
+  const categories = {};
+  
+  products.forEach(p => {
+    const cat = p.specs?.category || 'Uncategorized';
+    if (!categories[cat]) {
+      categories[cat] = { totalCost: 0, totalSell: 0, count: 0 };
+    }
+    categories[cat].totalCost += p.importPrice || 0;
+    categories[cat].totalSell += p.price || 0;
+    categories[cat].count++;
+  });
+  
+  Object.entries(categories).forEach(([cat, data]) => {
+    const margin = data.totalSell > 0 ? 
+      (((data.totalSell - data.totalCost) / data.totalSell) * 100).toFixed(1) : 0;
+    
+    const card = document.createElement('div');
+    card.className = 'margin-card';
+    card.innerHTML = `
+      <h3>${cat}</h3>
+      <div class="margin-value">${margin}%</div>
+      <p>${data.count} products</p>
+    `;
+    container.appendChild(card);
+  });
+}
+
+function renderProductMargins() {
+  const tbody = warehouseSection.querySelector('#productMarginsTableBody');
+  if (!tbody) return;
+  
+  tbody.innerHTML = '';
+  
+  const products = getAllProducts();
+  
+  products.forEach(p => {
+    const row = document.createElement('tr');
+    const margin = p.price > 0 ? 
+      (((p.price - (p.importPrice || 0)) / p.price) * 100).toFixed(1) : 0;
+    
+    row.innerHTML = `
+      <td>${p.title}</td>
+      <td>${p.specs?.category || '-'}</td>
+      <td>${formatWarehouseCurrency(p.importPrice)}</td>
+      <td>${formatWarehouseCurrency(p.price)}</td>
+      <td>${margin}%</td>
+      <td>
+        <button class="btn-icon" onclick="editMargin(${p.id})" title="Edit">
+          <i class="fas fa-edit"></i>
+        </button>
+      </td>
+    `;
+    
+    tbody.appendChild(row);
+  });
+}
+
+// ===============================
+// MODAL FUNCTIONS
+// ===============================
+
+function openImportModal() {
+  const modal = warehouseSection?.querySelector('#importModal');
+  if (!modal) return;
+  
+  // Reset form
+  const form = modal.querySelector('#importForm');
+  if (form) form.reset();
+  
+  // Set date to today
+  const dateInput = modal.querySelector('#importDate');
+  if (dateInput) {
+    dateInput.value = new Date().toISOString().split('T')[0];
+  }
+  
+  // Populate product dropdown
+  const productsList = modal.querySelector('#importProductsList');
+  if (productsList) {
+    const firstRow = productsList.querySelector('.import-product-item');
+    const select = firstRow?.querySelector('.product-select');
+    if (select) {
+      select.innerHTML = '<option value="">Select Product</option>';
+      const products = getAllProducts();
+      products.forEach(p => {
+        const option = document.createElement('option');
+        option.value = p.id;
+        option.textContent = p.title;
+        option.dataset.importPrice = p.importPrice || 0;
+        select.appendChild(option);
+      });
+    }
+  }
+  
+  modal.style.display = 'flex';
+}
+
+function closeImportModal() {
+  const modal = warehouseSection?.querySelector('#importModal');
+  if (modal) modal.style.display = 'none';
+}
+
+function saveImportOrder(isDraft) {
+  const modal = warehouseSection?.querySelector('#importModal');
+  if (!modal) return;
+  
+  const form = modal.querySelector('#importForm');
+  const dateInput = form.querySelector('#importDate');
+  const productRows = form.querySelectorAll('.import-product-item');
+  
+  if (productRows.length === 0) {
+    alert('Please add at least one product');
+    return;
+  }
+  
+  const date = dateInput?.value || new Date().toISOString();
+  
+  productRows.forEach(row => {
+    const select = row.querySelector('.product-select');
+    const qtyInput = row.querySelector('input[type="number"][placeholder="Quantity"]');
+    const priceInput = row.querySelector('input[type="number"][placeholder*="Cost"]');
+    
+    const productId = parseInt(select?.value);
+    const quantity = parseInt(qtyInput?.value);
+    const unitPrice = parseFloat(priceInput?.value);
+    
+    if (!productId || !quantity || !unitPrice) return;
+    
+    const newImport = {
+      productId: productId,
+      id: productId,
+      quantity: quantity,
+      unitImportPrice: unitPrice,
+      amountPrice: quantity * unitPrice,
+      date: date,
+      status: isDraft ? 'processing' : 'delivered'
+    };
+    
+    try {
+      window.dataManager.add('importOrders', newImport);
+    } catch (e) {
+      console.error('Error saving import order:', e);
+    }
+  });
+  
+  closeImportModal();
+  switchWarehouseTab('import');
+  alert('Import order saved successfully!');
+}
+
+function addProductLine() {
+  const modal = warehouseSection?.querySelector('#importModal');
+  const container = modal?.querySelector('#importProductsList');
+  if (!container) return;
+  
+  const firstRow = container.querySelector('.import-product-item');
+  if (!firstRow) return;
+  
+  const newRow = firstRow.cloneNode(true);
+  
+  // Reset values
+  const inputs = newRow.querySelectorAll('input');
+  inputs.forEach(input => input.value = '');
+  
+  const select = newRow.querySelector('.product-select');
+  if (select) select.selectedIndex = 0;
+  
+  container.appendChild(newRow);
+}
+
+function removeProductLine(btn) {
+  const row = btn.closest('.import-product-item');
+  const container = row?.parentElement;
+  
+  if (container && container.querySelectorAll('.import-product-item').length > 1) {
+    row.remove();
+  } else {
+    alert('Cannot remove the last product line');
+  }
+}
+
+// ===============================
+// CRUD OPERATIONS
+// ===============================
+
+function viewImportOrder(id) {
+  const order = getImportOrderById(id);
+  if (!order) {
+    alert('Import order not found');
+    return;
+  }
+  
+  const product = getProductById(order.productId || order.id);
+  const details = `
+Import Order #${order.idImportOrders || order.id}
+Product: ${product?.title || 'Unknown'}
+Quantity: ${order.quantity}
+Unit Price: ${formatWarehouseCurrency(order.unitImportPrice)}
+Total: ${formatWarehouseCurrency(order.amountPrice)}
+Date: ${formatDate(order.date)}
+Status: ${capitalizeFirst(order.status)}
+  `;
+  
+  alert(details);
+}
+
+function deleteImportOrder(id) {
+  if (!confirm('Are you sure you want to delete this import order?')) return;
+  
+  try {
+    window.dataManager.deleteById('importOrders', id);
+    switchWarehouseTab('import');
+    alert('Import order deleted successfully!');
+  } catch (e) {
+    console.error('Error deleting import order:', e);
+    alert('Failed to delete import order');
+  }
+}
+
+function editWarehouseProduct(id) {
+  // Reuse existing product edit modal
+  const product = getProductById(id);
+  if (!product) return;
+  
+  alert('Edit product: ' + product.title + '\nThis will use the existing product edit modal.');
+  // TODO: Integrate with existing product edit modal
+}
+
+function editMargin(id) {
+  const product = getProductById(id);
+  if (!product) return;
+  
+  const newPrice = prompt(`Edit selling price for ${product.title}\nCurrent: ${formatWarehouseCurrency(product.price)}`, product.price);
+  
+  if (newPrice !== null && !isNaN(newPrice)) {
+    try {
+      window.dataManager.updateById('products', id, { price: parseFloat(newPrice) });
+      renderMarginsTab();
+      alert('Price updated successfully!');
+    } catch (e) {
+      alert('Failed to update price');
+    }
+  }
+}
+
+// ===============================
+// FILTER FUNCTIONS
+// ===============================
+
+function filterInventory() {
+  const searchInput = warehouseSection?.querySelector('#searchInventory');
+  const categorySelect = warehouseSection?.querySelector('#categoryFilter');
+  
+  warehouseSearchQuery = searchInput?.value || '';
+  warehouseCategoryFilter = categorySelect?.value || 'all';
+  
+  renderInventoryTab();
+}
+
+function filterTransactions() {
+  // TODO: Implement date range filtering
+  renderTransactionsTab();
+}
+
+function resetDateFilter() {
+  const dateFrom = warehouseSection?.querySelector('#dateFrom');
+  const dateTo = warehouseSection?.querySelector('#dateTo');
+  
+  if (dateFrom) dateFrom.value = '';
+  if (dateTo) dateTo.value = '';
+  
+  filterTransactions();
+}
+
+// ===============================
+// UTILITY FUNCTIONS
+// ===============================
+
+function formatDate(dateString) {
+  if (!dateString) return '-';
+  try {
+    return new Date(dateString).toLocaleDateString();
+  } catch (e) {
+    return '-';
+  }
+}
+
+function capitalizeFirst(str) {
+  if (!str) return '';
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+// ===============================
+// INITIALIZATION
+// ===============================
+
+function initWarehouseModule() {
+  warehouseSection = document.getElementById('warehouse-section');
+  if (!warehouseSection) return;
+  
+  console.log('Initializing warehouse module...');
+  
+  // Populate category filter
+  const categoryFilter = warehouseSection.querySelector('#categoryFilter');
+  if (categoryFilter) {
+    const categories = window.dataManager?.getAllCategories() || [];
+    categories.forEach(cat => {
+      const option = document.createElement('option');
+      option.value = cat;
+      option.textContent = cat;
+      categoryFilter.appendChild(option);
+    });
+  }
+  
+  // Wire up tab buttons
+  const tabs = warehouseSection.querySelectorAll('.tab');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const tabText = tab.textContent.toLowerCase();
+      if (tabText.includes('inventory')) switchWarehouseTab('inventory');
+      else if (tabText.includes('import')) switchWarehouseTab('import');
+      else if (tabText.includes('transaction')) switchWarehouseTab('transactions');
+      else if (tabText.includes('margin')) switchWarehouseTab('margins');
+    });
+  });
+  
+  // Wire up "New Import Order" button
+  const addImportBtn = document.querySelector('#btn-add-import');
+  if (addImportBtn) {
+    addImportBtn.addEventListener('click', openImportModal);
+  }
+  
+  // Wire up modal form submit
+  const importForm = warehouseSection.querySelector('#importForm');
+  if (importForm) {
+    importForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      saveImportOrder(false);
+    });
+  }
+  
+  // Render initial tab
+  switchWarehouseTab('inventory');
+  
+  console.log('Warehouse module initialized');
+}
+
+// Make functions global for onclick handlers
+window.switchTab = switchWarehouseTab;
+window.openImportModal = openImportModal;
+window.closeImportModal = closeImportModal;
+window.saveImportOrder = saveImportOrder;
+window.addProductLine = addProductLine;
+window.removeProductLine = removeProductLine;
+window.filterInventory = filterInventory;
+window.filterTransactions = filterTransactions;
+window.resetDateFilter = resetDateFilter;
+window.viewImportOrder = viewImportOrder;
+window.deleteImportOrder = deleteImportOrder;
+window.editWarehouseProduct = editWarehouseProduct;
+window.editMargin = editMargin;
+window.calculateMargin = function() {
+  const modal = document.getElementById('marginModal');
+  if (!modal) return;
+  
+  const cost = parseFloat(modal.querySelector('#marginCost')?.value) || 0;
+  const price = parseFloat(modal.querySelector('#marginPrice')?.value) || 0;
+  const margin = price > 0 ? (((price - cost) / price) * 100).toFixed(1) : 0;
+  
+  const display = modal.querySelector('#calculatedMargin');
+  if (display) display.textContent = margin + '%';
+};
+
+// ===============================
+// HOOK INTO SIDEBAR TAB SWITCHING
+// ===============================
+
+// Thêm vào phần DOMContentLoaded đã có
+document.addEventListener("DOMContentLoaded", () => {
+  // Tìm warehouse tab trong sidebar và wire init
+  const sidebarItems = Array.from(
+    document.querySelectorAll(
+      ".sidebar .middle-sidebar .sidebar-list .sidebar-list-item.tab-content"
+    )
+  );
+  
+  // Warehouse là tab thứ 6 (index 5)
+  const warehouseTab = sidebarItems[5];
+  if (warehouseTab) {
+    warehouseTab.addEventListener('click', () => {
+      // Đợi một chút để section active
+      setTimeout(() => {
+        if (!window._warehouseModuleInited) {
+          initWarehouseModule();
+          window._warehouseModuleInited = true;
+        } else {
+          // Nếu đã init, chỉ cần render lại tab hiện tại
+          switchWarehouseTab(currentWarehouseTab);
+        }
+      }, 50);
+    });
+  }
+});
+
+// Add to your existing initSidebarAndTabs function or equivalent
+// Make sure to call initWarehouseModule() when the warehouse tab is clicked
