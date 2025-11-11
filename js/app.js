@@ -38,6 +38,7 @@ const KeySmith = {
         this.subscriptionForm.init();
         this.error404.init();
         this.admin.init();
+        this.smoothScroll.init();
     }
 };
 
@@ -431,7 +432,6 @@ KeySmith.store = {
                     const modalOverlay = KeySmith.utils.getById('modalOverlay');
                     if (modalOverlay) {
                         modalOverlay.classList.add('active');
-                        modalOverlay.style.display = 'flex';
                         document.body.style.overflow = 'hidden';
                     }
                 } else {
@@ -514,6 +514,71 @@ KeySmith.error404 = {
             backHomeBtn.addEventListener('click', () => {
                 window.location.href = '/';
             });
+        }
+    }
+};
+
+// ==================== SMOOTH SCROLL MODULE ====================
+KeySmith.smoothScroll = {
+    init: function() {
+        // Scroll to top cho nút Home
+        const scrollToTopBtn = document.getElementById('scrollToTop');
+        if (scrollToTopBtn) {
+            scrollToTopBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+                this.closeMobileMenu();
+            });
+        }
+
+        // Tìm link Feature trong navbar
+        const navbarLinks = document.querySelectorAll('#navbar li a');
+        navbarLinks.forEach(link => {
+            const text = link.textContent.trim().toLowerCase();
+            
+            // Nếu là link Feature
+            if (text === 'feature') {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    this.scrollToFeature();
+                    this.closeMobileMenu();
+                });
+            }
+        });
+    },
+
+    scrollToFeature: function() {
+        // Tìm section Featured Products
+        const featureSection = document.querySelector('#product1 .title');
+        
+        if (featureSection) {
+            const header = document.getElementById('header');
+            const headerHeight = header ? header.offsetHeight : 80;
+            const targetPosition = featureSection.getBoundingClientRect().top + window.pageYOffset - headerHeight - 20;
+            
+            window.scrollTo({
+                top: targetPosition,
+                behavior: 'smooth'
+            });
+        } else {
+            // Fallback: scroll đến section #product1
+            const product1Section = document.getElementById('product1');
+            if (product1Section) {
+                product1Section.scrollIntoView({ 
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        }
+    },
+
+    closeMobileMenu: function() {
+        const nav = document.getElementById('navbar');
+        if (nav && nav.classList.contains('active')) {
+            nav.classList.remove('active');
         }
     }
 };
@@ -632,3 +697,5 @@ KeySmith.admin = {
 document.addEventListener('DOMContentLoaded', () => {
     KeySmith.init();
 });
+
+
