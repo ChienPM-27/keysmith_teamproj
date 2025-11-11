@@ -1,5 +1,5 @@
 // STORE SCRIPT - Hiển thị danh sách sản phẩm
-import { dataManager } from "../js/admin/DatabaseManager.js";
+import { dataManager } from "./admin/DatabaseManager.js";
 
 // ===============================
 // PRODUCT LISTING MODULE
