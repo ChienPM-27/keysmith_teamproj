@@ -203,7 +203,6 @@ KeySmith.profile = {
     },
     // điền dữ liệu vào form vì khi mở modal nó hiện dữ liệu cũ
     loadProfileToForm: function() {
-        // ✅ THÊM: Populate select options
         this.populateBirthdaySelects();
 
         const profile = this.getCustomerProfile();
@@ -244,7 +243,7 @@ KeySmith.profile = {
         }
     },
 
-    // dung ham hai hàm handle là vì alert nó chỉ hiện thông báo nó không 
+    // dung ham hai hàm handle là vì alert nó chỉ hiện thông báo nó không lưu
 
     handleProfileUpdate: function(e) {
         e.preventDefault();

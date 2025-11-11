@@ -10,7 +10,8 @@
   <link rel="stylesheet" href="/css/main/store.css" />
 
   <!-- JavaScript Libraries -->
-  <script src="/js/main/store.js" defer></script>
+  <script type="module" src="/main/detail.js"></script>
+  <script type="module" src="/main/store.js"></script>
 
   <script src="https://kit.fontawesome.com/da0c4cdc9f.js" crossorigin="anonymous"></script>
 </head>
@@ -82,10 +83,40 @@
         <option value="decre-price">Giá tiền: Giảm dần</option>
       </select>
     </section>
+    
+    <div class="show-product-container" id="show-product-container"></div>
 
-    <section id="product1" class="section-p1">
-      <div class="pro-container" id="pro-container"></div>
-    </section>
+    <!-- Template cho 1 sản phẩm -->
+    <template id="product-item-template">
+      <div class="pro">
+        <div class="pro-img">
+          <img src="/img/blank-image.png" alt="product image" />
+        </div>
+
+        <div class="pro-meta">
+          <div class="pro-collection">Collection</div>
+          <h4 class="pro-title">Product name</h4>
+        </div>
+
+        <div class="pro-footer">
+          <div class="pro-price">$0.00</div>
+          <button class="btn-add-to-cart" title="Add to cart">
+            <i class="fa-solid fa-cart-shopping"></i>
+          </button>
+        </div>
+      </div>
+    </template>
+    
+    <!-- Thanh chọn số sản phẩm hiển thị -->
+    <div id="page-control">
+      <label for="per-page">Hiển thị:</label>
+      <select id="per-page">
+        <option value="4">4</option>
+        <option value="8" selected>8</option>
+        <option value="12">12</option>
+      </select>
+      sản phẩm mỗi trang
+    </div>
 
     <!-- Phân trang -->
     <div class="page-nav">
@@ -94,7 +125,6 @@
       </ul>
     </div>
   </section>
-
   <!-- Detail view -->
   <section id="product-detail" style="display: none">
     <div class="product-wrapper">
