@@ -365,3 +365,24 @@ body {
 
 @keyframes modalFadeIn { from { transform: translateY(-140px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 @keyframes adminFadeIn { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+#page-control {
+  display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    margin: 12px 0;
+    width: 100%;
+}
+/* Trạng thái đã ẩn / xóa mềm */
+.item-hidden {
+    opacity: 0.6;
+    background-color: #fdecea !important; /* Màu nền đỏ nhạt */
+    border: 1px dashed #ff4d4d !important; /* Viền đỏ báo hiệu */
+    filter: grayscale(80%); /* Xám màu */
+}
+
+.item-hidden .status {
+    background-color: #ff4d4d !important;
+    color: white !important;
+}

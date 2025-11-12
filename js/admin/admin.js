@@ -100,6 +100,9 @@ document.addEventListener('DOMContentLoaded', () => {
 // PRODUCTS SCRIPT
 // ===============================
 
+// ===============================
+// PRODUCT-TYPES SCRIPT
+// ===============================
 
 
 // ===============================
