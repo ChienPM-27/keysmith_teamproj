@@ -617,8 +617,8 @@ hr {
 
 /* Khung chứa ảnh */
 .product-images {
-  flex: 0 0 420px;
-  max-width: 420px;
+  flex: 0 0 500px;
+  max-width: 430px;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -631,7 +631,7 @@ hr {
   width: 100%;
   height: auto;
   max-height: 500px; 
-  /* max-width: 420px; */
+  max-width: 420px;
   width: 100%;
   overflow: hidden;
   border-radius: 10px;
@@ -652,8 +652,8 @@ hr {
 #product-detail .image-slider img {
   width: 100%;
   height: auto;
-  max-height: 500px; /* Không vượt quá 500px */
-  object-fit: contain; /* Hiển thị toàn ảnh, không cắt */
+  max-height: 500px; 
+  object-fit: contain; 
   border-radius: 10px;
   display: block;
     flex-shrink: 0;
