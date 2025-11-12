@@ -285,21 +285,33 @@
 
           <!-- JavaScript tự động hiển thị sản phẩm -->
           <div class="show-product">
-            <table class="product-table">
-              <thead>
-                <tr>
-                  <th>Hình ảnh</th>
-                  <th>Tên sản phẩm</th>
-                  <th>Thể loại</th>
-                  <th>Giá bán</th>
-                  <th>Trạng thái</th>
-                  <th>Hành động</th>
-                </tr>
-              </thead>
-              <tbody>
-                <!-- JavaScript tự động hiển thị danh sách sản phẩm -->
-              </tbody>
-            </table>
+            <div class="product-item">
+              <div class="product-info">
+                <div class="product-img">
+                  <img src="/img/blank-image.png" alt="Product Image" />
+                </div>
+                <div class="info">
+                  <h3 class="product-name">#001</h3>
+                  <p class="product-category">one piece</p>
+                  <p class="product-description">Description of the product goes here.</p>
+                </div>
+                <div class="product-price">$100</div>
+              </div>
+              <div class="product-info-right">
+                <div class="product-status">Active</div>
+                <div class="btn-items">
+                  <button class="btn-edit-product">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                  </button>
+                  <button class="btn-view-product">
+                    <i class="fa-solid fa-eye"></i>
+                  </button>
+                  <button class="btn-delete-product">
+                    <i class="fa-solid fa-trash"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
 
           <!-- Phân trang -->
@@ -441,22 +453,33 @@
               Refresh
             </button>
           </div>
-  
           <!-- Table -->
-          <table class="pt-table">
-            <thead>
-              <tr>
-                <th>Thứ tự</th>
-                <th>Tên loại sản phẩm</th>
-                <th>Trạng thái</th>
-                <th>Hành động</th>
-              </tr>
-            </thead>
-            <tbody id="pt-table-body">
-              <!-- JavaScript tự động hiển thị danh sách loại sản phẩm -->
-            </tbody>
-          </table>
+          <div class="show-product-types">
+            <div class="product-type-item">
+              <div class="product-type-left">
+                <div class="id">1</div>
+                <div class="name">Loại sản phẩm A</div>
+                <!-- ngaytao -->
+                <div class="date">01/01/2023</div>
+                <div class="Description">Mô tả loại sản phẩm A</div>
+              </div>
+              <div class="product-type-right">
+                <div class="status">active</div>
+                <div class="actions">
+                  <button class="edit-btn">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                  </button>
+                  <button class="view-btn">
+                    <i class="fa-solid fa-eye"></i>
+                  </button>
+                  <button class="delete-btn">
+                    <i class="fa-solid fa-trash"></i>
+                  </button>
+              </div>
+              </div>
+            </div>
         </div>
+  
 
         <!-- Modal thêm/sửa loại sản phẩm -->
         <div id="pt-modal" class="modal">
@@ -480,17 +503,14 @@
                     required
                   />
                   <span class="form-message" id="pt-form-error"></span>
-                </div>
-
-                <div class="form-group">
-                  <label for="pt-form-order" class="form-label">Thứ tự hiển thị</label>
+                  <label for="pt-form-description" class="form-label">Mô tả</label>
                   <input 
-                    id="pt-form-order" 
-                    type="number" 
-                    class="form-control"
-                    min="0" 
-                    value="100"
-                  />
+                    type="text" 
+                    id="pt-form-description" 
+                    class="form-control form-input-description"
+                    placeholder="Nhập mô tả loại sản phẩm"
+                    required
+                  ></input>
                 </div>
 
                 <div class="form-group">
@@ -498,12 +518,10 @@
                     <input type="checkbox" id="pt-form-active" checked />
                     Kích hoạt
                   </label>
+
                 </div>
 
                 <div class="form-actions">
-                  <button type="button" class="form-submit" data-pt-cancel>
-                    Hủy
-                  </button>
                   <button type="submit" class="form-submit" id="pt-form-submit">
                     Lưu
                   </button>
