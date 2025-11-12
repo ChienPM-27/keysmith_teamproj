@@ -493,57 +493,72 @@
             </div>
         </div>
         </div>
-  
-
-        <!-- Modal thêm/sửa loại sản phẩm -->
-        <div id="pt-modal" class="modal">
-          <div class="modal-container pt-modal__container">
-            <button class="modal-close" data-pt-close>
-              <i class="fa-solid fa-xmark"></i>
-            </button>
-            <h3 class="modal-container-title pt-modal__title">
-              Thêm loại sản phẩm
-            </h3>
-
-            <div class="modal-content">
-              <form id="pt-form">
-                <div class="form-group">
-                  <label for="pt-form-name" class="form-label">Tên loại</label>
-                  <input 
-                    id="pt-form-name" 
-                    type="text" 
-                    class="form-control"
-                    placeholder="Nhập tên loại sản phẩm"
-                    required
-                  />
-                  <span class="form-message" id="pt-form-error"></span>
-                  <label for="pt-form-description" class="form-label">Mô tả</label>
-                  <input 
-                    type="text" 
-                    id="pt-form-description" 
-                    class="form-control form-input-description"
-                    placeholder="Nhập mô tả loại sản phẩm"
-                    required
-                  />
-                </div>
-
-                <div class="form-group">
-                  <label class="form-checkbox">
-                    <input type="checkbox" id="pt-form-active" checked />
-                    Kích hoạt
-                  </label>
-
-                </div>
-
-                <div class="form-actions">
-                  <button type="submit" class="form-submit" id="pt-form-submit">
-                    Lưu
-                  </button>
-                </div>
-              </form>
+        <!-- Thanh chọn số sản phẩm hiển thị -->
+            <div id="page-control">
+              <label for="per-page">Hiển thị:</label>
+              <select id="per-page">
+                <option value="4">4</option>
+                <option value="8" selected>8</option>
+                <option value="12">12</option>
+              </select>
+              khách hàng mỗi trang
             </div>
-          </div>
-        </div>
+
+            <!-- Phân trang -->
+            <div class="page-nav">
+              <ul class="page-nav-list">
+                <!-- JavaScript sẽ tự động tạo các nút ở đây -->
+              </ul>
+            </div>
+            <!-- Modal thêm/sửa loại sản phẩm -->
+            <div id="pt-modal" class="modal">
+              <div class="modal-container pt-modal__container">
+                <button class="modal-close" data-pt-close>
+                  <i class="fa-solid fa-xmark"></i>
+                </button>
+                <h3 class="modal-container-title pt-modal__title">
+                  Thêm loại sản phẩm
+                </h3>
+      
+                <div class="modal-content">
+                  <form id="pt-form">
+                    <div class="form-group">
+                      <label for="pt-form-name" class="form-label">Tên loại</label>
+                      <input 
+                        id="pt-form-name" 
+                        type="text" 
+                        class="form-control"
+                        placeholder="Nhập tên loại sản phẩm"
+                        required
+                      />
+                      <span class="form-message" id="pt-form-error"></span>
+                      <label for="pt-form-description" class="form-label">Mô tả</label>
+                      <input 
+                        type="text" 
+                        id="pt-form-description" 
+                        class="form-control form-input-description"
+                        placeholder="Nhập mô tả loại sản phẩm"
+                        required
+                      />
+                    </div>
+      
+                    <div class="form-group">
+                      <label class="form-checkbox">
+                        <input type="checkbox" id="pt-form-active" checked />
+                        Kích hoạt
+                      </label>
+      
+                    </div>
+      
+                    <div class="form-actions">
+                      <button type="submit" class="form-submit" id="pt-form-submit">
+                        Lưu
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
       </div>
 
       <!-- Customers -->
