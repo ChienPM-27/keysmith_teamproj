@@ -1161,19 +1161,20 @@ function openOrderDetail(orderId) {
       product?.image ||
       it.image ||
       "/img/blank-image.png";
-    row.innerHTML = `
-                <div class="order-detail-left">
-                  <img src="${imgSrc}" alt="" />
-                  <div class="order-detail-meta">
-                    <div class="order-detail-name">${name}</div>
-                    <div class="order-detail-qty">Số lượng: ${qty}</div>
-                  </div>
-                </div>
-                <div class="order-detail-price">
-                  <div>Đơn giá: ${formatCurrency(unit)}</div>
-                  <div>Thành tiền: ${formatCurrency(line)}</div>
-                </div>
-            `;
+      row.innerHTML = `
+            <td>${product.title || 'Unknown'}</td>
+            <td>${product.specs?.category || '-'}</td>
+            <td>${stock}</td>
+            <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+            <td>${formatWarehouseCurrency(importPrice)}</td>
+            <td>${formatWarehouseCurrency(sellPrice)}</td>
+            <td>${profitMargin}%</td>
+            <td>
+              <button class="btn-icon action-btn-edit" data-product-id="${product.id}" title="Edit Product">
+                <i class="fa-solid fa-edit"></i>
+              </button>
+            </td>
+          `;
     itemsContainer.appendChild(row);
   });
 
@@ -1687,15 +1688,13 @@ document.addEventListener("DOMContentLoaded", initOrderModule);
 // ===============================
 // WAREHOUSE SCRIPT
 // ===============================
-// ===============================
-// WAREHOUSE MODULE - Thêm vào cuối file admin.js
-// ===============================
 
-// Warehouse state variables
+// Warehouse state variables (module scope)
 let warehouseSection = null;
-let currentWarehouseTab = 'inventory'; // 'inventory', 'import', 'transactions', 'margins'
+let currentWarehouseTab = 'inventory';
 let warehouseSearchQuery = '';
 let warehouseCategoryFilter = 'all';
+let warehouseModuleInitialized = false;
 
 // Format currency helper
 function formatWarehouseCurrency(value) {
@@ -2187,13 +2186,51 @@ function deleteImportOrder(id) {
 }
 
 function editWarehouseProduct(id) {
-  // Reuse existing product edit modal
   const product = getProductById(id);
   if (!product) return;
-  
-  alert('Edit product: ' + product.title + '\nThis will use the existing product edit modal.');
-  // TODO: Integrate with existing product edit modal
+
+  // Lấy modal chỉnh sửa sản phẩm có sẵn trong admin.html (đảm bảo lấy đúng modal trong products-section)
+  const modal = document.getElementById('products-section')?.querySelector('.modal.add-product');
+  if (!modal) return;
+
+  // Bật phần tiêu đề chỉnh sửa, ẩn phần thêm mới
+  const addTitle = modal.querySelector('.add-product-e');
+  const editTitle = modal.querySelector('.edit-product-e');
+  if (addTitle) addTitle.style.display = 'none';
+  if (editTitle) editTitle.style.display = 'block';
+
+  // Điền dữ liệu sản phẩm vào form
+  const form = modal.querySelector('.add-product-form');
+  if (form) {
+    // Cần đảm bảo các input này tồn tại trong form của modal
+    form.querySelector('input[name="product-id"]').value = product.id || '';
+    form.querySelector('input[name="product-title"]').value = product.title || '';
+    form.querySelector('input[name="product-price"]').value = product.price || 0;
+    form.querySelector('input[name="product-importPrice"]').value = product.importPrice || 0;
+    form.querySelector('input[name="product-stock"]').value = product.stock || 0;
+    form.querySelector('textarea[name="product-shortDesc"]').value = product.shortDesc || '';
+    form.querySelector('textarea[name="product-longDesc"]').value = product.longDesc || '';
+  }
+
+  // Cập nhật ảnh sản phẩm
+  const imgPreview = modal.querySelector('.upload-image-preview');
+  if (imgPreview) imgPreview.src = product.image || '/img/blank-image.png';
+
+  // Hiển thị modal
+  modal.style.display = 'flex';
+  modal.setAttribute('aria-hidden', 'false');
+
+  // Wire nút đóng modal (nếu chưa có)
+  const closeBtn = modal.querySelector('.modal-close');
+  if (closeBtn && !closeBtn.dataset.listenerAdded) {
+    closeBtn.addEventListener('click', () => {
+      modal.style.display = 'none';
+      modal.setAttribute('aria-hidden', 'true');
+    });
+    closeBtn.dataset.listenerAdded = 'true'; // Đánh dấu đã thêm listener
+  }
 }
+
 
 function editMargin(id) {
   const product = getProductById(id);
@@ -2294,18 +2331,57 @@ function initWarehouseModule() {
   });
   
   // Wire up "New Import Order" button
-  const addImportBtn = document.querySelector('#btn-add-import');
+  const addImportBtn = warehouseSection.querySelector('.header-actions button');
   if (addImportBtn) {
     addImportBtn.addEventListener('click', openImportModal);
   }
   
-  // Wire up modal form submit
-  const importForm = warehouseSection.querySelector('#importForm');
-  if (importForm) {
-    importForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      saveImportOrder(false);
+  // Wire up modal close buttons and events
+  const importModal = warehouseSection.querySelector('#importModal');
+  const marginModal = warehouseSection.querySelector('#marginModal');
+  
+  if (importModal) {
+    // Close button
+    const closeBtn = importModal.querySelector('.close');
+    if (closeBtn) closeBtn.onclick = closeImportModal;
+    
+    // Close on outside click
+    importModal.addEventListener('click', (e) => {
+      if (e.target === importModal) closeImportModal();
     });
+    
+    // Save draft button
+    const draftBtn = importModal.querySelector('#saveDraftBtn');
+    if (draftBtn) draftBtn.onclick = () => saveImportOrder(true);
+    
+    // Form submit
+    const importForm = importModal.querySelector('#importForm');
+    if (importForm) {
+      importForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        saveImportOrder(false);
+      });
+    }
+  }
+  
+  if (marginModal) {
+    // Close button
+    const closeBtn = marginModal.querySelector('.close');
+    if (closeBtn) closeBtn.onclick = closeMarginModal;
+    
+    // Close on outside click
+    marginModal.addEventListener('click', (e) => {
+      if (e.target === marginModal) closeMarginModal();
+    });
+    
+    // Form submit
+    const marginForm = marginModal.querySelector('#marginForm');
+    if (marginForm) {
+      marginForm.onsubmit = (e) => {
+        e.preventDefault();
+        saveMarginChanges();
+      };
+    }
   }
   
   // Render initial tab
@@ -2370,6 +2446,37 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
+function closeMarginModal() {
+  const modal = warehouseSection?.querySelector('#marginModal');
+  if (modal) modal.style.display = 'none';
+}
+
+function saveMarginChanges() {
+  const modal = warehouseSection?.querySelector('#marginModal');
+  if (!modal) return;
+  
+  const productId = modal.querySelector('#marginProductId')?.value;
+  const newPrice = parseFloat(modal.querySelector('#marginPrice')?.value);
+  
+  if (!productId || isNaN(newPrice)) {
+    alert('Invalid data');
+    return;
+  }
+  
+  try {
+    window.dataManager.updateById('products', parseInt(productId), { 
+      price: newPrice 
+    });
+    closeMarginModal();
+    renderMarginsTab();
+    alert('Price updated!');
+  } catch (e) {
+    alert('Failed to update');
+  }
+}
+
+// Expose to global
+window.closeMarginModal = closeMarginModal; // Giữ lại nếu có chỗ khác dùng
 
 // Add to your existing initSidebarAndTabs function or equivalent
 // Make sure to call initWarehouseModule() when the warehouse tab is clicked

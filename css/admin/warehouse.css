@@ -560,59 +560,37 @@ RESET & BASE STYLES
 /* ============================================
    ACTION BUTTONS
    ============================================ */
-.warehouse-wrapper .action-btn {
-    padding: 8px 14px;
+.warehouse-wrapper .action-btn,
+.warehouse-wrapper .btn-icon {
+    padding: 8px 12px;
     border: none;
     border-radius: 6px;
     cursor: pointer;
-    font-size: 12px;
+    font-size: 14px;
     margin-right: 6px;
     transition: all 0.3s ease;
     font-weight: 600;
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 5px;
     margin-bottom: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    min-width: 36px;
+    min-height: 36px;
 }
 
-.warehouse-wrapper .action-btn:last-child {
+.warehouse-wrapper .action-btn:last-child,
+.warehouse-wrapper .btn-icon:last-child {
     margin-right: 0;
 }
 
-.warehouse-wrapper .action-btn-edit {
-    background: rgba(33, 150, 243, 0.2);
-    color: #2196f3;
-    border: 1px solid rgba(33, 150, 243, 0.4);
-}
-
-.warehouse-wrapper .action-btn-edit:hover {
-    background: rgba(33, 150, 243, 0.3);
+.warehouse-wrapper .btn-icon:hover {
+    background: rgba(255, 255, 255, 0.2);
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
-}
-
-.warehouse-wrapper .action-btn-complete {
-    background: rgba(76, 175, 80, 0.2);
-    color: #4caf50;
-    border: 1px solid rgba(76, 175, 80, 0.4);
-}
-
-.warehouse-wrapper .action-btn-complete:hover {
-    background: rgba(76, 175, 80, 0.3);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
-}
-
-.warehouse-wrapper .action-btn-delete {
-    background: rgba(244, 67, 54, 0.2);
-    color: #f44336;
-    border: 1px solid rgba(244, 67, 54, 0.4);
-}
-
-.warehouse-wrapper .action-btn-delete:hover {
-    background: rgba(244, 67, 54, 0.3);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(244, 67, 54, 0.3);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 /* ============================================
