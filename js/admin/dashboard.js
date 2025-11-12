@@ -1,6 +1,3 @@
-// Nếu bạn dùng ES6 modules thì giữ import, nếu không thì dùng window.dataManager
-// import { dataManager } from "./DatabaseManager.js"; 
-
 const fmtCurrency = new Intl.NumberFormat("en-US", {
   style: "currency",
   currency: "USD"
@@ -15,18 +12,15 @@ function getData(collection) {
   if (window.dataManager && typeof window.dataManager.getAll === "function") {
     return window.dataManager.getAll(collection) || [];
   }
-  // Fallback nếu dùng import
-  // return dataManager.getAll(collection) || [];
   return window.dataManager?.data?.[collection] || [];
 }
 
 const el = {
-  userCount: () => document.getElementById("userCount"), // ID bên HTML phải trùng
+  userCount: () => document.getElementById("userCount"),
   productCount: () => document.getElementById("productCount"),
   revenueTotal: () => document.getElementById("revenueTotal"),
   stockTotal: () => document.getElementById("stockTotal"),
   topProductsContainer: () => document.querySelector(".top-products .product-list"),
-  // Lưu ý: HTML phải có class .status-card và class con (new, processing...)
   orderStatusCards: () => document.querySelectorAll(".order-status-grid .status-card"),
   completedOrders: () => document.getElementById("completedOrders"),
   pendingOrders: () => document.getElementById("pendingOrders"),
@@ -44,13 +38,15 @@ function populateDashboard() {
     if (el.userCount()) el.userCount().textContent = customers.length;
     if (el.productCount()) el.productCount().textContent = products.length;
 
-    // 2. Revenue Calculation (Sửa lại logic lấy totalPrice)
+    // --- 2. REVENUE CALCULATION ---
     let revenue = 0;
     orders.forEach(o => {
-      // Chỉ tính đơn hàng đã giao thành công (nếu muốn)
-      if (o.status === 'delivered') {
-        // SỬA: Dùng totalPrice thay vì total
-        revenue += Number(o.totalPrice || 0); 
+      const status = (o.status || "").toLowerCase();
+      
+      if (status !== 'cancelled') {
+        // Lấy giá trị an toàn (totalPrice, total, hoặc amountPrice)
+        const val = o.totalPrice || o.total || o.amountPrice || 0;
+        revenue += Number(val);
       }
     });
     if (el.revenueTotal()) el.revenueTotal().textContent = formatCurrency(revenue);
@@ -72,20 +68,17 @@ function populateDashboard() {
     const cards = el.orderStatusCards();
     if (cards && cards.length) {
       cards.forEach(card => {
-        // Tìm class định danh status trong thẻ card
         const cls = Array.from(card.classList).find(c => ["new", "processing", "delivered", "cancelled"].includes(c));
         if (cls) {
           const count = statusCounts[cls] || 0;
-          const countEl = card.querySelector(".status-count"); // HTML cần có class này trong card
+          const countEl = card.querySelector(".status-count");
           if (countEl) countEl.textContent = count;
         }
       });
     }
 
-    // 6. Import / Warehouse Stats (Sửa lại Status và Tên biến)
-    // Warehouse dùng 'delivered' cho đã nhập xong, 'processing' cho đang chờ
+    // 6. Import / Warehouse Stats
     if (el.completedOrders()) {
-        // SỬA: status 'completed' -> 'delivered'
         el.completedOrders().textContent = (importOrders.filter(io => io.status === "delivered").length || 0);
     }
     if (el.pendingOrders()) {
@@ -93,7 +86,6 @@ function populateDashboard() {
     }
 
     const totalImportValue = (importOrders || []).reduce((s, io) => {
-        // SỬA: io.total -> io.amountPrice (dựa theo code warehouse)
         return s + (Number(io.amountPrice || 0));
     }, 0);
     
@@ -108,22 +100,19 @@ function renderTopProducts(products = []) {
   const container = el.topProductsContainer();
   if (!container) return;
 
-  // Map dữ liệu
   const arr = products.map(p => ({
     id: p.id,
     title: p.title || p.name || "Untitled",
-    sold: Number(p.sold || 0), // Đảm bảo trong Products có trường 'sold', nếu chưa có thì mặc định 0
+    sold: Number(p.sold || 0),
     price: Number(p.price || 0),
     image: p.mainImage || p.image || "/img/blank-image.png",
   }));
 
-  // Sort: Ưu tiên số lượng bán, nếu bằng nhau thì xếp theo giá
   arr.sort((a, b) => {
       if (b.sold !== a.sold) return b.sold - a.sold;
       return b.price - a.price;
   });
 
-  // Tính revenue riêng cho từng sản phẩm (Sold * Price)
   const top5 = arr.slice(0, 5);
   
   container.innerHTML = "";
@@ -132,7 +121,6 @@ function renderTopProducts(products = []) {
     
     const div = document.createElement("div");
     div.className = "product-item";
-    // CSS inline cho nhanh, nên đưa vào file .css
     div.style.display = "flex";
     div.style.alignItems = "center";
     div.style.gap = "12px";
@@ -154,41 +142,33 @@ function renderTopProducts(products = []) {
 }
 
 function wireDashboardInteractions() {
-  // Mapping giữa Card trên Dashboard và Index của Sidebar
-  // Giả sử thứ tự Sidebar: 0:Dashboard, 1:Products, 2:Customers, 3:Orders, ..., 5:Warehouse
-  // Bạn cần kiểm tra lại thứ tự sidebar trong HTML thực tế để điền index đúng
   const navMap = [
-    { cardSelector: "#card-customers", sidebarIndex: 2 }, // Ví dụ Customers là tab thứ 3 (index 2)
+    { cardSelector: "#card-customers", sidebarIndex: 2 },
     { cardSelector: "#card-products", sidebarIndex: 1 },
     { cardSelector: "#card-orders", sidebarIndex: 3 },
-    { cardSelector: "#card-warehouse", sidebarIndex: 5 }, // Warehouse
+    { cardSelector: "#card-warehouse", sidebarIndex: 5 },
   ];
 
   const sidebarItems = document.querySelectorAll(".sidebar .middle-sidebar .sidebar-list .sidebar-list-item");
 
   navMap.forEach(map => {
-    // Sửa lại selector cho đúng với ID bạn đặt trong HTML Dashboard
-    // Ví dụ HTML: <div class="card-single" id="card-customers">...</div>
     const card = document.querySelector(map.cardSelector) || document.querySelector(`.card-single:nth-child(${navMap.indexOf(map) + 1})`); 
     
     if (card && sidebarItems[map.sidebarIndex]) {
       card.style.cursor = "pointer";
       card.addEventListener("click", () => {
-        // Kích hoạt sự kiện click vào sidebar để logic admin.js xử lý active class
         sidebarItems[map.sidebarIndex].click();
       });
     }
   });
 }
 
-// Export hàm init để admin.js gọi
 export function initDashboardModule() {
   console.log("Dashboard Module Loaded");
   populateDashboard();
   wireDashboardInteractions();
 }
 
-// Tự động chạy nếu file này được nhúng riêng lẻ
 document.addEventListener("DOMContentLoaded", () => {
     if(!window._dashboardModuleInited) {
         initDashboardModule();
