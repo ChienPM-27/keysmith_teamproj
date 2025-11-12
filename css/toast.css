@@ -1,0 +1,86 @@
+/* ======= TOAST (match toast.js) ======= */
+#ks-toast-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 2147483647;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;
+}
+
+/* Mỗi toast */
+.ks-toast {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  min-width: 220px;
+  max-width: 360px;
+  padding: 12px 14px;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 14px;
+  font-family: 'Poppins', 'Inter', sans-serif;
+  font-weight: 500;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.32);
+  pointer-events: auto;
+  opacity: 0;
+  transform: translateY(6px);
+  animation: toast-slide-in 0.25s ease forwards;
+  overflow: hidden;
+}
+
+/* type colors (match colorMap trong JS) */
+.ks-toast-success {
+  background: linear-gradient(90deg, #0f8b4a, #17bf6f);
+}
+.ks-toast-info {
+  background: linear-gradient(90deg, #1e6fff, #4da6ff);
+}
+.ks-toast-error {
+  background: linear-gradient(90deg, #ff4d4d, #ff6b6b);
+}
+.ks-toast-warn {
+  background: linear-gradient(90deg, #ffb86b, #ff8c1a);
+  color: #111;
+}
+
+/* message text */
+.ks-toast-message {
+  margin-bottom: 6px;
+}
+
+/* progress bar */
+.ks-toast-progress {
+  height: 4px;
+  background: rgba(255,255,255,0.12);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.ks-toast-progress-bar {
+  height: 100%;
+  width: 100%;
+  transform: translateX(0);
+  transition: transform linear;
+}
+
+/* close button */
+.ks-toast-close {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  background: transparent;
+  border: none;
+  color: inherit;
+  font-size: 16px;
+  cursor: pointer;
+  opacity: 0.85;
+  padding: 4px;
+}
+
+/* animations */
+@keyframes toast-slide-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}

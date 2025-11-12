@@ -9,8 +9,10 @@
   <!-- CSS Stylesheets -->
     <link rel="stylesheet" href="/css/main/store.css" />
     <link rel="stylesheet" href="/css/page-transition.css">
+    <link rel="stylesheet" href="/css/toast.css" />
 
   <!-- JavaScript Libraries -->
+   <script src="/js/admin/ToastMessage.js"></script>
   <script type="module" src="/js/store.js"></script>
 
   <script src="https://kit.fontawesome.com/da0c4cdc9f.js" crossorigin="anonymous"></script>
@@ -125,6 +127,7 @@
       </ul>
     </div>
 
+  </section>
   <!-- Detail view -->
   <section id="product-detail" style="display: none">
     <div class="product-wrapper">
@@ -212,16 +215,19 @@
   </section>
 
   <!-- Cart view -->
-  <section id="cart-view" style="display: none">
-    <img src="/img/bg/blueprint_rotate.png" alt="" class="bg" />
+<section id="cart-view" style="display: none;">
+  <div class="cart-container">
+    <div class="cart-hero">
+      <h1 class="title">Shopping Cart</h1>
+      <div class="cart-actions-top">
+        <button class="btn-clear" title="Clear cart">Clear cart</button>
+      </div>
+    </div>
 
-    <h1 class="title">Shopping Cart</h1>
-    <hr />
-
-    <table id="cart-table">
+    <table id="cart-table" aria-label="Shopping cart">
       <thead>
         <tr>
-          <th class="Choose">Choose</th>
+          <th class="Choose"><input type="checkbox" id="chooseALL" aria-label="Choose all"></th>
           <th class="ProductInfo">Product</th>
           <th class="Price">Unit Price</th>
           <th class="Quantity">Quantity</th>
@@ -230,28 +236,130 @@
         </tr>
       </thead>
 
-      <tbody></tbody>
+      <tbody>
+        <!-- JS sẽ chèn các dòng sản phẩm ở đây -->
+      </tbody>
 
       <tfoot>
         <tr class="cart-footer-row">
-          <td class="Choose"><input type="checkbox" id="chooseALL" /></td>
-
-          <td class="TotalPrice footer-total" colspan="3">
+          <td></td>
+          <td class="footer-total" colspan="2">
             <div class="total">Total (0 items):</div>
-
-            <div class="money">0</div>
           </td>
 
-          <td class="Actions footer-actions" colspan="2">
-            <button type="button" class="delete-icon" title="Delete selected"><i class="fa-solid fa-trash"></i></button>
+          <td class="footer-money" colspan="1">
+            <div class="money"></div>
+          </td>
 
+          <td class="footer-actions" colspan="2">
+            <button type="button" class="delete-icon" title="Delete selected"><i class="fa-solid fa-trash"></i> Delete selected</button>
             <button type="button" class="checkout-visual">Check Out</button>
           </td>
         </tr>
       </tfoot>
     </table>
+  </div>
+</section>
 
-  </section>
+<!-- CHECKOUT MODAL (ẩn, hiển thị khi gọi showCheckout()) -->
+<section id="checkout-modal" aria-hidden="true">
+  <div class="checkout-backdrop" id="checkout-backdrop"></div>
+
+  <div class="checkout-card" role="dialog" aria-modal="true" aria-labelledby="checkout-title">
+    <header class="checkout-header">
+      <h3 id="checkout-title">Checkout — Shipping & Payment</h3>
+      <button class="checkout-close" id="checkout-close" title="Close">&times;</button>
+    </header>
+
+    <div class="checkout-body">
+      <form id="checkout-form" autocomplete="on" onsubmit="return false;">
+        <!-- ADDRESS SECTION -->
+        <fieldset class="address-section">
+          <legend>Địa chỉ giao hàng</legend>
+
+          <!-- Dạng hiển thị -->
+          <div id="address-display" class="address-display">
+            <div class="addr-text" id="addr-text">
+              Bạn chưa có địa chỉ. Vui lòng thêm địa chỉ giao hàng.
+            </div>
+            <div style="display:flex;gap:8px">
+              <button type="button" id="addr-change-btn" class="btn-ghost">Thay đổi</button>
+            </div>
+          </div>
+
+          <!-- Dạng chỉnh sửa (ẩn ban đầu) -->
+          <div id="address-edit" class="address-edit" style="display:none;">
+            <div class="row">
+              <label for="chk-name">Họ & Tên</label>
+              <input id="chk-name" type="text" placeholder="Nguyễn Văn A" required />
+            </div>
+            <div class="row">
+              <label for="chk-phone">Số điện thoại</label>
+              <input id="chk-phone" type="tel" placeholder="090xxxxxxx" required />
+            </div>
+            <div class="row">
+              <label for="chk-line">Địa chỉ (số nhà, đường, khu vực)</label>
+              <input id="chk-line" type="text" placeholder="Số 10 Nguyễn Huệ, Q.1" required />
+            </div>
+            <div class="row two-cols">
+              <div>
+                <label for="chk-city">Thành phố</label>
+                <input id="chk-city" type="text" placeholder="Hồ Chí Minh" required />
+              </div>
+            </div>
+
+            <div class="checkout-address-actions">
+              <button type="button" id="addr-save-btn" class="btn-primary">Lưu</button>
+              <button type="button" id="addr-cancel-btn" class="btn-ghost">Hủy</button>
+            </div>
+          </div>
+        </fieldset>
+
+        <!-- PAYMENT -->
+        <fieldset class="payment-section">
+          <legend>Phương thức thanh toán</legend>
+
+          <label class="pm-row">
+            <input type="radio" name="payment" value="cod" checked /> Tiền mặt khi nhận hàng (COD)
+            <small>— Trả tiền mặt khi nhận</small>
+          </label>
+
+          <label class="pm-row">
+            <input type="radio" name="payment" value="bank" /> Chuyển khoản
+            <small>— Thông tin chuyển khoản sẽ hiển thị sau khi đặt</small>
+          </label>
+
+          <label class="pm-row">
+            <input type="radio" name="payment" value="online" /> Thanh toán trực tuyến
+            <small>— (demo) sẽ chuyển tới cổng thanh toán</small>
+          </label>
+        </fieldset>
+
+        <!-- SUMMARY -->
+        <fieldset class="summary-section">
+          <legend>Tóm tắt giỏ hàng</legend>
+          <div id="checkout-items" class="checkout-items">
+            <!-- JS sẽ chèn các dòng sản phẩm ở đây -->
+          </div>
+
+          <div class="summary-totals">
+            <div><span>Tổng số lượng:</span> <strong id="checkout-total-qty">0</strong></div>
+            <div><span>Tổng tiền:</span> <strong id="checkout-total-money">₫0</strong></div>
+          </div>
+        </fieldset>
+
+        <div class="checkout-actions">
+          <button type="button" id="btn-place-order" class="btn-primary">Place Order</button>
+          <button type="button" id="btn-cancel" class="btn-ghost">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+
+
+
 
   <!-- Back to top button -->
   <button id="btn-top"><i class="fa-solid fa-arrow-up"></i></button>
@@ -325,6 +433,7 @@
       </div>
     </div>
   </footer>
+
 </body>
 
 </html>
