@@ -21,7 +21,8 @@
   <!-- Đã khai báo defer nên script sẽ được tải song song với HTML
       và chỉ chạy sau khi HTML được phân tích xong -->
   <script type="module" src="/js/admin/admin.js" defer></script>
-  <script type="module" src="/js/admin/products.js"></script>
+  <script type="module" src="/js/admin/products.js" defer></script>
+  <script type="module" src="/js/admin/p.js" defer></script>
 
   <script src="https://kit.fontawesome.com/da0c4cdc9f.js" crossorigin="anonymous"></script>
 </head>
@@ -337,7 +338,7 @@
         </div>
 
         <!-- Modal thêm/sửa sản phẩm -->
-        <div class="modal add-product">
+        <div class="modal add-product" id="modal__add_product">
           <div class="modal-container">
             <h3 class="modal-container-title add-product-e">
               THÊM MỚI SẢN PHẨM
@@ -478,7 +479,7 @@
                 <div class="Description">Mô tả loại sản phẩm A</div>
               </div>
               <div class="product-type-right">
-                <div class="status">active</div>
+                <div class="status">Active</div>
                 <div class="actions">
                   <button class="edit-btn">
                     <i class="fa-solid fa-pen-to-square"></i>
@@ -514,7 +515,7 @@
             <!-- Modal thêm/sửa loại sản phẩm -->
             <div id="pt-modal" class="modal">
               <div class="modal-container pt-modal__container">
-                <button class="modal-close" data-pt-close>
+                <button class="modal-close" id="pt-modal-close">
                   <i class="fa-solid fa-xmark"></i>
                 </button>
                 <h3 class="modal-container-title pt-modal__title">
