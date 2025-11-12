@@ -315,11 +315,24 @@
           </div>
 
           <!-- Phân trang -->
-          <div class="page-nav">
-            <ul class="page-nav-list">
-              <!-- JavaScript sẽ tự động tạo các nút ở đây -->
-            </ul>
-          </div>
+          <!-- Thanh chọn số sản phẩm hiển thị -->
+            <div id="page-control">
+              <label for="per-page">Hiển thị:</label>
+              <select id="per-page">
+                <option value="4">4</option>
+                <option value="8" selected>8</option>
+                <option value="12">12</option>
+              </select>
+              khách hàng mỗi trang
+            </div>
+
+            <!-- Phân trang -->
+            <div class="page-nav">
+              <ul class="page-nav-list">
+                <!-- JavaScript sẽ tự động tạo các nút ở đây -->
+              </ul>
+            </div>
+
         </div>
 
         <!-- Modal thêm/sửa sản phẩm -->
@@ -479,6 +492,7 @@
               </div>
             </div>
         </div>
+        </div>
   
 
         <!-- Modal thêm/sửa loại sản phẩm -->
@@ -510,7 +524,7 @@
                     class="form-control form-input-description"
                     placeholder="Nhập mô tả loại sản phẩm"
                     required
-                  ></input>
+                  />
                 </div>
 
                 <div class="form-group">
