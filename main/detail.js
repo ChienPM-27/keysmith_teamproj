@@ -1,12 +1,11 @@
 // Đây là nội dung file detail.js
-
 import { dataManager } from "../js/admin/DatabaseManager.js";
 // Import các hàm tiện ích chúng ta vừa export từ store.js
 import { formatCurrency, addToCart, showToast } from "./store.js";
 
 // === KHAI BÁO BIẾN TOÀN CỤC ===
-let currentProduct = null; // Lưu sản phẩm đang xem
-let currentSlideIndex = 0; // Theo dõi slide ảnh
+let currentProduct = null; 
+let currentSlideIndex = 0; 
 
 // Tham chiếu đến các Section chính
 let storeView = null;
@@ -35,9 +34,7 @@ let productSpecsTable = null;
 let slidesContainer = null;
 let dotsContainer = null;
 
-/**
- * Hàm này chạy khi DOM được tải, dùng để lấy tất cả tham chiếu
- */
+
 function initDetailModule() {
   // Lấy các section
   storeView = document.getElementById("store-view");
@@ -79,8 +76,6 @@ function initDetailModule() {
   if (detailAddToCartBtn) {
     detailAddToCartBtn.addEventListener("click", handleAddToCart);
   }
-  // Thêm sự kiện cho nút Buy Now (nếu cần)
-  // if (detailBuyNowBtn) { ... }
 }
 
 /**
@@ -100,22 +95,16 @@ export function showProductDetailById(productId) {
   // --- 1. Chuyển đổi View ---
   if (storeView) storeView.style.display = "none";
   if (cartView) cartView.style.display = "none";
-  if (productDetailView) productDetailView.style.display = "flex"; // HTML/CSS của bạn dùng flex
+  if (productDetailView) productDetailView.style.display = "flex"; 
 
   // --- 2. Đổ dữ liệu sản phẩm vào HTML ---
   productTitle.textContent = currentProduct.title || "Product Title";
   productDesc.textContent = currentProduct.shortDesc || "";
   productLongDesc.textContent = currentProduct.longDesc || "No description available.";
   
-  // (Giả sử bạn có logic rating, nếu không thì ẩn đi)
-  // productRating.textContent = "Rating: ..."; 
 
   // Xử lý giá
   productPrice.textContent = formatCurrency(currentProduct.price);
-  
-  // (Nếu bạn có logic giá cũ/giảm giá)
-  // productOldPrice.textContent = ...
-  // productDiscount.textContent = ...
 
   // Reset số lượng về 1
   quantityInput.value = 1;
@@ -132,7 +121,7 @@ export function showProductDetailById(productId) {
  * Quay trở lại Store View
  */
 function showStoreView() {
-  if (storeView) storeView.style.display = "block"; // Hoặc 'grid' tùy theo CSS
+  if (storeView) storeView.style.display = "block"; 
   if (cartView) cartView.style.display = "none";
   if (productDetailView) productDetailView.style.display = "none";
   
@@ -143,7 +132,7 @@ function showStoreView() {
 
 /**
  * Cập nhật ô số lượng
- * @param {number} change +1 hoặc -1
+ * @param {number} change 
  */
 function updateQuantity(change) {
   let currentQty = parseInt(quantityInput.value, 10);
@@ -154,18 +143,9 @@ function updateQuantity(change) {
     currentQty = 1;
   }
   
-  // (Nâng cao: Kiểm tra với stock)
-  // if (currentProduct && currentQty > currentProduct.stock) {
-  //   currentQty = currentProduct.stock;
-  //   showToast("Not enough stock!", "error");
-  // }
-  
   quantityInput.value = currentQty;
 }
 
-/**
- * Xử lý khi nhấn nút "Add to Cart" trong trang detail
- */
 function handleAddToCart() {
   if (!currentProduct) return;
   
@@ -175,13 +155,9 @@ function handleAddToCart() {
   addToCart(currentProduct.id, quantity);
 }
 
-/**
- * Render ảnh và các chấm của slider
- */
 function renderImageSlider(product) {
   if (!slidesContainer || !dotsContainer) return;
 
-  // Xóa ảnh cũ
   slidesContainer.innerHTML = "";
   dotsContainer.innerHTML = "";
   currentSlideIndex = 0;
@@ -189,11 +165,10 @@ function renderImageSlider(product) {
   const images = [product.mainImage, ...(product.thumbnails || [])];
   
   if (images.length === 0) {
-      images.push("/img/blank-image.png"); // Ảnh mặc định
+      images.push("/img/blank-image.png"); 
   }
 
   images.forEach((imgSrc, index) => {
-    // Tạo ảnh
     const img = document.createElement("img");
     img.src = imgSrc;
     img.alt = `${product.title} image ${index + 1}`;
@@ -206,9 +181,8 @@ function renderImageSlider(product) {
     dotsContainer.appendChild(dot);
   });
 
-  // Thiết lập chiều rộng cho container
   slidesContainer.style.width = `${images.length * 100}%`;
-  showSlide(0); // Hiển thị slide đầu tiên
+  showSlide(0); 
 }
 
 /**
@@ -235,13 +209,10 @@ function showSlide(index) {
   currentSlideIndex = index;
 }
 
-/**
- * Render bảng thông số kỹ thuật
- */
 function renderSpecsTable(specs) {
   if (!productSpecsTable) return;
   
-  productSpecsTable.innerHTML = ""; // Xóa bảng cũ
+  productSpecsTable.innerHTML = ""; 
   
   if (!specs) return;
 
@@ -249,7 +220,6 @@ function renderSpecsTable(specs) {
     category: "Collection",
     brand: "Brand",
     color: "Color",
-    // Thêm các trường specs khác nếu có
   };
 
   for (const key in specs) {
@@ -257,10 +227,10 @@ function renderSpecsTable(specs) {
       const tr = document.createElement("tr");
       
       const th = document.createElement("th");
-      th.textContent = specMap[key] || key; // Tên thuộc tính (viết hoa)
+      th.textContent = specMap[key] || key; 
       
       const td = document.createElement("td");
-      td.textContent = specs[key]; // Giá trị
+      td.textContent = specs[key]; 
       
       tr.appendChild(th);
       tr.appendChild(td);
@@ -270,5 +240,4 @@ function renderSpecsTable(specs) {
 }
 
 // === KHỞI CHẠY MODULE ===
-// Chạy hàm init khi trang đã tải xong
 document.addEventListener("DOMContentLoaded", initDetailModule);
