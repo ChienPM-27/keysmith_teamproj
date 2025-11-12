@@ -180,6 +180,7 @@ KeySmith.login = {
         this.updateProfileDisplay();
     },
 
+    // ======= handleRegister =======
     handleRegister: function(e) {
         e.preventDefault();
         const username = KeySmith.utils.getById('registerUsername').value.trim();
@@ -190,29 +191,52 @@ KeySmith.login = {
             return;
         }
 
-        // Check for admin username
+        // Check admin username
         if (this.ADMIN_ACCOUNTS.some(admin => admin.username === username)) {
             alert('❌ This username is reserved for admin only!');
             return;
         }
 
-        let users = JSON.parse(localStorage.getItem('users')) || [];
-        if (users.find(u => u.username === username)) {
+        // Lấy customers từ localStorage (dùng key 'customers')
+        let customers = JSON.parse(localStorage.getItem('customers')) || [];
+
+        if (customers.find(u => u.username === username)) {
             alert('Username already exists!');
             return;
         }
 
-        users.push({ username, password, role: 'user' });
-        localStorage.setItem('users', JSON.stringify(users));
+        // Tạo object customer mới (match cấu trúc sampleData customers)
+        const newCustomer = {
+            username,
+            password,
+            img: "/img/blank-image.png",
+            firstName: "",
+            lastName: "",
+            email: "",
+            phone: "",
+            address: "",
+            dateOfBirth: "",
+            status: "active"
+        };
+
+        customers.push(newCustomer);
+        localStorage.setItem('customers', JSON.stringify(customers));
+
         alert('✅ Account created successfully!');
 
         const registerOverlay = KeySmith.utils.getById('registerOverlay');
         const modalOverlay = KeySmith.utils.getById('modalOverlay');
         
-        registerOverlay.classList.remove('active');
-        modalOverlay.classList.add('active');
+        if (registerOverlay) registerOverlay.classList.remove('active');
+        if (modalOverlay) modalOverlay.classList.add('active');
+
+        // (tuỳ chọn) tự login luôn sau khi đăng ký:
+        // localStorage.setItem('loggedInUser', username);
+        // localStorage.setItem('userRole', 'user');
+        // KeySmith.updateProfileDisplay && KeySmith.login.updateProfileDisplay();
     },
 
+    // ======= handleLogin =======
     handleLogin: function(e) {
         e.preventDefault();
         const username = KeySmith.utils.getById('loginUsername').value.trim();
@@ -243,9 +267,9 @@ KeySmith.login = {
             return;
         }
 
-        // Check regular user login
-        const users = JSON.parse(localStorage.getItem('users')) || [];
-        const user = users.find(u => u.username === username && u.password === password);
+        // Check regular user login against 'customers'
+        const customers = JSON.parse(localStorage.getItem('customers')) || [];
+        const user = customers.find(u => u.username === username && u.password === password);
 
         if (user) {
             localStorage.setItem('loggedInUser', username);
@@ -260,12 +284,14 @@ KeySmith.login = {
                 document.body.style.overflow = 'auto';
             }
             
-            this.updateProfileDisplay();
-            KeySmith.profile.initProfileModal();
+            // update UI profile
+            KeySmith.login.updateProfileDisplay();
+            KeySmith.profile.initProfileModal && KeySmith.profile.initProfileModal();
         } else {
             alert('❌ Invalid username or password!');
         }
     },
+
 
     updateProfileDisplay: function() {
         const loggedUser = localStorage.getItem('loggedInUser');
