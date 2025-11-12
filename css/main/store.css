@@ -578,7 +578,7 @@ hr {
 
 /* ========== PRODUCT DETAIL ========== */
 #product-detail {
-  display: none; 
+  display: none;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
@@ -593,7 +593,6 @@ hr {
   background-size: cover;
 }
 
-/* overlay nhẹ, không che toàn bộ nội dung */
 #product-detail::before {
   content: "";
   position: absolute;
@@ -603,22 +602,24 @@ hr {
   pointer-events: none;
 }
 
-/* === Layout 2 cột: ảnh bên trái, thông tin bên phải === */
+/* === Layout 2 cột === */
 .product-wrapper {
-  max-width: 900px; 
+  max-width: 1100px; 
+  width: 95%;
   margin: 0 auto;
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  gap: 40px;
+  gap: 60px; 
   flex-wrap: wrap;
-  scale: 0.9; 
+  position: relative;
+  z-index: 6;
 }
 
-/* Khung chứa ảnh */
 .product-images {
-  flex: 0 0 500px;
-  max-width: 430px;
+  flex: 1;
+  min-width: 400px;
+  max-width: 500px; 
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -630,33 +631,30 @@ hr {
 #product-detail .image-slider {
   width: 100%;
   height: auto;
-  max-height: 500px; 
-  max-width: 420px;
-  width: 100%;
+  aspect-ratio: 1 / 1; 
   overflow: hidden;
   border-radius: 10px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start; 
+  background: #f5f5f5;
 }
 
 #product-detail .image-slider .slides {
   display: flex;
-  align-items: center;
-  justify-content: center;
   transition: transform 0.5s ease-in-out;
-  width: 100%;
+  height: 100%;
 }
 
 #product-detail .image-slider img {
+  min-width: 100%;
   width: 100%;
-  height: auto;
-  max-height: 500px; 
-  object-fit: contain; 
+  height: 100%;
+  object-fit: cover; 
   border-radius: 10px;
   display: block;
-    flex-shrink: 0;
+  flex-shrink: 0; 
 }
 
 /* Chấm chuyển slide */
@@ -683,20 +681,19 @@ hr {
 /* Thông tin sản phẩm */
 #product-detail .product-info {
   flex: 1;
-  min-width: 300px;
-  max-width: 600px;
+  min-width: 350px;
   color: #fff;
   display: flex;
   flex-direction: column;
   gap: 12px;
-
 }
 
 #product-detail .product-info h2 {
   font-family: var(--font-title);
-  font-size: 36px;
+  font-size: 42px;
   color: #fff;
   letter-spacing: 1px;
+  line-height: 1.1;
 }
 
 #product-detail .short-desc {
@@ -708,24 +705,25 @@ hr {
 #product-detail .price {
   display: flex;
   align-items: baseline;
-  gap: 10px;
+  gap: 15px;
   font-family: var(--font-title);
+  margin-top: 10px;
 }
 
 #product-detail .price .current {
-  font-size: 32px;
+  font-size: 36px;
   color: var(--color-primary);
   font-weight: 700;
 }
 
 #product-detail .price .old {
-  font-size: 20px;
+  font-size: 22px;
   color: #bbb;
   text-decoration: line-through;
 }
 
 #product-detail .price .discount {
-  font-size: 20px;
+  font-size: 22px;
   color: #ff2e2e;
 }
 
@@ -751,42 +749,45 @@ hr {
 #product-detail .buy-buttons {
   display: flex;
   gap: 20px;
-  margin-top: 10px;
+  margin-top: 20px;
 }
 
 #product-detail .buy-buttons button {
-  padding: 12px 30px;
+  padding: 14px 30px;
   border: none;
   border-radius: 8px;
   font-size: 18px;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
+  flex: 1;
+  max-width: 220px;
 }
 
 #product-detail .buy-buttons .add-cart {
-  background-color: #f5d3b3;
-  color: #b15b00;
-  border: 2px solid #b15b00;
+  background-color: #e0f2f7;
+  color: #007bff;
+  border: 2px solid #007bff;
 }
 
 #product-detail .buy-buttons .add-cart:hover {
-  background-color: #e6b98e;
+  background-color: #b3e0ed;
 }
 
 #product-detail .buy-buttons .buy-now {
-  background-color: #b15b00;
+  background-color: #007bff;
   color: #fff;
 }
 
 #product-detail .buy-buttons .buy-now:hover {
-  background-color: #f9983d;
+  background-color: #0056b3;
 }
 
 /* Ô chọn số lượng */
 #product-detail .quantity-container {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 15px;
   margin-top: 20px;
 }
 
@@ -796,15 +797,17 @@ hr {
   background: #222;
   border-radius: 6px;
   overflow: hidden;
+  border: 1px solid #444;
 }
 
 #product-detail .quantity-box input {
-  width: 50px;
+  width: 60px;
   text-align: center;
   border: none;
   background: transparent;
   color: #fff;
-  font-size: 16px;
+  font-size: 18px;
+  font-weight: 600;
   outline: none;
 }
 
@@ -812,11 +815,14 @@ hr {
   background: #333;
   color: #fff;
   border: none;
-  width: 30px;
-  height: 30px;
+  width: 36px;
+  height: 36px;
   cursor: pointer;
   font-size: 18px;
   transition: 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 #product-detail .qty-btn:hover {
@@ -826,17 +832,18 @@ hr {
 /* Phần mô tả mở rộng */
 #product-extra {
   width: 100%;
-  max-width: 1200px;
+  max-width: 1400px; /* Đồng bộ với wrapper */
   margin-top: 80px;
   
-  background: rgba(0, 0, 0, 0.1); 
-  backdrop-filter: blur(5px); 
-  -webkit-backdrop-filter: blur(5px);
+  background: rgba(0, 0, 0, 0.4); /* Tối hơn chút để dễ đọc chữ trắng */
+  backdrop-filter: blur(10px); 
+  -webkit-backdrop-filter: blur(10px);
   
   border-radius: 16px;
-  padding: 30px 40px;
+  padding: 40px 50px;
   color: #fff;
-  z-index: 2;
+  z-index: 6;
+  border: 1px solid rgba(255,255,255,0.1);
 }
 
 #product-extra .desc-wrapper {
@@ -846,29 +853,39 @@ hr {
 }
 
 /* === Responsive === */
-@media (max-width: 900px) {
+@media (max-width: 1024px) {
   .product-wrapper {
     flex-direction: column;
-    gap: 30px;
+    gap: 40px;
     align-items: center;
   }
 
   .product-images {
     max-width: 100%;
   }
-
+  
+  /* Khi màn hình nhỏ, giới hạn lại chiều cao slider */
   #product-detail .image-slider {
-    max-width: 100%;
-    max-height: 400px;
-  }
-
-  #product-detail .image-slider img {
-    max-height: 400px;
+    max-width: 500px;
   }
 
   #product-detail .product-info {
-    max-width: 100%;
+    width: 100%;
     text-align: center;
+    align-items: center;
+  }
+  
+  #product-detail .price {
+    justify-content: center;
+  }
+
+  #product-detail .share-like {
+    justify-content: center;
+  }
+  
+  #product-detail .buy-buttons {
+    justify-content: center;
+    width: 100%;
   }
 }
 
