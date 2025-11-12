@@ -693,6 +693,125 @@ RESET & BASE STYLES
     animation: warehouseFadeIn 0.3s ease;
 }
 
+/* Import Detail Modal */
+.warehouse-wrapper .import-detail-modal .modal-container,
+.warehouse-wrapper .confirm-delete-modal .modal-container {
+    background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
+    border-radius: 15px;
+    width: 90%;
+    max-width: 500px;
+    padding: 30px;
+    position: relative;
+    animation: warehouseSlideDown 0.4s ease;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 10px 50px rgba(0, 0, 0, 0.5);
+}
+
+.warehouse-wrapper .import-detail-modal h3,
+.warehouse-wrapper .confirm-delete-modal h3 {
+    color: #ff8519;
+    font-size: 24px;
+    margin: 0 0 20px 0;
+    font-weight: 600;
+    padding-right: 30px;
+}
+
+.warehouse-wrapper .import-detail-modal .modal-container > div,
+.warehouse-wrapper .confirm-delete-modal .modal-container > div {
+    margin-bottom: 15px;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.warehouse-wrapper .import-detail-modal strong,
+.warehouse-wrapper .confirm-delete-modal strong {
+    color: rgba(255, 255, 255, 0.7);
+    font-weight: 500;
+    display: inline-block;
+    min-width: 120px;
+}
+
+.warehouse-wrapper .import-detail-modal .modal-close,
+.warehouse-wrapper .confirm-delete-modal .modal-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    line-height: 1;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: transparent;
+    padding: 0;
+}
+
+.warehouse-wrapper .import-detail-modal .modal-close:hover,
+.warehouse-wrapper .confirm-delete-modal .modal-close:hover {
+    color: #ff6b35;
+    transform: rotate(90deg);
+}
+
+.warehouse-wrapper .btn-close-import-detail,
+.warehouse-wrapper .btn-confirm-yes,
+.warehouse-wrapper .btn-confirm-no {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 14px;
+    font-family: 'Poppins', sans-serif;
+    margin-right: 10px;
+}
+
+.warehouse-wrapper .btn-close-import-detail {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.warehouse-wrapper .btn-close-import-detail:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.warehouse-wrapper .btn-confirm-yes {
+    background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
+    color: white;
+    box-shadow: 0 4px 15px rgba(244, 67, 54, 0.3);
+}
+
+.warehouse-wrapper .btn-confirm-yes:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 25px rgba(244, 67, 54, 0.4);
+}
+
+.warehouse-wrapper .btn-confirm-no {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.warehouse-wrapper .btn-confirm-no:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.warehouse-wrapper .confirm-delete-modal .confirm-text {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 16px;
+    margin: 20px 0 30px 0;
+}
+
 .warehouse-wrapper .modal-content {
     background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
     border-radius: 15px;
