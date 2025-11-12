@@ -1684,6 +1684,435 @@ document.addEventListener("DOMContentLoaded", initOrderModule);
 // ANALYTICS SCRIPT
 // ===============================
 
+/*
+  Analytics module for admin dashboard
+  - idempotent: uses window._analyticsModuleInited guard
+  - reads orders/products from dataManager via dmGetAll/dmGetById helpers already defined
+  - expects Chart.js to be loaded on page
+  - uses HTML ids/classes from your admin.html (salesDateFrom, salesDateTo, .btn-primary inside #analytics-section)
+*/
+
+window._analyticsModuleInited = window._analyticsModuleInited || false;
+
+(function () {
+  if (window._analyticsModuleInited) return;
+
+  const sectionSelector = '#analytics-section';
+  const sectionEl = document.querySelector(sectionSelector);
+  if (!sectionEl) {
+    console.warn('Analytics section not found, skipping analytics init');
+    window._analyticsModuleInited = true;
+    return;
+  }
+
+  // Local helpers (safe names to avoid collisions)
+  const $ = sel => sectionEl.querySelector(sel);
+  const $$ = sel => Array.from(sectionEl.querySelectorAll(sel));
+  const dmAll = (col) => typeof dmGetAll === 'function' ? dmGetAll(col) : (window.dataManager?.getAll ? window.dataManager.getAll(col) : window.dataManager?.data?.[col] || []);
+  const dmById = (col, id) => typeof dmGetById === 'function' ? dmGetById(col, id) : (window.dataManager?.getById ? window.dataManager.getById(col, id) : (window.dataManager?.data?.[col] || []).find(x => x.id == id) || null);
+
+  const parseDateOnly = (isoOrYmd) => {
+    if (!isoOrYmd) return null;
+    // Accept YYYY-MM-DD or ISO strings
+    try {
+      const d = new Date(isoOrYmd);
+      d.setHours(0,0,0,0);
+      return d;
+    } catch(e) { return null; }
+  };
+
+  const fmtCurrency = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format;
+
+  // Chart refs
+  let revenueChart = null;
+  let ordersChart = null;
+  let statusChart = null;
+
+  // Aggregate raw orders into daily buckets and status totals
+  function aggregateAnalytics(orders) {
+    // orders: array of order objects; uses order.date (ISO) and order.totalPrice / order.idOrder / order.items / order.status
+    const byDate = {}; // yyyy-mm-dd => { revenue, orders, products: { name: { sold, revenue } }, statusCounts }
+    const ensureDay = (dStr) => {
+      if (!byDate[dStr]) byDate[dStr] = { revenue:0, orders:0, products:{}, status:{ new:0, processing:0, delivered:0, cancelled:0 } };
+      return byDate[dStr];
+    };
+
+    (orders || []).forEach(o => {
+      const rawDate = o.date || o.createdAt || o.created || null;
+      const d = parseDateOnly(rawDate);
+      if (!d) return;
+      const key = d.toISOString().slice(0,10);
+      const day = ensureDay(key);
+
+      const revenue = Number(o.totalPrice || o.amountPrice || 0);
+      day.revenue += revenue;
+      day.orders += 1;
+
+      const status = (o.status || 'new').toString().toLowerCase();
+      if (day.status[status] !== undefined) day.status[status] += 1;
+      else day.status[status] = (day.status[status] || 0) + 1;
+
+      // Aggregate product-level counts (try to read o.items or o.itemsOrdered)
+      const items = o.items || o.orderItems || o.products || [];
+      items.forEach(it => {
+        // try to get product name from item or from product db
+        const prodId = it.id || it.productId || it.productId || it.pid;
+        const name = (it.name || it.title || (dmById('products', prodId)?.title) || (dmById('products', prodId)?.name) || `#${prodId}`) ;
+        const qty = Number(it.quantity || it.qty || it.amount || 0);
+        const lineRevenue = Number(it.amountPrice || it.unitPrice || it.price || (qty * (it.unitPrice || it.price || 0)) || 0);
+
+        if (!day.products[name]) day.products[name] = { sold:0, revenue:0 };
+        day.products[name].sold += qty;
+        day.products[name].revenue += lineRevenue;
+      });
+
+      // If no items array (some orders may not include items), try to count by products stored elsewhere; skip
+    });
+
+    // produce arrays sorted by date asc
+    const dates = Object.keys(byDate).sort();
+    const list = dates.map(d => ({
+      date: d,
+      revenue: Math.round(byDate[d].revenue),
+      orders: byDate[d].orders,
+      status: byDate[d].status,
+      products: byDate[d].products
+    }));
+
+    // global rollups for status and products
+    const globalStatus = { new:0, processing:0, delivered:0, cancelled:0 };
+    const productMap = {};
+    list.forEach(day => {
+      Object.entries(day.status || {}).forEach(([k,v]) => {
+        if (!globalStatus[k]) globalStatus[k] = 0;
+        globalStatus[k] += v;
+      });
+      Object.entries(day.products || {}).forEach(([name, p]) => {
+        if (!productMap[name]) productMap[name] = { sold:0, revenue:0 };
+        productMap[name].sold += p.sold;
+        productMap[name].revenue += p.revenue;
+      });
+    });
+
+    return { list, globalStatus, productMap };
+  }
+
+  // Render charts using Chart.js; expects canvas elements with ids revenueChart, ordersChart, statusChart inside analytics section
+  function renderChartsFromAggregated(agg) {
+    const labels = agg.list.map(x => x.date);
+    const revenueData = agg.list.map(x => x.revenue);
+    const ordersData = agg.list.map(x => x.orders);
+
+    // revenue line
+    const revenueCtx = sectionEl.querySelector('#revenueChart')?.getContext?.('2d');
+    if (revenueCtx) {
+      if (revenueChart) revenueChart.destroy();
+      revenueChart = new Chart(revenueCtx, {
+        type: 'line',
+        data: {
+          labels,
+          datasets: [{ label: 'Doanh thu', data: revenueData, fill: true, tension: 0.25, pointRadius: 3 }]
+        },
+        options: { responsive:true, plugins:{legend:{display:false}}, scales:{ y:{ beginAtZero:true } } }
+      });
+    }
+
+    // orders bar
+    const ordersCtx = sectionEl.querySelector('#ordersChart')?.getContext?.('2d');
+    if (ordersCtx) {
+      if (ordersChart) ordersChart.destroy();
+      ordersChart = new Chart(ordersCtx, {
+        type: 'bar',
+        data: { labels, datasets: [{ label: 'Đơn hàng', data: ordersData, barThickness: 20 }] },
+        options: { responsive:true, plugins:{legend:{display:false}}, scales:{ y:{ beginAtZero:true } } }
+      });
+    }
+
+    // status doughnut
+    const statusCtx = sectionEl.querySelector('#statusChart')?.getContext?.('2d');
+    if (statusCtx) {
+      if (statusChart) statusChart.destroy();
+      const ds = agg.globalStatus || { new:0, processing:0, delivered:0, cancelled:0 };
+      statusChart = new Chart(statusCtx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Mới đặt','Đang xử lý','Đã giao','Đã hủy'],
+          datasets: [{ data: [ds.new||0, ds.processing||0, ds.delivered||0, ds.cancelled||0] }]
+        },
+        options: { responsive:true, plugins:{legend:{position:'right'}} }
+      });
+    }
+  }
+
+  // Update stat cards and product lists
+  function updateStatsAndLists(agg) {
+    // stat cards: .stats-grid .stat-card .stat-value (order preserved in HTML)
+    const statValueEls = sectionEl.querySelectorAll('.stats-grid .stat-card .stat-value');
+    const totalRevenue = agg.list.reduce((s,d)=> s + (d.revenue||0), 0);
+    const totalOrders = agg.list.reduce((s,d)=> s + (d.orders||0), 0);
+    const avgPerOrder = totalOrders ? Math.round(totalRevenue/totalOrders) : 0;
+    const profit = Math.round(totalRevenue * 0.1); // simplistic profit calc
+
+    if (statValueEls && statValueEls.length >= 4) {
+      statValueEls[0].innerText = fmtCurrency(totalRevenue);
+      statValueEls[1].innerText = String(totalOrders);
+      statValueEls[2].innerText = fmtCurrency(avgPerOrder);
+      statValueEls[3].innerText = fmtCurrency(profit);
+    } else {
+      // fallback: find by heading text
+      sectionEl.querySelectorAll('.stat-card').forEach(card => {
+        const title = (card.querySelector('h3')?.innerText || '').toLowerCase();
+        if (title.includes('doanh thu')) card.querySelector('.stat-value').innerText = fmtCurrency(totalRevenue);
+        if (title.includes('đơn hàng')) card.querySelector('.stat-value').innerText = String(totalOrders);
+        if (title.includes('tb/đơn') || title.includes('tb')) card.querySelector('.stat-value').innerText = fmtCurrency(avgPerOrder);
+        if (title.includes('lợi nhuận')) card.querySelector('.stat-value').innerText = fmtCurrency(profit);
+      });
+    }
+
+    // Top products: aggregate productMap -> sorted top 5
+    const productMap = agg.productMap || {};
+    const productsArr = Object.entries(productMap).map(([name, v]) => ({ name, sold: v.sold, revenue: v.revenue }));
+    productsArr.sort((a,b) => b.sold - a.sold);
+    const top5 = productsArr.slice(0,5);
+
+    const productListEl = sectionEl.querySelector('.product-list');
+    if (productListEl) {
+      productListEl.innerHTML = '';
+      if (top5.length === 0) {
+        productListEl.innerHTML = '<p style="color:#666">Không có dữ liệu sản phẩm.</p>';
+      } else {
+        top5.forEach((p, idx) => {
+          const item = document.createElement('div');
+          item.className = 'product-item';
+          item.style = 'display:flex; align-items:center; gap:12px; padding:12px; border-radius:10px; box-shadow: 0 4px 12px rgba(0,0,0,0.04); margin-bottom:10px;';
+          item.innerHTML = `
+            <div class="product-rank" style="font-weight:700; width:32px; text-align:center;">${idx+1}</div>
+            <div class="product-details" style="flex:1">
+              <h4 style="margin:0">${p.name}</h4>
+              <p style="margin:0; font-size:13px; color:#666">Đã bán: <strong>${p.sold}</strong></p>
+            </div>
+            <div class="product-revenue" style="font-weight:700">${fmtCurrency(p.revenue)}</div>
+          `;
+          productListEl.appendChild(item);
+        });
+      }
+    }
+
+    // Order status cards
+    const counts = agg.globalStatus || { new:0, processing:0, delivered:0, cancelled:0 };
+    const setCount = (cls, val) => {
+      const el = sectionEl.querySelector(`.order-status-grid .status-card.${cls} .status-count`);
+      if (el) el.innerText = String(val || 0);
+    };
+    setCount('new', counts.new);
+    setCount('processing', counts.processing);
+    setCount('delivered', counts.delivered);
+    setCount('cancelled', counts.cancelled);
+  }
+
+  // Build aggregated data from real dataManager orders
+  function buildAndRender(from, to) {
+    // Read all orders from dmGetAll('orders')
+    const rawOrders = dmAll('orders') || [];
+    // optionally filter by date range (from/to are strings 'YYYY-MM-DD' or empty)
+    let filtered = rawOrders.slice();
+    const fromD = parseDateOnly(from);
+    const toD = parseDateOnly(to);
+    if (fromD || toD) {
+      filtered = filtered.filter(o => {
+        const d = parseDateOnly(o.date || o.createdAt || o.created);
+        if (!d) return false;
+        if (fromD && d < fromD) return false;
+        if (toD) {
+          // include end day fully
+          const toMax = new Date(toD); toMax.setHours(23,59,59,999);
+          if (d > toMax) return false;
+        }
+        return true;
+      });
+    }
+
+    const agg = aggregateAnalytics(filtered);
+    renderChartsFromAggregated(agg);
+    updateStatsAndLists(agg);
+  }
+
+  // Wire UI: date inputs and search button
+  const inputFrom = sectionEl.querySelector('#salesDateFrom');
+  const inputTo = sectionEl.querySelector('#salesDateTo');
+  // choose analytics search button (scoped to analytics section)
+  const btnSearch = sectionEl.querySelector('.btn-primary');
+
+  // initial render: last 7 days if possible else all
+  (function initialRender() {
+    const orders = dmAll('orders') || [];
+    if (orders.length === 0) {
+      // no orders: still render empty charts using sample point from today
+      buildAndRender('', '');
+      return;
+    }
+    // compute last 7 days range from orders dates
+    const dates = (orders.map(o => parseDateOnly(o.date)).filter(Boolean).sort((a,b)=>a-b));
+    const last = dates[dates.length-1];
+    const first = dates[Math.max(0, dates.length-7)] || dates[0];
+    const fromStr = first ? first.toISOString().slice(0,10) : '';
+    const toStr = last ? last.toISOString().slice(0,10) : '';
+    // set inputs if exist
+    if (inputFrom) inputFrom.value = fromStr;
+    if (inputTo) inputTo.value = toStr;
+    buildAndRender(fromStr, toStr);
+  })();
+
+  const applyFilterAndRender = () => {
+    const from = inputFrom?.value || '';
+    const to = inputTo?.value || '';
+    buildAndRender(from, to);
+  };
+
+  if (btnSearch) {
+    btnSearch.addEventListener('click', (ev) => {
+      ev.preventDefault();
+      applyFilterAndRender();
+    });
+  } else {
+    if (inputFrom) inputFrom.addEventListener('change', applyFilterAndRender);
+    if (inputTo) inputTo.addEventListener('change', applyFilterAndRender);
+  }
+
+  // expose function for debugging or external calls
+  window.adminAnalytics = {
+    refresh: applyFilterAndRender,
+    renderChartsFromAggregated,
+    aggregateAnalytics
+  };
+  // --- begin: analytics tab switching + simple customer-stats renderer ---
+(function wireAnalyticsTabs() {
+  if (!sectionEl) return;
+  const tabButtons = Array.from(sectionEl.querySelectorAll('.analytics-tab-btn'));
+  const tabContents = Array.from(sectionEl.querySelectorAll('.analytics-tab-content'));
+
+  function activateTab(name) {
+    // buttons
+    tabButtons.forEach(b => {
+      if ((b.dataset.tab || '').toString() === name) b.classList.add('active');
+      else b.classList.remove('active');
+    });
+    // contents
+    tabContents.forEach(c => {
+      if (c.id === name) c.classList.add('active');
+      else c.classList.remove('active');
+    });
+
+    // optional: when entering a tab, refresh renderers
+    if (name === 'sales-report') {
+      // keep analytics refreshed with current date filters
+      buildAndRender(inputFrom?.value || '', inputTo?.value || '');
+    } else if (name === 'customer-stats') {
+      // render simple customer stats UI (function below)
+      renderCustomerStats();
+    }
+  }
+
+  tabButtons.forEach(btn => {
+    btn.addEventListener('click', (ev) => {
+      ev.preventDefault();
+      const name = (btn.dataset.tab || '').toString();
+      if (!name) return;
+      activateTab(name);
+    });
+  });
+
+  // ensure initial active tab on load (respect existing active btn or default to sales-report)
+  const initial = (tabButtons.find(b => b.classList.contains('active'))?.dataset.tab) || 'sales-report';
+  activateTab(initial);
+})();
+
+// minimal renderer for "customer-stats" tab
+function renderCustomerStats() {
+  try {
+    const section = document.querySelector('#analytics-section');
+    if (!section) return;
+    const dmAllOrders = dmAll('orders') || [];
+    const dmAllCustomers = dmAll('customers') || [];
+
+    // Top customers by total spent (aggregate from orders)
+    const spendMap = {};
+    dmAllOrders.forEach(o => {
+      const u = o.username || '(unknown)';
+      const t = Number(o.totalPrice || 0);
+      spendMap[u] = (spendMap[u] || 0) + t;
+    });
+    const arr = Object.entries(spendMap).map(([u, s]) => ({ username: u, spent: s }));
+    arr.sort((a,b) => b.spent - a.spent);
+    const top5 = arr.slice(0,5);
+
+    const topListEl = section.querySelector('.top-customer-list');
+    if (topListEl) {
+      // if your HTML expects specific rank elements, try to fill them; fallback to building items
+      // Clear simple fallback area:
+      topListEl.innerHTML = '';
+      if (top5.length === 0) {
+        topListEl.innerHTML = '<p style="color:#666">Không có dữ liệu khách hàng.</p>';
+      } else {
+        top5.forEach((p, idx) => {
+          const item = document.createElement('div');
+          item.className = 'customer-rank-item';
+          item.innerHTML = `
+            <div class="rank-badge">${idx+1 <= 3 ? ['🥇','🥈','🥉'][idx] || (idx+1) : (idx+1)}</div>
+            <div class="customer-info"><h4 style="margin:0">${p.username}</h4><p style="margin:0;color:#666">Tổng chi: ${new Intl.NumberFormat('vi-VN',{style:'currency',currency:'VND'}).format(p.spent)}</p></div>
+            <div class="customer-spending" style="font-weight:700;color:var(--color-primary)">${new Intl.NumberFormat('vi-VN',{style:'currency',currency:'VND'}).format(p.spent)}</div>
+          `;
+          topListEl.appendChild(item);
+        });
+      }
+    }
+
+    // Growth stats: simple counts
+    const today = new Date(); today.setHours(0,0,0,0);
+    const weekAgo = new Date(today); weekAgo.setDate(today.getDate()-7);
+    const monthAgo = new Date(today); monthAgo.setMonth(today.getMonth()-1);
+
+    const byJoinDate = (c) => {
+      const d = c.dateOfBirth || c.createdAt || c.registered || null;
+      if (!d) return null;
+      try {
+        const dd = new Date(d); dd.setHours(0,0,0,0); return dd;
+      } catch(e) { return null; }
+    };
+
+    const newToday = dmAllCustomers.filter(c => {
+      const d = byJoinDate(c); return d && d.getTime() === today.getTime();
+    }).length;
+    const newWeek = dmAllCustomers.filter(c => {
+      const d = byJoinDate(c); return d && d >= weekAgo && d <= today;
+    }).length;
+    const newMonth = dmAllCustomers.filter(c => {
+      const d = byJoinDate(c); return d && d >= monthAgo && d <= today;
+    }).length;
+
+    const growthItems = section.querySelectorAll('.growth-item .growth-number');
+    if (growthItems && growthItems.length >= 3) {
+      growthItems[0].textContent = `${newToday}`;
+      growthItems[1].textContent = `${newWeek}`;
+      growthItems[2].textContent = `${newMonth}`;
+    } else {
+      // try to fill generic selectors
+      const gi = section.querySelector('.growth-stats');
+      if (gi) gi.querySelectorAll('.growth-number').forEach((el, i) => {
+        if (i === 0) el.textContent = newToday;
+        if (i === 1) el.textContent = newWeek;
+        if (i === 2) el.textContent = newMonth;
+      });
+    }
+  } catch (err) {
+    console.warn('renderCustomerStats error', err);
+  }
+}
+// --- end: analytics tab switching + renderer ---
+  window._analyticsModuleInited = true;
+})();
+
+
 // ===============================
 // WAREHOUSE SCRIPT
 // ===============================
@@ -2373,3 +2802,77 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // Add to your existing initSidebarAndTabs function or equivalent
 // Make sure to call initWarehouseModule() when the warehouse tab is clicked
+// -----------------------------
+// DASHBOARD RENDER (simple)
+// -----------------------------
+(function () {
+  // guard
+  if (window._dashboardModuleInited) return;
+  window._dashboardModuleInited = true;
+
+  const fmtVND = (v) =>
+    new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(Number(v || 0));
+
+  // helper lấy data (dùng dmGetAll đã có trong file)
+  const getCustomers = () => (typeof dmGetAll === 'function' ? dmGetAll('customers') : (window.dataManager?.getAll ? window.dataManager.getAll('customers') : window.dataManager?.data?.customers || []));
+  const getProducts = () => (typeof dmGetAll === 'function' ? dmGetAll('products') : (window.dataManager?.getAll ? window.dataManager.getAll('products') : window.dataManager?.data?.products || []));
+  const getOrders = () => (typeof dmGetAll === 'function' ? dmGetAll('orders') : (window.dataManager?.getAll ? window.dataManager.getAll('orders') : window.dataManager?.data?.orders || []));
+
+  function renderDashboard() {
+    try {
+      const userCountEl = document.getElementById('userCount');
+      const productCountEl = document.getElementById('productCount');
+      const revenueTotalEl = document.getElementById('revenueTotal');
+      const stockTotalEl = document.getElementById('stockTotal');
+
+      const customers = getCustomers() || [];
+      const products = getProducts() || [];
+      const orders = getOrders() || [];
+
+      // số lượng
+      if (userCountEl) userCountEl.textContent = String(customers.length);
+      if (productCountEl) productCountEl.textContent = String(products.length);
+
+      // tổng doanh thu (tính tổng totalPrice hoặc amountPrice)
+      const totalRevenue = orders.reduce((s, o) => {
+        const v = Number(o.totalPrice ?? o.amountPrice ?? 0);
+        return s + (isNaN(v) ? 0 : v);
+      }, 0);
+      if (revenueTotalEl) revenueTotalEl.textContent = fmtVND(totalRevenue);
+
+      // tổng tồn kho (sum stock nếu có)
+      const totalStock = products.reduce((s, p) => s + (Number(p.stock || 0) || 0), 0);
+      if (stockTotalEl) stockTotalEl.textContent = String(totalStock);
+
+    } catch (err) {
+      console.warn('renderDashboard error:', err);
+    }
+  }
+
+  // Gọi render khi DOM sẵn sàng
+  document.addEventListener('DOMContentLoaded', () => {
+    renderDashboard();
+  });
+
+  // Gọi render khi click vào Sidebar -> Dashboard (tab index 0)
+  // tìm sidebar items (same selector như file)
+  try {
+    const sidebarItems = Array.from(
+      document.querySelectorAll(
+        ".sidebar .middle-sidebar .sidebar-list .sidebar-list-item.tab-content"
+      )
+    );
+    const dashboardItem = sidebarItems[0]; // tab đầu tiên
+    if (dashboardItem) {
+      dashboardItem.addEventListener('click', (e) => {
+        // nhỏ delay để DOM class active được gán (như logic hiện tại)
+        setTimeout(renderDashboard, 50);
+      });
+    }
+  } catch (e) {
+    // im lặng nếu DOM khác
+  }
+
+  // Expose function for manual refresh if needed
+  window.renderAdminDashboard = renderDashboard;
+})();
