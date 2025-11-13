@@ -254,7 +254,7 @@
             <div class="product-control-left">
               <!-- JavaScript tự động lấy danh sách thể loại sản phẩm -->
               <select name="the-loai" id="the-loai" onchange="showProduct()">
-                <option value="" class="product-type">Thể loại</option>
+                <option value="" class="product-type">All</option>
                 <!-- Options will be populated by JavaScript -->
               </select>
             </div>
@@ -265,7 +265,7 @@
                   type="text" 
                   id="form-search-product" 
                   placeholder="Tìm kiếm sản phẩm" 
-                  oninput="showProduct()" 
+                  oninput="showProduct()"
                 />
                 <div class="search-btn">
                   <i class="fa-solid fa-magnifying-glass"></i>
@@ -286,7 +286,7 @@
           </div>
 
           <!-- JavaScript tự động hiển thị sản phẩm -->
-          <div class="show-product">
+          <div id="show-product">
             <div class="product-item">
               <div class="product-info">
                 <div class="product-img">
@@ -295,7 +295,7 @@
                 <div class="info">
                   <h3 class="product-name">#001</h3>
                   <p class="product-category">one piece</p>
-                  <p class="product-description">Description of the product goes here.</p>
+                  <div class="product-description">Description of the product goes here.</div>
                 </div>
                 <div class="product-price">$100</div>
               </div>
