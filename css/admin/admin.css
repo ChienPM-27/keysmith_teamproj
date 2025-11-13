@@ -101,7 +101,7 @@ body {
   cursor: pointer;
 }
 
-.sidebar {
+.admin-sidebar {
   flex-shrink: 0;
   width: 100px;
   height: 100vh;
@@ -116,29 +116,30 @@ body {
   overflow: hidden; /* Ẩn text khi đóng */
 }
 
-.sidebar.open {
+.admin-sidebar.open {
   width: 250px;
 }
 
-.sidebar ul {
+.admin-sidebar ul,
+.admin-sidebar__list {
   list-style: none;
 }
 
-.sidebar.open .top-sidebar {
+.admin-sidebar.open .admin-sidebar__brand {
   height: 150px;
   opacity: 1;
   width: 200px;
   transition: opacity 0.3s ease 0.1s;
 }
 
-.sidebar .top-sidebar {
+.admin-sidebar .admin-sidebar__brand {
   opacity: 0;
   width: 0;
   height: 150px;
   transition: opacity 0.2s ease;
 }
 
-.top-sidebar img {
+.admin-sidebar__brand img {
   width: 200px;
   position: relative;
   top: 25px;
@@ -146,13 +147,13 @@ body {
   cursor: pointer;
 }
 
-.middle-sidebar {
+.admin-sidebar__nav {
   margin: 1rem;
   flex-grow: 1;
   width: 100%;
 }
 
-.sidebar-list {
+.admin-sidebar__list {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -160,13 +161,13 @@ body {
   list-style: none;
 }
 
-.sidebar-list-item {
+.admin-sidebar__item {
   position: relative;
   width: 100%;
   transition: background-color 0.25s ease-in;
 }
 
-.sidebar-link {
+.admin-sidebar__link {
   display: flex;
   width: 100%;
   padding: 0.5rem 0;
@@ -175,37 +176,37 @@ body {
   color: var(--color-text-white);
 }
 
-.sidebar .sidebar-icon {
+.admin-sidebar .admin-sidebar__icon {
   margin-left: 2em;
   transition: margin-left 0.3s ease;
 }
 
-.sidebar.open .sidebar-icon {
+.admin-sidebar.open .admin-sidebar__icon {
   font-size: 24px;
   flex-shrink: 0;
   margin-left: 24px;
 }
 
-.sidebar.open .sidebar-hidden {
+.admin-sidebar.open .admin-sidebar__label {
   margin-left: 1.5rem;
   opacity: 1;
   transition: opacity 0.3s ease 0.1s;
 }
 
-.sidebar .sidebar-hidden {
+.admin-sidebar .admin-sidebar__label {
   opacity: 0;
   transition: opacity 0.2s ease;
   white-space: nowrap;
 }
 
-.sidebar-list-item:hover {
+.admin-sidebar__item:hover {
   background-color: var(--color-primary-hover);
 }
-.sidebar-link:hover {
+.admin-sidebar__link:hover {
   color: var(--color-text-dark);
 }
 
-.bottom-sidebar {
+.admin-sidebar__actions {
   width: 100%;
 }
 
@@ -234,29 +235,25 @@ body {
 /* Moved here so page files only contain page-unique rules.           */
 /* ------------------------------------------------------------------ */
 
+.section.wrapper {
+    padding: 20px;
+}
+
 .section-header {
   margin-bottom: 2rem;
-  border-bottom: 2px solid var(--color-primary);
-  padding-bottom: 1rem;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.5);
+  border-radius: 10px;
+  height: calc(13vh - 20px);
 }
 
 .section-header h1 {
-  color: var(--color-text-dark);
+  color: var(--color-primary);
+  height: 100%;
   font-size: 2rem;
-  margin-bottom: 0.5rem;
   display: flex;
   align-items: center;
   gap: 0.5rem;
-}
-
-.section-header h1 i {
-  color: var(--color-primary);
-}
-
-.section-header p {
-  color: #666;
-  font-size: 0.95rem;
-  margin: 0;
+  padding-left: 12px;
 }
 
 .form-search {
@@ -298,16 +295,15 @@ body {
   cursor: pointer;
   outline: none;
   transition: background-color 0.2s ease-in-out;
-  color: white;
   font-weight: 500;
   display: flex;
   align-items: center;
   gap: 5px;
-}
-.btn-control:hover {
-  border: 1px solid var(--color-primary);
   color: var(--color-text-dark);
-  transform: translateY(-1px);
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+.btn-control:hover {  
+  background-color: var(--color-primary-hover);
 }
 
 .list {
@@ -368,6 +364,25 @@ body {
 .form-submit:hover { background-color: var(--color-primary-hover); box-shadow: 0 4px 16px rgba(0,0,0,0.12); transform: translateY(-1px); }
 
 @keyframes modalFadeIn { from { transform: translateY(-140px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-
 @keyframes adminFadeIn { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
+#page-control {
+  display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    margin: 12px 0;
+    width: 100%;
+}
+/* Trạng thái đã ẩn / xóa mềm */
+.item-hidden {
+    opacity: 0.6;
+    background-color: #fdecea !important; /* Màu nền đỏ nhạt */
+    border: 1px dashed #ff4d4d !important; /* Viền đỏ báo hiệu */
+    filter: grayscale(80%); /* Xám màu */
+}
+
+.item-hidden .status {
+    background-color: #ff4d4d !important;
+    color: white !important;
+}

@@ -20,21 +20,17 @@ document.addEventListener("DOMContentLoaded", () => {
     window.location.href = "/index.html";
   }
 
-  // Hiển thị/ẩn các section khi bấm vào sidebar (chỉ phần middle-sidebar)
-  try {
-    const sidebarItems = Array.from(
-      document.querySelectorAll(
-        ".sidebar .middle-sidebar .sidebar-list .sidebar-list-item.tab-content"
-      )
-    );
-    const sections = Array.from(document.querySelectorAll("main .section"));
-    if (sidebarItems.length && sections.length) {
-      sidebarItems.forEach((item, idx) => {
-        item.addEventListener("click", (e) => {
-          e.preventDefault();
-          // xóa active trước đó
-          sidebarItems.forEach((si) => si.classList.remove("active"));
-          sections.forEach((sec) => sec.classList.remove("active"));
+    // Hiển thị/ẩn các section khi bấm vào sidebar (chỉ phần điều hướng)
+    try {
+        const sidebarItems = Array.from(document.querySelectorAll('.admin-sidebar .admin-sidebar__nav .admin-sidebar__list .admin-sidebar__item.tab-content'));
+        const sections = Array.from(document.querySelectorAll('main .section'));
+        if (sidebarItems.length && sections.length) {
+            sidebarItems.forEach((item, idx) => {
+                item.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    // xóa active trước đó
+                    sidebarItems.forEach(si => si.classList.remove('active'));
+                    sections.forEach(sec => sec.classList.remove('active'));
 
           // bật active cho item và section tương ứng (theo chỉ số)
           item.classList.add("active");
@@ -69,22 +65,18 @@ document.addEventListener("DOMContentLoaded", () => {
     console.warn("Sidebar show/hide init failed:", err);
   }
 
-  // Xử lý 3 nút phía dưới (Home, Admin, Log out)
-  try {
-    const bottomItems = Array.from(
-      document.querySelectorAll(
-        ".sidebar .bottom-sidebar .sidebar-list .sidebar-list-item.user-logout"
-      )
-    );
-    // bottomItems[0] = Trang chủ, [1] = Admin (hiển thị), [2] = Đăng xuất
-    if (bottomItems.length) {
-      const clearAuthAndRedirect = (msg) => {
-        if (msg && !confirm(msg)) return;
-        localStorage.removeItem("loggedInUser");
-        localStorage.removeItem("userRole");
-        localStorage.removeItem("rememberedUser");
-        window.location.href = "/index.html";
-      };
+    // Xử lý 3 nút phía dưới (Home, Admin, Log out)
+    try {
+        const bottomItems = Array.from(document.querySelectorAll('.admin-sidebar .admin-sidebar__actions .admin-sidebar__list .admin-sidebar__item.user-logout'));
+        // bottomItems[0] = Home page, [1] = Admin (display), [2] = Log out
+        if (bottomItems.length) {
+            const clearAuthAndRedirect = (msg) => {
+                if (msg && !confirm(msg)) return;
+                localStorage.removeItem('loggedInUser');
+                localStorage.removeItem('userRole');
+                localStorage.removeItem('rememberedUser');
+                window.location.href = '/index.html';
+            };
 
       if (bottomItems[0]) {
         bottomItems[0].addEventListener("click", (e) => {
@@ -120,7 +112,6 @@ document.addEventListener("DOMContentLoaded", () => {
     console.warn("Bottom sidebar handlers init failed:", err);
   }
 });
-
 // ===============================
 // ✔️ ĐƯỢC PHÉP SỬA ĐỔI
 // ===============================
@@ -136,6 +127,11 @@ window._orderModuleInited = window._orderModuleInited || false;
 // ===============================
 // PRODUCTS SCRIPT
 // ===============================
+
+// ===============================
+// PRODUCT-TYPES SCRIPT
+// ===============================
+
 
 // ===============================
 // CUSTOMERS SCRIPT

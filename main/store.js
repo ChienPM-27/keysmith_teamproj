@@ -1,7 +1,7 @@
 // STORE SCRIPT - Hiển thị danh sách sản phẩm
 import { dataManager } from "../js/admin/DatabaseManager.js";
 
-// tu detail.js
+// Từ detail.js
 import { showProductDetailById } from "./detail.js";
 // ===============================
 // PRODUCT LISTING MODULE
@@ -453,9 +453,27 @@ function goToPage(page) {
  * Hiển thị chi tiết sản phẩm (tích hợp với phần detail view có sẵn)
  */
 function showProductDetail(productId) {
-  // TODO: Tích hợp với phần product-detail section
-//   console.log("Show detail for product:", productId);
-  // Có thể chuyển sang section #product-detail và điền thông tin
+  // Hiển thị section chi tiết sản phẩm đơn giản
+  try {
+    const storeView = document.getElementById("store-view");
+    const detailView = document.getElementById("product-detail");
+    const backBtn = document.getElementById("back-btn");
+
+    // Nếu có detail section thì show và ẩn store view
+    if (detailView) {
+      // Hiển thị detail
+      detailView.style.display = "block";
+      // Ẩn store view
+      if (storeView) storeView.style.display = "none";
+      // Hiển thị nút back
+      if (backBtn) backBtn.style.display = "inline-block";
+    }
+
+    // Thực hiện nạp dữ liệu chi tiết (nếu cần) — hiện tại để log
+    console.log("Show detail for product:", productId);
+  } catch (e) {
+    console.error("Error showing product detail:", e);
+  }
   showProductDetailById(productId);
 }
 
@@ -736,6 +754,48 @@ function initProductModule() {
   if (perProductPageSelectEl) {
     perProductPageSelectEl.addEventListener("change", (e) => {
       setPerProductPage(e.target.value);
+    });
+  }
+
+  // Ẩn nút back mặc định (chỉ hiển thị khi ở detail hoặc cart)
+  const backBtn = document.getElementById("back-btn");
+  if (backBtn) backBtn.style.display = "none";
+
+  // Khi click vào icon cart ở header — hiện back button (giả sử showCartView sẽ hiển thị #cart-view)
+  const cartIcon = document.querySelector(".header-icons .cart");
+  if (cartIcon) {
+    cartIcon.addEventListener("click", () => {
+      // showCartView may be defined elsewhere; just ensure back button visible when cart is requested
+      if (backBtn) backBtn.style.display = "inline-block";
+    });
+  }
+
+  // Xử lý click cho back button: trở về Store view
+  if (backBtn) {
+    backBtn.addEventListener("click", () => {
+      const storeView = document.getElementById("store-view");
+      const detailView = document.getElementById("product-detail");
+      const cartView = document.getElementById("cart-view");
+
+      // Nếu đang ở detail -> ẩn detail, hiển thị store
+      if (detailView && detailView.style.display !== "none") {
+        detailView.style.display = "none";
+        if (storeView) storeView.style.display = "block";
+        backBtn.style.display = "none";
+        return;
+      }
+
+      // Nếu đang ở cart -> ẩn cart, hiển thị store
+      if (cartView && cartView.style.display !== "none") {
+        cartView.style.display = "none";
+        if (storeView) storeView.style.display = "block";
+        backBtn.style.display = "none";
+        return;
+      }
+
+      // Mặc định: ẩn back và show store
+      if (storeView) storeView.style.display = "block";
+      backBtn.style.display = "none";
     });
   }
 

@@ -1,0 +1,112 @@
+.product-types-wrapper {
+    padding: 20px 20px;
+}
+
+.product-types-body {
+    padding: 20px 0;
+    /* use consolidated admin animation */
+    animation: adminFadeIn 0.5s ease-in-out;
+}
+
+.pt-toolbar {
+    display: flex;
+    gap: 10px;
+}
+.pt-toolbar__search {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+        background-color: #F5F5F5;
+    /* border-collapse: collapse; */
+    border-radius: 5px;
+    border: none;
+}
+.show-product-types {
+    margin-top: 16px;
+    height: 1000px;
+}
+.product-type-item {
+    display: flex;
+    align-items: center;
+    height: 120px;
+    border: 1px solid;
+    border-radius: 8px;
+    border-color: #ccc;
+    justify-content: space-between;
+    padding: 12px 16px;
+}
+
+.product-type-left .id {
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+.product-type-left .name {
+    font-size: 18px;
+    font-weight: 600;
+}
+.product-type-left .date {
+    color: #666;
+}
+
+.product-type-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: center;
+}
+
+.product-type-right .Description {
+    margin-bottom: 8px;
+    color: #333;
+}
+
+.product-type-right .status {
+    padding: 4px 8px;
+    border-radius: 12px;
+    background-color: #D4EDDA;
+    color: #155724;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.product-type-right .actions button {
+    margin-left: 8px;
+    padding: 8px 8px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+
+}
+.product-type-right .actions .edit-btn {
+    background-color: #00FF01;
+    color: white;
+}
+.product-type-right .actions .delete-btn {
+    background-color: #FF0000;
+    color: white;
+}
+
+#pt-modal {
+    /* display: flex; */
+
+    align-items: center;
+    justify-content: center;
+}
+
+.pt-modal__container {
+    position: relative;
+    width: 50rem;
+    max-width: 90vw;
+}
+
+
+.pt-modal__container .form-control-description {
+    height: 50px;
+}
+
+
+.form-actions {
+    display: flex;
+    justify-content: center;
+}

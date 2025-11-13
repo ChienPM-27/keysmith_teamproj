@@ -5,15 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Admin Dashboard - KeySmith</title>
 
-    <!-- CSS Stylesheets -->
-    <link rel="stylesheet" href="/css/admin/admin.css" />
-    <link rel="stylesheet" href="/css/admin/responsive.css" />
-    <link rel="stylesheet" href="/css/admin/analytics.css" />
-    <link rel="stylesheet" href="/css/admin/warehouse.css" />
-    <link rel="stylesheet" href="/css/admin/dashboard.css" />
-    <link rel="stylesheet" href="/css/admin/products.css" />
-    <link rel="stylesheet" href="/css/admin/customers.css" />
-    <link rel="stylesheet" href="/css/admin/orders.css" />
+  <!-- CSS Stylesheets -->
+  <link rel="stylesheet" href="/css/admin/admin.css" />
+  <link rel="stylesheet" href="/css/admin/responsive.css" />
+  <link rel="stylesheet" href="/css/admin/analytics.css" />
+  <link rel="stylesheet" href="/css/admin/warehouse.css" />
+  <link rel="stylesheet" href="/css/admin/dashboard.css" />
+  <link rel="stylesheet" href="/css/admin/products.css" />
+  <link rel="stylesheet" href="/css/admin/customers.css" />
+  <link rel="stylesheet" href="/css/admin/orders.css" />
+  <link rel="stylesheet" href="/css/admin/product_types.css" />
 
     <!-- JavaScript Libraries -->
     <!-- Đã khai báo defer nên script sẽ được tải song song với HTML
@@ -26,121 +27,131 @@
     ></script>
   </head>
 
-  <body>
-    <!-- Header -->
-    <header class="header">
-      <button class="menu-icon-btn">
-        <div class="menu-icon"><i class="fa-solid fa-bars"></i></div>
-      </button>
-    </header>
-    <div class="container">
-      <!-- Sidebar Aside -->
-      <aside class="sidebar open" id="sidebar">
-        <div class="top-sidebar">
-          <img src="/img/logo/logo_full.png" alt="logo_key_smith" />
+<body>
+  <!-- Header -->
+  <header class="header">
+    <button class="menu-icon-btn">
+      <div class="menu-icon"><i class="fa-solid fa-bars"></i></div>
+    </button>
+  </header>
+  <div class="container">
+    <!-- Sidebar Aside -->
+    <!-- Renamed classes to clearer BEM-style: admin-sidebar, sections: brand/nav/actions -->
+    <aside class="admin-sidebar open" id="adminSidebar">
+
+      <div class="admin-sidebar__brand">
+        <img src="/img/logo/logo_full.png" alt="logo_key_smith" />
+      </div>
+
+      <div class="admin-sidebar__nav">
+        <ul class="admin-sidebar__list">
+          <li class="admin-sidebar__item tab-content active">
+            <a href="#" class="admin-sidebar__link">
+              <div class="admin-sidebar__icon">
+                <i class="fa-solid fa-house"></i>
+              </div>
+              <div class="admin-sidebar__label">Dashboard</div>
+            </a>
+          </li>
+
+          <li class="admin-sidebar__item tab-content">
+            <a href="#" class="admin-sidebar__link">
+              <div class="admin-sidebar__icon">
+                <i class="fa-solid fa-keyboard"></i>
+              </div>
+              <div class="admin-sidebar__label">Products</div>
+            </a>
+          </li>
+
+          <li class="admin-sidebar__item tab-content">
+            <a href="#" class="admin-sidebar__link">
+              <div class="admin-sidebar__icon">
+                <i class="fa-solid fa-boxes-stacked"></i>
+              </div>
+              <div class="admin-sidebar__label">Product Types</div>
+            </a>
+          </li>
+          
+
+          <li class="admin-sidebar__item tab-content">
+            <a href="#" class="admin-sidebar__link">
+              <div class="admin-sidebar__icon">
+                <i class="fa-solid fa-users"></i>
+              </div>
+              <div class="admin-sidebar__label">Customers</div>
+            </a>
+          </li>
+
+          <li class="admin-sidebar__item tab-content">
+            <a href="#" class="admin-sidebar__link">
+              <div class="admin-sidebar__icon">
+                <i class="fa-solid fa-cart-shopping"></i>
+              </div>
+              <div class="admin-sidebar__label">Orders</div>
+            </a>
+          </li>
+
+          <li class="admin-sidebar__item tab-content">
+            <a href="#" class="admin-sidebar__link">
+              <div class="admin-sidebar__icon">
+                <i class="fa-solid fa-chart-simple"></i>
+              </div>
+              <div class="admin-sidebar__label">Analytics</div>
+            </a>
+          </li>
+
+          <li class="admin-sidebar__item tab-content">
+            <a href="#" class="admin-sidebar__link">
+              <div class="admin-sidebar__icon">
+                <i class="fa-solid fa-warehouse"></i>
+              </div>
+              <div class="admin-sidebar__label">Warehouse</div>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="admin-sidebar__actions">
+        <ul class="admin-sidebar__list">
+          <li class="admin-sidebar__item user-logout">
+            <a href="#" class="admin-sidebar__link">
+              <div class="admin-sidebar__icon">
+                <i class="fa-solid fa-arrow-left"></i>
+              </div>
+              <div class="admin-sidebar__label">Home page</div>
+            </a>
+          </li>
+
+          <li class="admin-sidebar__item user-logout">
+            <a href="#" class="admin-sidebar__link">
+              <div class="admin-sidebar__icon">
+                <i class="fa-solid fa-user-shield"></i>
+              </div>
+              <div class="admin-sidebar__label">Admin</div>
+            </a>
+          </li>
+
+          <li class="admin-sidebar__item user-logout">
+            <a href="#" class="admin-sidebar__link">
+              <div class="admin-sidebar__icon">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+              </div>
+              <div class="admin-sidebar__label">Log out</div>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </aside>
+
+    <main class="content">
+      <!-- Dashboard -->
+      <div id="dashboard-section" class="section active wrapper">
+        <div class="section-header">
+          <h1>
+            <i class="fa-solid fa-house"></i>
+            Dashboard
+          </h1>
         </div>
-
-        <div class="middle-sidebar">
-          <ul class="sidebar-list">
-            <li class="sidebar-list-item tab-content active">
-              <a href="#" class="sidebar-link">
-                <div class="sidebar-icon">
-                  <i class="fa-solid fa-house"></i>
-                </div>
-                <div class="sidebar-hidden">Dashboard</div>
-              </a>
-            </li>
-
-            <li class="sidebar-list-item tab-content">
-              <a href="#" class="sidebar-link">
-                <div class="sidebar-icon">
-                  <i class="fa-solid fa-keyboard"></i>
-                </div>
-                <div class="sidebar-hidden">Products</div>
-              </a>
-            </li>
-
-            <li class="sidebar-list-item tab-content">
-              <a href="#" class="sidebar-link">
-                <div class="sidebar-icon">
-                  <i class="fa-solid fa-users"></i>
-                </div>
-                <div class="sidebar-hidden">Customers</div>
-              </a>
-            </li>
-
-            <li class="sidebar-list-item tab-content">
-              <a href="#" class="sidebar-link">
-                <div class="sidebar-icon">
-                  <i class="fa-solid fa-cart-shopping"></i>
-                </div>
-                <div class="sidebar-hidden">Orders</div>
-              </a>
-            </li>
-
-            <li class="sidebar-list-item tab-content">
-              <a href="#" class="sidebar-link">
-                <div class="sidebar-icon">
-                  <i class="fa-solid fa-chart-simple"></i>
-                </div>
-                <div class="sidebar-hidden">Analytics</div>
-              </a>
-            </li>
-
-            <li class="sidebar-list-item tab-content">
-              <a href="#" class="sidebar-link">
-                <div class="sidebar-icon">
-                  <i class="fa-solid fa-warehouse"></i>
-                </div>
-                <div class="sidebar-hidden">Ware House</div>
-              </a>
-            </li>
-          </ul>
-        </div>
-
-        <div class="bottom-sidebar">
-          <ul class="sidebar-list">
-            <li class="sidebar-list-item user-logout">
-              <a href="#" class="sidebar-link">
-                <div class="sidebar-icon">
-                  <i class="fa-solid fa-arrow-left"></i>
-                </div>
-                <div class="sidebar-hidden">Home page</div>
-              </a>
-            </li>
-
-            <li class="sidebar-list-item user-logout">
-              <a href="#" class="sidebar-link">
-                <div class="sidebar-icon">
-                  <i class="fa-solid fa-user-shield"></i>
-                </div>
-                <div class="sidebar-hidden">Admin</div>
-              </a>
-            </li>
-
-            <li class="sidebar-list-item user-logout">
-              <a href="#" class="sidebar-link">
-                <div class="sidebar-icon">
-                  <i class="fa-solid fa-arrow-right-from-bracket"></i>
-                </div>
-                <div class="sidebar-hidden">Log out</div>
-              </a>
-            </li>
-          </ul>
-        </div>
-      </aside>
-
-      <main class="content">
-        <!-- Dashboard -->
-        <div id="dashboard-section" class="section active dashboard-wrapper">
-          <div class="section-header">
-            <h1>
-              <i class="fa-solid fa-house"></i>
-              Dashboard
-            </h1>
-
-            <p>Trang tổng quát của KeySmith</p>
-          </div>
 
           <div class="dashboard-body">
             <div class="cards">
@@ -229,55 +240,93 @@
           </div>
         </div>
 
-        <!-- Products -->
-        <div id="products-section" class="section products-wrapper">
-          <div class="section-header">
-            <h1><i class="fa-solid fa-keyboard"></i>Quản lý sản phẩm</h1>
+      <!-- Products Section -->
+      <div id="products-section" class="section products-wrapper">
+        <div class="section-header">
+          <h1>
+            <i class="fa-solid fa-keyboard"></i>
+            Quản lý sản phẩm
+          </h1>
+        </div>
 
-            <p>Quản lý và theo dõi các sản phẩm trong cửa hàng của bạn.</p>
-          </div>
-
-          <div class="product-body">
-            <div class="product-control">
-              <div class="product-control-left">
-                <!-- JavaScript tự động lấy danh sách thể loại sản phẩm -->
-                <select name="the-loai" id="the-loai" onchange="showProduct()">
-                  <option value="">Thể loại</option>
-                  <!-- <option value="Attack on Titan">Attack On Titan</option>
-                <option value="The Lord of the Rings">The Lord of the Rings</option>
-                <option value="One Piece">One Piece</option>
-                <option value="Yugioh">Yugioh</option> -->
-                </select>
-              </div>
-
-              <div class="product-control-center">
-                <form action="" class="form-search">
-                  <input
-                    type="text"
-                    id="form-search-product"
-                    placeholder="Tìm kiếm sản phẩm"
-                    oninput="showProduct()"
-                  />
-
-                  <div class="search-btn">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                  </div>
-                </form>
-              </div>
-
-              <div class="product-control-right">
-                <button class="btn-control" id="btn-add-product">
-                  <i class="fa-solid fa-plus"></i>Thêm sản phẩm
-                </button>
-
-                <button class="btn-control" id="btn-refresh-product">
-                  <i class="fa-solid fa-arrows-rotate"></i> Làm mới
-                </button>
-              </div>
+        <div class="product-body">
+          <div class="product-control">
+            <div class="product-control-left">
+              <!-- JavaScript tự động lấy danh sách thể loại sản phẩm -->
+              <select name="the-loai" id="the-loai" onchange="showProduct()">
+                <option value="" class="product-type">Thể loại</option>
+                <!-- Options will be populated by JavaScript -->
+              </select>
             </div>
 
-            <!-- JavaScript tự động hiển thị sản phẩm -->
-            <div class="show-product"></div>
+            <div class="product-control-center">
+              <form action="" class="form-search">
+                <input 
+                  type="text" 
+                  id="form-search-product" 
+                  placeholder="Tìm kiếm sản phẩm" 
+                  oninput="showProduct()" 
+                />
+                <div class="search-btn">
+                  <i class="fa-solid fa-magnifying-glass"></i>
+                </div>
+              </form>
+            </div>
+
+            <div class="product-control-right">
+              <button class="btn-control" id="btn-add-product">
+                <i class="fa-solid fa-plus"></i>
+                Add
+              </button>
+              <button class="btn-control" id="btn-refresh-product">
+                <i class="fa-solid fa-arrows-rotate"></i>
+                Refresh
+              </button>
+            </div>
+          </div>
+
+          <!-- JavaScript tự động hiển thị sản phẩm -->
+          <div class="show-product">
+            <div class="product-item">
+              <div class="product-info">
+                <div class="product-img">
+                  <img src="/img/blank-image.png" alt="Product Image" />
+                </div>
+                <div class="info">
+                  <h3 class="product-name">#001</h3>
+                  <p class="product-category">one piece</p>
+                  <p class="product-description">Description of the product goes here.</p>
+                </div>
+                <div class="product-price">$100</div>
+              </div>
+              <div class="product-info-right">
+                <div class="product-status">Active</div>
+                <div class="btn-items">
+                  <button class="btn-edit-product">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                  </button>
+                  <button class="btn-view-product">
+                    <i class="fa-solid fa-eye"></i>
+                  </button>
+                  <button class="btn-delete-product">
+                    <i class="fa-solid fa-trash"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Phân trang -->
+          <!-- Thanh chọn số sản phẩm hiển thị -->
+            <div id="page-control">
+              <label for="per-page">Hiển thị:</label>
+              <select id="per-page">
+                <option value="4">4</option>
+                <option value="8" selected>8</option>
+                <option value="12">12</option>
+              </select>
+              khách hàng mỗi trang
+            </div>
 
             <!-- Phân trang -->
             <div class="page-nav">
@@ -285,244 +334,240 @@
                 <!-- JavaScript sẽ tự động tạo các nút ở đây -->
               </ul>
             </div>
-          </div>
 
-          <!-- Modal thêm/sửa sản phẩm -->
-          <div class="modal add-product">
-            <div
-              class="modal-container"
-              style="
-                max-width: 600px;
-                border-radius: 12px;
-                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
-                background: #fff;
-              "
-            >
-              <h3
-                class="modal-container-title add-product-e"
-                style="margin-top: 24px"
-              >
-                THÊM MỚI SẢN PHẨM
-              </h3>
+        </div>
 
-              <h3
-                class="modal-container-title edit-product-e"
-                style="margin-top: 24px"
-              >
-                CHỈNH SỬA SẢN PHẨM
-              </h3>
+        <!-- Modal thêm/sửa sản phẩm -->
+        <div class="modal add-product">
+          <div class="modal-container">
+            <h3 class="modal-container-title add-product-e">
+              THÊM MỚI SẢN PHẨM
+            </h3>
+            <h3 class="modal-container-title edit-product-e">
+              CHỈNH SỬA SẢN PHẨM
+            </h3>
 
               <button class="modal-close product-form">
                 <i class="fa-solid fa-xmark"></i>
               </button>
 
-              <div class="modal-content">
-                <form
-                  action=""
-                  class="add-product-form"
-                  onsubmit="return false;"
-                  style="display: flex; gap: 24px; align-items: flex-start"
-                >
-                  <div class="modal-content-left">
-                    <div
-                      style="
-                        display: flex;
-                        flex-direction: column;
-                        align-items: center;
-                        gap: 12px;
-                      "
-                    >
-                      <img
-                        src="/img/blank-image.png"
-                        alt=""
-                        class="upload-image-preview"
-                        style="
-                          width: 120px;
-                          height: 120px;
-                          object-fit: cover;
-                          border-radius: 8px;
-                          border: 1px solid #ccc;
-                          background: #f8f8f8;
-                        "
+            <div class="modal-content">
+              <form action="" class="add-product-form" onsubmit="return false;">
+                <div class="modal-content-left">
+                  <div>
+                    <img src="img/blank-image.png" alt="" class="upload-image-preview" />
+                    <label for="up-hinh-anh" class="form-label-file">
+                      <i class="fa-solid fa-image"></i>
+                      Chọn hình ảnh
+                      <input 
+                        accept="image/jpeg, image/png, image/jpg" 
+                        id="up-hinh-anh" 
+                        name="up-hinh-anh" 
+                        type="file"
+                        class="form-control" 
+                        style="display: none" 
+                        onchange="uploadImage(this)" 
                       />
+                    </label>
+                  </div>
+                </div>
 
-                      <label
-                        for="up-hinh-anh"
-                        class="form-label-file"
-                        style="
-                          cursor: pointer;
-                          color: var(--color-primary-hover);
-                          font-weight: 500;
-                        "
+                <div class="modal-content-right">
+                  <div>
+                    <div class="form-group">
+                      <label for="ten-mon" class="form-label">Tên sản phẩm</label>
+                      <input 
+                        id="ten-mon" 
+                        name="ten-mon" 
+                        type="text" 
+                        placeholder="Nhập tên sản phẩm"
+                        class="form-control" 
+                      />
+                      <span class="form-message"></span>
+                    </div>
+
+                    <div class="form-group">
+                      <label for="category" class="form-label">Chọn thể loại</label>
+                      <select name="category" id="chon-the-loai">
+                        <!-- Options will be populated by JavaScript -->
+                      </select>
+                      <span class="form-message"></span>
+                    </div>
+
+                    <div class="form-group">
+                      <label for="gia-moi" class="form-label">Giá bán</label>
+                      <input 
+                        id="gia-moi" 
+                        name="gia-moi" 
+                        type="text" 
+                        placeholder="Nhập giá bán" 
+                        class="form-control" 
+                      />
+                      <span class="form-message"></span>
+                    </div>
+
+                    <div class="form-group">
+                      <label for="mo-ta" class="form-label">Mô tả</label>
+                      <textarea 
+                        class="product-desc" 
+                        id="mo-ta" 
+                        placeholder="Nhập mô tả sản phẩm..."
+                      ></textarea>
+                      <span class="form-message"></span>
+                    </div>
+
+                    <div class="form-actions">
+                      <button 
+                        type="button" 
+                        class="form-submit btn-add-product-form add-product-e"
+                        id="add-product-button"
                       >
-                        <i class="fa-solid fa-image"></i> Chọn hình ảnh
-
-                        <input
-                          accept="image/jpeg, image/png, image/jpg"
-                          id="up-hinh-anh"
-                          name="up-hinh-anh"
-                          type="file"
-                          class="form-control"
-                          style="display: none"
-                          onchange="uploadImage(this)"
-                        />
-                      </label>
+                        <i class="fa-regular fa-plus"></i>
+                        <span>THÊM SẢN PHẨM</span>
+                      </button>
+                      <button 
+                        type="button" 
+                        class="form-submit btn-update-product-form edit-product-e"
+                        id="update-product-button"
+                      >
+                        <i class="fa-light fa-pencil"></i>
+                        <span>LƯU THAY ĐỔI</span>
+                      </button>
                     </div>
                   </div>
-
-                  <div class="modal-content-right">
-                    <div
-                      style="
-                        display: flex;
-                        flex-direction: column;
-                        gap: 16px;
-                        width: 100%;
-                      "
-                    >
-                      <div class="form-group">
-                        <label for="ten-mon" class="form-label"
-                          >Tên sản phẩm</label
-                        >
-
-                        <input
-                          id="ten-mon"
-                          name="ten-mon"
-                          type="text"
-                          placeholder="Nhập tên sản phẩm"
-                          class="form-control"
-                          style="
-                            border-radius: 6px;
-                            border: 1px solid #ccc;
-                            padding: 8px;
-                          "
-                        />
-
-                        <span class="form-message"></span>
-                      </div>
-
-                      <div class="form-group">
-                        <label for="category" class="form-label"
-                          >Chọn thể loại</label
-                        >
-
-                        <!-- JavaScript tự động lấy danh sách thể loại sản phẩm -->
-                        <select
-                          name="category"
-                          id="chon-the-loai"
-                          style="
-                            border-radius: 6px;
-                            border: 1px solid #ccc;
-                            padding: 8px;
-                          "
-                        >
-                          <!-- <option value="Attack on Titan">
-                          Attack On Titan
-                        </option>
-                        <option value="The Lord of the Rings">
-                          The Lord of the Rings
-                        </option>
-                        <option value="One Piece">One Piece</option>
-                        <option value="Yugioh">Yugioh</option> -->
-                        </select>
-
-                        <span class="form-message"></span>
-                      </div>
-
-                      <div class="form-group">
-                        <label for="gia-moi" class="form-label">Giá bán</label>
-
-                        <input
-                          id="gia-moi"
-                          name="gia-moi"
-                          type="text"
-                          placeholder="Nhập giá bán"
-                          class="form-control"
-                          style="
-                            border-radius: 6px;
-                            border: 1px solid #ccc;
-                            padding: 8px;
-                          "
-                        />
-
-                        <span class="form-message"></span>
-                      </div>
-                      <div class="form-group">
-                        <label for="mo-ta" class="form-label">Mô tả</label>
-
-                        <textarea
-                          class="product-desc"
-                          id="mo-ta"
-                          placeholder="Nhập mô tả sản phẩm..."
-                          style="
-                            border-radius: 6px;
-                            border: 1px solid #ccc;
-                            padding: 8px;
-                            min-height: 60px;
-                          "
-                        ></textarea>
-
-                        <span class="form-message"></span>
-                      </div>
-                      <div
-                        style="
-                          display: flex;
-                          gap: 12px;
-                          justify-content: flex-end;
-                        "
-                      >
-                        <button
-                          type="button"
-                          class="form-submit btn-add-product-form add-product-e"
-                          id="add-product-button"
-                          style="
-                            background: var(--color-primary);
-                            color: #fff;
-                            border-radius: 6px;
-                            border: none;
-                            padding: 10px 20px;
-                            font-weight: 500;
-                            cursor: pointer;
-                          "
-                        >
-                          <i class="fa-regular fa-plus"></i>
-
-                          <span>THÊM SẢN PHẨM</span>
-                        </button>
-
-                        <button
-                          type="button"
-                          class="form-submit btn-update-product-form edit-product-e"
-                          id="update-product-button"
-                          style="
-                            background: #28a745;
-                            color: #fff;
-                            border-radius: 6px;
-                            border: none;
-                            padding: 10px 20px;
-                            font-weight: 500;
-                            cursor: pointer;
-                          "
-                        >
-                          <i class="fa-light fa-pencil"></i>
-
-                          <span>LƯU THAY ĐỔI</span>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </form>
-              </div>
+                </div>
+              </form>
             </div>
           </div>
         </div>
+      </div>
 
-        <!-- Customers -->
-        <div id="customer-section" class="section customer-wrapper">
-          <div class="section-header">
-            <h1><i class="fa-solid fa-users"></i> Quản lý khách hàng</h1>
-
-            <p>Quản lý và theo dõi khách hàng của cửa hàng.</p>
+      <!-- Product Types Section -->
+      <div id="product-types-section" class="section product-types-wrapper">
+        <div class="section-header">
+          <h1>
+            <i class="fa-solid fa-boxes-stacked"></i>
+            Quản lý loại sản phẩm
+          </h1>
+        </div>
+        <div class="product-types-body">
+          <!-- Toolbar -->
+          <div class="pt-toolbar">
+            <input 
+              id="pt-category-filter" 
+              class="pt-toolbar__search" 
+              type="text" 
+              placeholder="Tìm kiếm tên loại..."
+            />
+            <button id="pt-add-btn" class="btn-control">
+              <i class="fa-solid fa-plus"></i>
+              Add type
+            </button>
+            <button id="pt-refresh-btn" class="btn-control">
+              <i class="fa-solid fa-arrows-rotate"></i>
+              Refresh
+            </button>
           </div>
+          <!-- Table -->
+          <div class="show-product-types">
+            <div class="product-type-item">
+              <div class="product-type-left">
+                <div class="id">1</div>
+                <div class="name">Loại sản phẩm A</div>
+                <!-- ngaytao -->
+                <div class="date">01/01/2023</div>
+                <div class="Description">Mô tả loại sản phẩm A</div>
+              </div>
+              <div class="product-type-right">
+                <div class="status">active</div>
+                <div class="actions">
+                  <button class="edit-btn">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                  </button>
+                  <button class="view-btn">
+                    <i class="fa-solid fa-eye"></i>
+                  </button>
+                  <button class="delete-btn">
+                    <i class="fa-solid fa-trash"></i>
+                  </button>
+              </div>
+              </div>
+            </div>
+        </div>
+        </div>
+        <!-- Thanh chọn số sản phẩm hiển thị -->
+            <div id="page-control">
+              <label for="per-page">Hiển thị:</label>
+              <select id="per-page">
+                <option value="4">4</option>
+                <option value="8" selected>8</option>
+                <option value="12">12</option>
+              </select>
+              khách hàng mỗi trang
+            </div>
+
+            <!-- Phân trang -->
+            <div class="page-nav">
+              <ul class="page-nav-list">
+                <!-- JavaScript sẽ tự động tạo các nút ở đây -->
+              </ul>
+            </div>
+            <!-- Modal thêm/sửa loại sản phẩm -->
+            <div id="pt-modal" class="modal">
+              <div class="modal-container pt-modal__container">
+                <button class="modal-close" data-pt-close>
+                  <i class="fa-solid fa-xmark"></i>
+                </button>
+                <h3 class="modal-container-title pt-modal__title">
+                  Thêm loại sản phẩm
+                </h3>
+      
+                <div class="modal-content">
+                  <form id="pt-form">
+                    <div class="form-group">
+                      <label for="pt-form-name" class="form-label">Tên loại</label>
+                      <input 
+                        id="pt-form-name" 
+                        type="text" 
+                        class="form-control"
+                        placeholder="Nhập tên loại sản phẩm"
+                        required
+                      />
+                      <span class="form-message" id="pt-form-error"></span>
+                      <label for="pt-form-description" class="form-label">Mô tả</label>
+                      <input 
+                        type="text" 
+                        id="pt-form-description" 
+                        class="form-control form-input-description"
+                        placeholder="Nhập mô tả loại sản phẩm"
+                        required
+                      />
+                    </div>
+      
+                    <div class="form-group">
+                      <label class="form-checkbox">
+                        <input type="checkbox" id="pt-form-active" checked />
+                        Kích hoạt
+                      </label>
+      
+                    </div>
+      
+                    <div class="form-actions">
+                      <button type="submit" class="form-submit" id="pt-form-submit">
+                        Lưu
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+      </div>
+
+      <!-- Customers -->
+      <div id="customer-section" class="section wrapper">
+        <div class="section-header">
+          <h1><i class="fa-solid fa-users"></i> Quản lý khách hàng</h1>
+        </div>
 
           <div class="customer-body">
             <div class="customer-control">
@@ -719,13 +764,11 @@
           </div>
         </div>
 
-        <!-- Orders -->
-        <div id="orders-section" class="section orders-wrapper">
-          <div class="section-header">
-            <h1><i class="fa-solid fa-cart-shopping"></i> Quản lý đơn hàng</h1>
-
-            <p>Quản lý và theo dõi đơn hàng của cửa hàng.</p>
-          </div>
+      <!-- Orders -->
+      <div id="orders-section" class="section wrapper">
+        <div class="section-header">
+          <h1><i class="fa-solid fa-cart-shopping"></i> Quản lý đơn hàng</h1>
+        </div>
 
           <div class="order-body">
             <div class="order-control">
@@ -1028,11 +1071,11 @@
           </div>
         </div>
 
-        <!-- Analytics -->
-        <div id="analytics-section" class="section analytics-wrapper">
-          <!-- Analytics Section -->
-          <div class="section-header">
-            <h1><i class="fa-solid fa-chart-simple"></i> Analytics</h1>
+      <!-- Analytics -->
+      <div id="analytics-section" class="section analytics-wrapper">
+        <!-- Analytics Section -->
+        <div class="analytics-section-header">
+          <h1><i class="fa-solid fa-chart-simple"></i> Analytics</h1>
 
             <p>Phân tích dữ liệu và quản lý giá bán</p>
           </div>

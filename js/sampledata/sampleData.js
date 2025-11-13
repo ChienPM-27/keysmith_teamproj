@@ -1,5 +1,4 @@
 // Dữ liệu mẫu được tạo tự động
-
 export const sampleData = {
   products: [
     {
