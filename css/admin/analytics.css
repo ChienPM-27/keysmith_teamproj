@@ -690,3 +690,56 @@
   height: 100% !important;
   display: block;
 }
+/* ===== FIX CHART RESPONSIVE + KHÔNG CHO PHÓNG TO ===== */
+.chart-card canvas,
+.chart-wrapper canvas,
+.analytics-row canvas {
+    width: 100% !important;
+    height: auto !important;
+    max-height: 360px;    /* Giới hạn chuẩn trên desktop */
+    display: block;
+    margin: 0 auto;
+}
+
+/* Chart wrapper */
+.chart-card .chart-wrapper {
+    width: 100%;
+    max-height: 360px;
+    overflow: hidden;
+}
+
+/* Doughnut chart (statusChart) giữ tỉ lệ vuông */
+#statusChart {
+    max-width: 420px;
+    max-height: 420px;
+    width: 100% !important;
+    height: auto !important;
+    margin: 0 auto;
+}
+
+/* Tablet */
+@media (max-width: 992px) {
+    .chart-card canvas,
+    #statusChart {
+        max-height: 300px;
+        max-width: 320px;
+    }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    .chart-card canvas,
+    #statusChart {
+        max-height: 240px;
+        max-width: 280px;
+    }
+}
+
+/* Small mobile */
+@media (max-width: 480px) {
+    .chart-card canvas,
+    #statusChart {
+        max-height: 180px;
+        max-width: 220px;
+    }
+}
