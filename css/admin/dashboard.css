@@ -160,3 +160,269 @@
 .processing {
     background: linear-gradient(320deg, #fbbf24 0, #fff 60%);
 }
+/* ======================
+   Responsive improvements for dashboard
+   Append this to the end of dashboard.css
+   ====================== */
+
+/* Make cards layout flexible and avoid overflow */
+.dashboard-body .cards {
+  display: flex;
+  flex-wrap: wrap;       /* allow wrap */
+  gap: 16px;             /* replace large margins with gap */
+  margin: 1.5rem 0 2rem;
+  align-items: stretch;
+  box-sizing: border-box;
+  height: auto;          /* allow cards grow on multiple rows */
+}
+
+/* Each card becomes flexible: try to show 4 on large, fewer on smaller screens */
+.card-single {
+  flex: 1 1 220px;       /* grow | shrink | base-width */
+  min-width: 220px;      /* force wrap earlier on small screens */
+  max-width: 100%;
+  margin: 0;             /* margins handled by gap */
+  transition: transform 0.22s ease-in-out;
+}
+
+/* Slightly reduce hover transform to avoid layout shift on small screens */
+.card-single:hover {
+  transform: translateY(-6px) scale(1.03);
+}
+
+/* Make the box scale to available height */
+.box {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1rem;
+  border-radius: 12px;
+  box-sizing: border-box;
+  height: 100%;
+  background-origin: border-box;
+}
+
+/* Titles and numbers responsive */
+.box-title { gap: 0.75rem; }
+.title-name { font-weight: 600; font-size: 1rem; }
+.box-content {
+  font-size: 2rem;      /* default for desktop/tablet */
+  line-height: 1;
+  font-weight: 700;
+  word-break: break-word;
+}
+
+/* Alerts & Order status responsive */
+.alerts {
+  padding: 1rem;
+  margin: 0;
+}
+
+.order-status {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin: 24px 0;      /* remove large side margins */
+}
+
+.status-card {
+  flex: 1 1 220px;
+  min-width: 200px;
+  padding: 12px;
+  box-sizing: border-box;
+}
+
+/* Analytics charts & cards */
+.analytics-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-top: 18px;
+}
+
+.chart-card {
+  flex: 1 1 320px;
+  min-width: 260px;
+  box-sizing: border-box;
+}
+
+/* Make canvas responsive */
+.chart-card canvas,
+.chart-wrapper canvas,
+canvas {
+  width: 100% !important;
+  height: auto !important;
+  display: block;
+}
+
+/* Tables: allow horizontal scroll on small screens */
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Ensure table cells wrap and have padding */
+.table-container table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: auto;
+  min-width: 700px; /* allow desktop tables to keep layout; mobile will scroll */
+}
+
+.table-container th,
+.table-container td {
+  padding: 10px 12px;
+  word-break: break-word;
+}
+
+/* Modals: center and responsive */
+.modal {
+  display: none; /* keep existing behavior; when showing, scripts set display/aria */
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+.modal[aria-hidden="false"],
+.modal[style*="display: flex"] {
+  display: flex;
+}
+
+.modal .modal-container,
+.modal .modal-content,
+.modal .modal-container.pt-modal__container {
+  max-width: 980px;
+  width: 100%;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.modal .modal-content,
+.modal .modal-container {
+  overflow: auto;
+  max-height: calc(100vh - 80px);
+  background: #fff;
+  border-radius: 12px;
+  padding: 16px;
+}
+
+/* Smaller modal variant */
+.modal .modal-content.modal-small,
+.modal .modal-container.modal-small {
+  max-width: 560px;
+}
+
+/* Forms / inputs responsive */
+.form-row input,
+.form-group .form-control,
+.add-order-qty,
+input[type="text"],
+textarea {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Buttons touch targets */
+button,
+.btn-control,
+.btn {
+  min-height: 40px;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+/* Fix long product list / show-product container */
+.show-product,
+.show-customer-container,
+.show-order-container,
+.product-list,
+.top-products {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Small visual polish */
+.status-badge {
+  white-space: nowrap;
+}
+
+/* Sidebar responsive helpers (will not override desktop rules) */
+@media (max-width: 992px) {
+  /* allow cards to be 2 per row on medium screens */
+  .card-single { flex: 1 1 45%; min-width: 220px; }
+  .box-content { font-size: 1.9rem; }
+}
+
+/* Mobile specific */
+@media (max-width: 768px) {
+  /* Dashboard cards full-width stacked */
+  .card-single { flex: 1 1 100%; min-width: 0; }
+  .dashboard-body .cards { gap: 12px; }
+
+  /* Reduce big numbers and spacing */
+  .box-content { font-size: 1.6rem; }
+  .title-name { font-size: 0.95rem; }
+
+  /* Order status stacked */
+  .order-status { flex-direction: column; gap: 12px; margin: 16px 0; }
+  .status-card { width: 100%; }
+
+  /* Analytics charts: single column */
+  .analytics-row { flex-direction: column; }
+
+  /* Table: min width removed to encourage wrapping; user can scroll horizontally if necessary */
+  .table-container table { min-width: 600px; }
+
+  /* Modal smaller paddings */
+  .modal .modal-container { padding: 12px; max-height: calc(100vh - 48px); }
+
+  /* Make header/menu button visible if sidebar overlaps */
+  .menu-icon-btn { display: inline-flex; align-items:center; justify-content:center; }
+
+  /* Sidebar overlay behavior — relies on JS toggling .mobile-open */
+  .admin-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 260px;               /* default mobile width */
+    transform: translateX(-100%);
+    transition: transform 220ms cubic-bezier(.2,.9,.3,1);
+    z-index: 1200;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+    background: #fff;
+  }
+  .admin-sidebar.mobile-open {
+    transform: translateX(0);
+  }
+
+  /* When sidebar open, prevent body scrolling */
+  body.sidebar-open {
+    overflow: hidden;
+  }
+
+  /* Add a lightweight overlay (if you want, JS can toggle a class on body) */
+  .admin-sidebar + .sidebar-overlay {
+    display: none;
+  }
+}
+
+/* Extra small phones */
+@media (max-width: 420px) {
+  .box-content { font-size: 1.25rem; }
+  .title-name { font-size: 0.9rem; }
+  .card-single { padding: 8px 0; }
+  .alerts { height: auto; padding: 12px; }
+  .chart-card { padding: 12px; }
+  .table-container th, .table-container td { padding: 8px; font-size: 13px; }
+}
+
+/* Accessibility: focus outlines for keyboard users */
+a:focus, button:focus, input:focus {
+  outline: 3px solid rgba(100,150,255,0.18);
+  outline-offset: 2px;
+}
+
+/* End of responsive dashboard.css additions */
