@@ -1,3 +1,10 @@
+/* ===========================================
+   CSS cho trang Quản lý Đơn hàng (Orders)
+   - Bao gồm styling cho danh sách đơn hàng
+   - Modal chi tiết và thêm đơn hàng
+   - Các nút điều khiển, bộ lọc và responsive design
+   =========================================== */
+
 #orders-section {
   padding: 20px;
 }
@@ -7,7 +14,7 @@
   animation: adminFadeIn 0.5s ease-in-out;
 }
 
-/* Controls */
+/* ĐIỀU KHIỂN */
 #orders-section .order-control {
   display: flex;
   flex-direction: column;
@@ -150,21 +157,19 @@
   transform: translateY(-1px);
 }
 
-/* ensure form-search content is left aligned */
 #orders-section .order-control-row .order-control-center .form-search,
 #orders-section .order-control-center .form-search {
   justify-content: flex-start;
   align-items: center;
 }
 
-/* Order list container */
+/* DANH SÁCH ĐƠN HÀNG */
 #orders-section .show-order-container {
   display: flex;
   flex-direction: column;
   gap: 14px;
 }
 
-/* Order item template */
 #orders-section .order-item {
   display: grid;
   grid-template-columns: 1fr auto;
@@ -237,7 +242,6 @@
   font-size: 0.82rem;
 }
 
-/* Style select elements that act as status badges so they visually match the badge appearance */
 #orders-section .order-item select.status-badge,
 #orders-section .order-item select.status-select {
   -webkit-appearance: none;
@@ -259,7 +263,6 @@
   box-shadow: 0 0 6px rgba(255, 133, 25, 0.12);
 }
 
-/* narrow the select to fit the badge layout */
 #orders-section .order-item select.status-badge {
   min-width: 110px;
 }
@@ -280,7 +283,6 @@
   background: #eee;
 }
 
-/* Action button variants to match customers styling */
 #orders-section .order-item .order-actions .btn-view-order {
   background: #eee;
   color: #000;
@@ -296,7 +298,6 @@
   color: #fff;
 }
 
-/* Status badge variants similar in tone to customer badges */
 #orders-section .order-item .status-badge.new {
   color: var(--color-primary);
   border-color: rgba(255, 133, 25, 0.16);
@@ -321,7 +322,6 @@
   background: rgba(255, 77, 77, 0.06);
 }
 
-/* Make modal status badge visually match the inline badges used in the list */
 #orders-section .order-detail-status .status-badge,
 #orders-section .order-detail-summary .status-badge,
 #orders-section .order-detail-summary .detail-status-badge {
@@ -335,12 +335,10 @@
   font-size: 0.82rem;
 }
 
-/* Adjust sizing to match list badges */
 #orders-section .order-detail-status .status-badge {
   min-width: 110px;
 }
 
-/* Variant colors for modal badge — reuse the same tones as list */
 #orders-section .order-detail-status .status-badge.new {
   color: var(--color-primary);
   border-color: rgba(255, 133, 25, 0.16);
@@ -365,7 +363,7 @@
   background: rgba(255, 77, 77, 0.06);
 }
 
-/* Pagination and page-control reuse customer styles */
+/* PHÂN TRANG */
 #orders-section #page-control {
   display: flex;
   align-items: center;
@@ -410,7 +408,7 @@
   border-color: var(--color-primary);
 }
 
-/* Order modals */
+/* MODAL CHI TIẾT ĐƠN HÀNG */
 #orders-section .order-detail-modal,
 #orders-section .order-form-modal {
   display: none;
@@ -431,15 +429,14 @@
 #orders-section .order-detail-modal .modal-container,
 #orders-section .order-detail-modal .modal-container,
 #orders-section .order-form-modal .modal-container {
-  /* modal should be a fixed-sized panel; order detail requires a tall viewport-friendly modal */
   width: 900px;
-  max-width: 95vw; /* fallback on narrow viewports */
+  max-width: 95vw;
   height: 90vh;
   max-height: 90vh;
   background: #fff;
   border-radius: 12px;
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.28);
-  overflow: hidden; /* keep scrolling inside inner list */
+  overflow: hidden;
 }
 
 #orders-section .order-detail-modal .modal-header h3,
@@ -458,12 +455,11 @@
   color: #333;
 }
 
-/* Ensure the modal body layout allocates a fixed area for header/footer and a scrollable middle for items */
 #orders-section .order-detail-modal .modal-body,
 #orders-section .order-form-modal .modal-body {
   display: flex;
   flex-direction: column;
-  height: calc(90vh - 64px); /* subtract approximate header height */
+  height: calc(90vh - 64px);
   padding: 16px 20px;
   box-sizing: border-box;
 }
@@ -478,7 +474,6 @@
 }
 
 #orders-section .order-detail-items {
-  /* this area scrolls when content is large; we limit its height to fill available space */
   overflow: auto;
   flex: 1 1 auto;
   padding-right: 8px;
@@ -545,7 +540,6 @@
   justify-content: flex-end;
 }
 
-/* Layout tweak: place status under total on the left and action buttons on the right, same line */
 #orders-section .order-detail-summary {
   display: flex;
   justify-content: space-between;
@@ -564,7 +558,6 @@
   align-items: center;
 }
 
-/* Buttons styling in modal footer/modal actions */
 #orders-section .modal-actions .btn {
   padding: 8px 14px;
   border-radius: 8px;
@@ -587,6 +580,7 @@
   filter: brightness(0.98);
 }
 
+/* RESPONSIVE DESIGN */
 @media (max-width: 768px) {
   #orders-section {
     padding: 12px;
@@ -664,8 +658,6 @@
   }
 }
 
-/* Adjust order item layout on very small screens to match customer template behavior
-   - move badge and actions to bottom-right row, while order info spans full width on top */
 @media (max-width: 520px) {
   #orders-section .order-item {
     display: grid;
@@ -681,10 +673,9 @@
     display: flex;
     flex-direction: column;
     gap: 6px;
-    align-items: flex-start; /* ensure left/top alignment on very small screens */
+    align-items: flex-start;
   }
 
-  /* Place badge and actions together on the bottom-right cell */
   #orders-section .order-item .order-status {
     grid-column: 1;
     grid-row: 2;
@@ -700,14 +691,13 @@
     gap: 8px;
   }
 
-  /* Ensure buttons keep compact sizing */
   #orders-section .order-item .order-actions button {
     padding: 6px 8px;
     font-size: 0.9rem;
   }
 }
 
-/* Styles for the "Add Order" modal (create) — mirror order-detail-modal and customerDetailModal */
+/* MODAL THÊM ĐƠN HÀNG */
 #orders-section .add-order-modal {
   display: none;
 }
@@ -734,7 +724,6 @@
   overflow: hidden;
 }
 
-/* reuse modal body layout used by order-detail */
 #orders-section .add-order-modal .modal-body {
   display: flex;
   flex-direction: column;
@@ -751,6 +740,7 @@
   align-items: start;
   margin-bottom: 12px;
 }
+
 #orders-section .add-order-modal .order-detail-head input {
   width: 100%;
   padding: 10px 12px;
@@ -760,11 +750,7 @@
 }
 
 #orders-section #add-order-id {
-  background: #f6f6f6; /* looks editable but locked */
-}
-
-.customer-wrapper .customer-detail-modal .form-row input[readonly] {
-  caret-color: transparent;
+  background: #f6f6f6;
 }
 
 #orders-section .add-order-items {
@@ -884,6 +870,7 @@
     width: 95vw;
     height: 85vh;
   }
+
   #orders-section .add-order-product-select {
     min-width: 140px;
   }

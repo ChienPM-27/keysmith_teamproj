@@ -24,7 +24,7 @@ const DEFAULT_FILTERS = {
   minPrice: 0,
   maxPrice: Infinity,
   sort: "", // "incre-price" | "decre-price"
-  search: ""
+  search: "",
 };
 
 /**
@@ -85,13 +85,13 @@ function normalizeProduct(product) {
     specs: {
       category: product.specs?.category || "",
       brand: product.specs?.brand || "",
-      color: product.specs?.color || ""
+      color: product.specs?.color || "",
     },
     price: parseFloat(product.price) || 0,
     importPrice: parseFloat(product.importPrice) || 0,
     stock: parseInt(product.stock, 10) || 0,
     sold: parseInt(product.sold, 10) || 0,
-    status: product.status || "available"
+    status: product.status || "available",
   };
 }
 
@@ -105,7 +105,7 @@ function normalizeProduct(product) {
 function filterByStatus(products, status) {
   if (!status) return products;
 
-  return products.filter(product => {
+  return products.filter((product) => {
     if (status === "ready") return product.stock > 0;
     if (status === "outofstock") return product.stock <= 0;
     return true;
@@ -120,7 +120,7 @@ function filterByStatus(products, status) {
  */
 function filterByBrand(products, brand) {
   if (!brand) return products;
-  return products.filter(product => product.specs.brand === brand);
+  return products.filter((product) => product.specs.brand === brand);
 }
 
 /**
@@ -131,7 +131,7 @@ function filterByBrand(products, brand) {
  */
 function filterByCategory(products, category) {
   if (!category) return products;
-  return products.filter(product => product.specs.category === category);
+  return products.filter((product) => product.specs.category === category);
 }
 
 /**
@@ -142,7 +142,7 @@ function filterByCategory(products, category) {
  */
 function filterByColor(products, color) {
   if (!color) return products;
-  return products.filter(product => product.specs.color === color);
+  return products.filter((product) => product.specs.color === color);
 }
 
 /**
@@ -153,8 +153,8 @@ function filterByColor(products, color) {
  * @returns {Array} Danh sách đã lọc
  */
 function filterByPriceRange(products, minPrice, maxPrice) {
-  return products.filter(product =>
-    product.price >= minPrice && product.price <= maxPrice
+  return products.filter(
+    (product) => product.price >= minPrice && product.price <= maxPrice
   );
 }
 
@@ -168,13 +168,15 @@ function filterBySearch(products, query) {
   if (!query) return products;
 
   const searchTerm = query.toLowerCase();
-  return products.filter(product => {
+  return products.filter((product) => {
     const searchableText = [
       product.title,
       product.shortDesc,
       product.specs.category,
-      product.specs.brand
-    ].join(" ").toLowerCase();
+      product.specs.brand,
+    ]
+      .join(" ")
+      .toLowerCase();
 
     return searchableText.includes(searchTerm);
   });
@@ -308,7 +310,9 @@ function createProductNode(product) {
 function renderProductList(products) {
   containerProducts.innerHTML = "";
 
-  products.forEach(product => {
+  products.forEach((product) => {
+    if (product.stock <= 0 || product.status == "outofstock") return;
+
     const normalizedProduct = normalizeProduct(product);
     const node = createProductNode(normalizedProduct);
     containerProducts.appendChild(node);
@@ -357,7 +361,9 @@ function renderPaginationControls(totalItems, currentPage, pageSize) {
 
   // Nút trước
   pageProductNavListEl.appendChild(
-    createPageButton("<", Math.max(1, currentPage - 1), { disabled: currentPage <= 1 })
+    createPageButton("<", Math.max(1, currentPage - 1), {
+      disabled: currentPage <= 1,
+    })
   );
 
   // Các nút trang
@@ -378,7 +384,7 @@ function renderPaginationControls(totalItems, currentPage, pageSize) {
   // Nút sau
   pageProductNavListEl.appendChild(
     createPageButton(">", Math.min(totalPages, currentPage + 1), {
-      disabled: currentPage >= totalPages
+      disabled: currentPage >= totalPages,
     })
   );
 
@@ -407,7 +413,11 @@ function renderProducts() {
   let filtered = applyAllFilters(allProducts, currentFilters);
   filtered = sortProducts(filtered, currentFilters.sort);
 
-  const { items, total, page } = paginateProducts(filtered, currentPage, perPage);
+  const { items, total, page } = paginateProducts(
+    filtered,
+    currentPage,
+    perPage
+  );
   currentPage = page;
 
   renderProductList(items);
@@ -578,7 +588,7 @@ export function addToCart(productId, quantity = 1) {
   let cart = JSON.parse(localStorage.getItem("cart") || "[]");
 
   // Kiểm tra sản phẩm đã có trong giỏ
-  const existingItem = cart.find(item => item.id === productId);
+  const existingItem = cart.find((item) => item.id === productId);
   if (existingItem) {
     existingItem.quantity += quantity;
   } else {
@@ -613,7 +623,7 @@ function populateBrandsDropdown() {
   if (!brandsSelect) return;
 
   const brands = dataManager.getAllBrands();
-  brands.forEach(brand => {
+  brands.forEach((brand) => {
     const option = document.createElement("option");
     option.value = brand;
     option.textContent = brand;
@@ -629,7 +639,7 @@ function populateCategoryDropdown() {
   if (!categorySelect) return;
 
   const categories = dataManager.getAllCategories();
-  categories.forEach(category => {
+  categories.forEach((category) => {
     const option = document.createElement("option");
     option.value = category;
     option.textContent = category;
@@ -645,7 +655,7 @@ function populateColorDropdown() {
   if (!colorSelect) return;
 
   const colors = dataManager.getAllColors();
-  colors.forEach(color => {
+  colors.forEach((color) => {
     const option = document.createElement("option");
     option.value = color;
     option.textContent = color;
@@ -839,38 +849,40 @@ function initProductModule() {
  * Khởi tạo header và mobile nav cho trang store
  */
 function initStorePageHeader() {
-  if (!document.body.classList.contains('store-page')) return;
+  if (!document.body.classList.contains("store-page")) return;
 
-  const header = document.getElementById('header');
-  const bar = document.getElementById('bar');
-  const close = document.getElementById('close');
-  const nav = document.getElementById('navbar');
+  const header = document.getElementById("header");
+  const bar = document.getElementById("bar");
+  const close = document.getElementById("close");
+  const nav = document.getElementById("navbar");
 
   // Mobile menu toggles
-  if (bar && nav) bar.addEventListener('click', () => nav.classList.add('active'));
-  if (close && nav) close.addEventListener('click', () => nav.classList.remove('active'));
+  if (bar && nav)
+    bar.addEventListener("click", () => nav.classList.add("active"));
+  if (close && nav)
+    close.addEventListener("click", () => nav.classList.remove("active"));
 
   // Click outside to close mobile nav
-  document.addEventListener('click', function (e) {
+  document.addEventListener("click", function (e) {
     if (!nav || !bar) return;
-    if (nav.classList.contains('active')) {
+    if (nav.classList.contains("active")) {
       if (!nav.contains(e.target) && !bar.contains(e.target)) {
-        nav.classList.remove('active');
+        nav.classList.remove("active");
       }
     }
   });
 
   // Header hide on scroll
   let lastScroll = 0;
-  window.addEventListener('scroll', function () {
+  window.addEventListener("scroll", function () {
     const current = window.pageYOffset || document.documentElement.scrollTop;
     if (!header) return;
     if (current <= 0) {
-      header.classList.remove('hidden');
+      header.classList.remove("hidden");
     } else if (current > lastScroll && current > 100) {
-      header.classList.add('hidden');
+      header.classList.add("hidden");
     } else {
-      header.classList.remove('hidden');
+      header.classList.remove("hidden");
     }
     lastScroll = current;
   });
@@ -881,5 +893,5 @@ document.addEventListener("DOMContentLoaded", () => {
   initProductModule();
 
   // Initialize store-page header & mobile nav
-  if (typeof initStorePageHeader === 'function') initStorePageHeader();
+  if (typeof initStorePageHeader === "function") initStorePageHeader();
 });

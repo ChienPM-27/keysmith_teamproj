@@ -14,8 +14,13 @@
         position: fixed;
     }
 
-    .admin-sidebar.open {
+    /* Chỉ ẩn sidebar khi không có class mobile-open */
+    .admin-sidebar:not(.mobile-open) {
         display: none;
+    }
+
+    .admin-sidebar.mobile-open {
+        display: flex;
     }
 
     .admin-sidebar .admin-sidebar__brand {
