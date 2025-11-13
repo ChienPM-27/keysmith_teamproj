@@ -1,364 +1,659 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>KeySmith</title>
 
     <!-- CSS Stylesheets -->
-    <link rel="stylesheet" href="/css/main/main.css">
-    <link rel="stylesheet" href="/main/util/login.css">
-    <link rel="stylesheet" href="/main/util/contact.css">
-    <link rel="stylesheet" href="/main/util/404.css">
-    <link rel="stylesheet" href="/main/util/profile.css">
+    <link rel="stylesheet" href="/css/main/main.css" />
+    <link rel="stylesheet" href="/css/main/util/login.css" />
+    <link rel="stylesheet" href="/css/main/util/contact.css" />
+    <link rel="stylesheet" href="/css/main/util/404.css" />
+    <link rel="stylesheet" href="/css/main/util/profile.css" />
     <link rel="stylesheet" href="/css/main/admin_login.css">
 
-    <link rel="icon" type="image/png" href="/img/logo/logo_favicon.png" sizes="32x32">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css"
-    integrity="sha512-tS3S5qG0BlhnQROyJXvNjeEM4UpMXHrQfTGmbQ1gKmelCxlSEBUaxhRBj/EFTzpbP4RVSrpEikbmdJobCvhE3g=="
-    crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css"
-    integrity="sha512-sMXtMNL1zRzolHYKEujM2AqCLUR9F2C4/05cdbxjjLSRvMQIciEPCQZo++nk7go3BtSuK9kfa/s+a4f4i5pLkw=="
-    crossorigin="anonymous" referrerpolicy="no-referrer" />
-    
+    <link
+      rel="icon"
+      type="image/png"
+      href="/img/logo/logo_favicon.png"
+      sizes="32x32"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css"
+      integrity="sha512-tS3S5qG0BlhnQROyJXvNjeEM4UpMXHrQfTGmbQ1gKmelCxlSEBUaxhRBj/EFTzpbP4RVSrpEikbmdJobCvhE3g=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css"
+      integrity="sha512-sMXtMNL1zRzolHYKEujM2AqCLUR9F2C4/05cdbxjjLSRvMQIciEPCQZo++nk7go3BtSuK9kfa/s+a4f4i5pLkw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
 
     <!-- JavaScript Libraries -->
     <script src="/js/main/app.js"></script>
 
-    <script src="https://kit.fontawesome.com/da0c4cdc9f.js" crossorigin="anonymous"></script>
-</head>
+    <script
+      src="https://kit.fontawesome.com/da0c4cdc9f.js"
+      crossorigin="anonymous"
+    ></script>
+  </head>
 
-<body>
+  <body>
     <!-- 404 ERROR OVERLAY -->
-    <div class="error-404-overlay" id="error404Overlay" style="display: none;">
-        <div class="error-404-background"></div>
+    <div class="error-404-overlay" id="error404Overlay" style="display: none">
+      <div class="error-404-background"></div>
 
-        <svg id="svgWrap_2_404" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 700 250">
-            <g>
-                <path id="id3_2_404"
-                    d="M195.7 232.67h-37.1V149.7H27.76c-2.64 0-5.1-.5-7.36-1.49-2.27-.99-4.23-2.31-5.88-3.96-1.65-1.65-2.95-3.61-3.89-5.88s-1.42-4.67-1.42-7.22V29.62h36.82v82.98H158.6V29.62h37.1v203.05z" />
-                <path id="id2_2_404"
-                    d="M470.69 147.71c0 8.31-1.06 16.17-3.19 23.58-2.12 7.41-5.12 14.28-8.99 20.6-3.87 6.33-8.45 11.99-13.74 16.99-5.29 5-11.07 9.28-17.35 12.81a85.146 85.146 0 0 1-20.04 8.14 83.637 83.637 0 0 1-21.67 2.83H319.3c-7.46 0-14.73-.94-21.81-2.83-7.08-1.89-13.76-4.6-20.04-8.14a88.292 88.292 0 0 1-17.35-12.81c-5.29-5-9.84-10.67-13.66-16.99-3.82-6.32-6.8-13.19-8.92-20.6-2.12-7.41-3.19-15.27-3.19-23.58v-33.13c0-12.46 2.34-23.88 7.01-34.27 4.67-10.38 10.92-19.33 18.76-26.83 7.83-7.5 16.87-13.36 27.12-17.56 10.24-4.2 20.93-6.3 32.07-6.3h66.41c7.36 0 14.58.94 21.67 2.83 7.08 1.89 13.76 4.6 20.04 8.14a88.292 88.292 0 0 1 17.35 12.81c5.29 5 9.86 10.67 13.74 16.99 3.87 6.33 6.87 13.19 8.99 20.6 2.13 7.41 3.19 15.27 3.19 23.58v33.14zm-37.1-33.13c0-7.27-1.32-13.88-3.96-19.82-2.64-5.95-6.16-11.04-10.55-15.29-4.39-4.25-9.46-7.5-15.22-9.77-5.76-2.27-11.8-3.35-18.13-3.26h-66.41c-6.14-.09-12.11.97-17.91 3.19-5.81 2.22-10.95 5.43-15.44 9.63-4.48 4.2-8.07 9.3-10.76 15.29-2.69 6-4.04 12.67-4.04 20.04v33.13c0 7.36 1.32 14.02 3.96 19.97 2.64 5.95 6.18 11.02 10.62 15.22 4.44 4.2 9.56 7.43 15.36 9.7 5.8 2.27 11.87 3.35 18.2 3.26h66.41c7.27 0 13.85-1.2 19.75-3.61s10.93-5.73 15.08-9.98 7.36-9.32 9.63-15.22c2.27-5.9 3.4-12.34 3.4-19.33v-33.15zm-16-26.91a17.89 17.89 0 0 1 2.83 6.73c.47 2.41.47 4.77 0 7.08-.47 2.31-1.39 4.48-2.76 6.51-1.37 2.03-3.14 3.75-5.31 5.17l-99.4 66.41c-1.61 1.23-3.26 2.08-4.96 2.55-1.7.47-3.45.71-5.24.71-3.02 0-5.9-.71-8.64-2.12-2.74-1.42-4.96-3.44-6.66-6.09a17.89 17.89 0 0 1-2.83-6.73c-.47-2.41-.5-4.77-.07-7.08.43-2.31 1.3-4.48 2.62-6.51 1.32-2.03 3.07-3.75 5.24-5.17l99.69-66.41a17.89 17.89 0 0 1 6.73-2.83c2.41-.47 4.77-.47 7.08 0 2.31.47 4.48 1.37 6.51 2.69 2.03 1.32 3.75 3.02 5.17 5.09z" />
-                <path id="id1_2_404"
-                    d="M688.33 232.67h-37.1V149.7H520.39c-2.64 0-5.1-.5-7.36-1.49-2.27-.99-4.23-2.31-5.88-3.96-1.65-1.65-2.95-3.61-3.89-5.88s-1.42-4.67-1.42-7.22V29.62h36.82v82.98h112.57V29.62h37.1v203.05z" />
-            </g>
-        </svg>
+      <svg
+        id="svgWrap_2_404"
+        xmlns="http://www.w3.org/2000/svg"
+        x="0px"
+        y="0px"
+        viewBox="0 0 700 250"
+      >
+        <g>
+          <path
+            id="id3_2_404"
+            d="M195.7 232.67h-37.1V149.7H27.76c-2.64 0-5.1-.5-7.36-1.49-2.27-.99-4.23-2.31-5.88-3.96-1.65-1.65-2.95-3.61-3.89-5.88s-1.42-4.67-1.42-7.22V29.62h36.82v82.98H158.6V29.62h37.1v203.05z"
+          />
+          <path
+            id="id2_2_404"
+            d="M470.69 147.71c0 8.31-1.06 16.17-3.19 23.58-2.12 7.41-5.12 14.28-8.99 20.6-3.87 6.33-8.45 11.99-13.74 16.99-5.29 5-11.07 9.28-17.35 12.81a85.146 85.146 0 0 1-20.04 8.14 83.637 83.637 0 0 1-21.67 2.83H319.3c-7.46 0-14.73-.94-21.81-2.83-7.08-1.89-13.76-4.6-20.04-8.14a88.292 88.292 0 0 1-17.35-12.81c-5.29-5-9.84-10.67-13.66-16.99-3.82-6.32-6.8-13.19-8.92-20.6-2.12-7.41-3.19-15.27-3.19-23.58v-33.13c0-12.46 2.34-23.88 7.01-34.27 4.67-10.38 10.92-19.33 18.76-26.83 7.83-7.5 16.87-13.36 27.12-17.56 10.24-4.2 20.93-6.3 32.07-6.3h66.41c7.36 0 14.58.94 21.67 2.83 7.08 1.89 13.76 4.6 20.04 8.14a88.292 88.292 0 0 1 17.35 12.81c5.29 5 9.86 10.67 13.74 16.99 3.87 6.33 6.87 13.19 8.99 20.6 2.13 7.41 3.19 15.27 3.19 23.58v33.14zm-37.1-33.13c0-7.27-1.32-13.88-3.96-19.82-2.64-5.95-6.16-11.04-10.55-15.29-4.39-4.25-9.46-7.5-15.22-9.77-5.76-2.27-11.8-3.35-18.13-3.26h-66.41c-6.14-.09-12.11.97-17.91 3.19-5.81 2.22-10.95 5.43-15.44 9.63-4.48 4.2-8.07 9.3-10.76 15.29-2.69 6-4.04 12.67-4.04 20.04v33.13c0 7.36 1.32 14.02 3.96 19.97 2.64 5.95 6.18 11.02 10.62 15.22 4.44 4.2 9.56 7.43 15.36 9.7 5.8 2.27 11.87 3.35 18.2 3.26h66.41c7.27 0 13.85-1.2 19.75-3.61s10.93-5.73 15.08-9.98 7.36-9.32 9.63-15.22c2.27-5.9 3.4-12.34 3.4-19.33v-33.15zm-16-26.91a17.89 17.89 0 0 1 2.83 6.73c.47 2.41.47 4.77 0 7.08-.47 2.31-1.39 4.48-2.76 6.51-1.37 2.03-3.14 3.75-5.31 5.17l-99.4 66.41c-1.61 1.23-3.26 2.08-4.96 2.55-1.7.47-3.45.71-5.24.71-3.02 0-5.9-.71-8.64-2.12-2.74-1.42-4.96-3.44-6.66-6.09a17.89 17.89 0 0 1-2.83-6.73c-.47-2.41-.5-4.77-.07-7.08.43-2.31 1.3-4.48 2.62-6.51 1.32-2.03 3.07-3.75 5.24-5.17l99.69-66.41a17.89 17.89 0 0 1 6.73-2.83c2.41-.47 4.77-.47 7.08 0 2.31.47 4.48 1.37 6.51 2.69 2.03 1.32 3.75 3.02 5.17 5.09z"
+          />
+          <path
+            id="id1_2_404"
+            d="M688.33 232.67h-37.1V149.7H520.39c-2.64 0-5.1-.5-7.36-1.49-2.27-.99-4.23-2.31-5.88-3.96-1.65-1.65-2.95-3.61-3.89-5.88s-1.42-4.67-1.42-7.22V29.62h36.82v82.98h112.57V29.62h37.1v203.05z"
+          />
+        </g>
+      </svg>
 
-        <svg id="svgWrap_1_404" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 700 250">
-            <g>
-                <path id="id3_1_404"
-                    d="M195.7 232.67h-37.1V149.7H27.76c-2.64 0-5.1-.5-7.36-1.49-2.27-.99-4.23-2.31-5.88-3.96-1.65-1.65-2.95-3.61-3.89-5.88s-1.42-4.67-1.42-7.22V29.62h36.82v82.98H158.6V29.62h37.1v203.05z" />
-                <path id="id2_1_404"
-                    d="M470.69 147.71c0 8.31-1.06 16.17-3.19 23.58-2.12 7.41-5.12 14.28-8.99 20.6-3.87 6.33-8.45 11.99-13.74 16.99-5.29 5-11.07 9.28-17.35 12.81a85.146 85.146 0 0 1-20.04 8.14 83.637 83.637 0 0 1-21.67 2.83H319.3c-7.46 0-14.73-.94-21.81-2.83-7.08-1.89-13.76-4.6-20.04-8.14a88.292 88.292 0 0 1-17.35-12.81c-5.29-5-9.84-10.67-13.66-16.99-3.82-6.32-6.8-13.19-8.92-20.6-2.12-7.41-3.19-15.27-3.19-23.58v-33.13c0-12.46 2.34-23.88 7.01-34.27 4.67-10.38 10.92-19.33 18.76-26.83 7.83-7.5 16.87-13.36 27.12-17.56 10.24-4.2 20.93-6.3 32.07-6.3h66.41c7.36 0 14.58.94 21.67 2.83 7.08 1.89 13.76 4.6 20.04 8.14a88.292 88.292 0 0 1 17.35 12.81c5.29 5 9.86 10.67 13.74 16.99 3.87 6.33 6.87 13.19 8.99 20.6 2.13 7.41 3.19 15.27 3.19 23.58v33.14zm-37.1-33.13c0-7.27-1.32-13.88-3.96-19.82-2.64-5.95-6.16-11.04-10.55-15.29-4.39-4.25-9.46-7.5-15.22-9.77-5.76-2.27-11.8-3.35-18.13-3.26h-66.41c-6.14-.09-12.11.97-17.91 3.19-5.81 2.22-10.95 5.43-15.44 9.63-4.48 4.2-8.07 9.3-10.76 15.29-2.69 6-4.04 12.67-4.04 20.04v33.13c0 7.36 1.32 14.02 3.96 19.97 2.64 5.95 6.18 11.02 10.62 15.22 4.44 4.2 9.56 7.43 15.36 9.7 5.8 2.27 11.87 3.35 18.2 3.26h66.41c7.27 0 13.85-1.2 19.75-3.61s10.93-5.73 15.08-9.98 7.36-9.32 9.63-15.22c2.27-5.9 3.4-12.34 3.4-19.33v-33.15zm-16-26.91a17.89 17.89 0 0 1 2.83 6.73c.47 2.41.47 4.77 0 7.08-.47 2.31-1.39 4.48-2.76 6.51-1.37 2.03-3.14 3.75-5.31 5.17l-99.4 66.41c-1.61 1.23-3.26 2.08-4.96 2.55-1.7.47-3.45.71-5.24.71-3.02 0-5.9-.71-8.64-2.12-2.74-1.42-4.96-3.44-6.66-6.09a17.89 17.89 0 0 1-2.83-6.73c-.47-2.41-.5-4.77-.07-7.08.43-2.31 1.3-4.48 2.62-6.51 1.32-2.03 3.07-3.75 5.24-5.17l99.69-66.41a17.89 17.89 0 0 1 6.73-2.83c2.41-.47 4.77-.47 7.08 0 2.31.47 4.48 1.37 6.51 2.69 2.03 1.32 3.75 3.02 5.17 5.09z" />
-                <path id="id1_1_404"
-                    d="M688.33 232.67h-37.1V149.7H520.39c-2.64 0-5.1-.5-7.36-1.49-2.27-.99-4.23-2.31-5.88-3.96-1.65-1.65-2.95-3.61-3.89-5.88s-1.42-4.67-1.42-7.22V29.62h36.82v82.98h112.57V29.62h37.1v203.05z" />
-            </g>
-        </svg>
+      <svg
+        id="svgWrap_1_404"
+        xmlns="http://www.w3.org/2000/svg"
+        x="0px"
+        y="0px"
+        viewBox="0 0 700 250"
+      >
+        <g>
+          <path
+            id="id3_1_404"
+            d="M195.7 232.67h-37.1V149.7H27.76c-2.64 0-5.1-.5-7.36-1.49-2.27-.99-4.23-2.31-5.88-3.96-1.65-1.65-2.95-3.61-3.89-5.88s-1.42-4.67-1.42-7.22V29.62h36.82v82.98H158.6V29.62h37.1v203.05z"
+          />
+          <path
+            id="id2_1_404"
+            d="M470.69 147.71c0 8.31-1.06 16.17-3.19 23.58-2.12 7.41-5.12 14.28-8.99 20.6-3.87 6.33-8.45 11.99-13.74 16.99-5.29 5-11.07 9.28-17.35 12.81a85.146 85.146 0 0 1-20.04 8.14 83.637 83.637 0 0 1-21.67 2.83H319.3c-7.46 0-14.73-.94-21.81-2.83-7.08-1.89-13.76-4.6-20.04-8.14a88.292 88.292 0 0 1-17.35-12.81c-5.29-5-9.84-10.67-13.66-16.99-3.82-6.32-6.8-13.19-8.92-20.6-2.12-7.41-3.19-15.27-3.19-23.58v-33.13c0-12.46 2.34-23.88 7.01-34.27 4.67-10.38 10.92-19.33 18.76-26.83 7.83-7.5 16.87-13.36 27.12-17.56 10.24-4.2 20.93-6.3 32.07-6.3h66.41c7.36 0 14.58.94 21.67 2.83 7.08 1.89 13.76 4.6 20.04 8.14a88.292 88.292 0 0 1 17.35 12.81c5.29 5 9.86 10.67 13.74 16.99 3.87 6.33 6.87 13.19 8.99 20.6 2.13 7.41 3.19 15.27 3.19 23.58v33.14zm-37.1-33.13c0-7.27-1.32-13.88-3.96-19.82-2.64-5.95-6.16-11.04-10.55-15.29-4.39-4.25-9.46-7.5-15.22-9.77-5.76-2.27-11.8-3.35-18.13-3.26h-66.41c-6.14-.09-12.11.97-17.91 3.19-5.81 2.22-10.95 5.43-15.44 9.63-4.48 4.2-8.07 9.3-10.76 15.29-2.69 6-4.04 12.67-4.04 20.04v33.13c0 7.36 1.32 14.02 3.96 19.97 2.64 5.95 6.18 11.02 10.62 15.22 4.44 4.2 9.56 7.43 15.36 9.7 5.8 2.27 11.87 3.35 18.2 3.26h66.41c7.27 0 13.85-1.2 19.75-3.61s10.93-5.73 15.08-9.98 7.36-9.32 9.63-15.22c2.27-5.9 3.4-12.34 3.4-19.33v-33.15zm-16-26.91a17.89 17.89 0 0 1 2.83 6.73c.47 2.41.47 4.77 0 7.08-.47 2.31-1.39 4.48-2.76 6.51-1.37 2.03-3.14 3.75-5.31 5.17l-99.4 66.41c-1.61 1.23-3.26 2.08-4.96 2.55-1.7.47-3.45.71-5.24.71-3.02 0-5.9-.71-8.64-2.12-2.74-1.42-4.96-3.44-6.66-6.09a17.89 17.89 0 0 1-2.83-6.73c-.47-2.41-.5-4.77-.07-7.08.43-2.31 1.3-4.48 2.62-6.51 1.32-2.03 3.07-3.75 5.24-5.17l99.69-66.41a17.89 17.89 0 0 1 6.73-2.83c2.41-.47 4.77-.47 7.08 0 2.31.47 4.48 1.37 6.51 2.69 2.03 1.32 3.75 3.02 5.17 5.09z"
+          />
+          <path
+            id="id1_1_404"
+            d="M688.33 232.67h-37.1V149.7H520.39c-2.64 0-5.1-.5-7.36-1.49-2.27-.99-4.23-2.31-5.88-3.96-1.65-1.65-2.95-3.61-3.89-5.88s-1.42-4.67-1.42-7.22V29.62h36.82v82.98h112.57V29.62h37.1v203.05z"
+          />
+        </g>
+      </svg>
 
-        <svg style="position: absolute; width: 0; height: 0;">
-            <defs>
-                <filter id="glow_404">
-                    <fegaussianblur class="blur" result="coloredBlur" stddeviation="4"></fegaussianblur>
-                    <femerge>
-                        <femergenode in="coloredBlur"></femergenode>
-                        <femergenode in="SourceGraphic"></femergenode>
-                    </femerge>
-                </filter>
-            </defs>
-        </svg>
+      <svg style="position: absolute; width: 0; height: 0">
+        <defs>
+          <filter id="glow_404">
+            <fegaussianblur
+              class="blur"
+              result="coloredBlur"
+              stddeviation="4"
+            ></fegaussianblur>
+            <femerge>
+              <femergenode in="coloredBlur"></femergenode>
+              <femergenode in="SourceGraphic"></femergenode>
+            </femerge>
+          </filter>
+        </defs>
+      </svg>
 
-        <h2 class="error-404-title">Page Not Found</h2>
+      <h2 class="error-404-title">Page Not Found</h2>
 
-        <button class="back-home-btn-404" id="backHomeBtn404">
-            <i class="fa-solid fa-home"></i> Back to Home
-        </button>
+      <button class="back-home-btn-404" id="backHomeBtn404">
+        <i class="fa-solid fa-home"></i> Back to Home
+      </button>
     </div>
 
     <div id="mainContent">
-        <section id="header">
-            <a href="#"><img src="/img/logo/logo_full.png" class="logo" alt="logo"
-                    style="width: 150px; height: 75px;"></a>
+      <section id="header">
+        <a href="index.html"
+          ><img
+            src="/img/logo/logo_full.png"
+            class="logo"
+            alt="logo"
+            style="width: 150px; height: 75px"
+        /></a>
 
-            <ul id="navbar">
-                <a href="#" id="close"><i class="fa-solid fa-times"></i></a>
-                <li><a href="#" id="scrollToTop">Home</a></li>
-                <li><a href="./main/store.html">Store</a></li>
-                <li><a href="#" id="">Feature</a></li>
-                <li><a href="#" id="contactLink">Contact</a></li>
-            </ul>
+        <ul id="navbar">
+          <a href="#" id="close"><i class="fa-solid fa-times"></i></a>
+          <li><a href="#" id="scrollToTop">Home</a></li>
+          <li><a href="./main/store.html">Store</a></li>
+          <li><a href="#">Feature</a></li>
+          <li><a href="#" id="contactLink">Contact</a></li>
+        </ul>
 
-            <div class="header-icons">
-                <a href="#" class="cart"><i class="fa-solid fa-cart-shopping"></i></a>
-                <a href="#" class="profile"><i class="fa-solid fa-circle-user"></i></a>
-                <div id="mobile">
-                    <i id="bar" class="fas fa-bars"></i>
-                </div>
+        <div class="header-icons">
+          <a href="#" class="cart"><i class="fa-solid fa-cart-shopping"></i></a>
+          <a href="#" class="profile"
+            ><i class="fa-solid fa-circle-user"></i
+          ></a>
+          <div id="mobile">
+            <i id="bar" class="fas fa-bars"></i>
+          </div>
+        </div>
+      </section>
+
+      <section id="hero">
+        <h1 class="caption">
+          Forging Keys,<br />
+          <span class="highlight">Crafting Art</span>
+        </h1>
+        <p class="caption">
+          Discover premium resin keycaps where every detail is <br />
+          sculpted to perfection
+        </p>
+        <button
+          class="button"
+          onclick="window.location.href='./main/store.html'"
+        >
+          Discover
+        </button>
+      </section>
+
+      <section id="product1" class="section-p1">
+        <div class="item-slide">
+          <div class="owl-carousel owl-theme">
+            <div class="item">
+              <img src="/img/bg/about/the-making-of-slide-1.jpg" alt="" />
             </div>
-        </section>
-
-        <section id="hero">
-            <h1 class="caption">Forging Keys,<br>
-                <span class="highlight">Crafting Art</span>
-            </h1>
-            <p class="caption">Discover premium resin keycaps where every detail is <br> sculpted to perfection</p>
-            <button class="button" onclick="window.location.href='./main/store.html'">Discover</button>
-        </section>
-
-        <section id="product1" class="section-p1">
-
-            <div class="item-slide">
-                <div class="owl-carousel owl-theme">
-                    <div class="item"><img src="/img/bg/about/the-making-of-slide-1.jpg" alt=""></div>
-                    <div class="item"><img src="/img/bg/about/the-making-of-slide-2.jpg" alt=""></div>
-                    <div class="item"><img src="/img/bg/about/the-making-of-slide-3.jpg" alt=""></div>
-                    <div class="item"><img src="/img/bg/about/the-making-of-slide-4.jpg" alt=""></div>
-                </div>
-
-                <div class="making-of-content">
-                    <div class="left-content">
-                        <h2>THE<br>MAKING OF</h2>
-                        <div class="custom-dots"></div>
-                    </div>
-
-                    <div class="content-right">
-                        <p>Producing thousands of keycaps with the highest standard of crafting, and finalizing is
-                            indeed an achievement. Come and join with us this making session to explore unexpected
-                            things!</p>
-                        <div class="explore">READ MORE</div>
-                    </div>
-                </div>
+            <div class="item">
+              <img src="/img/bg/about/the-making-of-slide-2.jpg" alt="" />
             </div>
-
-
-            <div class="title">
-                <h2>Featured</h2>
-                <span>BEST SELLER COLLECTION</span>
+            <div class="item">
+              <img src="/img/bg/about/the-making-of-slide-3.jpg" alt="" />
             </div>
+            <div class="item">
+              <img src="/img/bg/about/the-making-of-slide-4.jpg" alt="" />
+            </div>
+          </div>
 
-            <div class="pro-container">
-                <div class="owl-carousel">
-                    <div class="pro" data-product-id="1">
-                        <img src="./img/keycap/LOTR/gondor/white_tree.jpg" alt="">
-                        <div class="des">
-                            <span>Lord Of The Rings</span>
-                            <h4>White Tree<br>
-                                Keycap Artisan</h4>
-                            <h5>85$</h5>
-                        </div>
-                    </div>
-
-                    <div class="pro" data-product-id="2">
-                        <img src="./img/keycap/AttackOnTitan/spacebar.jpg" alt="">
-                        <div class="des">
-                            <span>Attack On Titan</span>
-                            <h4>Wings of Freedom<br>
-                                Keycap Artisan</h4>
-                            <h5>85$</h5>
-                        </div>
-                    </div>
-
-                    <div class="pro" data-product-id="3">
-                        <img src="./img/keycap/LOTR/gondor/horn_of_gordor.jpg" alt="">
-                        <div class="des">
-                            <span>Lord Of The Rings</span>
-                            <h4>Horn Of Gordor<br>
-                                Keycap Artisan</h4>
-                            <h5>90$</h5>
-                        </div>
-                    </div>
-
-
-                    <div class="pro" data-product-id="4">
-                        <img src="./img/keycap/AttackOnTitan/Eren.jpg" alt="">
-                        <div class="des">
-                            <span>Attack On Titan</span>
-                            <h4>Attack Titan<br>
-                                Keycap Artisan</h4>
-                            <h5>75$</h5>
-                        </div>
-                    </div>
-                    <div class="pro" data-product-id="5">
-                        <img src="./img/keycap/LOTR/gondor/palantir.jpg" alt="">
-                        <div class="des">
-                            <span>Lord Of the Rings</span>
-                            <h4>Palantir<br>
-                                Keycap Artisan</h4>
-                            <h5>75$</h5>
-                        </div>
-                    </div>
-                    <div class="pro" data-product-id="6">
-                        <img src="./img/keycap/AttackOnTitan/Fight_for_Paradis.webp" alt="">
-                        <div class="des">
-                            <span>Attack On Titan</span>
-                            <h4>Fight For Paradis<br>
-                                Keycap Artisan</h4>
-                            <h5>130$</h5>
-                        </div>
-                    </div>
-                </div>
-                <div class="custom-dots" style="justify-content: center;"></div>
-
+          <div class="making-of-content">
+            <div class="left-content">
+              <h2>THE<br />MAKING OF</h2>
+              <div class="custom-dots"></div>
             </div>
 
-
-        </section>
-
-        <section id="news">
-            <div class="section-title">
-                <h2 style="color: #ff6b35;">Keysmith</h2>
-                <h2>owner</h2>
+            <div class="content-right">
+              <p>
+                Producing thousands of keycaps with the highest standard of
+                crafting, and finalizing is indeed an achievement. Come and join
+                with us this making session to explore unexpected things!
+              </p>
+              <div class="explore">READ MORE</div>
             </div>
-            <div class="news-container">
-                <div class="owl-carousel">
-                    <div class="item"><img src="./img/feed/1.jpg" alt="">
-                        <div class="link-post">
-                            <a href="https://www.facebook.com/share/p/14R9wA6AxMM/" target="_blank"><span>view
-                                    post</span></a>
-                        </div>
-                    </div>
-                    <div class="item"><img src="./img/feed/2.jpg" alt="">
-                        <div class="link-post">
-                            <a href="https://www.facebook.com/share/p/1JJug4jCTt/" target="_blank"><span>view
-                                    post</span></a>
-                        </div>
-                    </div>
-                    <div class="item"><img src="./img/feed/3.jpg" alt="">
-                        <div class="link-post">
-                            <a href="https://www.facebook.com/share/p/16Xapg6frS/" target="_blank"><span>view
-                                    post</span></a>
-                        </div>
-                    </div>
-                    <div class="item"><img src="./img/feed/4.jpg" alt="">
-                        <div class="link-post">
-                            <a href="https://www.facebook.com/share/p/17N5JU9T52/" target="_blank"><span>view
-                                    post</span></a>
-                        </div>
-                    </div>
-                    <div class="item"><img src="./img/feed/5.jpg" alt="">
-                        <div class="link-post">
-                            <a href="https://www.facebook.com/share/p/1FJkspD2oz/" target="_blank"><span>view
-                                    post</span></a>
-                        </div>
-                    </div>
-                    <div class="item"><img src="./img/feed/6.jpg" alt="">
-                        <div class="link-post">
-                            <a href="https://www.facebook.com/share/p/16bsSf1iu9/" target="_blank"><span>view
-                                    post</span></a>
-                        </div>
-                    </div>
-                    <div class="item"><img src="./img/feed/7.jpg" alt="">
-                        <div class="link-post">
-                            <a href="./main/404/index.html" target="_blank"><span>view post</span></a>
-                        </div>
-                    </div>
-                    <div class="item"><img src="./img/feed/8.jpg" alt="">
-                        <div class="link-post">
-                            <a href="./main/404/index.html" target="_blank"><span>view post</span></a>
-                        </div>
-                    </div>
+          </div>
+        </div>
 
-                </div>
-                <div class="custom-dots" style="justify-content: center;"></div>
+        <div class="title">
+          <h2>Featured</h2>
+          <span>BEST SELLER COLLECTION</span>
+        </div>
 
+        <div class="pro-container">
+          <div class="owl-carousel">
+            <div class="pro" data-product-id="1">
+              <img src="./img/keycap/LOTR/gondor/white_tree.jpg" alt="" />
+              <div class="des">
+                <span>Lord Of The Rings</span>
+                <h4>
+                  White Tree<br />
+                  Keycap Artisan
+                </h4>
+                <h5>85$</h5>
+              </div>
             </div>
-        </section>
 
-        <footer class="section-p1">
-            <div class="footer-container">
-                <div class="title">
-                    <h5>ARE YOU ENJOYING?</h5>
-                    <span>CONTINUE EXPLORE</span>
-                </div>
-                <div class="footer-content">
-                    <!-- Table Section -->
-                    <div class="About">
-                        <table border="1" cellspacing="0" cellpadding="8">
-                            <tr>
-                                <td rowspan="4" style="width:20%; text-align: center;">
-                                    <a href="#"
-                                        style="font-family: Bebas Neue; font-size: 30px; font-weight: 700;">ABOUT US</a>
-                                </td>
-                                <td style="width:30%;">HELP CENTER</td>
-                                <td rowspan="2" style="width: 30%;">SHIPPING &<br>RETURN POLICY</td>
-                                <td rowspan="5" style="width:40%;">
-                                    <img src="/img/logo/logo_full.png" alt="Logo" style="justify-content: center; max-width: 250px; height:auto;
-                                    filter:
-                                    drop-shadow(0 0 1px black)
-                                    drop-shadow(0 0 1px black)
-                                    drop-shadow(0 0 1px black)">
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td>BLOG & NEWS</td>
-                            </tr>
-
-                            <tr>
-                                <td colspan="2" style="text-align: left;">
-                                    DISCORD
-                                    <a href="https://discord.com" target="_blank" style="float:right">
-                                        <i class="fa-brands fa-discord"></i>
-                                    </a>
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td colspan="2" style="text-align: left;">
-                                    SOCIAL MEDIA
-                                    <div style="float: right">
-                                        <a href="https://www.instagram.com" target="_blank"><i
-                                                class="fa-brands fa-square-instagram"></i></a>
-                                        <a href="https://www.facebook.com" target="_blank"><i
-                                                class="fa-brands fa-square-facebook"></i></a>
-                                        <a href="https://www.tiktok.com" target="_blank"><i
-                                                class="fa-brands fa-tiktok"></i></a>
-                                        <a href="https://www.youtube.com" target="_blank"><i
-                                                class="fa-brands fa-youtube"></i></a>
-                                        <a href="https://twitter.com" target="_blank"><i
-                                                class="fa-brands fa-square-x-twitter"></i></a>
-                                    </div>
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td colspan="3" style="text-align:left;">
-                                    SUPPORT:
-                                    <span style="float:right; font-family:Bebas Neue;">SUPPORT@KEYSMITH.COM</span>
-                                </td>
-                            </tr>
-                        </table>
-                    </div>
-
-                    <!-- Form Section -->
-                    <div class="form">
-                        <div class="subcribe">
-                            <h3>SUBSCRIBE & GET INCENTIVES</h3>
-                            <p>
-                                Sign up and get the latest news about new design, group buy, straight to your inbox.
-                            </p>
-                        </div>
-
-                        <div class="bonus">Bonus: Many hot offers and giveaway await!</div>
-
-                        <form id="subscribeForm" action="https://api.web3forms.com/submit" class="input-group"
-                            method="POST">
-                            <input type="hidden" name="access_key" value="3610378c-53cc-4af5-bbbc-fff27cda52f3">
-                            <input type="hidden" name="from_name" value="KeySmith Website">
-                            <input type="hidden" name="subject" value="New Subscription from KeySmith">
-                            <input type="email" name="email" placeholder="YOUR E-MAIL:" required>
-                            <button type="submit">SIGN UP</button>
-                        </form>
-
-                        <div id="formMessage" style="display: none;"></div>
-
-                    </div>
-                </div>
+            <div class="pro" data-product-id="2">
+              <img src="./img/keycap/AttackOnTitan/spacebar.jpg" alt="" />
+              <div class="des">
+                <span>Attack On Titan</span>
+                <h4>
+                  Wings of Freedom<br />
+                  Keycap Artisan
+                </h4>
+                <h5>85$</h5>
+              </div>
             </div>
-        </footer>
+
+            <div class="pro" data-product-id="3">
+              <img src="./img/keycap/LOTR/gondor/horn_of_gordor.jpg" alt="" />
+              <div class="des">
+                <span>Lord Of The Rings</span>
+                <h4>
+                  Horn Of Gordor<br />
+                  Keycap Artisan
+                </h4>
+                <h5>90$</h5>
+              </div>
+            </div>
+
+            <div class="pro" data-product-id="4">
+              <img src="./img/keycap/AttackOnTitan/Eren.jpg" alt="" />
+              <div class="des">
+                <span>Attack On Titan</span>
+                <h4>
+                  Attack Titan<br />
+                  Keycap Artisan
+                </h4>
+                <h5>75$</h5>
+              </div>
+            </div>
+            <div class="pro" data-product-id="5">
+              <img src="./img/keycap/LOTR/gondor/palantir.jpg" alt="" />
+              <div class="des">
+                <span>Lord Of the Rings</span>
+                <h4>
+                  Palantir<br />
+                  Keycap Artisan
+                </h4>
+                <h5>75$</h5>
+              </div>
+            </div>
+            <div class="pro" data-product-id="6">
+              <img
+                src="./img/keycap/AttackOnTitan/Fight_for_Paradis.webp"
+                alt=""
+              />
+              <div class="des">
+                <span>Attack On Titan</span>
+                <h4>
+                  Fight For Paradis<br />
+                  Keycap Artisan
+                </h4>
+                <h5>130$</h5>
+              </div>
+            </div>
+          </div>
+          <div class="custom-dots" style="justify-content: center"></div>
+        </div>
+      </section>
+
+      <section id="news">
+        <div class="section-title">
+          <h2 style="color: #ff6b35">Keysmith</h2>
+          <h2>owner</h2>
+        </div>
+        <div class="news-container">
+          <div class="owl-carousel">
+            <div class="item">
+              <img src="./img/feed/1.jpg" alt="" />
+              <div class="link-post">
+                <a
+                  href="https://www.facebook.com/share/p/14R9wA6AxMM/"
+                  target="_blank"
+                  ><span>view post</span></a
+                >
+              </div>
+            </div>
+            <div class="item">
+              <img src="./img/feed/2.jpg" alt="" />
+              <div class="link-post">
+                <a
+                  href="https://www.facebook.com/share/p/1JJug4jCTt/"
+                  target="_blank"
+                  ><span>view post</span></a
+                >
+              </div>
+            </div>
+            <div class="item">
+              <img src="./img/feed/3.jpg" alt="" />
+              <div class="link-post">
+                <a
+                  href="https://www.facebook.com/share/p/16Xapg6frS/"
+                  target="_blank"
+                  ><span>view post</span></a
+                >
+              </div>
+            </div>
+            <div class="item">
+              <img src="./img/feed/4.jpg" alt="" />
+              <div class="link-post">
+                <a
+                  href="https://www.facebook.com/share/p/17N5JU9T52/"
+                  target="_blank"
+                  ><span>view post</span></a
+                >
+              </div>
+            </div>
+            <div class="item">
+              <img src="./img/feed/5.jpg" alt="" />
+              <div class="link-post">
+                <a
+                  href="https://www.facebook.com/share/p/1FJkspD2oz/"
+                  target="_blank"
+                  ><span>view post</span></a
+                >
+              </div>
+            </div>
+            <div class="item">
+              <img src="./img/feed/6.jpg" alt="" />
+              <div class="link-post">
+                <a
+                  href="https://www.facebook.com/share/p/16bsSf1iu9/"
+                  target="_blank"
+                  ><span>view post</span></a
+                >
+              </div>
+            </div>
+            <div class="item">
+              <img src="./img/feed/7.jpg" alt="" />
+              <div class="link-post">
+                <a href="./main/404/index.html" target="_blank"
+                  ><span>view post</span></a
+                >
+              </div>
+            </div>
+            <div class="item">
+              <img src="./img/feed/8.jpg" alt="" />
+              <div class="link-post">
+                <a href="./main/404/index.html" target="_blank"
+                  ><span>view post</span></a
+                >
+              </div>
+            </div>
+          </div>
+          <div class="custom-dots" style="justify-content: center"></div>
+        </div>
+      </section>
+
+      <footer class="section-p1">
+        <div class="footer-container">
+          <div class="title">
+            <h5>ARE YOU ENJOYING?</h5>
+            <span>CONTINUE EXPLORE</span>
+          </div>
+          <div class="footer-content">
+            <!-- Table Section -->
+            <div class="About">
+              <table border="1" cellspacing="0" cellpadding="8">
+                <tr>
+                  <td rowspan="4" style="width: 20%; text-align: center">
+                    <a
+                      href="#"
+                      style="
+                        font-family: Bebas Neue;
+                        font-size: 30px;
+                        font-weight: 700;
+                      "
+                      >ABOUT US</a
+                    >
+                  </td>
+                  <td style="width: 30%">HELP CENTER</td>
+                  <td rowspan="2" style="width: 30%">
+                    SHIPPING &<br />RETURN POLICY
+                  </td>
+                  <td rowspan="5" style="width: 40%">
+                    <img
+                      src="/img/logo/logo_full.png"
+                      alt="Logo"
+                      style="
+                        justify-content: center;
+                        max-width: 250px;
+                        height: auto;
+                        filter: drop-shadow(0 0 1px black)
+                          drop-shadow(0 0 1px black) drop-shadow(0 0 1px black);
+                      "
+                    />
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>BLOG & NEWS</td>
+                </tr>
+
+                <tr>
+                  <td colspan="2" style="text-align: left">
+                    DISCORD
+                    <a
+                      href="https://discord.com"
+                      target="_blank"
+                      style="float: right"
+                    >
+                      <i class="fa-brands fa-discord"></i>
+                    </a>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td colspan="2" style="text-align: left">
+                    SOCIAL MEDIA
+                    <div style="float: right">
+                      <a href="https://www.instagram.com" target="_blank"
+                        ><i class="fa-brands fa-square-instagram"></i
+                      ></a>
+                      <a href="https://www.facebook.com" target="_blank"
+                        ><i class="fa-brands fa-square-facebook"></i
+                      ></a>
+                      <a href="https://www.tiktok.com" target="_blank"
+                        ><i class="fa-brands fa-tiktok"></i
+                      ></a>
+                      <a href="https://www.youtube.com" target="_blank"
+                        ><i class="fa-brands fa-youtube"></i
+                      ></a>
+                      <a href="https://twitter.com" target="_blank"
+                        ><i class="fa-brands fa-square-x-twitter"></i
+                      ></a>
+                    </div>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td colspan="3" style="text-align: left">
+                    SUPPORT:
+                    <span style="float: right; font-family: Bebas Neue"
+                      >SUPPORT@KEYSMITH.COM</span
+                    >
+                  </td>
+                </tr>
+              </table>
+            </div>
+
+            <!-- Form Section -->
+            <div class="form">
+              <div class="subcribe">
+                <h3>SUBSCRIBE & GET INCENTIVES</h3>
+                <p>
+                  Sign up and get the latest news about new design, group buy,
+                  straight to your inbox.
+                </p>
+              </div>
+
+              <div class="bonus">
+                Bonus: Many hot offers and giveaway await!
+              </div>
+
+              <form
+                id="subscribeForm"
+                action="https://api.web3forms.com/submit"
+                class="input-group"
+                method="POST"
+              >
+                <input
+                  type="hidden"
+                  name="access_key"
+                  value="3610378c-53cc-4af5-bbbc-fff27cda52f3"
+                />
+                <input
+                  type="hidden"
+                  name="from_name"
+                  value="KeySmith Website"
+                />
+                <input
+                  type="hidden"
+                  name="subject"
+                  value="New Subscription from KeySmith"
+                />
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="YOUR E-MAIL:"
+                  required
+                />
+                <button type="submit">SIGN UP</button>
+              </form>
+
+              <div id="formMessage" style="display: none"></div>
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
-    <!-- ADMIN LOGIN SECTION -->
+
+    <!-- LOGIN MODAL -->
+    <div class="modal-overlay" id="modalOverlay">
+      <div class="login-modal">
+        <div class="close-modal" id="closeModal">
+          <i class="fa-solid fa-xmark"></i>
+        </div>
+
+        <form id="loginForm">
+          <h1>Login</h1>
+
+          <div class="input-box">
+            <input
+              id="loginUsername"
+              type="text"
+              placeholder="Username"
+              required
+            />
+            <i class="fa-solid fa-user"></i>
+          </div>
+
+          <div class="input-box">
+            <input
+              id="loginPassword"
+              type="password"
+              placeholder="Password"
+              required
+            />
+            <i class="fa-solid fa-lock"></i>
+          </div>
+
+          <div class="remember-forgot">
+            <label><input type="checkbox" id="rememberMe" /> Remember Me</label>
+          </div>
+
+          <button type="submit" class="btn-login">Login</button>
+
+          <div class="register-link">
+            <p>
+              Don't have an account? <a href="#" id="openRegister">Register</a>
+            </p>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- REGISTER MODAL -->
+    <div class="modal-overlay" id="registerOverlay">
+      <div class="login-modal">
+        <div class="close-modal" id="closeRegister">
+          <i class="fa-solid fa-xmark"></i>
+        </div>
+
+        <form id="registerForm">
+          <h1>Register</h1>
+
+          <div class="input-box">
+            <input
+              id="registerUsername"
+              type="text"
+              placeholder="Username"
+              required
+            />
+            <i class="fa-solid fa-user-plus"></i>
+          </div>
+
+          <div class="input-box">
+            <input
+              id="registerPassword"
+              type="password"
+              placeholder="Password"
+              required
+            />
+            <i class="fa-solid fa-lock"></i>
+          </div>
+
+          <button type="submit" class="btn-login">Register</button>
+
+          <div class="register-link">
+            <p>
+              Already have an account? <a href="#" id="switchToLogin">Login</a>
+            </p>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- CONTACT MODAL -->
+    <div class="contact-modal-overlay" id="contactModalOverlay">
+      <div class="contact-modal">
+        <div class="close-contact-modal" id="closeContactModal">
+          <i class="fa-solid fa-xmark"></i>
+        </div>
+
+        <div class="contact-modal-content">
+          <div class="content">
+            <div class="location">
+              <h2>LOCATION</h2>
+              <span
+                >273 An Duong Vuong Street, Ward 3, District 5,<br />Ho Chi Minh
+                City</span
+              >
+            </div>
+            <div class="gmail">
+              <h2>CONTACT</h2>
+              <span>SUPPORT@KEYSMITH.COM</span>
+            </div>
+            <div class="social">
+              <h2>FOLLOW US</h2>
+              <span>
+                <a href="./main/404/index.html"
+                  ><i class="fa-brands fa-facebook"></i
+                ></a>
+                <a href="./main/404/index.html"
+                  ><i class="fa-brands fa-instagram"></i
+                ></a>
+                <a href="./main/404/index.html"
+                  ><i class="fa-brands fa-tiktok"></i
+                ></a>
+              </span>
+            </div>
+          </div>
+          <div class="image">
+            <div class="owl-carousel owl-theme">
+              <div class="item">
+                <img src="/img/bg/about/the-making-of-slide-1.jpg" alt="" />
+              </div>
+              <div class="item">
+                <img src="/img/bg/about/the-making-of-slide-2.jpg" alt="" />
+              </div>
+              <div class="item">
+                <img src="/img/bg/about/the-making-of-slide-3.jpg" alt="" />
+              </div>
+              <div class="item">
+                <img src="/img/bg/about/the-making-of-slide-6.jpeg" alt="" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+        <!-- ADMIN LOGIN SECTION -->
     <section id="adminLogin" style="display:none;">
     <div class="admin-login-wrapper">
         <div class="admin-login-card">
@@ -380,325 +675,280 @@
     </div>
     </section>
 
-
-    <!-- LOGIN MODAL -->
-    <div class="modal-overlay" id="modalOverlay">
-        <div class="login-modal">
-            <div class="close-modal" id="closeModal">
-                <i class="fa-solid fa-xmark"></i>
-            </div>
-
-            <form id="loginForm">
-                <h1>Login</h1>
-
-                <div class="input-box">
-                    <input id="loginUsername" type="text" placeholder="Username" required>
-                    <i class="fa-solid fa-user"></i>
-                </div>
-
-                <div class="input-box">
-                    <input id="loginPassword" type="password" placeholder="Password" required>
-                    <i class="fa-solid fa-lock"></i>
-                </div>
-
-                <div class="remember-forgot">
-                    <label><input type="checkbox" id="rememberMe"> Remember Me</label>
-                </div>
-
-                <button type="submit" class="btn-login">Login</button>
-
-                <div class="register-link">
-                    <p>Don't have an account? <a href="#" id="openRegister">Register</a></p>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- REGISTER MODAL -->
-    <div class="modal-overlay" id="registerOverlay">
-        <div class="login-modal">
-            <div class="close-modal" id="closeRegister">
-                <i class="fa-solid fa-xmark"></i>
-            </div>
-
-            <form id="registerForm">
-                <h1>Register</h1>
-
-                <div class="input-box">
-                    <input id="registerUsername" type="text" placeholder="Username" required>
-                    <i class="fa-solid fa-user-plus"></i>
-                </div>
-
-                <div class="input-box">
-                    <input id="registerPassword" type="password" placeholder="Password" required>
-                    <i class="fa-solid fa-lock"></i>
-                </div>
-
-                <button type="submit" class="btn-login">Register</button>
-
-                <div class="register-link">
-                    <p>Already have an account? <a href="#" id="switchToLogin">Login</a></p>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- CONTACT MODAL -->
-    <div class="contact-modal-overlay" id="contactModalOverlay">
-        <div class="contact-modal">
-            <div class="close-contact-modal" id="closeContactModal">
-                <i class="fa-solid fa-xmark"></i>
-            </div>
-
-            <div class="contact-modal-content">
-                <div class="content">
-                    <div class="location">
-                        <h2>LOCATION</h2>
-                        <span>273 An Duong Vuong Street, Ward 3, District 5,<br>Ho Chi Minh City</span>
-                    </div>
-                    <div class="gmail">
-                        <h2>CONTACT</h2>
-                        <span>SUPPORT@KEYSMITH.COM</span>
-                    </div>
-                    <div class="social">
-                        <h2>FOLLOW US</h2>
-                        <span>
-                            <a href="./main/404/index.html"><i class="fa-brands fa-facebook"></i></a>
-                            <a href="./main/404/index.html"><i class="fa-brands fa-instagram"></i></a>
-                            <a href="./main/404/index.html"><i class="fa-brands fa-tiktok"></i></a>
-                        </span>
-                    </div>
-                </div>
-                <div class="image">
-                    <div class="owl-carousel owl-theme">
-                        <div class="item"><img src="/img/bg/about/the-making-of-slide-1.jpg" alt=""></div>
-                        <div class="item"><img src="/img/bg/about/the-making-of-slide-2.jpg" alt=""></div>
-                        <div class="item"><img src="/img/bg/about/the-making-of-slide-3.jpg" alt=""></div>
-                        <div class="item"><img src="/img/bg/about/the-making-of-slide-6.jpeg" alt=""></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
     <!-- PROFILE MODAL -->
-    <div class="profile-modal-overlay" id="profileModalOverlay" style="display:none">
-        <div class="profile-modal">
-            <div class="close-profile-modal" id="closeProfileModal">
-                <i class="fa-solid fa-xmark"></i>
-            </div>
-
-            <div class="profile-container">
-                <!-- SIDEBAR -->
-                <div class="profile-sidebar">
-                    <div class="sidebar-header">
-                        <div class="sidebar-avatar">
-                            <i class="fa-solid fa-user-circle"></i>
-                        </div>
-                        <p class="sidebar-username" id="profileUsername">User</p>
-                    </div>
-
-                    <ul>
-                        <li><a href="#" class="active" data-section="profile-info">
-                                <i class="fa-solid fa-user"></i>
-                                <span>Account Settings</span>
-                            </a></li>
-                        <li><a href="#" data-section="profile-orders">
-                                <i class="fa-solid fa-box"></i>
-                                <span>My Orders</span>
-                            </a></li>
-                        <li><a href="#" data-section="profile-password">
-                                <i class="fa-solid fa-lock"></i>
-                                <span>Change Password</span>
-                            </a></li>
-                        <li><a href="#" id="profileLogout">
-                                <i class="fa-solid fa-right-from-bracket"></i>
-                                <span>Log out</span>
-                            </a></li>
-                    </ul>
-                </div>
-
-                <!-- CONTENT -->
-                <div class="profile-content">
-                    <!-- ACCOUNT INFO SECTION -->
-                    <div class="profile-section active" data-section-name="profile-info">
-                        <h2>ACCOUNT INFORMATION</h2>
-                        <form id="profileInfoForm">
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label>Last Name</label>
-                                    <input type="text" id="profile-last-name" placeholder="Enter last name">
-                                </div>
-                                <div class="form-group">
-                                    <label>First Name</label>
-                                    <input type="text" id="profile-first-name" placeholder="Enter first name">
-                                </div>
-                            </div>
-
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label>Email</label>
-                                    <input type="email" id="profile-email" placeholder="Enter email">
-                                </div>
-                                <div class="form-group">
-                                    <label>Phone Number</label>
-                                    <input type="tel" id="profile-phone" placeholder="Enter phone number">
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label>Address</label>
-                                <input type="text" id="profile-address" placeholder="Enter address">
-                            </div>
-
-                            <div class="form-group">
-                                <label>Date of Birth</label>
-                                <div class="birthday-selectors">
-                                    <select id="profile-birth-day">
-                                        <option value="">Day</option>
-                                    </select>
-                                    <select id="profile-birth-month">
-                                        <option value="">Month</option>
-                                    </select>
-                                    <select id="profile-birth-year">
-                                        <option value="">Year</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <button type="submit" class="profile-btn">Update Profile</button>
-                        </form>
-                    </div>
-
-                    <!-- ORDERS SECTION -->
-                    <div class="profile-section" data-section-name="profile-orders">
-                        <h2>YOUR ORDERS</h2>
-                        <div class="order-table">
-                            <div class="order-header-row">
-                                <div class="order-col">Order ID</div>
-                                <div class="order-col">Date</div>
-                                <div class="order-col">Address</div>
-                                <div class="order-col">Value</div>
-                                <div class="order-col">Status</div>
-                            </div>
-                            <div class="order-empty-row">
-                                <p>You have no orders yet.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- PASSWORD SECTION -->
-                    <div class="profile-section" data-section-name="profile-password">
-                        <h2>CHANGE PASSWORD</h2>
-                        <div class="password-form">
-                            <form id="changePasswordForm">
-                                <div class="form-group">
-                                    <label>Current Password</label>
-                                    <input type="password" id="current-password" placeholder="Enter current password"
-                                        required>
-                                </div>
-                                <div class="form-group">
-                                    <label>New Password</label>
-                                    <input type="password" id="new-password" placeholder="Enter new password" required>
-                                </div>
-                                <div class="form-group">
-                                    <label>Confirm New Password</label>
-                                    <input type="password" id="confirm-password" placeholder="Re-enter new password"
-                                        required>
-                                </div>
-                                <button type="submit" class="profile-btn">Change Password</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <div
+      class="profile-modal-overlay"
+      id="profileModalOverlay"
+      style="display: none"
+    >
+      <div class="profile-modal">
+        <div class="close-profile-modal" id="closeProfileModal">
+          <i class="fa-solid fa-xmark"></i>
         </div>
+
+        <div class="profile-container">
+          <!-- SIDEBAR -->
+          <div class="profile-sidebar">
+            <div class="sidebar-header">
+              <div class="sidebar-avatar">
+                <i class="fa-solid fa-user-circle"></i>
+              </div>
+              <p class="sidebar-username" id="profileUsername">User</p>
+            </div>
+
+            <ul>
+              <li>
+                <a href="#" class="active" data-section="profile-info">
+                  <i class="fa-solid fa-user"></i>
+                  <span>Account Settings</span>
+                </a>
+              </li>
+              <li>
+                <a href="#" data-section="profile-orders">
+                  <i class="fa-solid fa-box"></i>
+                  <span>My Orders</span>
+                </a>
+              </li>
+              <li>
+                <a href="#" data-section="profile-password">
+                  <i class="fa-solid fa-lock"></i>
+                  <span>Change Password</span>
+                </a>
+              </li>
+              <li>
+                <a href="#" id="profileLogout">
+                  <i class="fa-solid fa-right-from-bracket"></i>
+                  <span>Log out</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <!-- CONTENT -->
+          <div class="profile-content">
+            <!-- ACCOUNT INFO SECTION -->
+            <div
+              class="profile-section active"
+              data-section-name="profile-info"
+            >
+              <h2>ACCOUNT INFORMATION</h2>
+              <form id="profileInfoForm">
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>Last Name</label>
+                    <input
+                      type="text"
+                      id="profile-last-name"
+                      placeholder="Enter last name"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label>First Name</label>
+                    <input
+                      type="text"
+                      id="profile-first-name"
+                      placeholder="Enter first name"
+                    />
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>Email</label>
+                    <input
+                      type="email"
+                      id="profile-email"
+                      placeholder="Enter email"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label>Phone Number</label>
+                    <input
+                      type="tel"
+                      id="profile-phone"
+                      placeholder="Enter phone number"
+                    />
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label>Address</label>
+                  <input
+                    type="text"
+                    id="profile-address"
+                    placeholder="Enter address"
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label>Date of Birth</label>
+                  <div class="birthday-selectors">
+                    <select id="profile-birth-day">
+                      <option value="">Day</option>
+                    </select>
+                    <select id="profile-birth-month">
+                      <option value="">Month</option>
+                    </select>
+                    <select id="profile-birth-year">
+                      <option value="">Year</option>
+                    </select>
+                  </div>
+                </div>
+
+                <button type="submit" class="profile-btn">
+                  Update Profile
+                </button>
+              </form>
+            </div>
+
+            <!-- ORDERS SECTION -->
+            <div class="profile-section" data-section-name="profile-orders">
+              <h2>YOUR ORDERS</h2>
+              <div class="order-table">
+                <div class="order-header-row">
+                  <div class="order-col">Order ID</div>
+                  <div class="order-col">Date</div>
+                  <div class="order-col">Address</div>
+                  <div class="order-col">Value</div>
+                  <div class="order-col">Status</div>
+                </div>
+                <div class="order-empty-row">
+                  <p>You have no orders yet.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- PASSWORD SECTION -->
+            <div class="profile-section" data-section-name="profile-password">
+              <h2>CHANGE PASSWORD</h2>
+              <div class="password-form">
+                <form id="changePasswordForm">
+                  <div class="form-group">
+                    <label>Current Password</label>
+                    <input
+                      type="password"
+                      id="current-password"
+                      placeholder="Enter current password"
+                      required
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label>New Password</label>
+                    <input
+                      type="password"
+                      id="new-password"
+                      placeholder="Enter new password"
+                      required
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label>Confirm New Password</label>
+                    <input
+                      type="password"
+                      id="confirm-password"
+                      placeholder="Re-enter new password"
+                      required
+                    />
+                  </div>
+                  <button type="submit" class="profile-btn">
+                    Change Password
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
-        integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"
-        integrity="sha512-bPs7Ae6pVvhOSiIcyUClR7/q2OAsRiovw4vAkX+zJbw3ShAeeqezq50RIIcIURq7Oa20rW2n2q+fyXBNcU9lrw=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+      integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"
+      integrity="sha512-bPs7Ae6pVvhOSiIcyUClR7/q2OAsRiovw4vAkX+zJbw3ShAeeqezq50RIIcIURq7Oa20rW2n2q+fyXBNcU9lrw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
     <script>
-        // ITEM SLIDE
-        $('.item-slide').each(function () {
-            var slide = $(this).find('.owl-carousel');
-            slide.owlCarousel({
-                loop: true,
-                nav: false,
-                dotsContainer: $(this).find('.custom-dots'),
-                autoplay: true,
-                autoplayTimeout: 3000,
-                autoplayHoverPause: true,
-                responsive: {
-                    0: { items: 1 },
-                    600: { items: 1 },
-                    1000: { items: 1 }
-                }
-            });
+      // ITEM SLIDE
+      $(".item-slide").each(function () {
+        var slide = $(this).find(".owl-carousel");
+        slide.owlCarousel({
+          loop: true,
+          nav: false,
+          dotsContainer: $(this).find(".custom-dots"),
+          autoplay: true,
+          autoplayTimeout: 3000,
+          autoplayHoverPause: true,
+          responsive: {
+            0: { items: 1 },
+            600: { items: 1 },
+            1000: { items: 1 },
+          },
+        });
+      });
+
+      // PRODUCT CAROUSEL with store redirection
+      $(".pro-container").each(function () {
+        var container = $(this);
+        var carousel = container.find(".owl-carousel");
+
+        // Initialize carousel
+        carousel.owlCarousel({
+          loop: true,
+          center: true,
+          dotsContainer: container.find(".custom-dots"),
+          autoplay: true,
+          autoplayTimeout: 3000,
+          margin: 20,
+          items: 3,
+          dotsEach: 1,
+          autoplayHoverPause: true,
+          responsive: {
+            0: { items: 1 },
+            600: { items: 2 },
+            1000: { items: 3 },
+          },
         });
 
-        // PRODUCT CAROUSEL with store redirection
-        $('.pro-container').each(function () {
-            var container = $(this);
-            var carousel = container.find('.owl-carousel');
-
-            // Initialize carousel
-            carousel.owlCarousel({
-                loop: true,
-                center: true,
-                dotsContainer: container.find('.custom-dots'),
-                autoplay: true,
-                autoplayTimeout: 3000,
-                margin: 20,
-                items: 3,
-                dotsEach: 1,
-                autoplayHoverPause: true,
-                responsive: {
-                    0: { items: 1 },
-                    600: { items: 2 },
-                    1000: { items: 3 }
-                }
-            });
-
-            // Add click handler for products
-            container.on('click', '.pro', function (e) {
-                e.preventDefault();
-                window.location.href = './main/store.html';
-            });
-
-            // Make product cards look clickable
-            container.find('.pro').css('cursor', 'pointer');
-
-            // Also make carousel cloned items clickable
-            carousel.on('initialized.owl.carousel', function () {
-                $('.owl-item .pro').css('cursor', 'pointer');
-            });
+        // Add click handler for products
+        container.on("click", ".pro", function (e) {
+          e.preventDefault();
+          window.location.href = "./main/store.html";
         });
 
-        // NEWS CAROUSEL
-        $('.news-container').each(function () {
-            var product = $(this).find('.owl-carousel');
-            product.owlCarousel({
-                loop: true,
-                dotsContainer: $(this).find('.custom-dots'),
-                autoplay: true,
-                autoplayTimeout: 3000,
-                margin: 20,
-                items: 3,
-                center: true,
-                autoplayHoverPause: true,
-                responsive: {
-                    0: { items: 1 },
-                    600: { items: 2 },
-                    1000: { items: 3 }
-                }
-            });
+        // Make product cards look clickable
+        container.find(".pro").css("cursor", "pointer");
+
+        // Also make carousel cloned items clickable
+        carousel.on("initialized.owl.carousel", function () {
+          $(".owl-item .pro").css("cursor", "pointer");
         });
+      });
+
+      // NEWS CAROUSEL
+      $(".news-container").each(function () {
+        var product = $(this).find(".owl-carousel");
+        product.owlCarousel({
+          loop: true,
+          dotsContainer: $(this).find(".custom-dots"),
+          autoplay: true,
+          autoplayTimeout: 3000,
+          margin: 20,
+          items: 3,
+          center: true,
+          autoplayHoverPause: true,
+          responsive: {
+            0: { items: 1 },
+            600: { items: 2 },
+            1000: { items: 3 },
+          },
+        });
+      });
     </script>
-</body>
-
+  </body>
 </html>
