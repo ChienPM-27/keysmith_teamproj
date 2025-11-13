@@ -2216,7 +2216,7 @@ window._analyticsModuleInited = window._analyticsModuleInited || false;
     activateTab(initial);
   })();
 
-  // Customer stats renderer
+// Customer stats renderer
   function renderCustomerStats() {
     try {
       const section = document.querySelector("#analytics-section");
@@ -2259,7 +2259,7 @@ window._analyticsModuleInited = window._analyticsModuleInited || false;
         }
       }
 
-      // Growth stats
+      // Growth stats - Sử dụng ngày đặt hàng đầu tiên để xác định khách hàng mới
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       const weekAgo = new Date(today);
@@ -2267,28 +2267,28 @@ window._analyticsModuleInited = window._analyticsModuleInited || false;
       const monthAgo = new Date(today);
       monthAgo.setMonth(today.getMonth() - 1);
 
-      const byJoinDate = (c) => {
-        const d = c.dateOfBirth || c.createdAt || c.registered || null;
-        if (!d) return null;
-        try {
-          const dd = new Date(d);
-          dd.setHours(0, 0, 0, 0);
-          return dd;
-        } catch (e) {
-          return null;
+      // Tạo map để lưu ngày đặt hàng đầu tiên của mỗi khách hàng
+      const firstOrderDate = {};
+      dmAllOrders.forEach((o) => {
+        const u = o.username;
+        const orderDate = parseDateOnly(o.date);
+        if (u && orderDate) {
+          if (!firstOrderDate[u] || orderDate < firstOrderDate[u]) {
+            firstOrderDate[u] = orderDate;
+          }
         }
-      };
+      });
 
-      const newToday = dmAllCustomers.filter((c) => {
-        const d = byJoinDate(c);
+      // Đếm khách hàng mới dựa trên ngày đặt hàng đầu tiên
+      const newToday = Object.values(firstOrderDate).filter((d) => {
         return d && d.getTime() === today.getTime();
       }).length;
-      const newWeek = dmAllCustomers.filter((c) => {
-        const d = byJoinDate(c);
+      
+      const newWeek = Object.values(firstOrderDate).filter((d) => {
         return d && d >= weekAgo && d <= today;
       }).length;
-      const newMonth = dmAllCustomers.filter((c) => {
-        const d = byJoinDate(c);
+      
+      const newMonth = Object.values(firstOrderDate).filter((d) => {
         return d && d >= monthAgo && d <= today;
       }).length;
 
@@ -2302,7 +2302,6 @@ window._analyticsModuleInited = window._analyticsModuleInited || false;
       console.warn("renderCustomerStats error", err);
     }
   }
-
   window._analyticsModuleInited = true;
 })();
 
