@@ -13,15 +13,16 @@
     <link rel="stylesheet" href="/css/admin/dashboard.css" />
     <link rel="stylesheet" href="/css/admin/products.css" />
     <link rel="stylesheet" href="/css/admin/customers.css" />
-    <link rel="stylesheet" href="/css/admin/orders.css" />
+    <link rel="stylesheet" href="/css/admin/orders.css" />  
     <link rel="stylesheet" href="/css/admin/product_types.css" />
 <link rel="stylesheet" href="/css/admin/warehouse-fix.css" />
 
     <!-- JavaScript Libraries -->
     <!-- Đã khai báo defer nên script sẽ được tải song song với HTML
       và chỉ chạy sau khi HTML được phân tích xong -->
-    <script type="module" src="/js/admin/admin.js" defer></script>
-    <script type="module" src="/js/admin/dashboard.js" defer></script>
+  <script type="module" src="/js/admin/admin.js" defer></script>
+  <script type="module" src="/js/admin/products.js" defer></script>
+  <script type="module" src="/js/admin/p.js" defer></script>
 
     <script
       src="https://kit.fontawesome.com/da0c4cdc9f.js"
@@ -71,7 +72,7 @@
     <div class="container">
       <!-- Sidebar Aside -->
       <!-- Renamed classes to clearer BEM-style: admin-sidebar, sections: brand/nav/actions -->
-      <aside class="admin-sidebar open" id="adminSidebar">
+    <aside class="admin-sidebar open" id="adminSidebar">
         <div class="admin-sidebar__brand">
           <img src="/img/logo/logo_full.png" alt="logo_key_smith" />
         </div>
@@ -97,15 +98,16 @@
             </li>
 
             <li class="admin-sidebar__item tab-content">
-              <a href="#" class="admin-sidebar__link">
-                <div class="admin-sidebar__icon">
-                  <i class="fa-solid fa-boxes-stacked"></i>
-                </div>
-                <div class="admin-sidebar__label">Product Types</div>
-              </a>
-            </li>
+            <a href="#" class="admin-sidebar__link">
+              <div class="admin-sidebar__icon">
+                <i class="fa-solid fa-boxes-stacked"></i>
+              </div>
+              <div class="admin-sidebar__label">Product Types</div>
+            </a>
+          </li>
+          
 
-            <li class="admin-sidebar__item tab-content">
+          <li class="admin-sidebar__item tab-content">
               <a href="#" class="admin-sidebar__link">
                 <div class="admin-sidebar__icon">
                   <i class="fa-solid fa-users"></i>
@@ -163,27 +165,27 @@
               </a>
             </li>
 
-            <li class="admin-sidebar__item user-logout">
-              <a href="#" class="admin-sidebar__link">
-                <div class="admin-sidebar__icon">
-                  <i class="fa-solid fa-arrow-right-from-bracket"></i>
-                </div>
-                <div class="admin-sidebar__label">Log out</div>
-              </a>
-            </li>
-          </ul>
-        </div>
-      </aside>
+          <li class="admin-sidebar__item user-logout">
+            <a href="#" class="admin-sidebar__link">
+              <div class="admin-sidebar__icon">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+              </div>
+              <div class="admin-sidebar__label">Log out</div>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </aside>
 
-      <main class="content">
-        <!-- Dashboard -->
-        <div id="dashboard-section" class="section active wrapper">
-          <div class="section-header">
-            <h1>
-              <i class="fa-solid fa-house"></i>
-              Dashboard
-            </h1>
-          </div>
+    <main class="content">
+      <!-- Dashboard -->
+      <div id="dashboard-section" class="section active wrapper">
+        <div class="section-header">
+          <h1>
+            <i class="fa-solid fa-house"></i>
+            Dashboard
+          </h1>
+        </div>
 
           <div class="dashboard-body">
             <div class="cards">
@@ -272,23 +274,64 @@
           </div>
         </div>
 
-        <!-- Products Section -->
-        <div id="products-section" class="section products-wrapper">
-          <div class="section-header">
-            <h1>
-              <i class="fa-solid fa-keyboard"></i>
-              Quản lý sản phẩm
-            </h1>
+      <!-- Products Section -->
+      <div id="products-section" class="section products-wrapper">
+        <div class="section-header">
+          <h1>
+            <i class="fa-solid fa-keyboard"></i>
+            Quản lý sản phẩm
+          </h1>
+        </div>
+
+        <div class="product-body">
+          <div class="product-control">
+            <div class="product-control-left">
+              <!-- JavaScript tự động lấy danh sách thể loại sản phẩm -->
+              <select name="the-loai" id="the-loai" onchange="showProduct()">
+                <option value="" class="product-type">All</option>
+                <!-- Options will be populated by JavaScript -->
+              </select>
+            </div>
+
+            <div class="product-control-center">
+              <form action="" class="form-search">
+                <input 
+                  type="text" 
+                  id="form-search-product" 
+                  placeholder="Tìm kiếm sản phẩm" 
+                  oninput="showProduct()"
+                />
+                <div class="search-btn">
+                  <i class="fa-solid fa-magnifying-glass"></i>
+                </div>
+              </form>
+            </div>
+
+            <div class="product-control-right">
+              <button class="btn-control" id="btn-add-product">
+                <i class="fa-solid fa-plus"></i>
+                Add
+              </button>
+              <button class="btn-control" id="btn-refresh-product">
+                <i class="fa-solid fa-arrows-rotate"></i>
+                Refresh
+              </button>
+            </div>
           </div>
 
-          <div class="product-body">
-            <div class="product-control">
-              <div class="product-control-left">
-                <!-- JavaScript tự động lấy danh sách thể loại sản phẩm -->
-                <select name="the-loai" id="the-loai" onchange="showProduct()">
-                  <option value="" class="product-type">Thể loại</option>
-                  <!-- Options will be populated by JavaScript -->
-                </select>
+          <!-- JavaScript tự động hiển thị sản phẩm -->
+          <div id="show-product">
+            <div class="product-item">
+              <div class="product-info">
+                <div class="product-img">
+                  <img src="/img/blank-image.png" alt="Product Image" />
+                </div>
+                <div class="info">
+                  <h3 class="product-name">#001</h3>
+                  <p class="product-category">one piece</p>
+                  <div class="product-description">Description of the product goes here.</div>
+                </div>
+                <div class="product-price">$100</div>
               </div>
 
               <div class="product-control-center">
@@ -368,17 +411,18 @@
                 <!-- JavaScript sẽ tự động tạo các nút ở đây -->
               </ul>
             </div>
-          </div>
 
-          <!-- Modal thêm/sửa sản phẩm -->
-          <div class="modal add-product">
-            <div class="modal-container">
-              <h3 class="modal-container-title add-product-e">
-                THÊM MỚI SẢN PHẨM
-              </h3>
-              <h3 class="modal-container-title edit-product-e">
-                CHỈNH SỬA SẢN PHẨM
-              </h3>
+        </div>
+
+        <!-- Modal thêm/sửa sản phẩm -->
+        <div class="modal add-product" id="modal__add_product">
+          <div class="modal-container">
+            <h3 class="modal-container-title add-product-e">
+              THÊM MỚI SẢN PHẨM
+            </h3>
+            <h3 class="modal-container-title edit-product-e">
+              CHỈNH SỬA SẢN PHẨM
+            </h3>
 
               <button class="modal-close product-form">
                 <i class="fa-solid fa-xmark"></i>
@@ -412,214 +456,182 @@
                       </label>
                     </div>
                   </div>
+                </div>
 
-                  <div class="modal-content-right">
-                    <div>
-                      <div class="form-group">
-                        <label for="ten-mon" class="form-label"
-                          >Tên sản phẩm</label
-                        >
-                        <input
-                          id="ten-mon"
-                          name="ten-mon"
-                          type="text"
-                          placeholder="Nhập tên sản phẩm"
-                          class="form-control"
-                        />
-                        <span class="form-message"></span>
-                      </div>
+                <div class="modal-content-right">
+                  <div>
+                    <div class="form-group">
+                      <label for="ten-mon" class="form-label">Tên sản phẩm</label>
+                      <input 
+                        id="ten-mon" 
+                        name="ten-mon" 
+                        type="text" 
+                        placeholder="Nhập tên sản phẩm"
+                        class="form-control" 
+                      />
+                      <span class="form-message"></span>
+                    </div>
 
-                      <div class="form-group">
-                        <label for="category" class="form-label"
-                          >Chọn thể loại</label
-                        >
-                        <select name="category" id="chon-the-loai">
-                          <!-- Options will be populated by JavaScript -->
-                        </select>
-                        <span class="form-message"></span>
-                      </div>
+                    <div class="form-group">
+                      <label for="category" class="form-label">Chọn thể loại</label>
+                      <select name="category" id="chon-the-loai">
+                        <!-- Options will be populated by JavaScript -->
+                      </select>
+                      <span class="form-message"></span>
+                    </div>
 
-                      <div class="form-group">
-                        <label for="gia-moi" class="form-label">Giá bán</label>
-                        <input
-                          id="gia-moi"
-                          name="gia-moi"
-                          type="text"
-                          placeholder="Nhập giá bán"
-                          class="form-control"
-                        />
-                        <span class="form-message"></span>
-                      </div>
+                    <div class="form-group">
+                      <label for="gia-moi" class="form-label">Giá bán</label>
+                      <input 
+                        id="gia-moi" 
+                        name="gia-moi" 
+                        type="text" 
+                        placeholder="Nhập giá bán" 
+                        class="form-control" 
+                      />
+                      <span class="form-message"></span>
+                    </div>
 
-                      <div class="form-group">
-                        <label for="mo-ta" class="form-label">Mô tả</label>
-                        <textarea
-                          class="product-desc"
-                          id="mo-ta"
-                          placeholder="Nhập mô tả sản phẩm..."
-                        ></textarea>
-                        <span class="form-message"></span>
-                      </div>
+                    <div class="form-group">
+                      <label for="mo-ta" class="form-label">Mô tả</label>
+                      <textarea 
+                        class="product-desc" 
+                        id="mo-ta" 
+                        placeholder="Nhập mô tả sản phẩm..."
+                      ></textarea>
+                      <span class="form-message"></span>
+                    </div>
 
-                      <div class="form-actions">
-                        <button
-                          type="button"
-                          class="form-submit btn-add-product-form add-product-e"
-                          id="add-product-button"
-                        >
-                          <i class="fa-regular fa-plus"></i>
-                          <span>THÊM SẢN PHẨM</span>
-                        </button>
-                        <button
-                          type="button"
-                          class="form-submit btn-update-product-form edit-product-e"
-                          id="update-product-button"
-                        >
-                          <i class="fa-light fa-pencil"></i>
-                          <span>LƯU THAY ĐỔI</span>
-                        </button>
-                      </div>
+                    <div class="form-actions">
+                      <button 
+                        type="button" 
+                        class="form-submit btn-add-product-form add-product-e"
+                        id="add-product-button"
+                      >
+                        <i class="fa-regular fa-plus"></i>
+                        <span>THÊM SẢN PHẨM</span>
+                      </button>
+                      <button 
+                        type="button" 
+                        class="form-submit btn-update-product-form edit-product-e"
+                        id="update-product-button"
+                      >
+                        <i class="fa-light fa-pencil"></i>
+                        <span>LƯU THAY ĐỔI</span>
+                      </button>
                     </div>
                   </div>
-                </form>
-              </div>
+                </div>
+              </form>
             </div>
           </div>
         </div>
+      </div>
 
-        <!-- Product Types Section -->
-        <div id="product-types-section" class="section product-types-wrapper">
-          <div class="section-header">
-            <h1>
-              <i class="fa-solid fa-boxes-stacked"></i>
-              Quản lý loại sản phẩm
-            </h1>
-          </div>
-          <div class="product-types-body">
-            <!-- Toolbar -->
-            <div class="pt-toolbar">
-              <input
-                id="pt-category-filter"
-                class="pt-toolbar__search"
-                type="text"
-                placeholder="Tìm kiếm tên loại..."
-              />
-              <button id="pt-add-btn" class="btn-control">
-                <i class="fa-solid fa-plus"></i>
-                Add type
-              </button>
-              <button id="pt-refresh-btn" class="btn-control">
-                <i class="fa-solid fa-arrows-rotate"></i>
-                Refresh
-              </button>
-            </div>
-            <!-- Table -->
-            <div class="show-product-types">
-              <div class="product-type-item">
-                <div class="product-type-left">
-                  <div class="id">1</div>
-                  <div class="name">Loại sản phẩm A</div>
-                  <!-- ngaytao -->
-                  <div class="date">01/01/2023</div>
-                  <div class="Description">Mô tả loại sản phẩm A</div>
-                </div>
-                <div class="product-type-right">
-                  <div class="status">active</div>
-                  <div class="actions">
-                    <button class="edit-btn">
-                      <i class="fa-solid fa-pen-to-square"></i>
-                    </button>
-                    <button class="view-btn">
-                      <i class="fa-solid fa-eye"></i>
-                    </button>
-                    <button class="delete-btn">
-                      <i class="fa-solid fa-trash"></i>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- Thanh chọn số sản phẩm hiển thị -->
-          <div id="page-control">
-            <label for="per-page">Hiển thị:</label>
-            <select id="per-page">
-              <option value="4">4</option>
-              <option value="8" selected>8</option>
-              <option value="12">12</option>
-            </select>
-            khách hàng mỗi trang
-          </div>
-
-          <!-- Phân trang -->
-          <div class="page-nav">
-            <ul class="page-nav-list">
-              <!-- JavaScript sẽ tự động tạo các nút ở đây -->
-            </ul>
-          </div>
-          <!-- Modal thêm/sửa loại sản phẩm -->
-          <div id="pt-modal" class="modal">
-            <div class="modal-container pt-modal__container">
-              <button class="modal-close" data-pt-close>
-                <i class="fa-solid fa-xmark"></i>
-              </button>
-              <h3 class="modal-container-title pt-modal__title">
-                Thêm loại sản phẩm
-              </h3>
-
-              <div class="modal-content">
-                <form id="pt-form">
-                  <div class="form-group">
-                    <label for="pt-form-name" class="form-label"
-                      >Tên loại</label
-                    >
-                    <input
-                      id="pt-form-name"
-                      type="text"
-                      class="form-control"
-                      placeholder="Nhập tên loại sản phẩm"
-                      required
-                    />
-                    <span class="form-message" id="pt-form-error"></span>
-                    <label for="pt-form-description" class="form-label"
-                      >Mô tả</label
-                    >
-                    <input
-                      type="text"
-                      id="pt-form-description"
-                      class="form-control form-input-description"
-                      placeholder="Nhập mô tả loại sản phẩm"
-                      required
-                    />
-                  </div>
-
-                  <div class="form-group">
-                    <label class="form-checkbox">
-                      <input type="checkbox" id="pt-form-active" checked />
-                      Kích hoạt
-                    </label>
-                  </div>
-
-                  <div class="form-actions">
-                    <button
-                      type="submit"
-                      class="form-submit"
-                      id="pt-form-submit"
-                    >
-                      Lưu
-                    </button>
-                  </div>
-                </form>
-              </div>
-            </div>
-          </div>
+      <!-- Product Types Section -->
+      <div id="product-types-section" class="section product-types-wrapper">
+        <div class="section-header">
+          <h1>
+            <i class="fa-solid fa-boxes-stacked"></i>
+            Quản lý loại sản phẩm
+          </h1>
         </div>
-
-        <!-- Customers -->
-        <div id="customer-section" class="section wrapper">
-          <div class="section-header">
-            <h1><i class="fa-solid fa-users"></i> Quản lý khách hàng</h1>
+        <div class="product-types-body">
+          <!-- Toolbar -->
+          <div class="pt-toolbar">
+            <input 
+              id="pt-category-filter" 
+              class="pt-toolbar__search" 
+              type="text" 
+              placeholder="Tìm kiếm tên loại..."
+            />
+            <button id="pt-add-btn" class="btn-control">
+              <i class="fa-solid fa-plus"></i>
+              Add type
+            </button>
+            <button id="pt-refresh-btn" class="btn-control">
+              <i class="fa-solid fa-arrows-rotate"></i>
+              Refresh
+            </button>
           </div>
+          <!-- Table -->
+          <div class="show-product-types">
+            <!-- Nội dung sẽ được JavaScript hiển thị -->
+        </div>
+        </div>
+        <!-- Thanh chọn số sản phẩm hiển thị -->
+            <div id="page-control">
+              <label for="per-page">Hiển thị:</label>
+              <select id="per-page">
+                <option value="4">4</option>
+                <option value="8" selected>8</option>
+                <option value="12">12</option>
+              </select>
+              khách hàng mỗi trang
+            </div>
+
+            <!-- Phân trang -->
+            <div class="page-nav">
+              <ul class="page-nav-list">
+                <!-- JavaScript sẽ tự động tạo các nút ở đây -->
+              </ul>
+            </div>
+            <!-- Modal thêm/sửa loại sản phẩm -->
+            <div id="pt-modal" class="modal">
+              <div class="modal-container pt-modal__container">
+                <button class="modal-close" id="pt-modal-close">
+                  <i class="fa-solid fa-xmark"></i>
+                </button>
+                <h3 class="modal-container-title pt-modal__title">
+                  Thêm loại sản phẩm
+                </h3>
+      
+                <div class="modal-content">
+                  <form id="pt-form">
+                    <div class="form-group">
+                      <label for="pt-form-name" class="form-label">Tên loại</label>
+                      <input 
+                        id="pt-form-name" 
+                        type="text" 
+                        class="form-control"
+                        placeholder="Nhập tên loại sản phẩm"
+                        required
+                      />
+                      <span class="form-message" id="pt-form-error"></span>
+                      <label for="pt-form-description" class="form-label">Mô tả</label>
+                      <input 
+                        type="text" 
+                        id="pt-form-description" 
+                        class="form-control form-input-description"
+                        placeholder="Nhập mô tả loại sản phẩm"
+                        required
+                      />
+                    </div>
+      
+                    <div class="form-group">
+                      <label class="form-checkbox">
+                        <input type="checkbox" id="pt-form-active" checked />
+                        Kích hoạt
+                      </label>
+      
+                    </div>
+      
+                    <div class="form-actions">
+                      <button type="submit" class="form-submit" id="pt-form-submit">
+                        Lưu
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+      </div>
+
+      <!-- Customers -->
+      <div id="customer-section" class="section wrapper">
+        <div class="section-header">
+          <h1><i class="fa-solid fa-users"></i> Quản lý khách hàng</h1>
+        </div>
 
           <div class="customer-body">
             <div class="customer-control">
@@ -816,11 +828,11 @@
           </div>
         </div>
 
-        <!-- Orders -->
-        <div id="orders-section" class="section wrapper">
-          <div class="section-header">
-            <h1><i class="fa-solid fa-cart-shopping"></i> Quản lý đơn hàng</h1>
-          </div>
+      <!-- Orders -->
+      <div id="orders-section" class="section wrapper">
+        <div class="section-header">
+          <h1><i class="fa-solid fa-cart-shopping"></i> Quản lý đơn hàng</h1>
+        </div>
 
           <div class="order-body">
             <div class="order-control">
