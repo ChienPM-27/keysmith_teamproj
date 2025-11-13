@@ -13,7 +13,12 @@
       this.defaultDuration = 3500;
       this.gap = 8; // px gap between toasts
       this.maxToasts = 5;
-      this._initContainer();
+      // Defer container initialization until DOM is ready
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => this._initContainer());
+      } else {
+        this._initContainer();
+      }
     }
 
     _initContainer() {
@@ -41,6 +46,11 @@
 
     show(message = '', type = 'info', opts = {}) {
       if (!this.container) this._initContainer();
+      if (!this.container) {
+        // If container still not available, fallback to console
+        console.log(`Toast [${type}]: ${message}`);
+        return null;
+      }
       const duration = typeof opts.duration === 'number' ? opts.duration : this.defaultDuration;
       const id = 'ks-toast-' + Date.now() + Math.floor(Math.random() * 1000);
 

@@ -1,7 +1,8 @@
 // Đây là nội dung file detail.js
 import { dataManager } from "../admin/DatabaseManager.js";
 // Import các hàm tiện ích chúng ta vừa export từ store.js
-import { formatCurrency, addToCart, showToast } from "./store.js";
+import { addToCart } from "./store.js";
+import { updateCartCount, formatCurrency}  from "./utils.js";
 
 // === KHAI BÁO BIẾN TOÀN CỤC ===
 let currentProduct = null; 
@@ -92,16 +93,32 @@ export function showProductDetailById(productId) {
     return;
   }
 
+  // Đảm bảo DOM elements đã được khởi tạo
+  if (!productTitle || !productDesc || !productPrice) {
+    initDetailModule();
+  }
+
+  // Kiểm tra lại sau khi init
+  if (!productTitle || !productDesc || !productPrice || !productLongDesc || !quantityInput) {
+    console.error("Không thể khởi tạo DOM elements cho product detail");
+    if (window.showToast) {
+      window.showToast("Không thể tải chi tiết sản phẩm. Vui lòng thử lại.", "error");
+    } else {
+      alert("Không thể tải chi tiết sản phẩm. Vui lòng thử lại.");
+    }
+    return;
+  }
+
   // --- 1. Chuyển đổi View ---
   if (storeView) storeView.style.display = "none";
   if (cartView) cartView.style.display = "none";
-  if (productDetailView) productDetailView.style.display = "flex"; 
+  if (productDetailView) productDetailView.style.display = "flex";
 
   // --- 2. Đổ dữ liệu sản phẩm vào HTML ---
   productTitle.textContent = currentProduct.title || "Product Title";
   productDesc.textContent = currentProduct.shortDesc || "";
   productLongDesc.textContent = currentProduct.longDesc || "No description available.";
-  
+
 
   // Xử lý giá
   productPrice.textContent = formatCurrency(currentProduct.price);
