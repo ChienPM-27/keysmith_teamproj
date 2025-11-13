@@ -1,23 +1,6 @@
-// Đây là nội dung file detail.js
 import { dataManager } from "../admin/DatabaseManager.js";
-// Import các hàm tiện ích chúng ta vừa export từ store.js
-import { addToCart, showCartView, updateCartQuantity } from "./store.js";
-import { formatCurrency}  from "./utils.js";
-
-/**
- * Lấy số lượng sản phẩm hiện tại trong giỏ hàng
- * @param {number} productId - ID sản phẩm
- * @returns {number} Số lượng trong giỏ
- */
-function getCurrentQuantityInCart(productId) {
-  try {
-    const cart = JSON.parse(localStorage.getItem("cart") || "[]");
-    const item = cart.find(item => item.id === productId);
-    return item ? (item.quantity || 0) : 0;
-  } catch (e) {
-    return 0;
-  }
-}
+import { addToCart } from "./store.js";
+import { updateCartCount, formatCurrency}  from "./utils.js";
 
 // === KHAI BÁO BIẾN TOÀN CỤC ===
 let currentProduct = null; 
@@ -89,16 +72,61 @@ function initDetailModule() {
   if (increaseQtyBtn) {
     increaseQtyBtn.addEventListener("click", () => updateQuantity(1));
   }
-  if (quantityInput) {
-    quantityInput.addEventListener("input", validateQuantityInput);
-    quantityInput.addEventListener("blur", validateQuantityInput);
-  }
-  if (detailBuyNowBtn) {
-    detailBuyNowBtn.addEventListener("click", handleBuyNow);
-  }
   if (detailAddToCartBtn) {
     detailAddToCartBtn.addEventListener("click", handleAddToCart);
   }
+  
+  // === GẮN SỰ KIỆN CHO SHARE ICONS ===
+  setupShareIcons();
+}
+
+/**
+ * Thiết lập các link mạng xã hội
+ */
+function setupShareIcons() {
+  const shareIcons = document.querySelectorAll('#product-detail .share-icons a');
+  
+  shareIcons.forEach(icon => {
+    // Xóa href mặc định nếu có
+    icon.removeAttribute('href');
+    
+    // Thêm sự kiện click
+    icon.addEventListener('click', function(e) {
+      e.preventDefault();
+      
+      if (!currentProduct) return;
+      
+      const productUrl = window.location.href;
+      const productTitle = currentProduct.title || 'Check out this product';
+      
+      // Lấy class của icon để xác định loại mạng xã hội
+      const iconClass = this.querySelector('i').className;
+      
+      let shareUrl = '';
+      
+      if (iconClass.includes('facebook')) {
+        // Facebook Share
+        shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(productUrl)}`;
+      } else if (iconClass.includes('pinterest')) {
+        // Pinterest Share
+        const imageUrl = currentProduct.mainImage || '';
+        shareUrl = `https://pinterest.com/pin/create/button/?url=${encodeURIComponent(productUrl)}&media=${encodeURIComponent(imageUrl)}&description=${encodeURIComponent(productTitle)}`;
+      } else if (iconClass.includes('tiktok')) {
+        // TikTok (mở trang chính vì TikTok không có share URL trực tiếp)
+        shareUrl = 'https://www.tiktok.com/';
+      } else if (iconClass.includes('twitter')) {
+        // Twitter/X Share
+        shareUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(productUrl)}&text=${encodeURIComponent(productTitle)}`;
+      } else if (iconClass.includes('instagram')) {
+        // Instagram (mở trang chính vì Instagram không có share URL trực tiếp)
+        shareUrl = 'https://www.instagram.com/';
+      }
+      
+      if (shareUrl) {
+        window.open(shareUrl, '_blank', 'width=600,height=400');
+      }
+    });
+  });
 }
 
 /**
@@ -141,23 +169,20 @@ export function showProductDetailById(productId) {
   productDesc.textContent = currentProduct.shortDesc || "";
   productLongDesc.textContent = currentProduct.longDesc || "No description available.";
 
-
   // Xử lý giá
   productPrice.textContent = formatCurrency(currentProduct.price);
 
   // Reset số lượng về 1
   quantityInput.value = 1;
 
-  // Refresh quantity controls dựa trên giỏ hàng hiện tại
-  refreshQuantityControls();
-
-  // --- 3. Render Slider Ảnh và Bảng Specs ---
-
   // --- 3. Render Slider Ảnh và Bảng Specs ---
   renderImageSlider(currentProduct);
   renderSpecsTable(currentProduct.specs);
+  
+  // --- 4. Cập nhật lại share icons với sản phẩm mới ---
+  setupShareIcons();
 
-  // --- 4. Cuộn lên đầu trang ---
+  // --- 5. Cuộn lên đầu trang ---
   window.scrollTo(0, 0);
 }
 
@@ -176,167 +201,27 @@ function showStoreView() {
 
 /**
  * Cập nhật ô số lượng
- * @param {number} change
+ * @param {number} change 
  */
 function updateQuantity(change) {
   let currentQty = parseInt(quantityInput.value, 10);
   currentQty = isNaN(currentQty) ? 1 : currentQty;
   currentQty += change;
-
-  // Tính max quantity có thể thêm: stock - số lượng đã có trong giỏ
-  const stock = currentProduct ? (currentProduct.stock || 0) : 0;
-  const currentInCart = currentProduct ? getCurrentQuantityInCart(currentProduct.id) : 0;
-  const maxAvailable = Math.max(0, stock - currentInCart);
-
-  // Giới hạn trong khoảng 1 đến max available
+  
   if (currentQty < 1) {
     currentQty = 1;
-  } else if (currentQty > maxAvailable) {
-    currentQty = maxAvailable;
   }
-
-  // Nếu max available = 0, disable input và buttons
-  if (maxAvailable === 0) {
-    currentQty = 0;
-  }
-
+  
   quantityInput.value = currentQty;
-
-  // Cập nhật trạng thái buttons
-  updateQuantityButtons();
-}
-
-/**
- * Refresh quantity controls dựa trên stock và giỏ hàng hiện tại
- */
-function refreshQuantityControls() {
-  if (!quantityInput || !currentProduct) return;
-
-  // Tính max quantity có thể thêm: stock - số lượng đã có trong giỏ
-  const stock = currentProduct.stock || 0;
-  const currentInCart = getCurrentQuantityInCart(currentProduct.id);
-  const maxAvailable = Math.max(0, stock - currentInCart);
-
-  // Set max attribute
-  quantityInput.max = maxAvailable;
-
-  // Set value
-  let currentValue = parseInt(quantityInput.value, 10) || 1;
-  if (maxAvailable === 0) {
-    currentValue = 0;
-  } else if (currentValue > maxAvailable) {
-    currentValue = maxAvailable;
-  } else if (currentValue < 1) {
-    currentValue = 1;
-  }
-
-  quantityInput.value = currentValue;
-
-  // Update buttons
-  updateQuantityButtons();
-}
-
-/**
- * Cập nhật trạng thái disable/enable của các nút quantity
- */
-function updateQuantityButtons() {
-  if (!decreaseQtyBtn || !increaseQtyBtn || !quantityInput) return;
-
-  const currentQty = parseInt(quantityInput.value, 10) || 0;
-
-  // Tính max quantity có thể thêm: stock - số lượng đã có trong giỏ
-  const stock = currentProduct ? (currentProduct.stock || 0) : 0;
-  const currentInCart = currentProduct ? getCurrentQuantityInCart(currentProduct.id) : 0;
-  const maxAvailable = Math.max(0, stock - currentInCart);
-
-  // Disable decrease nếu quantity <= 1 hoặc maxAvailable = 0
-  decreaseQtyBtn.disabled = currentQty <= 1 || maxAvailable === 0;
-
-  // Disable increase nếu đã đạt max available hoặc maxAvailable = 0
-  increaseQtyBtn.disabled = currentQty >= maxAvailable || maxAvailable === 0;
-
-  // Disable add to cart button nếu không thể thêm
-  if (detailAddToCartBtn) {
-    detailAddToCartBtn.disabled = maxAvailable === 0 || currentQty === 0;
-  }
-
-  // Disable buy now button nếu sản phẩm hết hàng hoặc out of stock
-  if (detailBuyNowBtn) {
-    detailBuyNowBtn.disabled = currentProduct.status === "outofstock";
-  }
-}
-
-/**
- * Validate input số lượng khi user nhập trực tiếp
- */
-function validateQuantityInput() {
-  let currentQty = parseInt(quantityInput.value, 10);
-
-  // Tính max quantity có thể thêm: stock - số lượng đã có trong giỏ
-  const stock = currentProduct ? (currentProduct.stock || 0) : 0;
-  const currentInCart = currentProduct ? getCurrentQuantityInCart(currentProduct.id) : 0;
-  const maxAvailable = Math.max(0, stock - currentInCart);
-
-  // Nếu không phải số hợp lệ, set về 1 (hoặc 0 nếu hết hàng)
-  if (isNaN(currentQty) || currentQty < 1) {
-    quantityInput.value = maxAvailable > 0 ? 1 : 0;
-  } else {
-    // Giới hạn không vượt quá max available
-    if (currentQty > maxAvailable) {
-      quantityInput.value = maxAvailable;
-    }
-  }
-
-  // Update max attribute
-  quantityInput.max = maxAvailable;
-
-  // Cập nhật trạng thái buttons
-  updateQuantityButtons();
 }
 
 function handleAddToCart() {
   if (!currentProduct) return;
-
+  
   const quantity = parseInt(quantityInput.value, 10) || 1;
-
-  // Check nếu không còn sản phẩm để thêm
-  const stock = currentProduct ? (currentProduct.stock || 0) : 0;
-  const currentInCartBefore = getCurrentQuantityInCart(currentProduct.id);
-  const maxAvailableBefore = Math.max(0, stock - currentInCartBefore);
-
+  
   // Gọi hàm addToCart đã import từ store.js
   addToCart(currentProduct.id, quantity);
-
-  // Update lại max quantity sau khi thêm vào giỏ
-  const currentInCartAfter = getCurrentQuantityInCart(currentProduct.id);
-  const maxAvailableAfter = Math.max(0, stock - currentInCartAfter);
-
-  // Update input max và value nếu cần
-  quantityInput.max = maxAvailableAfter;
-  if (parseInt(quantityInput.value, 10) > maxAvailableAfter) {
-    quantityInput.value = maxAvailableAfter;
-  }
-
-  // Update buttons
-  updateQuantityButtons();
-}
-
-/**
- * Xử lý sự kiện nhấn nút Buy Now
- */
-function handleBuyNow() {
-  if (!currentProduct) return;
-
-  // Tính tổng số lượng: số lượng nhập vào + số lượng đã có trong giỏ
-  const inputQuantity = parseInt(quantityInput.value, 10) || 0;
-  const currentInCart = getCurrentQuantityInCart(currentProduct.id);
-  const totalQuantity = inputQuantity + currentInCart;
-
-  // Sử dụng hàm updateCartQuantity từ store.js để cập nhật giỏ hàng
-  updateCartQuantity(currentProduct.id, totalQuantity);
-
-  // Chuyển sang trang giỏ hàng
-  showCartView();
 }
 
 function renderImageSlider(product) {
@@ -365,7 +250,6 @@ function renderImageSlider(product) {
     dotsContainer.appendChild(dot);
   });
 
-  // SỬA: Đã xóa dòng set width thủ công. CSS sẽ lo việc đó.
   showSlide(0); 
 }
 
@@ -380,8 +264,6 @@ function showSlide(index) {
   if (index >= totalSlides) index = 0;
   if (index < 0) index = totalSlides - 1;
 
-  // SỬA: Công thức dịch chuyển mới (-100% cho mỗi ảnh)
-  // Vì mỗi ảnh trong CSS chiếm 100% khung nhìn
   slidesContainer.style.transform = `translateX(-${index * 100}%)`;
 
   // Cập nhật dot active
