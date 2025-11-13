@@ -2,6 +2,7 @@
 
 import { dataManager } from "./DatabaseManager.js";
 
+
 // ===============================
 // ❌️ KHÔNG ĐƯỢC SỬA ĐỔI (báo lên nhóm nếu cần thay đổi)
 // ===============================
@@ -2835,7 +2836,6 @@ function addProductLine() {
   container.appendChild(newRow);
 }
 
-// Replace existing saveImportOrder(...) with this implementation
 function saveImportOrder(isDraft) {
   const modal = warehouseSection?.querySelector("#importModal");
   if (!modal) return;
@@ -2851,7 +2851,6 @@ function saveImportOrder(isDraft) {
 
   const date = dateInput?.value || new Date().toISOString();
 
-  // get next numeric id for importOrders
   const existing = getAllImportOrders() || [];
   const maxId = existing.reduce((m, x) => {
     const v = Number(x.idImportOrders ?? x.id ?? 0) || 0;
@@ -2877,7 +2876,6 @@ function saveImportOrder(isDraft) {
     const idForThisImport = nextId++;
 
     const newImport = {
-      // set both idImportOrders and id so other code can find it
       idImportOrders: idForThisImport,
       id: idForThisImport,
       productId: productId,
@@ -2920,7 +2918,6 @@ function viewImportOrder(id) {
 
   const product = dmGetById("products", order.productId || order.id);
 
-  // Populate modal fields
   const setField = (selector, value) => {
     const el = modal.querySelector(selector);
     if (el) el.textContent = value ?? "";
@@ -2945,11 +2942,8 @@ function viewImportOrder(id) {
     statusBadge.textContent = capitalizeFirst(order.status);
   }
 
-  // Wire close buttons
-  const closeButtons = modal.querySelectorAll(
-    ".modal-close, .btn-close-import-detail"
-  );
-  closeButtons.forEach((btn) => {
+  const closeButtons = modal.querySelectorAll('.modal-close, .btn-close-import-detail');
+  closeButtons.forEach(btn => {
     btn.onclick = (e) => {
       e?.preventDefault?.();
       modal.style.display = "none";
@@ -2957,7 +2951,6 @@ function viewImportOrder(id) {
     };
   });
 
-  // Close on outside click
   modal.onclick = (e) => {
     if (e.target === modal) {
       modal.style.display = "none";
@@ -2965,18 +2958,13 @@ function viewImportOrder(id) {
     }
   };
 
-  // Show modal
-  modal.style.display = "flex";
-  modal.setAttribute("aria-hidden", "false");
+  modal.style.display = 'flex';
+  modal.setAttribute('aria-hidden', 'false');
 }
 
 function deleteImportOrder(id) {
-  // Nếu có modal confirm xóa, dùng modal; nếu không, fallback confirm()
-  const confirmModal = warehouseSection?.querySelector(
-    "#confirmDeleteImportModal"
-  );
+  const confirmModal = warehouseSection?.querySelector('#confirmDeleteImportModal');
 
-  // helper thực hiện xóa
   const doDelete = () => {
     try {
       const existing = dmGetById("importOrders", id);
@@ -2985,18 +2973,11 @@ function deleteImportOrder(id) {
         return;
       }
 
-      // Nếu dataManager có API deleteById thì gọi, nếu không, xóa thủ công
-      if (
-        window.dataManager &&
-        typeof window.dataManager.deleteById === "function"
-      ) {
-        window.dataManager.deleteById("importOrders", id);
+      if (window.dataManager && typeof window.dataManager.deleteById === 'function') {
+        window.dataManager.deleteById('importOrders', id);
       } else {
-        // fallback: xóa trong mảng và save
-        const arr = dmGetAll("importOrders");
-        const idx = arr.findIndex(
-          (x) => (x.idImportOrders || x.id || "").toString() === String(id)
-        );
+        const arr = dmGetAll('importOrders');
+        const idx = arr.findIndex(x => (x.idImportOrders || x.id || '').toString() === String(id));
         if (idx !== -1) {
           arr.splice(idx, 1);
           if (
@@ -3007,9 +2988,7 @@ function deleteImportOrder(id) {
         }
       }
 
-      // update UI: render lại tab import
-      switchWarehouseTab("import");
-      // nếu có confirm modal đang mở, đóng nó
+      switchWarehouseTab('import');
       if (confirmModal) {
         confirmModal.style.display = "none";
         confirmModal.setAttribute("aria-hidden", "true");
@@ -3022,15 +3001,13 @@ function deleteImportOrder(id) {
   };
 
   if (!confirmModal) {
-    // fallback: dùng confirm
-    if (confirm("Are you sure you want to delete this import order?")) {
+    if (confirm('Are you sure you want to delete this import order?')) {
       doDelete();
     }
     return;
   }
 
-  // Nếu có modal confirm: populate và show
-  const confirmTextEl = confirmModal.querySelector(".confirm-text");
+  const confirmTextEl = confirmModal.querySelector('.confirm-text');
   if (confirmTextEl) {
     confirmTextEl.textContent = `Are you sure you want to delete import order #${id}?`;
   }
@@ -3038,7 +3015,6 @@ function deleteImportOrder(id) {
   const yesBtn = confirmModal.querySelector(".btn-confirm-yes");
   const noBtn = confirmModal.querySelector(".btn-confirm-no");
 
-  // remove previous handlers (idempotent) and wire
   if (yesBtn) {
     yesBtn.onclick = (e) => {
       e?.preventDefault?.();
@@ -3053,98 +3029,154 @@ function deleteImportOrder(id) {
     };
   }
 
-  // show modal
-  confirmModal.style.display = "flex";
-  confirmModal.setAttribute("aria-hidden", "false");
+  confirmModal.style.display = 'flex';
+  confirmModal.setAttribute('aria-hidden', 'false');
 }
 
 function editWarehouseProduct(id) {
   const product = dmGetById("products", id);
   if (!product) {
-    console.error("Product not found:", id);
+    alert('Product not found');
     return;
   }
 
-  const modal = document.querySelector(".modal.add-product");
+  const modal = warehouseSection?.querySelector('#warehouseProductModal');
   if (!modal) {
-    console.error("Product modal not found");
+    console.error('Warehouse product modal not found');
     return;
   }
 
-  // Show edit mode, hide add mode
-  const addTitle = modal.querySelector(".add-product-e");
-  const editTitle = modal.querySelector(".edit-product-e");
-  if (addTitle) addTitle.style.display = "none";
-  if (editTitle) editTitle.style.display = "block";
+  const productIdInput = modal.querySelector('#warehouse-product-id');
+  const productNameInput = modal.querySelector('#warehouse-product-name');
+  const categorySelect = modal.querySelector('#warehouse-product-category');
+  const importPriceInput = modal.querySelector('#warehouse-import-price');
+  const profitMarginInput = modal.querySelector('#warehouse-profit-margin');
+  const sellPriceInput = modal.querySelector('#warehouse-sell-price');
 
-  // Show edit button, hide add button
-  const addBtn = modal.querySelector(".btn-add-product-form");
-  const editBtn = modal.querySelector(".btn-update-product-form");
-  if (addBtn) addBtn.style.display = "none";
-  if (editBtn) editBtn.style.display = "inline-block";
+  if (productIdInput) productIdInput.value = product.id;
+  if (productNameInput) productNameInput.value = product.title || '';
+  if (categorySelect) categorySelect.value = product.specs?.category || '';
+  if (importPriceInput) importPriceInput.value = product.importPrice || 0;
+  
+  const currentMargin = product.price > 0 ? 
+    (((product.price - (product.importPrice || 0)) / product.price) * 100).toFixed(1) : 0;
+  if (profitMarginInput) profitMarginInput.value = currentMargin;
+  if (sellPriceInput) sellPriceInput.value = product.price || 0;
 
-  const form = modal.querySelector(".add-product-form");
-  if (form) {
-    // Set product ID (create hidden input if not exists)
-    let idInput = form.querySelector('input[name="product-id"]');
-    if (!idInput) {
-      idInput = document.createElement("input");
-      idInput.type = "hidden";
-      idInput.name = "product-id";
-      form.appendChild(idInput);
+  const calculatePrice = () => {
+    const importPrice = parseFloat(importPriceInput?.value || 0);
+    const margin = parseFloat(profitMarginInput?.value || 0);
+    
+    if (margin >= 0 && margin < 100 && importPrice > 0) {
+      const sellPrice = importPrice / (1 - margin / 100);
+      if (sellPriceInput) sellPriceInput.value = sellPrice.toFixed(2);
     }
-    idInput.value = product.id;
+  };
 
-    // Set title
-    const titleInput = form.querySelector("#ten-mon");
-    if (titleInput) titleInput.value = product.title || "";
-
-    // Set price
-    const priceInput = form.querySelector("#gia-moi");
-    if (priceInput) priceInput.value = product.price || 0;
-
-    // Set description
-    const descInput = form.querySelector("#mo-ta");
-    if (descInput) descInput.value = product.shortDesc || "";
-
-    // Set category
-    const categorySelect = form.querySelector("#chon-the-loai");
-    if (categorySelect && product.specs?.category) {
-      categorySelect.value = product.specs.category;
-    }
+  if (profitMarginInput) {
+    profitMarginInput.oninput = calculatePrice;
+  }
+  if (importPriceInput) {
+    importPriceInput.oninput = calculatePrice;
   }
 
-  // Set image preview
-  const imgPreview = modal.querySelector(".upload-image-preview");
-  if (imgPreview) {
-    imgPreview.src =
-      product.image || product.mainImage || "/img/blank-image.png";
-  }
+  const closeButtons = modal.querySelectorAll('.modal-close, .btn-cancel-warehouse-product');
+  closeButtons.forEach(btn => {
+    btn.onclick = (e) => {
+      e?.preventDefault?.();
+      modal.style.display = 'none';
+      modal.setAttribute('aria-hidden', 'true');
+    };
+  });
 
-  // Show modal
-  modal.style.display = "flex";
-  modal.setAttribute("aria-hidden", "false");
-
-  // Wire close button
-  const closeBtn = modal.querySelector(".modal-close.product-form");
-  if (closeBtn) {
-    closeBtn.onclick = () => {
-      modal.style.display = "none";
-      modal.setAttribute("aria-hidden", "true");
-      // Reset to add mode
-      if (addTitle) addTitle.style.display = "block";
-      if (editTitle) editTitle.style.display = "none";
-      if (addBtn) addBtn.style.display = "inline-block";
-      if (editBtn) editBtn.style.display = "none";
+  const saveBtn = modal.querySelector('.btn-save-warehouse-product');
+  if (saveBtn) {
+    saveBtn.onclick = (e) => {
+      e?.preventDefault?.();
+      saveWarehouseProduct();
     };
   }
 
-  // Close on outside click
   modal.onclick = (e) => {
     if (e.target === modal) {
-      closeBtn?.click();
+      modal.style.display = 'none';
+      modal.setAttribute('aria-hidden', 'true');
     }
   };
+
+  modal.style.display = 'flex';
+  modal.setAttribute('aria-hidden', 'false');
+}
+
+function saveWarehouseProduct() {
+  const modal = warehouseSection?.querySelector('#warehouseProductModal');
+  if (!modal) return;
+
+  const productIdInput = modal.querySelector('#warehouse-product-id');
+  const productNameInput = modal.querySelector('#warehouse-product-name');
+  const categorySelect = modal.querySelector('#warehouse-product-category');
+  const importPriceInput = modal.querySelector('#warehouse-import-price');
+  const sellPriceInput = modal.querySelector('#warehouse-sell-price');
+
+  const productId = parseInt(productIdInput?.value);
+  const newName = productNameInput?.value?.trim();
+  const newCategory = categorySelect?.value?.trim();
+  const newImportPrice = parseFloat(importPriceInput?.value);
+  const newSellPrice = parseFloat(sellPriceInput?.value);
+
+  if (!productId || !newName || !newCategory) {
+    alert('Please fill in all required fields');
+    return;
+  }
+
+  if (isNaN(newImportPrice) || newImportPrice < 0) {
+    alert('Invalid import price');
+    return;
+  }
+
+  if (isNaN(newSellPrice) || newSellPrice < 0) {
+    alert('Invalid sell price');
+    return;
+  }
+
+  if (newSellPrice < newImportPrice) {
+    if (!confirm('Sell price is lower than import price. Continue?')) {
+      return;
+    }
+  }
+
+  try {
+    const product = dmGetById('products', productId);
+    if (!product) {
+      alert('Product not found');
+      return;
+    }
+
+    product.title = newName;
+    if (!product.specs) product.specs = {};
+    product.specs.category = newCategory;
+    product.importPrice = newImportPrice;
+    product.price = newSellPrice;
+
+    dmSave();
+
+    modal.style.display = 'none';
+    modal.setAttribute('aria-hidden', 'true');
+
+    switch(currentWarehouseTab) {
+      case 'inventory':
+        renderInventoryTab();
+        break;
+      case 'margins':
+        renderMarginsTab();
+        break;
+    }
+
+    alert('Product updated successfully!');
+  } catch (e) {
+    console.error('Error saving product:', e);
+    alert('Failed to save product');
+  }
 }
 
 function editMargin(id) {
@@ -3229,11 +3261,10 @@ function initWarehouseModule() {
     console.error("Warehouse section not found");
     return;
   }
-
-  console.log("Initializing warehouse module...");
-
-  // Populate category filter
-  const categoryFilter = warehouseSection.querySelector("#categoryFilter");
+  
+  console.log('Initializing warehouse module...');
+  
+  const categoryFilter = warehouseSection.querySelector('#categoryFilter');
   if (categoryFilter) {
     const categories = window.dataManager?.getAllCategories() || [];
     categories.forEach((cat) => {
@@ -3244,10 +3275,24 @@ function initWarehouseModule() {
     });
   }
 
-  // Wire up tab buttons
-  const tabs = warehouseSection.querySelectorAll(".tab");
-  tabs.forEach((tab) => {
-    tab.addEventListener("click", (e) => {
+  const warehouseProductModal = warehouseSection.querySelector('#warehouseProductModal');
+  if (warehouseProductModal) {
+    const categorySelect = warehouseProductModal.querySelector('#warehouse-product-category');
+    if (categorySelect) {
+      categorySelect.innerHTML = '<option value="">Select Category</option>';
+      const categories = window.dataManager?.getAllCategories() || [];
+      categories.forEach(cat => {
+        const option = document.createElement('option');
+        option.value = cat;
+        option.textContent = cat;
+        categorySelect.appendChild(option);
+      });
+    }
+  }
+  
+  const tabs = warehouseSection.querySelectorAll('.tab');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', (e) => {
       e.preventDefault();
       const tabText = tab.textContent.toLowerCase();
       if (tabText.includes("inventory")) switchWarehouseTab("inventory");
@@ -3257,45 +3302,39 @@ function initWarehouseModule() {
       else if (tabText.includes("margin")) switchWarehouseTab("margins");
     });
   });
-
-  // Wire up "New Import Order" button
-  const addImportBtn = warehouseSection.querySelector(".header-actions button");
+  
+  const addImportBtn = warehouseSection.querySelector('.header-actions button');
   if (addImportBtn) {
     addImportBtn.addEventListener("click", (e) => {
       e.preventDefault();
       openImportModal();
     });
   }
-
-  // Wire up modal events
-  const importModal = warehouseSection.querySelector("#importModal");
-
+  
+  const importModal = warehouseSection.querySelector('#importModal');
+  
   if (importModal) {
-    // Close button
-    const closeBtn = importModal.querySelector(".close");
+    const closeBtn = importModal.querySelector('.close');
     if (closeBtn) {
       closeBtn.onclick = (e) => {
         e.preventDefault();
         closeImportModal();
       };
     }
-
-    // Close on outside click
-    importModal.addEventListener("click", (e) => {
+    
+    importModal.addEventListener('click', (e) => {
       if (e.target === importModal) closeImportModal();
     });
-
-    // Save draft button
-    const draftBtn = importModal.querySelector("#saveDraftBtn");
+    
+    const draftBtn = importModal.querySelector('#saveDraftBtn');
     if (draftBtn) {
       draftBtn.onclick = (e) => {
         e.preventDefault();
         saveImportOrder(true);
       };
     }
-
-    // Form submit
-    const importForm = importModal.querySelector("#importForm");
+    
+    const importForm = importModal.querySelector('#importForm');
     if (importForm) {
       importForm.addEventListener("submit", (e) => {
         e.preventDefault();
@@ -3303,23 +3342,23 @@ function initWarehouseModule() {
       });
     }
   }
-
-  // Wire up table actions (delegated events)
-  const inventoryTable = warehouseSection.querySelector("#inventoryTableBody");
+  
+  const inventoryTable = warehouseSection.querySelector('#inventoryTableBody');
   if (inventoryTable) {
-    inventoryTable.addEventListener("click", (e) => {
-      console.log("Click detected:", e.target); // DEBUG
-
-      const editBtn = e.target.closest(".action-btn-edit");
+    inventoryTable.addEventListener('click', (e) => {
+      const editBtn = e.target.closest('.action-btn-edit');
       if (editBtn) {
+        e.preventDefault();
+        e.stopPropagation();
         const productId = parseInt(editBtn.dataset.productId);
-        console.log("Edit button clicked, product ID:", productId); // DEBUG
-        if (productId) editWarehouseProduct(productId);
+        if (productId) {
+          editWarehouseProduct(productId);
+        }
       }
-    });
+    }); 
   }
-
-  const importTable = warehouseSection.querySelector("#importTableBody");
+  
+  const importTable = warehouseSection.querySelector('#importTableBody');
   if (importTable) {
     importTable.addEventListener("click", (e) => {
       const viewBtn = e.target.closest(".btn-view-import");
@@ -3347,10 +3386,9 @@ function initWarehouseModule() {
       }
     });
   }
-
-  // Render initial tab
-  switchWarehouseTab("inventory");
-
+  
+  switchWarehouseTab('inventory');
+  
   window._warehouseModuleInited = true;
   console.log("Warehouse module initialized successfully");
 }
@@ -3365,7 +3403,7 @@ window.filterInventory = filterInventory;
 window.filterTransactions = filterTransactions;
 window.resetDateFilter = resetDateFilter;
 
-// Hook into sidebar tab switching (robust: find by text, fallback to init)
+// Hook into sidebar tab switching
 document.addEventListener("DOMContentLoaded", () => {
   const sidebarItems = Array.from(
     document.querySelectorAll(
@@ -3373,7 +3411,6 @@ document.addEventListener("DOMContentLoaded", () => {
     )
   );
 
-  // Try to find warehouse tab by text (more robust than fixed index)
   const warehouseTab =
     sidebarItems.find((si) => {
       const txt = (si.textContent || "").toLowerCase();
@@ -3386,114 +3423,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }) || null;
 
   if (warehouseTab) {
-    warehouseTab.addEventListener("click", () => {
-      // Đợi một chút để section active
-      setTimeout(() => {
-        if (!window._warehouseModuleInited) {
-          initWarehouseModule();
-          window._warehouseModuleInited = true;
-        } else {
-          // Nếu đã init, chỉ cần render lại tab hiện tại
-          switchWarehouseTab(currentWarehouseTab);
-        }
-      }, 50);
+    warehouseTab.addEventListener('click', (e) => {
+      e.preventDefault();
+      initWarehouseModule();
+      sidebarItems.forEach(si => si.classList.remove('active'));
+      warehouseTab.classList.add('active');
     });
+  } else {
+    initWarehouseModule();
   }
 });
-
-// Add to your existing initSidebarAndTabs function or equivalent
-// Make sure to call initWarehouseModule() when the warehouse tab is clicked
-// -----------------------------
-// DASHBOARD RENDER (simple)
-// -----------------------------
-(function () {
-  // guard
-  if (window._dashboardModuleInited) return;
-  window._dashboardModuleInited = true;
-
-  const fmtVND = (v) =>
-    new Intl.NumberFormat("vi-VN", {
-      style: "currency",
-      currency: "VND",
-    }).format(Number(v || 0));
-
-  // helper lấy data (dùng dmGetAll đã có trong file)
-  const getCustomers = () =>
-    typeof dmGetAll === "function"
-      ? dmGetAll("customers")
-      : window.dataManager?.getAll
-      ? window.dataManager.getAll("customers")
-      : window.dataManager?.data?.customers || [];
-  const getProducts = () =>
-    typeof dmGetAll === "function"
-      ? dmGetAll("products")
-      : window.dataManager?.getAll
-      ? window.dataManager.getAll("products")
-      : window.dataManager?.data?.products || [];
-  const getOrders = () =>
-    typeof dmGetAll === "function"
-      ? dmGetAll("orders")
-      : window.dataManager?.getAll
-      ? window.dataManager.getAll("orders")
-      : window.dataManager?.data?.orders || [];
-
-  function renderDashboard() {
-    try {
-      const userCountEl = document.getElementById("userCount");
-      const productCountEl = document.getElementById("productCount");
-      const revenueTotalEl = document.getElementById("revenueTotal");
-      const stockTotalEl = document.getElementById("stockTotal");
-
-      const customers = getCustomers() || [];
-      const products = getProducts() || [];
-      const orders = getOrders() || [];
-
-      // số lượng
-      if (userCountEl) userCountEl.textContent = String(customers.length);
-      if (productCountEl) productCountEl.textContent = String(products.length);
-
-      // tổng doanh thu (tính tổng totalPrice hoặc amountPrice)
-      const totalRevenue = orders.reduce((s, o) => {
-        const v = Number(o.totalPrice ?? o.amountPrice ?? 0);
-        return s + (isNaN(v) ? 0 : v);
-      }, 0);
-      if (revenueTotalEl) revenueTotalEl.textContent = fmtVND(totalRevenue);
-
-      // tổng tồn kho (sum stock nếu có)
-      const totalStock = products.reduce(
-        (s, p) => s + (Number(p.stock || 0) || 0),
-        0
-      );
-      if (stockTotalEl) stockTotalEl.textContent = String(totalStock);
-    } catch (err) {
-      console.warn("renderDashboard error:", err);
-    }
-  }
-
-  // Gọi render khi DOM sẵn sàng
-  document.addEventListener("DOMContentLoaded", () => {
-    renderDashboard();
-  });
-
-  // Gọi render khi click vào Sidebar -> Dashboard (tab index 0)
-  // tìm sidebar items (same selector như file)
-  try {
-    const sidebarItems = Array.from(
-      document.querySelectorAll(
-        ".admin-sidebar .admin-sidebar__nav .admin-sidebar__list .admin-sidebar__item.tab-content"
-      )
-    );
-    const dashboardItem = sidebarItems[0]; // tab đầu tiên
-    if (dashboardItem) {
-      dashboardItem.addEventListener("click", (e) => {
-        // nhỏ delay để DOM class active được gán (như logic hiện tại)
-        setTimeout(renderDashboard, 50);
-      });
-    }
-  } catch (e) {
-    // im lặng nếu DOM khác
-  }
-
-  // Expose function for manual refresh if needed
-  window.renderAdminDashboard = renderDashboard;
-})();
