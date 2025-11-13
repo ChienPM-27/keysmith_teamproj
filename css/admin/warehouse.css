@@ -1178,14 +1178,9 @@ RESET & BASE STYLES
 
 
 @media (max-width: 1024px) {
-    .warehouse-wrapper .header {
-        flex-direction: column;
-        gap: 15px;
-        align-items: flex-start;
-    }
 
     .warehouse-wrapper .header h1 {
-        font-size: 32px;
+        font-size: 28px;
     }
 
     .warehouse-wrapper .stats-grid {
@@ -1203,7 +1198,7 @@ RESET & BASE STYLES
     }
 
     .warehouse-wrapper .header h1 {
-        font-size: 26px;
+        font-size: 22px;
     }
 
     .warehouse-wrapper .header-actions {
@@ -1336,3 +1331,4 @@ RESET & BASE STYLES
     outline: 2px solid #ff8519;
     outline-offset: 2px;
 }
+
