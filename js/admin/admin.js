@@ -22,6 +22,25 @@ document.addEventListener("DOMContentLoaded", () => {
   // ===============================
   // FIX: SIDEBAR SECTION SWITCHING
   // ===============================
+  //responsive
+const menuIconBtnn = document.querySelector('.menu-icon-btn');
+const adminSidebarLabels = Array.from(document.querySelectorAll('.admin-sidebar__label'));
+const adminSideBar = document.querySelector('#adminSidebar');
+function toggleSidebar() {
+    if (!menuIconBtnn || !adminSideBar) {
+        return;
+    }
+
+    menuIconBtnn.addEventListener('click', () => {
+        adminSideBar.classList.toggle('open');
+        if (adminSidebarLabels.length) {
+            adminSidebarLabels.forEach(label => label.classList.toggle('hide-label'));
+        }
+    });
+}
+
+toggleSidebar();
+
   const sidebarItems = Array.from(
     document.querySelectorAll('.admin-sidebar__nav .admin-sidebar__item.tab-content')
   );
@@ -2409,6 +2428,8 @@ function getAllProducts() {
     return [];
   }
 }
+
+
 
 // ===============================
 // TAB SWITCHING

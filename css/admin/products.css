@@ -124,6 +124,7 @@
 
 .product-info-right .btn-items {
     margin-bottom: 8px;
+    display: flex;
 }
 .product-info-right .btn-edit-product {
     border: none;
