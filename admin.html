@@ -13,9 +13,8 @@
     <link rel="stylesheet" href="/css/admin/dashboard.css" />
     <link rel="stylesheet" href="/css/admin/products.css" />
     <link rel="stylesheet" href="/css/admin/customers.css" />
-    <link rel="stylesheet" href="/css/admin/orders.css" />
-  
-  <link rel="stylesheet" href="/css/admin/product_types.css" />
+    <link rel="stylesheet" href="/css/admin/orders.css" />  
+    <link rel="stylesheet" href="/css/admin/product_types.css" />
 
     <!-- JavaScript Libraries -->
     <!-- Đã khai báo defer nên script sẽ được tải song song với HTML
@@ -28,6 +27,38 @@
       src="https://kit.fontawesome.com/da0c4cdc9f.js"
       crossorigin="anonymous"
     ></script>
+    <!-- ========== Chart.js ========== -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Small CSS bổ sung cho canvas / cards -->
+    <style>
+      /* đặt nơi chứa biểu đồ */
+      .analytics-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        margin-top: 18px;
+      }
+      .chart-card {
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 4px 14px rgba(25, 25, 25, 0.06);
+        padding: 18px;
+        flex: 1 1 480px;
+        min-width: 320px;
+      }
+      .chart-title {
+        font-weight: 700;
+        margin-bottom: 8px;
+        color: #333;
+      }
+      /* responsive fix */
+      @media (max-width: 800px) {
+        .analytics-row {
+          flex-direction: column;
+        }
+      }
+    </style>
   </head>
 
   <body>
@@ -301,25 +332,68 @@
                 </div>
                 <div class="product-price">$100</div>
               </div>
-              <div class="product-info-right">
-                <div class="product-status">Active</div>
-                <div class="btn-items">
-                  <button class="btn-edit-product">
-                    <i class="fa-solid fa-pen-to-square"></i>
-                  </button>
-                  <button class="btn-view-product">
-                    <i class="fa-solid fa-eye"></i>
-                  </button>
-                  <button class="btn-delete-product">
-                    <i class="fa-solid fa-trash"></i>
-                  </button>
+
+              <div class="product-control-center">
+                <form action="" class="form-search">
+                  <input
+                    type="text"
+                    id="form-search-product"
+                    placeholder="Tìm kiếm sản phẩm"
+                    oninput="showProduct()"
+                  />
+                  <div class="search-btn">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                  </div>
+                </form>
+              </div>
+
+              <div class="product-control-right">
+                <button class="btn-control" id="btn-add-product">
+                  <i class="fa-solid fa-plus"></i>
+                  Add
+                </button>
+                <button class="btn-control" id="btn-refresh-product">
+                  <i class="fa-solid fa-arrows-rotate"></i>
+                  Refresh
+                </button>
+              </div>
+            </div>
+
+            <!-- JavaScript tự động hiển thị sản phẩm -->
+            <div class="show-product">
+              <div class="product-item">
+                <div class="product-info">
+                  <div class="product-img">
+                    <img src="/img/blank-image.png" alt="Product Image" />
+                  </div>
+                  <div class="info">
+                    <h3 class="product-name">#001</h3>
+                    <p class="product-category">one piece</p>
+                    <p class="product-description">
+                      Description of the product goes here.
+                    </p>
+                  </div>
+                  <div class="product-price">$100</div>
+                </div>
+                <div class="product-info-right">
+                  <div class="product-status">Active</div>
+                  <div class="btn-items">
+                    <button class="btn-edit-product">
+                      <i class="fa-solid fa-pen-to-square"></i>
+                    </button>
+                    <button class="btn-view-product">
+                      <i class="fa-solid fa-eye"></i>
+                    </button>
+                    <button class="btn-delete-product">
+                      <i class="fa-solid fa-trash"></i>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          <!-- Phân trang -->
-          <!-- Thanh chọn số sản phẩm hiển thị -->
+            <!-- Phân trang -->
+            <!-- Thanh chọn số sản phẩm hiển thị -->
             <div id="page-control">
               <label for="per-page">Hiển thị:</label>
               <select id="per-page">
@@ -353,24 +427,33 @@
                 <i class="fa-solid fa-xmark"></i>
               </button>
 
-            <div class="modal-content">
-              <form action="" class="add-product-form" onsubmit="return false;">
-                <div class="modal-content-left">
-                  <div>
-                    <img src="img/blank-image.png" alt="" class="upload-image-preview" />
-                    <label for="up-hinh-anh" class="form-label-file">
-                      <i class="fa-solid fa-image"></i>
-                      Chọn hình ảnh
-                      <input 
-                        accept="image/jpeg, image/png, image/jpg" 
-                        id="up-hinh-anh" 
-                        name="up-hinh-anh" 
-                        type="file"
-                        class="form-control" 
-                        style="display: none" 
-                        onchange="uploadImage(this)" 
+              <div class="modal-content">
+                <form
+                  action=""
+                  class="add-product-form"
+                  onsubmit="return false;"
+                >
+                  <div class="modal-content-left">
+                    <div>
+                      <img
+                        src="img/blank-image.png"
+                        alt=""
+                        class="upload-image-preview"
                       />
-                    </label>
+                      <label for="up-hinh-anh" class="form-label-file">
+                        <i class="fa-solid fa-image"></i>
+                        Chọn hình ảnh
+                        <input
+                          accept="image/jpeg, image/png, image/jpg"
+                          id="up-hinh-anh"
+                          name="up-hinh-anh"
+                          type="file"
+                          class="form-control"
+                          style="display: none"
+                          onchange="uploadImage(this)"
+                        />
+                      </label>
+                    </div>
                   </div>
                 </div>
 
@@ -1056,7 +1139,6 @@
         <!-- Analytics Section -->
         <div class="analytics-section-header">
           <h1><i class="fa-solid fa-chart-simple"></i> Analytics</h1>
-
             <p>Phân tích dữ liệu và quản lý giá bán</p>
           </div>
 
@@ -1222,6 +1304,26 @@
               </div>               -->
               </div>
             </div>
+            <!-- ===== Analytics charts ===== -->
+            <div class="analytics-row">
+              <div class="chart-card">
+                <div class="chart-title">Doanh thu theo ngày</div>
+                <canvas id="revenueChart" height="120"></canvas>
+              </div>
+
+              <div class="chart-card">
+                <div class="chart-title">Số đơn hàng theo ngày</div>
+                <canvas id="ordersChart" height="120"></canvas>
+              </div>
+            </div>
+
+            <div class="chart-card" style="flex: 1 1 100%; text-align: center">
+              <div class="chart-title">Tỉ lệ trạng thái đơn hàng</div>
+              <div class="chart-wrapper">
+                <canvas id="statusChart"></canvas>
+              </div>
+            </div>
+            <!-- ===== hết phần thêm ===== -->
 
             <!-- Order Status Stats -->
             <div class="order-status-grid">
@@ -1464,24 +1566,26 @@
             </div>
 
             <!-- Tabs Navigation -->
-          <div class="tabs">
-            <button class="tab active" onclick="switchWarehouseTab('inventory')">
-              <i class="fas fa-boxes"></i> Inventory Overview
-            </button>
+            <div class="tabs">
+              <button
+                class="tab active"
+                onclick="switchWarehouseTab('inventory')"
+              >
+                <i class="fas fa-boxes"></i> Inventory Overview
+              </button>
 
-            <button class="tab" onclick="switchWarehouseTab('import')">
-              <i class="fas fa-file-import"></i> Import Orders
-            </button>
+              <button class="tab" onclick="switchWarehouseTab('import')">
+                <i class="fas fa-file-import"></i> Import Orders
+              </button>
 
-            <button class="tab" onclick="switchWarehouseTab('transactions')">
-              <i class="fas fa-exchange-alt"></i> Transactions History
-            </button>
+              <button class="tab" onclick="switchWarehouseTab('transactions')">
+                <i class="fas fa-exchange-alt"></i> Transactions History
+              </button>
 
-            <button class="tab" onclick="switchWarehouseTab('margins')">
-              <i class="fas fa-percent"></i> Profit Margins
-            </button>
-          </div>
-
+              <button class="tab" onclick="switchWarehouseTab('margins')">
+                <i class="fas fa-percent"></i> Profit Margins
+              </button>
+            </div>
 
             <!-- Tab Content: Inventory Overview -->
             <div id="inventoryTab" class="tab-content active">
@@ -1920,18 +2024,56 @@
           </div>
         </div>
 
-        <!-- Confirm delete modal -->
-        <div id="confirmDeleteImportModal" class="modal confirm-delete-modal" style="display:none;" aria-hidden="true">
-          <div class="modal-container">
-            <button class="modal-close">×</button>
-            <h3>Confirm delete</h3>
-            <p class="confirm-text">Are you sure?</p>
-            <div style="margin-top:12px;">
-              <button class="btn-confirm-yes">Yes, delete</button>
-              <button class="btn-confirm-no">Cancel</button>
+          <!-- Import detail modal -->
+          <div
+            id="importDetailModal"
+            class="modal import-detail-modal"
+            style="display: none"
+            aria-hidden="true"
+          >
+            <div class="modal-container">
+              <button class="modal-close">×</button>
+              <h3>Import Order Detail <span id="detailOrderId"></span></h3>
+              <div>
+                <strong>Product:</strong> <span id="detailProductName"></span>
+              </div>
+              <div>
+                <strong>Quantity:</strong> <span id="detailQuantity"></span>
+              </div>
+              <div>
+                <strong>Unit price:</strong> <span id="detailUnitPrice"></span>
+              </div>
+              <div>
+                <strong>Total:</strong> <span id="detailTotalPrice"></span>
+              </div>
+              <div><strong>Date:</strong> <span id="detailDate"></span></div>
+              <div>
+                <strong>Status:</strong>
+                <span id="detailStatus" class="status-badge"></span>
+              </div>
+              <div style="margin-top: 12px">
+                <button class="btn-close-import-detail">Close</button>
+              </div>
             </div>
           </div>
-        </div>
+
+          <!-- Confirm delete modal -->
+          <div
+            id="confirmDeleteImportModal"
+            class="modal confirm-delete-modal"
+            style="display: none"
+            aria-hidden="true"
+          >
+            <div class="modal-container">
+              <button class="modal-close">×</button>
+              <h3>Confirm delete</h3>
+              <p class="confirm-text">Are you sure?</p>
+              <div style="margin-top: 12px">
+                <button class="btn-confirm-yes">Yes, delete</button>
+                <button class="btn-confirm-no">Cancel</button>
+              </div>
+            </div>
+          </div>
 
           <!-- Modal: Edit Margin -->
           <div id="marginModal" class="modal">

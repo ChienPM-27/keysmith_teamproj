@@ -18,9 +18,9 @@ export const sampleData = {
       },
       price: 75,
       importPrice: 45,
-      stock: 9,
+      stock: 0,
       sold: 0,
-      status: "ready",
+      status: "outofstock",
     },
     {
       id: 2,
@@ -104,7 +104,7 @@ export const sampleData = {
       importPrice: 51,
       stock: 8,
       sold: 0,
-      status: "outofstock",
+      status: "ready",
     },
     {
       id: 6,
@@ -191,7 +191,7 @@ export const sampleData = {
       importPrice: 53,
       stock: 6,
       sold: 0,
-      status: "outofstock",
+      status: "ready",
     },
     {
       id: 10,
@@ -260,7 +260,7 @@ export const sampleData = {
       importPrice: 37,
       stock: 10,
       sold: 0,
-      status: "outofstock",
+      status: "ready",
     },
     {
       id: 13,
@@ -365,7 +365,7 @@ export const sampleData = {
       importPrice: 52,
       stock: 10,
       sold: 0,
-      status: "outofstock",
+      status: "ready",
     },
     {
       id: 18,

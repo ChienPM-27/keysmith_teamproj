@@ -675,3 +675,18 @@
         height: 50px;
     }
 }
+/* wrapper có kích thước cố định, canvas sẽ lấp đầy */
+.chart-card .chart-wrapper {
+  width: 420px;        /* điều chỉnh theo mong muốn */
+  height: 420px;
+  margin: 0 auto;      /* căn giữa */
+  display: block;
+}
+
+/* buộc canvas chiếm 100% wrapper */
+.chart-card .chart-wrapper canvas,
+#statusChart {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+}
