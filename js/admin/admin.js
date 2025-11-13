@@ -86,6 +86,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+
+// ===============================
+// ✔️ ĐƯỢC PHÉP SỬA ĐỔI
+// ===============================
+
+
+// ===============================
+// SCRIPT HOẠT ĐÔNG CHUNG CHO ADMIN PAGE
+// ===============================
+
 //responsive
 const menuIconBtn = document.querySelector('.menu-icon-btn');
 const adminSidebarLabels = Array.from(document.querySelectorAll('.admin-sidebar__label'));
@@ -104,15 +114,6 @@ function toggleSidebar() {
 }
 
 toggleSidebar();
-
-// ===============================
-// ✔️ ĐƯỢC PHÉP SỬA ĐỔI
-// ===============================
-
-
-// ===============================
-// SCRIPT HOẠT ĐÔNG CHUNG CHO ADMIN PAGE
-// ===============================
 
 
 
