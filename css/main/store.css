@@ -1602,6 +1602,46 @@ hr {
   }
 }
 
+/* Order history button row in cart */
+#cart-view .cart-actions-row {
+  width: 100%;
+  padding: 8px 2%;
+  box-sizing: border-box;
+  margin-top: -24px; /* kéo lên gần đường kẻ nếu cần */
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: flex-start; /* canh trái */
+  gap: 8px;
+}
+
+/* Button look */
+#btn-order-history.btn-ghost {
+  background: transparent;
+  border: 1px solid #ccc;
+  color: #111;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+}
+#btn-order-history.btn-ghost:hover {
+  background: rgba(0,0,0,0.04);
+}
+
+/* The moved order-history container (when displayed under cart) */
+#order-history-container.moved-under-cart {
+  width: 96%;
+  margin: 8px 2% 18px;
+  background: #fff;
+  border: 1px solid #e6e6e6;
+  border-radius: 6px;
+  padding: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+}
+
+
+
+
 /* finalization moved into table footer - legacy rules removed */
 
 /* ensure toast uses bright text on dark background */
