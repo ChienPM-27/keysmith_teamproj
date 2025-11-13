@@ -1,330 +1,608 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>KeySmith</title>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>KeySmith</title>
-
-  <!-- CSS Stylesheets -->
+    <!-- CSS Stylesheets -->
     <link rel="stylesheet" href="/css/main/store.css" />
-    <link rel="stylesheet" href="/css/page-transition.css">
+    <link rel="stylesheet" href="/css/toast.css" />
 
-  <!-- JavaScript Libraries -->
-  <script type="module" src="/js/store.js"></script>
+    <!-- JavaScript Libraries -->
+    <script src="/js/admin/ToastMessage.js"></script>
+    <script type="module" src="/js/main/store.js"></script>
 
-  <script src="https://kit.fontawesome.com/da0c4cdc9f.js" crossorigin="anonymous"></script>
-</head>
+    <script
+      src="https://kit.fontawesome.com/da0c4cdc9f.js"
+      crossorigin="anonymous"
+    ></script>
+  </head>
 
-<body>
-  <!-- Header -->
-  <section id="header">
-    <a href="#">
-      <img src="/img/logo/logo_full.png" class="logo" alt="logo" style="width: 150px; height: 75px" />
-    </a>
+  <body class="store-page">
+    <!-- Header -->
+    <section id="header">
+      <a href="/index.html"
+        ><img
+          src="/img/logo/logo_full.png"
+          class="logo"
+          alt="logo"
+          style="width: 150px; height: 75px"
+      /></a>
 
-    <ul id="navbar">
-      <li><a href="/index.html">Home</a></li>
-
-      <li><a href="Store.html" class="active">Store</a></li>
-    </ul>
-
-    <div class="header-icons">
-      <a href="#" class="cart" onclick="showCartView()"><i class="fa-solid fa-cart-shopping"></i></a>
-
-      <a href="/index.html" class="profile"><i class="fa-solid fa-circle-user"></i></a>
-    </div>
-  </section>
-
-  <!-- Back to store button -->
-  <button id="back-btn">⬅ BACK TO STORE</button>
-
-  <!-- Store view -->
-  <section id="store-view">
-    <h1 class="title">In stock products</h1>
-    <hr />
-
-    <section id="store-search-bar">
-      <input type="text" id="search-input" placeholder="Tìm kiếm sản phẩm..." />
-
-      <button type="button" id="search-button">
-        <i class="fa-solid fa-magnifying-glass"></i>
-      </button>
-    </section>
-
-    <section id="filter-menu">
-      <select name="status" id="status">
-        <option value="" selected>Trạng thái</option>
-        <option value="ready">Sẵn hàng</option>
-        <option value="outofstock">Hết hàng</option>
-      </select>
-
-      <select name="brands" id="brands">
-        <option value="" selected>Hãng sản xuất</option>
-      </select>
-
-      <select name="category" id="category">
-        <option value="" selected>Bộ sưu tập</option>
-      </select>
-
-      <select name="color" id="color">
-        <option value="" selected>Màu sắc</option>
-      </select>
-
-      <div class="price-range">
-        <input type="number" id="price-min" placeholder="Min price" min="0" />
-        <span>-</span>
-        <input type="number" id="price-max" placeholder="Max price" min="0" />
-      </div>
-
-      <select name="sort" id="sort">
-        <option value="" selected>Sắp xếp</option>
-        <option value="incre-price">Giá tiền: Tăng dần</option>
-        <option value="decre-price">Giá tiền: Giảm dần</option>
-      </select>
-    </section>
-    
-    <div class="show-product-container" id="show-product-container"></div>
-
-    <!-- Template cho 1 sản phẩm -->
-    <template id="product-item-template">
-      <div class="pro">
-        <div class="pro-img">
-          <img src="/img/blank-image.png" alt="product image" />
-        </div>
-
-        <div class="pro-meta">
-          <div class="pro-collection">Collection</div>
-          <h4 class="pro-title">Product name</h4>
-        </div>
-
-        <div class="pro-footer">
-          <div class="pro-price">$0.00</div>
-          <button class="btn-add-to-cart" title="Add to cart">
-            <i class="fa-solid fa-cart-shopping"></i>
-          </button>
-        </div>
-      </div>
-    </template>
-    
-    <!-- Thanh chọn số sản phẩm hiển thị -->
-    <div id="page-control">
-      <label for="per-page">Hiển thị:</label>
-      <select id="per-page">
-        <option value="4">4</option>
-        <option value="8" selected>8</option>
-        <option value="12">12</option>
-      </select>
-      sản phẩm mỗi trang
-    </div>
-
-    <!-- Phân trang -->
-    <div class="page-nav">
-      <ul class="page-nav-list">
-        <!-- JavaScript sẽ tự động tạo các nút ở đây -->
+      <ul id="navbar">
+        <a href="#" id="close"><i class="fa-solid fa-times"></i></a>
+        <li><a href="/index.html" id="scrollToTop">Home</a></li>
+        <li><a href="/main/store.html">Store</a></li>
       </ul>
-    </div>
 
-  <!-- Detail view -->
-  <section id="product-detail" style="display: none">
-    <div class="product-wrapper">
-      <div class="product-images">
-        <div class="thumbnail-list">
-          <div class="image-slider" id="imageSlider">
-            <div class="slides"></div>
-          </div>
-
-          <div class="slider-dots" id="sliderDots"></div>
-        </div>
-      </div>
-
-      <div class="product-info">
-        <h2 id="productTitle"></h2>
-
-        <p class="short-desc" id="productDesc"></p>
-
-        <p class="rating" id="productRating"></p>
-
-        <div class="price">
-          <span class="current" id="productPrice"></span>
-
-          <span class="old" id="productOldPrice"></span>
-
-          <span class="discount" id="productDiscount"></span>
-        </div>
-
-        <div class="share-like">
-          <span class="share-label">Share:</span>
-
-          <div class="share-icons">
-            <a class="share-fb" href="#" target="_blank" title="Share on Facebook"><i
-                class="fa-brands fa-facebook"></i></a>
-
-            <a class="share-pinterest" href="#" target="_blank" title="Share on Pinterest"><i
-                class="fa-brands fa-pinterest"></i></a>
-
-            <a class="share-tiktok" href="#" target="_blank" title="Share on TikTok"><i
-                class="fa-brands fa-tiktok"></i></a>
-
-            <a class="share-twitter" href="#" target="_blank" title="Share on Twitter"><i
-                class="fa-brands fa-twitter"></i></a>
-
-            <a class="share-instagram" href="#" target="_blank" title="Share on Instagram"><i
-                class="fa-brands fa-instagram"></i></a>
-          </div>
-        </div>
-
-        <div class="quantity-container">
-          <label for="quantity">Quantity:</label>
-
-          <div class="quantity-box">
-            <button class="qty-btn" id="decrease">−</button>
-
-            <input type="number" id="quantity" value="1" min="1" />
-
-            <button class="qty-btn" id="increase">+</button>
-          </div>
-        </div>
-
-        <div class="buy-buttons">
-          <button class="add-cart">Add to Cart</button>
-
-          <button class="buy-now">Buy Now</button>
-        </div>
-      </div>
-    </div>
-
-    <section id="product-extra">
-      <div class="desc-wrapper">
-        <div class="product-specs">
-          <h3>Product Details</h3>
-
-          <table id="productSpecs"></table>
-        </div>
-
-        <div class="product-desc-text">
-          <h3>Product Description</h3>
-
-          <p id="productLongDesc"></p>
+      <div class="header-icons">
+        <a href="#" class="cart"><i class="fa-solid fa-cart-shopping"></i></a>
+        <a href="/index.html" class="profile"
+          ><i class="fa-solid fa-circle-user"></i
+        ></a>
+        <div id="mobile">
+          <i id="bar" class="fas fa-bars"></i>
         </div>
       </div>
     </section>
-  </section>
 
-  <!-- Cart view -->
-  <section id="cart-view" style="display: none">
-    <img src="/img/bg/blueprint_rotate.png" alt="" class="bg" />
+    <!-- Back to store button -->
+    <button id="back-btn">⬅ BACK TO STORE</button>
 
-    <h1 class="title">Shopping Cart</h1>
-    <hr />
+    <!-- Store view -->
+    <section id="store-view">
+      <h1 class="title">In stock products</h1>
+      <hr />
 
-    <table id="cart-table">
-      <thead>
-        <tr>
-          <th class="Choose">Choose</th>
-          <th class="ProductInfo">Product</th>
-          <th class="Price">Unit Price</th>
-          <th class="Quantity">Quantity</th>
-          <th class="TotalPrice">Total Price</th>
-          <th class="Actions">Actions</th>
-        </tr>
-      </thead>
+      <!-- Search bar: full-width single row -->
+      <section id="store-search-bar">
+        <input
+          type="text"
+          id="search-input"
+          placeholder="Tìm kiếm sản phẩm..."
+        />
+        <button type="button" id="search-button">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+      </section>
 
-      <tbody></tbody>
+      <!-- Filter menu: two-row layout -->
+      <section id="filter-menu">
+        <!-- Row 1: Status, Brand, Category, Color, Price Range -->
+        <div class="filter-row filter-row-main">
+          <select name="status" id="status">
+            <option value="" selected>Trạng thái</option>
+            <option value="ready">Sẵn hàng</option>
+            <option value="outofstock">Hết hàng</option>
+          </select>
 
-      <tfoot>
-        <tr class="cart-footer-row">
-          <td class="Choose"><input type="checkbox" id="chooseALL" /></td>
+          <select name="brands" id="brands">
+            <option value="" selected>Hãng sản xuất</option>
+          </select>
 
-          <td class="TotalPrice footer-total" colspan="3">
-            <div class="total">Total (0 items):</div>
+          <select name="category" id="category">
+            <option value="" selected>Bộ sưu tập</option>
+          </select>
 
-            <div class="money">0</div>
-          </td>
+          <select name="color" id="color">
+            <option value="" selected>Màu sắc</option>
+          </select>
 
-          <td class="Actions footer-actions" colspan="2">
-            <button type="button" class="delete-icon" title="Delete selected"><i class="fa-solid fa-trash"></i></button>
+          <div class="price-range">
+            <input
+              type="number"
+              id="price-min"
+              placeholder="Min price"
+              min="0"
+            />
+            <input
+              type="number"
+              id="price-max"
+              placeholder="Max price"
+              min="0"
+            />
+          </div>
+        </div>
 
-            <button type="button" class="checkout-visual">Check Out</button>
-          </td>
-        </tr>
-      </tfoot>
-    </table>
+        <!-- Row 2: Sort (right-aligned) -->
+        <div class="filter-row filter-row-sort">
+          <select name="sort" id="sort">
+            <option value="" selected>Sắp xếp</option>
+            <option value="incre-price">Giá tiền: Tăng dần</option>
+            <option value="decre-price">Giá tiền: Giảm dần</option>
+          </select>
+        </div>
+      </section>
 
-  </section>
+      <div class="show-product-container" id="show-product-container"></div>
 
-  <!-- Back to top button -->
-  <button id="btn-top"><i class="fa-solid fa-arrow-up"></i></button>
+      <!-- Template cho 1 sản phẩm -->
+      <template id="product-item-template">
+        <div class="pro">
+          <div class="pro-img">
+            <img src="/img/blank-image.png" alt="product image" />
+          </div>
 
-  <!-- Footer -->
-  <footer class="section-p1" style="display: flex">
-    <div class="About">
-      <table border="1" cellspacing="0" cellpadding="8">
-        <tr>
-          <td rowspan="4" style="width: 20%; text-align: center">
-            <a href="#" style="
-                  font-family: Bebas Neue;
-                  font-size: 30px;
-                  font-weight: 700;
-                ">ABOUT US</a>
-          </td>
-          <td style="width: 30%">HELP CENTER</td>
-          <td rowspan="2" style="width: 30%">
-            SHIPPING &<br />RETURN POLICY
-          </td>
-          <td rowspan="5" style="width: 40%">
-            <img src="/img/logo/logo_full.png" alt="Logo" style="
-                  max-width: 250px;
-                  height: auto;
-                  filter: drop-shadow(0 0 1px black) drop-shadow(0 0 1px black);
-                " />
-          </td>
-        </tr>
-        <tr>
-          <td>BLOG & NEWS</td>
-        </tr>
-        <tr>
-          <td colspan="2" style="text-align: left">
-            DISCORD
-            <a href="https://discord.com" target="_blank" style="float: right"><i class="fa-brands fa-discord"></i></a>
-          </td>
-        </tr>
-        <tr>
-          <td colspan="2" style="text-align: left">
-            SOCIAL MEDIA
-            <div style="float: right">
-              <a href="https://www.instagram.com" target="_blank"><i class="fa-brands fa-square-instagram"></i></a>
-              <a href="https://www.facebook.com" target="_blank"><i class="fa-brands fa-square-facebook"></i></a>
-              <a href="https://www.tiktok.com" target="_blank"><i class="fa-brands fa-tiktok"></i></a>
-              <a href="https://www.youtube.com" target="_blank"><i class="fa-brands fa-youtube"></i></a>
-              <a href="https://twitter.com" target="_blank"><i class="fa-brands fa-square-x-twitter"></i></a>
+          <div class="pro-meta">
+            <div class="pro-collection">Collection</div>
+            <h4 class="pro-title">Product name</h4>
+          </div>
+
+          <div class="pro-footer">
+            <div class="pro-price">$0.00</div>
+            <button class="btn-add-to-cart" title="Add to cart">
+              <i class="fa-solid fa-cart-shopping"></i>
+            </button>
+          </div>
+        </div>
+      </template>
+
+      <!-- Thanh chọn số sản phẩm hiển thị -->
+      <div id="page-control">
+        <label for="per-page">Hiển thị:</label>
+        <select id="per-page">
+          <option value="4">4</option>
+          <option value="8" selected>8</option>
+          <option value="12">12</option>
+        </select>
+        sản phẩm mỗi trang
+      </div>
+
+      <!-- Phân trang -->
+      <div class="page-nav">
+        <ul class="page-nav-list">
+          <!-- JavaScript sẽ tự động tạo các nút ở đây -->
+        </ul>
+      </div>
+    </section>
+    <!-- Detail view -->
+    <section id="product-detail" style="display: none">
+      <div class="product-wrapper">
+        <div class="product-images">
+          <div class="thumbnail-list">
+            <div class="image-slider" id="imageSlider">
+              <div class="slides"></div>
             </div>
-          </td>
-        </tr>
-        <tr>
-          <td colspan="3" style="text-align: left">
-            SUPPORT:
-            <span style="float: right; font-family: Bebas Neue">SUPPORT@KEYSMITH.COM</span>
-          </td>
-        </tr>
-      </table>
-    </div>
 
-    <div class="form">
-      <div class="subcribe">
-        <h3>SUBSCRIBE & GET INCENTIVES</h3>
-        <p>
-          Sign up and get the latest news about new design, group buy,
-          straight to your inbox.
-        </p>
-      </div>
-      <div class="bonus">Bonus: Many hot offers and giveaway await!</div>
-      <div class="input-group">
-        <input type="email" placeholder="YOUR E-MAIL:" />
-        <button>SIGN UP</button>
-      </div>
-    </div>
-  </footer>
-</body>
+            <div class="slider-dots" id="sliderDots"></div>
+          </div>
+        </div>
 
+        <div class="product-info">
+          <h2 id="productTitle"></h2>
+
+          <p class="short-desc" id="productDesc"></p>
+
+          <p class="rating" id="productRating"></p>
+
+          <div class="price">
+            <span class="current" id="productPrice"></span>
+
+            <span class="old" id="productOldPrice"></span>
+
+            <span class="discount" id="productDiscount"></span>
+          </div>
+
+          <div class="share-like">
+            <span class="share-label">Share:</span>
+
+            <div class="share-icons">
+              <a
+                class="share-fb"
+                href="#"
+                target="_blank"
+                title="Share on Facebook"
+                ><i class="fa-brands fa-facebook"></i
+              ></a>
+
+              <a
+                class="share-pinterest"
+                href="#"
+                target="_blank"
+                title="Share on Pinterest"
+                ><i class="fa-brands fa-pinterest"></i
+              ></a>
+
+              <a
+                class="share-tiktok"
+                href="#"
+                target="_blank"
+                title="Share on TikTok"
+                ><i class="fa-brands fa-tiktok"></i
+              ></a>
+
+              <a
+                class="share-twitter"
+                href="#"
+                target="_blank"
+                title="Share on Twitter"
+                ><i class="fa-brands fa-twitter"></i
+              ></a>
+
+              <a
+                class="share-instagram"
+                href="#"
+                target="_blank"
+                title="Share on Instagram"
+                ><i class="fa-brands fa-instagram"></i
+              ></a>
+            </div>
+          </div>
+
+          <div class="quantity-container">
+            <label for="quantity">Quantity:</label>
+
+            <div class="quantity-box">
+              <button class="qty-btn" id="decrease">−</button>
+
+              <input type="number" id="quantity" value="1" min="1" />
+
+              <button class="qty-btn" id="increase">+</button>
+            </div>
+          </div>
+
+          <div class="buy-buttons">
+            <button class="add-cart">Add to Cart</button>
+
+            <button class="buy-now">Buy Now</button>
+          </div>
+        </div>
+      </div>
+
+      <section id="product-extra">
+        <div class="desc-wrapper">
+          <div class="product-specs">
+            <h3>Product Details</h3>
+
+            <table id="productSpecs"></table>
+          </div>
+
+          <div class="product-desc-text">
+            <h3>Product Description</h3>
+
+            <p id="productLongDesc"></p>
+          </div>
+        </div>
+      </section>
+    </section>
+
+    <!-- Cart view -->
+    <section id="cart-view" style="display: none">
+      <div class="cart-container">
+        <div class="cart-hero">
+          <h1 class="title">Shopping Cart</h1>
+          <div class="cart-actions-top">
+            <button class="btn-clear" title="Clear cart">Clear cart</button>
+          </div>
+        </div>
+
+        <table id="cart-table" aria-label="Shopping cart">
+          <thead>
+            <tr>
+              <th class="Choose">
+                <input type="checkbox" id="chooseALL" aria-label="Choose all" />
+              </th>
+              <th class="ProductInfo">Product</th>
+              <th class="Price">Unit Price</th>
+              <th class="Quantity">Quantity</th>
+              <th class="TotalPrice">Total Price</th>
+              <th class="Actions">Actions</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <!-- JS sẽ chèn các dòng sản phẩm ở đây -->
+          </tbody>
+
+          <tfoot>
+            <tr class="cart-footer-row">
+              <td></td>
+              <td class="footer-total" colspan="2">
+                <div class="total">Total (0 items):</div>
+              </td>
+
+              <td class="footer-money" colspan="1">
+                <div class="money"></div>
+              </td>
+
+              <td class="footer-actions" colspan="2">
+                <button
+                  type="button"
+                  class="delete-icon"
+                  title="Delete selected"
+                >
+                  <i class="fa-solid fa-trash"></i> Delete selected
+                </button>
+                <button type="button" class="checkout-visual">Check Out</button>
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </section>
+
+    <!-- CHECKOUT MODAL (ẩn, hiển thị khi gọi showCheckout()) -->
+    <section id="checkout-modal" aria-hidden="true">
+      <div class="checkout-backdrop" id="checkout-backdrop"></div>
+
+      <div
+        class="checkout-card"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="checkout-title"
+      >
+        <header class="checkout-header">
+          <h3 id="checkout-title">Checkout — Shipping & Payment</h3>
+          <button class="checkout-close" id="checkout-close" title="Close">
+            &times;
+          </button>
+        </header>
+
+        <div class="checkout-body">
+          <form id="checkout-form" autocomplete="on" onsubmit="return false;">
+            <!-- ADDRESS SECTION -->
+            <fieldset class="address-section">
+              <legend>Địa chỉ giao hàng</legend>
+
+              <!-- Dạng hiển thị -->
+              <div id="address-display" class="address-display">
+                <div class="addr-text" id="addr-text">
+                  Bạn chưa có địa chỉ. Vui lòng thêm địa chỉ giao hàng.
+                </div>
+                <div style="display: flex; gap: 8px">
+                  <button type="button" id="addr-change-btn" class="btn-ghost">
+                    Thay đổi
+                  </button>
+                </div>
+              </div>
+
+              <!-- Dạng chỉnh sửa (ẩn ban đầu) -->
+              <div id="address-edit" class="address-edit" style="display: none">
+                <div class="row">
+                  <label for="chk-name">Họ & Tên</label>
+                  <input
+                    id="chk-name"
+                    type="text"
+                    placeholder="Nguyễn Văn A"
+                    required
+                  />
+                </div>
+                <div class="row">
+                  <label for="chk-phone">Số điện thoại</label>
+                  <input
+                    id="chk-phone"
+                    type="tel"
+                    placeholder="090xxxxxxx"
+                    required
+                  />
+                </div>
+                <div class="row">
+                  <label for="chk-line">Địa chỉ (số nhà, đường, khu vực)</label>
+                  <input
+                    id="chk-line"
+                    type="text"
+                    placeholder="Số 10 Nguyễn Huệ, Q.1"
+                    required
+                  />
+                </div>
+                <div class="row two-cols">
+                  <div>
+                    <label for="chk-city">Thành phố</label>
+                    <input
+                      id="chk-city"
+                      type="text"
+                      placeholder="Hồ Chí Minh"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div class="checkout-address-actions">
+                  <button type="button" id="addr-save-btn" class="btn-primary">
+                    Lưu
+                  </button>
+                  <button type="button" id="addr-cancel-btn" class="btn-ghost">
+                    Hủy
+                  </button>
+                </div>
+              </div>
+            </fieldset>
+
+            <!-- PAYMENT -->
+            <fieldset class="payment-section">
+              <legend>Phương thức thanh toán</legend>
+
+              <label class="pm-row">
+                <input type="radio" name="payment" value="cod" checked /> Tiền
+                mặt khi nhận hàng (COD)
+                <small>— Trả tiền mặt khi nhận</small>
+              </label>
+
+              <label class="pm-row">
+                <input type="radio" name="payment" value="bank" /> Chuyển khoản
+                <small>— Thông tin chuyển khoản sẽ hiển thị sau khi đặt</small>
+              </label>
+
+              <label class="pm-row">
+                <input type="radio" name="payment" value="online" /> Thanh toán
+                trực tuyến
+                <small>— (demo) sẽ chuyển tới cổng thanh toán</small>
+              </label>
+            </fieldset>
+
+            <!-- SUMMARY -->
+            <fieldset class="summary-section">
+              <legend>Tóm tắt giỏ hàng</legend>
+              <div id="checkout-items" class="checkout-items">
+                <!-- JS sẽ chèn các dòng sản phẩm ở đây -->
+              </div>
+
+              <div class="summary-totals">
+                <div>
+                  <span>Tổng số lượng:</span>
+                  <strong id="checkout-total-qty">0</strong>
+                </div>
+                <div>
+                  <span>Tổng tiền:</span>
+                  <strong id="checkout-total-money">₫0</strong>
+                </div>
+              </div>
+            </fieldset>
+
+            <div class="checkout-actions">
+              <button type="button" id="btn-place-order" class="btn-primary">
+                Place Order
+              </button>
+              <button type="button" id="btn-cancel" class="btn-ghost">
+                Cancel
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- Back to top button -->
+    <button id="btn-top"><i class="fa-solid fa-arrow-up"></i></button>
+
+    <!-- Header/footer script moved into /js/main/store.js (scoped there) -->
+
+    <!-- Footer -->
+    <footer class="section-p1">
+      <div class="footer-container">
+        <div class="title">
+          <h5>ARE YOU ENJOYING?</h5>
+          <span>CONTINUE EXPLORE</span>
+        </div>
+        <div class="footer-content">
+          <!-- Table Section -->
+          <div class="About">
+            <table border="1" cellspacing="0" cellpadding="8">
+              <tr>
+                <td rowspan="4" style="width: 20%; text-align: center">
+                  <a
+                    href="#"
+                    style="
+                      font-family: Bebas Neue;
+                      font-size: 30px;
+                      font-weight: 700;
+                    "
+                    >ABOUT US</a
+                  >
+                </td>
+                <td style="width: 30%">HELP CENTER</td>
+                <td rowspan="2" style="width: 30%">
+                  SHIPPING &<br />RETURN POLICY
+                </td>
+                <td rowspan="5" style="width: 40%">
+                  <img
+                    src="/img/logo/logo_full.png"
+                    alt="Logo"
+                    style="
+                      justify-content: center;
+                      max-width: 250px;
+                      height: auto;
+                      filter: drop-shadow(0 0 1px black)
+                        drop-shadow(0 0 1px black) drop-shadow(0 0 1px black);
+                    "
+                  />
+                </td>
+              </tr>
+
+              <tr>
+                <td>BLOG & NEWS</td>
+              </tr>
+
+              <tr>
+                <td colspan="2" style="text-align: left">
+                  DISCORD
+                  <a
+                    href="https://discord.com"
+                    target="_blank"
+                    style="float: right"
+                  >
+                    <i class="fa-brands fa-discord"></i>
+                  </a>
+                </td>
+              </tr>
+
+              <tr>
+                <td colspan="2" style="text-align: left">
+                  SOCIAL MEDIA
+                  <div style="float: right">
+                    <a href="https://www.instagram.com" target="_blank"
+                      ><i class="fa-brands fa-square-instagram"></i
+                    ></a>
+                    <a href="https://www.facebook.com" target="_blank"
+                      ><i class="fa-brands fa-square-facebook"></i
+                    ></a>
+                    <a href="https://www.tiktok.com" target="_blank"
+                      ><i class="fa-brands fa-tiktok"></i
+                    ></a>
+                    <a href="https://www.youtube.com" target="_blank"
+                      ><i class="fa-brands fa-youtube"></i
+                    ></a>
+                    <a href="https://twitter.com" target="_blank"
+                      ><i class="fa-brands fa-square-x-twitter"></i
+                    ></a>
+                  </div>
+                </td>
+              </tr>
+
+              <tr>
+                <td colspan="3" style="text-align: left">
+                  SUPPORT:
+                  <span style="float: right; font-family: Bebas Neue"
+                    >SUPPORT@KEYSMITH.COM</span
+                  >
+                </td>
+              </tr>
+            </table>
+          </div>
+
+          <!-- Form Section -->
+          <div class="form">
+            <div class="subcribe">
+              <h3>SUBSCRIBE & GET INCENTIVES</h3>
+              <p>
+                Sign up and get the latest news about new design, group buy,
+                straight to your inbox.
+              </p>
+            </div>
+
+            <div class="bonus">Bonus: Many hot offers and giveaway await!</div>
+
+            <form
+              id="subscribeForm"
+              action="https://api.web3forms.com/submit"
+              class="input-group"
+              method="POST"
+            >
+              <input
+                type="hidden"
+                name="access_key"
+                value="3610378c-53cc-4af5-bbbc-fff27cda52f3"
+              />
+              <input type="hidden" name="from_name" value="KeySmith Website" />
+              <input
+                type="hidden"
+                name="subject"
+                value="New Subscription from KeySmith"
+              />
+              <input
+                type="email"
+                name="email"
+                placeholder="YOUR E-MAIL:"
+                required
+              />
+              <button type="submit">SIGN UP</button>
+            </form>
+
+            <div id="formMessage" style="display: none"></div>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </body>
 </html>
