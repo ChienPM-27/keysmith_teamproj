@@ -1472,7 +1472,7 @@
               <h1><i class="fas fa-warehouse"></i> Warehouse Management</h1>
 
               <div class="header-actions">
-                <button class="btn btn-primary" onclick="openImportModal()">
+                <button class="btn btn-primary" id="btn-add-import">
                   <i class="fas fa-plus"></i> New Import Order
                 </button>
               </div>
@@ -1484,23 +1484,24 @@
             </div>
 
             <!-- Tabs Navigation -->
-            <div class="tabs">
-              <button class="tab active" onclick="switchTab('inventory')">
-                <i class="fas fa-boxes"></i> Inventory Overview
-              </button>
+          <div class="tabs">
+            <button class="tab active" onclick="switchWarehouseTab('inventory')">
+              <i class="fas fa-boxes"></i> Inventory Overview
+            </button>
 
-              <button class="tab" onclick="switchTab('import')">
-                <i class="fas fa-file-import"></i> Import Orders
-              </button>
+            <button class="tab" onclick="switchWarehouseTab('import')">
+              <i class="fas fa-file-import"></i> Import Orders
+            </button>
 
-              <button class="tab" onclick="switchTab('transactions')">
-                <i class="fas fa-exchange-alt"></i> Transactions History
-              </button>
+            <button class="tab" onclick="switchWarehouseTab('transactions')">
+              <i class="fas fa-exchange-alt"></i> Transactions History
+            </button>
 
-              <button class="tab" onclick="switchTab('margins')">
-                <i class="fas fa-percent"></i> Profit Margins
-              </button>
-            </div>
+            <button class="tab" onclick="switchWarehouseTab('margins')">
+              <i class="fas fa-percent"></i> Profit Margins
+            </button>
+          </div>
+
 
             <!-- Tab Content: Inventory Overview -->
             <div id="inventoryTab" class="tab-content active">
@@ -1807,6 +1808,36 @@
               </div>
             </div>
           </div>
+        
+        <!-- Import detail modal -->
+        <div id="importDetailModal" class="modal import-detail-modal" style="display:none;" aria-hidden="true">
+          <div class="modal-container">
+            <button class="modal-close">×</button>
+            <h3>Import Order Detail <span id="detailOrderId"></span></h3>
+            <div><strong>Product:</strong> <span id="detailProductName"></span></div>
+            <div><strong>Quantity:</strong> <span id="detailQuantity"></span></div>
+            <div><strong>Unit price:</strong> <span id="detailUnitPrice"></span></div>
+            <div><strong>Total:</strong> <span id="detailTotalPrice"></span></div>
+            <div><strong>Date:</strong> <span id="detailDate"></span></div>
+            <div><strong>Status:</strong> <span id="detailStatus" class="status-badge"></span></div>
+            <div style="margin-top:12px;">
+              <button class="btn-close-import-detail">Close</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Confirm delete modal -->
+        <div id="confirmDeleteImportModal" class="modal confirm-delete-modal" style="display:none;" aria-hidden="true">
+          <div class="modal-container">
+            <button class="modal-close">×</button>
+            <h3>Confirm delete</h3>
+            <p class="confirm-text">Are you sure?</p>
+            <div style="margin-top:12px;">
+              <button class="btn-confirm-yes">Yes, delete</button>
+              <button class="btn-confirm-no">Cancel</button>
+            </div>
+          </div>
+        </div>
 
           <!-- Modal: Edit Margin -->
           <div id="marginModal" class="modal">

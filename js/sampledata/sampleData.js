@@ -75,7 +75,7 @@ export const sampleData = {
       mainImage: "/img/keycap/AttackOnTitan/Scout.jpg",
       thumbnails: ["/img/keycap/AttackOnTitan/Scout_blank.jpg"],
       specs: {
-        category: "One Piece",
+        category: "Attack On Titan",
         brand: "KeySmith",
         color: "Ocean Blue – Gold – Ivory",
       },
@@ -96,7 +96,7 @@ export const sampleData = {
       mainImage: "/img/keycap/AttackOnTitan/Spacebar.jpg",
       thumbnails: ["/img/keycap/AttackOnTitan/Spacebar_blank.jpg"],
       specs: {
-        category: "Cyberpunk Neon Series",
+        category: "Attack On Titan",
         brand: "KeySmith",
         color: "Neon Pink – Electric Blue – Jet Black",
       },
@@ -117,7 +117,7 @@ export const sampleData = {
       mainImage: "/img/keycap/LOTR/durin/durin's_axe.jpg",
       thumbnails: [],
       specs: {
-        category: "Cosmic Odyssey",
+        category: "Lord Of the Ring",
         brand: "KeySmith",
         color: "Midnight Blue – Silver – Nebula Purple",
       },
@@ -138,7 +138,7 @@ export const sampleData = {
       mainImage: "/img/keycap/LOTR/durin/durin's_folk.jpg",
       thumbnails: [],
       specs: {
-        category: "Mythic Creatures",
+        category: "Lord Of the Ring",
         brand: "KeySmith",
         color: "Crimson – Amber – Obsidian",
       },
@@ -159,7 +159,7 @@ export const sampleData = {
       mainImage: "/img/keycap/LOTR/durin/durin's_helm.jpg",
       thumbnails: [],
       specs: {
-        category: "Shadow Reaver Series",
+        category: "Lord Of the Ring",
         brand: "KeySmith",
         color: "Jet Black – Steel Gray – Scarlet",
       },
@@ -183,7 +183,7 @@ export const sampleData = {
         "/img/keycap/LOTR/gondor/horn_of_gordor_white.jpg",
       ],
       specs: {
-        category: "Zen Aesthetics",
+        category: "Lord Of the Ring",
         brand: "KeySmith",
         color: "Ivory – Ocean Blue – Stone Gray",
       },
@@ -207,7 +207,7 @@ export const sampleData = {
         "/img/keycap/LOTR/gondor/palantir_white.jpg",
       ],
       specs: {
-        category: "Elemental Frost",
+        category: "Lord Of the Ring",
         brand: "KeySmith",
         color: "Arctic Blue – White – Silver",
       },
@@ -231,7 +231,7 @@ export const sampleData = {
         "/img/keycap/LOTR/gondor/white_tree_white.jpg",
       ],
       specs: {
-        category: "Elemental Forge",
+        category: "Lord Of the Ring",
         brand: "KeySmith",
         color: "Molten Orange – Obsidian – Gold",
       },
@@ -252,7 +252,7 @@ export const sampleData = {
       mainImage: "/img/keycap/OnePiece/1.png",
       thumbnails: [],
       specs: {
-        category: "Aurora Dream",
+        category: "One Piece",
         brand: "KeySmith",
         color: "Ice Blue – Silver – Pale Gray",
       },
@@ -273,7 +273,7 @@ export const sampleData = {
       mainImage: "/img/keycap/OnePiece/2.png",
       thumbnails: [],
       specs: {
-        category: "Aurora Dream",
+        category: "One Piece",
         brand: "KeySmith",
         color: "Purple – Amber – Rose Gold",
       },
@@ -294,7 +294,7 @@ export const sampleData = {
       mainImage: "/img/keycap/Yugioh/1.jpg",
       thumbnails: ["/img/keycap/Yugioh/YuGiOh-BEWDragon-5.webp"],
       specs: {
-        category: "Aurora Dream",
+        category: "Yugioh",
         brand: "KeySmith",
         color: "Pale Pink – Soft Gold – Cream",
       },
@@ -315,7 +315,7 @@ export const sampleData = {
       mainImage: "/img/keycap/Yugioh/2.jpg",
       thumbnails: [],
       specs: {
-        category: "Aurora Dream",
+        category: "Yugioh",
         brand: "KeySmith",
         color: "Midnight Blue – Silver – Soft Black",
       },
@@ -336,7 +336,7 @@ export const sampleData = {
       mainImage: "/img/keycap/Yugioh/YGOv3-Ra-11.webp",
       thumbnails: [],
       specs: {
-        category: "Aurora Dream",
+        category: "Yugioh",
         brand: "KeySmith",
         color: "Soft Green – White – Pale Yellow",
       },
@@ -357,7 +357,7 @@ export const sampleData = {
       mainImage: "/img/keycap/Yugioh/YuGiOh-DarkMagicianGirl-5.webp",
       thumbnails: [],
       specs: {
-        category: "Aurora Dream",
+        category: "Yugioh",
         brand: "KeySmith",
         color: "Silver – Pale Blue – Soft Gray",
       },
@@ -378,7 +378,7 @@ export const sampleData = {
       mainImage: "/img/keycap/Yugioh/YuGiOh-V2-Concept-11-4.webp",
       thumbnails: [],
       specs: {
-        category: "Aurora Dream",
+        category: "Yugioh",
         brand: "KeySmith",
         color: "Pale Pink – Warm Gold – Cream",
       },
@@ -399,7 +399,7 @@ export const sampleData = {
       mainImage: "/img/keycap/Yugioh/YuGiOh-V2-Concept-11-6.webp",
       thumbnails: [],
       specs: {
-        category: "Aurora Dream",
+        category: "Yugioh",
         brand: "KeySmith",
         color: "Pale Blue – White – Silver",
       },

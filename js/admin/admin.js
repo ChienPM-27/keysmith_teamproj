@@ -1137,41 +1137,52 @@ function openOrderDetail(orderId) {
   setText("detail-order-address", o.userDeliveryAdress || "-");
 
   // items
-  const itemsContainer = modalOrderDetail.querySelector(".order-detail-items");
-  itemsContainer.innerHTML = "";
-  let total = 0;
-  (o.items || []).forEach((it) => {
-    const row = document.createElement("div");
-    row.className = "order-detail-row";
+  // items
+const itemsContainer = modalOrderDetail.querySelector(".order-detail-items");
+itemsContainer.innerHTML = "";
+let total = 0;
+(o.items || []).forEach((it) => {
+  const row = document.createElement("div");
+  row.className = "order-detail-row";
 
-    // resolve chi tiết sản phẩm từ bảng products theo id
-    const product = getProductById(it.id);
+  // resolve chi tiết sản phẩm từ bảng products theo id
+  const product = getProductById(it.id) || null;
+  const name = it.name || it.title || product?.title || product?.name || "-";
+  const qty = Number(it.quantity || 0);
+  const unit = Number(it.unitPrice ?? it.price ?? product?.price ?? 0);
+  const line = qty * unit;
+  total += line;
+  
+  const imgSrc = product?.mainImage || product?.image || it.image || "/img/blank-image.png";
 
-    const name = it.name || it.title || product?.title || product?.name || "-";
-    const qty = Number(it.quantity || 0);
-    const unit = Number(it.unitPrice ?? it.price ?? product?.price ?? 0);
-    const line = qty * unit;
-    total += line;
-    const imgSrc =
-      product?.mainImage ||
-      product?.image ||
-      it.image ||
-      "/img/blank-image.png";
-    row.innerHTML = `
-                <div class="order-detail-left">
-                  <img src="${imgSrc}" alt="" />
-                  <div class="order-detail-meta">
-                    <div class="order-detail-name">${name}</div>
-                    <div class="order-detail-qty">Số lượng: ${qty}</div>
-                  </div>
-                </div>
-                <div class="order-detail-price">
-                  <div>Đơn giá: ${formatCurrency(unit)}</div>
-                  <div>Thành tiền: ${formatCurrency(line)}</div>
-                </div>
-            `;
-    itemsContainer.appendChild(row);
-  });
+  // ✅ Render đơn giản, không dùng biến chưa khai báo
+  row.innerHTML = `
+    <div class="order-detail-left">
+      <img src="${imgSrc}" alt="" style="width: 48px; height: 48px; object-fit: cover;" />
+      <div class="order-detail-meta">
+        <div class="order-detail-name">${name}</div>
+        <div class="order-detail-qty">Số lượng: ${qty}</div>
+      </div>
+    </div>
+    <div class="order-detail-price">
+      <div>Đơn giá: ${formatCurrency(unit)}</div>
+      <div>Thành tiền: ${formatCurrency(line)}</div>
+    </div>
+  `;
+
+  // ✅ Nếu có product thực tế, thêm nút Edit an toàn
+  if (product && product.id != null) {
+    const editBtn = document.createElement('button');
+    editBtn.className = 'btn-icon action-btn-edit';
+    editBtn.dataset.productId = String(product.id);
+    editBtn.title = 'Edit Product';
+    editBtn.innerHTML = '<i class="fa-solid fa-edit"></i>';
+    editBtn.style.marginLeft = 'auto';
+    row.appendChild(editBtn);
+  }
+
+  itemsContainer.appendChild(row);
+});
 
   const totalEl = modalOrderDetail.querySelector("#detail-order-total");
   if (totalEl) totalEl.textContent = formatCurrency(o.totalPrice ?? 0);
@@ -1683,13 +1694,10 @@ document.addEventListener("DOMContentLoaded", initOrderModule);
 // ===============================
 // WAREHOUSE SCRIPT
 // ===============================
-// ===============================
-// WAREHOUSE MODULE - Thêm vào cuối file admin.js
-// ===============================
 
-// Warehouse state variables
+// Warehouse state variables (module scope)
 let warehouseSection = null;
-let currentWarehouseTab = 'inventory'; // 'inventory', 'import', 'transactions', 'margins'
+let currentWarehouseTab = 'inventory';
 let warehouseSearchQuery = '';
 let warehouseCategoryFilter = 'all';
 
@@ -1707,7 +1715,7 @@ function formatWarehouseCurrency(value) {
 
 function getAllImportOrders() {
   try {
-    return window.dataManager?.getAll('importOrders') || [];
+    return dmGetAll('importOrders') || [];
   } catch (e) {
     console.error('Error getting import orders:', e);
     return [];
@@ -1715,18 +1723,14 @@ function getAllImportOrders() {
 }
 
 function getImportOrderById(id) {
-  try {
-    return window.dataManager?.getById('importOrders', id);
-  } catch (e) {
-    console.error('Error getting import order:', e);
-    return null;
-  }
+  const arr = getAllImportOrders();
+  return arr.find(x => String(x.idImportOrders) === String(id) || String(x.id) === String(id)) || null;
 }
 
-// Helper để lấy tất cả products (dùng hàm đã có hoặc tạo mới)
+
 function getAllProducts() {
   try {
-    return window.dataManager?.getAll('products') || [];
+    return dmGetAll('products') || [];
   } catch (e) {
     console.error('Error getting products:', e);
     return [];
@@ -1784,66 +1788,74 @@ function switchWarehouseTab(tabName) {
 // ===============================
 
 function renderInventoryTab() {
-  const tbody = warehouseSection.querySelector('#inventoryTableBody');
-  if (!tbody) return;
-  
-  tbody.innerHTML = '';
-  
-  let products = getAllProducts();
-  
-  // Apply filters
-  if (warehouseCategoryFilter !== 'all') {
-    products = products.filter(p => p.specs?.category === warehouseCategoryFilter);
-  }
-  
-  if (warehouseSearchQuery) {
-    const query = warehouseSearchQuery.toLowerCase();
-    products = products.filter(p => 
-      (p.title || '').toLowerCase().includes(query) ||
-      (p.specs?.category || '').toLowerCase().includes(query)
-    );
-  }
-  
-  if (products.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 40px;">No products found</td></tr>';
-    return;
-  }
-  
-  products.forEach(product => {
-    const row = document.createElement('tr');
+  try {
+    const tbody = warehouseSection?.querySelector('#inventoryTableBody');
+    if (!tbody) return;
     
-    const stock = product.stock || 0;
-    const importPrice = product.importPrice || 0;
-    const sellPrice = product.price || 0;
-    const profitMargin = sellPrice > 0 ? (((sellPrice - importPrice) / sellPrice) * 100).toFixed(1) : 0;
+    tbody.innerHTML = '';
     
-    let statusClass = 'status-ok';
-    let statusText = 'In Stock';
-    if (stock === 0) {
-      statusClass = 'status-out';
-      statusText = 'Out of Stock';
-    } else if (stock < 5) {
-      statusClass = 'status-low';
-      statusText = 'Low Stock';
+    let products = getAllProducts();
+    
+    // Apply filters
+    if (warehouseCategoryFilter !== 'all') {
+      products = products.filter(p => p.specs?.category === warehouseCategoryFilter);
     }
     
-    row.innerHTML = `
-      <td>${product.title || 'Unknown'}</td>
-      <td>${product.specs?.category || '-'}</td>
-      <td>${stock}</td>
-      <td><span class="status-badge ${statusClass}">${statusText}</span></td>
-      <td>${formatWarehouseCurrency(importPrice)}</td>
-      <td>${formatWarehouseCurrency(sellPrice)}</td>
-      <td>${profitMargin}%</td>
-      <td>
-        <button class="btn-icon" onclick="editWarehouseProduct(${product.id})" title="Edit">
-          <i class="fas fa-edit"></i>
-        </button>
-      </td>
-    `;
+    if (warehouseSearchQuery) {
+      const query = warehouseSearchQuery.toLowerCase();
+      products = products.filter(p => 
+        (p.title || '').toLowerCase().includes(query) ||
+        (p.specs?.category || '').toLowerCase().includes(query)
+      );
+    }
     
-    tbody.appendChild(row);
-  });
+    if (products.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 40px;">No products found</td></tr>';
+      return;
+    }
+    
+    products.forEach(product => {
+      const row = document.createElement('tr');
+      
+      const stock = Number(product.stock || 0);
+      const importPrice = Number(product.importPrice || 0);
+      const sellPrice = Number(product.price || 0);
+      const profitMargin = sellPrice > 0 ? (((sellPrice - importPrice) / sellPrice) * 100).toFixed(1) : 0;
+      
+      let statusClass = 'status-ok';
+      let statusText = 'In Stock';
+      if (stock === 0) {
+        statusClass = 'status-out';
+        statusText = 'Out of Stock';
+      } else if (stock < 5) {
+        statusClass = 'status-low';
+        statusText = 'Low Stock';
+      }
+      
+      row.innerHTML = `
+        <td>${product.title || 'Unknown'}</td>
+        <td>${product.specs?.category || '-'}</td>
+        <td>${stock}</td>
+        <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+        <td>${formatWarehouseCurrency(importPrice)}</td>
+        <td>${formatWarehouseCurrency(sellPrice)}</td>
+        <td>${profitMargin}%</td>
+        <td>
+          <button class="btn-icon action-btn-edit" data-product-id="${product.id}" title="Edit Product">
+            <i class="fa-solid fa-edit"></i>
+          </button>
+        </td>
+      `;
+      
+      tbody.appendChild(row);
+    });
+  } catch (err) {
+    console.error('renderInventoryTab failed:', err);
+    const tbody = warehouseSection?.querySelector('#inventoryTableBody');
+    if (tbody) {
+      tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding: 40px;">Error rendering inventory</td></tr>';
+    }
+  }
 }
 
 // ===============================
@@ -1851,7 +1863,7 @@ function renderInventoryTab() {
 // ===============================
 
 function renderImportTab() {
-  const tbody = warehouseSection.querySelector('#importTableBody');
+  const tbody = warehouseSection?.querySelector('#importTableBody');
   if (!tbody) return;
   
   tbody.innerHTML = '';
@@ -1880,7 +1892,7 @@ function renderImportTab() {
   // Render table
   importOrders.forEach(order => {
     const row = document.createElement('tr');
-    const product = getProductById(order.productId || order.id);
+    const product = dmGetById('products', order.productId || order.id);
     const productName = product?.title || 'Unknown Product';
     const statusClass = order.status === 'delivered' ? 'status-ok' : 
                        order.status === 'processing' ? 'status-low' : 'status-out';
@@ -1892,10 +1904,10 @@ function renderImportTab() {
       <td>${formatWarehouseCurrency(order.amountPrice)}</td>
       <td><span class="status-badge ${statusClass}">${capitalizeFirst(order.status)}</span></td>
       <td>
-        <button class="btn-icon" onclick="viewImportOrder(${order.idImportOrders || order.id})" title="View">
+        <button class="btn-icon btn-view-import" data-import-id="${order.idImportOrders || order.id}" title="View">
           <i class="fas fa-eye"></i>
         </button>
-        <button class="btn-icon" onclick="deleteImportOrder(${order.idImportOrders || order.id})" title="Delete">
+        <button class="btn-icon btn-delete-import" data-import-id="${order.idImportOrders || order.id}" title="Delete">
           <i class="fas fa-trash"></i>
         </button>
       </td>
@@ -1906,9 +1918,9 @@ function renderImportTab() {
 }
 
 function updateImportStats(completed, pending, total) {
-  const completedEl = warehouseSection.querySelector('#completedOrders');
-  const pendingEl = warehouseSection.querySelector('#pendingOrders');
-  const totalEl = warehouseSection.querySelector('#totalImportValue');
+  const completedEl = warehouseSection?.querySelector('#completedOrders');
+  const pendingEl = warehouseSection?.querySelector('#pendingOrders');
+  const totalEl = warehouseSection?.querySelector('#totalImportValue');
   
   if (completedEl) completedEl.textContent = completed;
   if (pendingEl) pendingEl.textContent = pending;
@@ -1920,7 +1932,7 @@ function updateImportStats(completed, pending, total) {
 // ===============================
 
 function renderTransactionsTab() {
-  const tbody = warehouseSection.querySelector('#transactionsTableBody');
+  const tbody = warehouseSection?.querySelector('#transactionsTableBody');
   if (!tbody) return;
   
   tbody.innerHTML = '';
@@ -1934,7 +1946,7 @@ function renderTransactionsTab() {
   
   importOrders.forEach(order => {
     const row = document.createElement('tr');
-    const product = getProductById(order.productId || order.id);
+    const product = dmGetById('products', order.productId || order.id);
     
     row.innerHTML = `
       <td>${formatDate(order.date)}</td>
@@ -1958,7 +1970,7 @@ function renderMarginsTab() {
 }
 
 function renderCategoryMargins() {
-  const container = warehouseSection.querySelector('#categoryMarginsGrid');
+  const container = warehouseSection?.querySelector('#categoryMarginsGrid');
   if (!container) return;
   
   container.innerHTML = '';
@@ -1992,7 +2004,7 @@ function renderCategoryMargins() {
 }
 
 function renderProductMargins() {
-  const tbody = warehouseSection.querySelector('#productMarginsTableBody');
+  const tbody = warehouseSection?.querySelector('#productMarginsTableBody');
   if (!tbody) return;
   
   tbody.innerHTML = '';
@@ -2011,7 +2023,7 @@ function renderProductMargins() {
       <td>${formatWarehouseCurrency(p.price)}</td>
       <td>${margin}%</td>
       <td>
-        <button class="btn-icon" onclick="editMargin(${p.id})" title="Edit">
+        <button class="btn-icon btn-edit-margin" data-product-id="${p.id}" title="Edit">
           <i class="fas fa-edit"></i>
         </button>
       </td>
@@ -2027,7 +2039,10 @@ function renderProductMargins() {
 
 function openImportModal() {
   const modal = warehouseSection?.querySelector('#importModal');
-  if (!modal) return;
+  if (!modal) {
+    console.error('Import modal not found');
+    return;
+  }
   
   // Reset form
   const form = modal.querySelector('#importForm');
@@ -2042,19 +2057,9 @@ function openImportModal() {
   // Populate product dropdown
   const productsList = modal.querySelector('#importProductsList');
   if (productsList) {
-    const firstRow = productsList.querySelector('.import-product-item');
-    const select = firstRow?.querySelector('.product-select');
-    if (select) {
-      select.innerHTML = '<option value="">Select Product</option>';
-      const products = getAllProducts();
-      products.forEach(p => {
-        const option = document.createElement('option');
-        option.value = p.id;
-        option.textContent = p.title;
-        option.dataset.importPrice = p.importPrice || 0;
-        select.appendChild(option);
-      });
-    }
+    productsList.innerHTML = '';
+    const row = createProductLine();
+    productsList.appendChild(row);
   }
   
   modal.style.display = 'flex';
@@ -2065,52 +2070,56 @@ function closeImportModal() {
   if (modal) modal.style.display = 'none';
 }
 
-function saveImportOrder(isDraft) {
-  const modal = warehouseSection?.querySelector('#importModal');
-  if (!modal) return;
+function createProductLine() {
+  const row = document.createElement('div');
+  row.className = 'import-product-item';
   
-  const form = modal.querySelector('#importForm');
-  const dateInput = form.querySelector('#importDate');
-  const productRows = form.querySelectorAll('.import-product-item');
+  const select = document.createElement('select');
+  select.className = 'product-select';
+  select.required = true;
+  select.innerHTML = '<option value="">Select Product</option>';
   
-  if (productRows.length === 0) {
-    alert('Please add at least one product');
-    return;
-  }
-  
-  const date = dateInput?.value || new Date().toISOString();
-  
-  productRows.forEach(row => {
-    const select = row.querySelector('.product-select');
-    const qtyInput = row.querySelector('input[type="number"][placeholder="Quantity"]');
-    const priceInput = row.querySelector('input[type="number"][placeholder*="Cost"]');
-    
-    const productId = parseInt(select?.value);
-    const quantity = parseInt(qtyInput?.value);
-    const unitPrice = parseFloat(priceInput?.value);
-    
-    if (!productId || !quantity || !unitPrice) return;
-    
-    const newImport = {
-      productId: productId,
-      id: productId,
-      quantity: quantity,
-      unitImportPrice: unitPrice,
-      amountPrice: quantity * unitPrice,
-      date: date,
-      status: isDraft ? 'processing' : 'delivered'
-    };
-    
-    try {
-      window.dataManager.add('importOrders', newImport);
-    } catch (e) {
-      console.error('Error saving import order:', e);
-    }
+  const products = getAllProducts();
+  products.forEach(p => {
+    const option = document.createElement('option');
+    option.value = p.id;
+    option.textContent = p.title;
+    option.dataset.importPrice = p.importPrice || 0;
+    select.appendChild(option);
   });
   
-  closeImportModal();
-  switchWarehouseTab('import');
-  alert('Import order saved successfully!');
+  const qtyInput = document.createElement('input');
+  qtyInput.type = 'number';
+  qtyInput.placeholder = 'Quantity';
+  qtyInput.min = '1';
+  qtyInput.required = true;
+  
+  const priceInput = document.createElement('input');
+  priceInput.type = 'number';
+  priceInput.placeholder = 'Cost Price ($)';
+  priceInput.step = '0.01';
+  priceInput.min = '0';
+  priceInput.required = true;
+  
+  const removeBtn = document.createElement('button');
+  removeBtn.type = 'button';
+  removeBtn.className = 'btn-icon btn-remove';
+  removeBtn.innerHTML = '<i class="fas fa-trash"></i>';
+  removeBtn.onclick = function() {
+    const container = row.parentElement;
+    if (container && container.querySelectorAll('.import-product-item').length > 1) {
+      row.remove();
+    } else {
+      alert('Cannot remove the last product line');
+    }
+  };
+  
+  row.appendChild(select);
+  row.appendChild(qtyInput);
+  row.appendChild(priceInput);
+  row.appendChild(removeBtn);
+  
+  return row;
 }
 
 function addProductLine() {
@@ -2118,31 +2127,71 @@ function addProductLine() {
   const container = modal?.querySelector('#importProductsList');
   if (!container) return;
   
-  const firstRow = container.querySelector('.import-product-item');
-  if (!firstRow) return;
-  
-  const newRow = firstRow.cloneNode(true);
-  
-  // Reset values
-  const inputs = newRow.querySelectorAll('input');
-  inputs.forEach(input => input.value = '');
-  
-  const select = newRow.querySelector('.product-select');
-  if (select) select.selectedIndex = 0;
-  
+  const newRow = createProductLine();
   container.appendChild(newRow);
 }
 
-function removeProductLine(btn) {
-  const row = btn.closest('.import-product-item');
-  const container = row?.parentElement;
-  
-  if (container && container.querySelectorAll('.import-product-item').length > 1) {
-    row.remove();
-  } else {
-    alert('Cannot remove the last product line');
+// Replace existing saveImportOrder(...) with this implementation
+function saveImportOrder(isDraft) {
+  const modal = warehouseSection?.querySelector('#importModal');
+  if (!modal) return;
+
+  const form = modal.querySelector('#importForm');
+  const dateInput = form.querySelector('#importDate');
+  const productRows = form.querySelectorAll('.import-product-item');
+
+  if (productRows.length === 0) {
+    alert('Please add at least one product');
+    return;
   }
+
+  const date = dateInput?.value || new Date().toISOString();
+
+  // get next numeric id for importOrders
+  const existing = getAllImportOrders() || [];
+  const maxId = existing.reduce((m, x) => {
+    const v = Number(x.idImportOrders ?? x.id ?? 0) || 0;
+    return Math.max(m, v);
+  }, 0);
+  let nextId = maxId + 1;
+
+  productRows.forEach(row => {
+    const select = row.querySelector('.product-select');
+    const qtyInput = row.querySelector('input[type="number"][placeholder="Quantity"]');
+    const priceInput = row.querySelector('input[type="number"][placeholder*="Cost"]');
+
+    const productId = parseInt(select?.value);
+    const quantity = parseInt(qtyInput?.value);
+    const unitPrice = parseFloat(priceInput?.value);
+
+    if (!productId || !quantity || !unitPrice) return;
+
+    const idForThisImport = nextId++;
+
+    const newImport = {
+      // set both idImportOrders and id so other code can find it
+      idImportOrders: idForThisImport,
+      id: idForThisImport,
+      productId: productId,
+      quantity: quantity,
+      unitImportPrice: unitPrice,
+      amountPrice: quantity * unitPrice,
+      date: date,
+      status: isDraft ? 'processing' : 'delivered'
+    };
+
+    try {
+      dmAdd('importOrders', newImport);
+    } catch (e) {
+      console.error('Error saving import order:', e);
+    }
+  });
+
+  closeImportModal();
+  switchWarehouseTab('import');
+  alert('Import order saved successfully!');
 }
+
 
 // ===============================
 // CRUD OPERATIONS
@@ -2154,45 +2203,227 @@ function viewImportOrder(id) {
     alert('Import order not found');
     return;
   }
-  
-  const product = getProductById(order.productId || order.id);
-  const details = `
-Import Order #${order.idImportOrders || order.id}
-Product: ${product?.title || 'Unknown'}
-Quantity: ${order.quantity}
-Unit Price: ${formatWarehouseCurrency(order.unitImportPrice)}
-Total: ${formatWarehouseCurrency(order.amountPrice)}
-Date: ${formatDate(order.date)}
-Status: ${capitalizeFirst(order.status)}
-  `;
-  
-  alert(details);
+
+  const modal = warehouseSection?.querySelector('#importDetailModal');
+  if (!modal) {
+    console.error('Import detail modal not found in DOM');
+    alert('Cannot display order details - modal not found');
+    return;
+  }
+
+  const product = dmGetById('products', order.productId || order.id);
+
+  // Populate modal fields
+  const setField = (selector, value) => {
+    const el = modal.querySelector(selector);
+    if (el) el.textContent = value ?? '';
+  };
+
+  setField('#detailOrderId', '#' + (order.idImportOrders || order.id));
+  setField('#detailProductName', product?.title || 'Unknown');
+  setField('#detailQuantity', order.quantity || 0);
+  setField('#detailUnitPrice', formatWarehouseCurrency(order.unitImportPrice));
+  setField('#detailTotalPrice', formatWarehouseCurrency(order.amountPrice));
+  setField('#detailDate', formatDate(order.date));
+
+  const statusBadge = modal.querySelector('#detailStatus');
+  if (statusBadge) {
+    const statusClass = order.status === 'delivered' ? 'status-ok' :
+                        order.status === 'processing' ? 'status-low' : 'status-out';
+    statusBadge.className = 'status-badge ' + statusClass;
+    statusBadge.textContent = capitalizeFirst(order.status);
+  }
+
+  // Wire close buttons
+  const closeButtons = modal.querySelectorAll('.modal-close, .btn-close-import-detail');
+  closeButtons.forEach(btn => {
+    btn.onclick = (e) => {
+      e?.preventDefault?.();
+      modal.style.display = 'none';
+      modal.setAttribute('aria-hidden', 'true');
+    };
+  });
+
+  // Close on outside click
+  modal.onclick = (e) => {
+    if (e.target === modal) {
+      modal.style.display = 'none';
+      modal.setAttribute('aria-hidden', 'true');
+    }
+  };
+
+  // Show modal
+  modal.style.display = 'flex';
+  modal.setAttribute('aria-hidden', 'false');
 }
 
 function deleteImportOrder(id) {
-  if (!confirm('Are you sure you want to delete this import order?')) return;
-  
-  try {
-    window.dataManager.deleteById('importOrders', id);
-    switchWarehouseTab('import');
-    alert('Import order deleted successfully!');
-  } catch (e) {
-    console.error('Error deleting import order:', e);
-    alert('Failed to delete import order');
+  // Nếu có modal confirm xóa, dùng modal; nếu không, fallback confirm()
+  const confirmModal = warehouseSection?.querySelector('#confirmDeleteImportModal');
+
+  // helper thực hiện xóa
+  const doDelete = () => {
+    try {
+      const existing = dmGetById('importOrders', id);
+      if (!existing) {
+        alert('Import order not found');
+        return;
+      }
+
+      // Nếu dataManager có API deleteById thì gọi, nếu không, xóa thủ công
+      if (window.dataManager && typeof window.dataManager.deleteById === 'function') {
+        window.dataManager.deleteById('importOrders', id);
+      } else {
+        // fallback: xóa trong mảng và save
+        const arr = dmGetAll('importOrders');
+        const idx = arr.findIndex(x => (x.idImportOrders || x.id || '').toString() === String(id));
+        if (idx !== -1) {
+          arr.splice(idx, 1);
+          if (window.dataManager && typeof window.dataManager.save === 'function') window.dataManager.save();
+        }
+      }
+
+      // update UI: render lại tab import
+      switchWarehouseTab('import');
+      // nếu có confirm modal đang mở, đóng nó
+      if (confirmModal) {
+        confirmModal.style.display = 'none';
+        confirmModal.setAttribute('aria-hidden', 'true');
+      }
+      alert('Import order deleted successfully!');
+    } catch (e) {
+      console.error('Error deleting import order:', e);
+      alert('Failed to delete import order');
+    }
+  };
+
+  if (!confirmModal) {
+    // fallback: dùng confirm
+    if (confirm('Are you sure you want to delete this import order?')) {
+      doDelete();
+    }
+    return;
   }
+
+  // Nếu có modal confirm: populate và show
+  const confirmTextEl = confirmModal.querySelector('.confirm-text');
+  if (confirmTextEl) {
+    confirmTextEl.textContent = `Are you sure you want to delete import order #${id}?`;
+  }
+
+  const yesBtn = confirmModal.querySelector('.btn-confirm-yes');
+  const noBtn = confirmModal.querySelector('.btn-confirm-no');
+
+  // remove previous handlers (idempotent) and wire
+  if (yesBtn) {
+    yesBtn.onclick = (e) => {
+      e?.preventDefault?.();
+      doDelete();
+    };
+  }
+  if (noBtn) {
+    noBtn.onclick = (e) => {
+      e?.preventDefault?.();
+      confirmModal.style.display = 'none';
+      confirmModal.setAttribute('aria-hidden', 'true');
+    };
+  }
+
+  // show modal
+  confirmModal.style.display = 'flex';
+  confirmModal.setAttribute('aria-hidden', 'false');
 }
 
 function editWarehouseProduct(id) {
-  // Reuse existing product edit modal
-  const product = getProductById(id);
-  if (!product) return;
+  const product = dmGetById('products', id);
+  if (!product) {
+    console.error('Product not found:', id);
+    return;
+  }
+
+  const modal = document.querySelector('.modal.add-product');
+  if (!modal) {
+    console.error('Product modal not found');
+    return;
+  }
+
+  // Show edit mode, hide add mode
+  const addTitle = modal.querySelector('.add-product-e');
+  const editTitle = modal.querySelector('.edit-product-e');
+  if (addTitle) addTitle.style.display = 'none';
+  if (editTitle) editTitle.style.display = 'block';
+
+  // Show edit button, hide add button
+  const addBtn = modal.querySelector('.btn-add-product-form');
+  const editBtn = modal.querySelector('.btn-update-product-form');
+  if (addBtn) addBtn.style.display = 'none';
+  if (editBtn) editBtn.style.display = 'inline-block';
+
+  const form = modal.querySelector('.add-product-form');
+  if (form) {
+    // Set product ID (create hidden input if not exists)
+    let idInput = form.querySelector('input[name="product-id"]');
+    if (!idInput) {
+      idInput = document.createElement('input');
+      idInput.type = 'hidden';
+      idInput.name = 'product-id';
+      form.appendChild(idInput);
+    }
+    idInput.value = product.id;
+    
+    // Set title
+    const titleInput = form.querySelector('#ten-mon');
+    if (titleInput) titleInput.value = product.title || '';
+    
+    // Set price
+    const priceInput = form.querySelector('#gia-moi');
+    if (priceInput) priceInput.value = product.price || 0;
+    
+    // Set description
+    const descInput = form.querySelector('#mo-ta');
+    if (descInput) descInput.value = product.shortDesc || '';
+    
+    // Set category
+    const categorySelect = form.querySelector('#chon-the-loai');
+    if (categorySelect && product.specs?.category) {
+      categorySelect.value = product.specs.category;
+    }
+  }
+
+  // Set image preview
+  const imgPreview = modal.querySelector('.upload-image-preview');
+  if (imgPreview) {
+    imgPreview.src = product.image || product.mainImage || '/img/blank-image.png';
+  }
+
+  // Show modal
+  modal.style.display = 'flex';
+  modal.setAttribute('aria-hidden', 'false');
   
-  alert('Edit product: ' + product.title + '\nThis will use the existing product edit modal.');
-  // TODO: Integrate with existing product edit modal
+  // Wire close button
+  const closeBtn = modal.querySelector('.modal-close.product-form');
+  if (closeBtn) {
+    closeBtn.onclick = () => {
+      modal.style.display = 'none';
+      modal.setAttribute('aria-hidden', 'true');
+      // Reset to add mode
+      if (addTitle) addTitle.style.display = 'block';
+      if (editTitle) editTitle.style.display = 'none';
+      if (addBtn) addBtn.style.display = 'inline-block';
+      if (editBtn) editBtn.style.display = 'none';
+    };
+  }
+  
+  // Close on outside click
+  modal.onclick = (e) => {
+    if (e.target === modal) {
+      closeBtn?.click();
+    }
+  };
 }
 
 function editMargin(id) {
-  const product = getProductById(id);
+  const product = dmGetById('products', id);
   if (!product) return;
   
   const newPrice = prompt(`Edit selling price for ${product.title}\nCurrent: ${formatWarehouseCurrency(product.price)}`, product.price);
@@ -2223,7 +2454,6 @@ function filterInventory() {
 }
 
 function filterTransactions() {
-  // TODO: Implement date range filtering
   renderTransactionsTab();
 }
 
@@ -2260,8 +2490,13 @@ function capitalizeFirst(str) {
 // ===============================
 
 function initWarehouseModule() {
+  if (window._warehouseModuleInited) return;
+  
   warehouseSection = document.getElementById('warehouse-section');
-  if (!warehouseSection) return;
+  if (!warehouseSection) {
+    console.error('Warehouse section not found');
+    return;
+  }
   
   console.log('Initializing warehouse module...');
   
@@ -2280,7 +2515,8 @@ function initWarehouseModule() {
   // Wire up tab buttons
   const tabs = warehouseSection.querySelectorAll('.tab');
   tabs.forEach(tab => {
-    tab.addEventListener('click', () => {
+    tab.addEventListener('click', (e) => {
+      e.preventDefault();
       const tabText = tab.textContent.toLowerCase();
       if (tabText.includes('inventory')) switchWarehouseTab('inventory');
       else if (tabText.includes('import')) switchWarehouseTab('import');
@@ -2290,82 +2526,140 @@ function initWarehouseModule() {
   });
   
   // Wire up "New Import Order" button
-  const addImportBtn = document.querySelector('#btn-add-import');
+  const addImportBtn = warehouseSection.querySelector('.header-actions button');
   if (addImportBtn) {
-    addImportBtn.addEventListener('click', openImportModal);
+    addImportBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      openImportModal();
+    });
   }
   
-  // Wire up modal form submit
-  const importForm = warehouseSection.querySelector('#importForm');
-  if (importForm) {
-    importForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      saveImportOrder(false);
+  // Wire up modal events
+  const importModal = warehouseSection.querySelector('#importModal');
+  
+  if (importModal) {
+    // Close button
+    const closeBtn = importModal.querySelector('.close');
+    if (closeBtn) {
+      closeBtn.onclick = (e) => {
+        e.preventDefault();
+        closeImportModal();
+      };
+    }
+    
+    // Close on outside click
+    importModal.addEventListener('click', (e) => {
+      if (e.target === importModal) closeImportModal();
+    });
+    
+    // Save draft button
+    const draftBtn = importModal.querySelector('#saveDraftBtn');
+    if (draftBtn) {
+      draftBtn.onclick = (e) => {
+        e.preventDefault();
+        saveImportOrder(true);
+      };
+    }
+    
+    // Form submit
+    const importForm = importModal.querySelector('#importForm');
+    if (importForm) {
+      importForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        saveImportOrder(false);
+      });
+    }
+  }
+  
+
+// Wire up table actions (delegated events)
+const inventoryTable = warehouseSection.querySelector('#inventoryTableBody');
+if (inventoryTable) {
+  inventoryTable.addEventListener('click', (e) => {
+    console.log('Click detected:', e.target); // DEBUG
+    
+    const editBtn = e.target.closest('.action-btn-edit');
+    if (editBtn) {
+      const productId = parseInt(editBtn.dataset.productId);
+      console.log('Edit button clicked, product ID:', productId); // DEBUG
+      if (productId) editWarehouseProduct(productId);
+    }
+  }); 
+}
+  
+  const importTable = warehouseSection.querySelector('#importTableBody');
+  if (importTable) {
+    importTable.addEventListener('click', (e) => {
+      const viewBtn = e.target.closest('.btn-view-import');
+      const deleteBtn = e.target.closest('.btn-delete-import');
+      
+      if (viewBtn) {
+        const id = parseInt(viewBtn.dataset.importId);
+        if (id) viewImportOrder(id);
+      } else if (deleteBtn) {
+        const id = parseInt(deleteBtn.dataset.importId);
+        if (id) deleteImportOrder(id);
+      }
+    });
+  }
+  
+  const marginTable = warehouseSection.querySelector('#productMarginsTableBody');
+  if (marginTable) {
+    marginTable.addEventListener('click', (e) => {
+      const editBtn = e.target.closest('.btn-edit-margin');
+      if (editBtn) {
+        const productId = parseInt(editBtn.dataset.productId);
+        if (productId) editMargin(productId);
+      }
     });
   }
   
   // Render initial tab
   switchWarehouseTab('inventory');
   
-  console.log('Warehouse module initialized');
+  window._warehouseModuleInited = true;
+  console.log('Warehouse module initialized successfully');
 }
 
-// Make functions global for onclick handlers
-window.switchTab = switchWarehouseTab;
+// Make functions global for compatibility
+window.switchWarehouseTab = switchWarehouseTab;
 window.openImportModal = openImportModal;
 window.closeImportModal = closeImportModal;
 window.saveImportOrder = saveImportOrder;
 window.addProductLine = addProductLine;
-window.removeProductLine = removeProductLine;
 window.filterInventory = filterInventory;
 window.filterTransactions = filterTransactions;
 window.resetDateFilter = resetDateFilter;
-window.viewImportOrder = viewImportOrder;
-window.deleteImportOrder = deleteImportOrder;
-window.editWarehouseProduct = editWarehouseProduct;
-window.editMargin = editMargin;
-window.calculateMargin = function() {
-  const modal = document.getElementById('marginModal');
-  if (!modal) return;
-  
-  const cost = parseFloat(modal.querySelector('#marginCost')?.value) || 0;
-  const price = parseFloat(modal.querySelector('#marginPrice')?.value) || 0;
-  const margin = price > 0 ? (((price - cost) / price) * 100).toFixed(1) : 0;
-  
-  const display = modal.querySelector('#calculatedMargin');
-  if (display) display.textContent = margin + '%';
-};
 
-// ===============================
-// HOOK INTO SIDEBAR TAB SWITCHING
-// ===============================
-
-// Thêm vào phần DOMContentLoaded đã có
+// Hook into sidebar tab switching (robust: find by text, fallback to init)
 document.addEventListener("DOMContentLoaded", () => {
-  // Tìm warehouse tab trong sidebar và wire init
   const sidebarItems = Array.from(
     document.querySelectorAll(
       ".sidebar .middle-sidebar .sidebar-list .sidebar-list-item.tab-content"
     )
   );
-  
-  // Warehouse là tab thứ 6 (index 5)
-  const warehouseTab = sidebarItems[5];
+
+  // Try to find warehouse tab by text (more robust than fixed index)
+  const warehouseTab =
+    sidebarItems.find(si => {
+      const txt = (si.textContent || "").toLowerCase();
+      return txt.includes("warehouse") || txt.includes("ware house") || txt.includes("kho") || txt.includes("kho hàng");
+    }) || null;
+
   if (warehouseTab) {
-    warehouseTab.addEventListener('click', () => {
-      // Đợi một chút để section active
-      setTimeout(() => {
-        if (!window._warehouseModuleInited) {
-          initWarehouseModule();
-          window._warehouseModuleInited = true;
-        } else {
-          // Nếu đã init, chỉ cần render lại tab hiện tại
-          switchWarehouseTab(currentWarehouseTab);
-        }
-      }, 50);
+    warehouseTab.addEventListener('click', (e) => {
+      e.preventDefault();
+      // initWarehouseModule is idempotent so safe to call whenever clicked
+      initWarehouseModule();
+      // also switch to warehouse tab UI immediately
+      // try to mimic original behavior: activate the clicked sidebar item
+      sidebarItems.forEach(si => si.classList.remove('active'));
+      warehouseTab.classList.add('active');
     });
+  } else {
+    // If we can't find the tab (markup change), ensure warehouse module is still initialized
+    // (idempotent — will only run once)
+    initWarehouseModule();
   }
 });
 
-// Add to your existing initSidebarAndTabs function or equivalent
-// Make sure to call initWarehouseModule() when the warehouse tab is clicked
