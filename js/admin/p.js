@@ -1676,3 +1676,21 @@ function initializeProductTypeManagement() {
 	resetProductTypeForm();
 	renderProductTypes({ list: ensuredTypes, resetPage: true });
 }
+//responsive
+const menuIconBtn = document.querySelector('.menu-icon-btn');
+const adminSidebarLabels = Array.from(document.querySelectorAll('.admin-sidebar__label'));
+const adminSideBar = document.querySelector('#adminSidebar');
+function toggleSidebar() {
+    if (!menuIconBtn || !adminSideBar) {
+        return;
+    }
+
+    menuIconBtn.addEventListener('click', () => {
+        adminSideBar.classList.toggle('open');
+        if (adminSidebarLabels.length) {
+            adminSidebarLabels.forEach(label => label.classList.toggle('hide-label'));
+        }
+    });
+}
+
+toggleSidebar();
