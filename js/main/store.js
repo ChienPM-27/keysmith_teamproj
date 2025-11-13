@@ -1,8 +1,9 @@
 // STORE SCRIPT - Hiển thị danh sách sản phẩm
-import { dataManager } from "../js/admin/DatabaseManager.js";
+import { dataManager } from "../admin/DatabaseManager.js";
 
 // Từ detail.js
 import { showProductDetailById } from "./detail.js";
+
 // ===============================
 // PRODUCT LISTING MODULE
 // ===============================
@@ -812,4 +813,54 @@ function initProductModule() {
 
 document.addEventListener("DOMContentLoaded", () => {
   initProductModule();
+  // Initialize store-page header & mobile nav (scoped behavior moved here from inline script)
+  try {
+    if (typeof initStorePageHeader === 'function') initStorePageHeader();
+  } catch (e) {
+    // fail silently if header/init not available
+    console.warn('initStorePageHeader failed', e);
+  }
 });
+
+/**
+ * Init header & mobile nav behaviors for store page only.
+ * This is the same logic previously embedded inline in store.html
+ * but moved into the store module so it's scoped and easier to maintain.
+ */
+function initStorePageHeader() {
+  if (!document.body.classList.contains('store-page')) return;
+
+  const header = document.getElementById('header');
+  const bar = document.getElementById('bar');
+  const close = document.getElementById('close');
+  const nav = document.getElementById('navbar');
+
+  // Mobile menu toggles
+  if (bar && nav) bar.addEventListener('click', () => nav.classList.add('active'));
+  if (close && nav) close.addEventListener('click', () => nav.classList.remove('active'));
+
+  // Click outside to close mobile nav
+  document.addEventListener('click', function (e) {
+    if (!nav || !bar) return;
+    if (nav.classList.contains('active')) {
+      if (!nav.contains(e.target) && !bar.contains(e.target)) {
+        nav.classList.remove('active');
+      }
+    }
+  });
+
+  // Header hide on scroll (simple)
+  let lastScroll = 0;
+  window.addEventListener('scroll', function () {
+    const current = window.pageYOffset || document.documentElement.scrollTop;
+    if (!header) return;
+    if (current <= 0) {
+      header.classList.remove('hidden');
+    } else if (current > lastScroll && current > 100) {
+      header.classList.add('hidden');
+    } else {
+      header.classList.remove('hidden');
+    }
+    lastScroll = current;
+  });
+}

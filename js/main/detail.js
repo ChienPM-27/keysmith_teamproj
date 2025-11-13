@@ -1,5 +1,5 @@
 // Đây là nội dung file detail.js
-import { dataManager } from "../js/admin/DatabaseManager.js";
+import { dataManager } from "../admin/DatabaseManager.js";
 // Import các hàm tiện ích chúng ta vừa export từ store.js
 import { formatCurrency, addToCart, showToast } from "./store.js";
 

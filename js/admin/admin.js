@@ -42,7 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
             // Customer section: đảm bảo init (một lần) rồi luôn render khi activated
             if (
               activated.id === "customer-section" ||
-              activated.classList.contains("customer-wrapper")
+              activated.classList.contains("customer-section")
             ) {
               if (!window._customerModuleInited) initCustomerModule();
               renderCustomers();
@@ -51,7 +51,7 @@ document.addEventListener("DOMContentLoaded", () => {
             // Orders section: đảm bảo init (một lần) rồi luôn render khi activated
             if (
               activated.id === "orders-section" ||
-              activated.classList.contains("orders-wrapper")
+              activated.classList.contains("#orders-section")
             ) {
               if (!window._orderModuleInited) initOrderModule();
               renderOrders();
@@ -291,7 +291,7 @@ function renderCustomers() {
   // chỉ render khi customer section đang active để tránh xung đột
   // với các module khác có thể dùng chung DOM ids/selectors
   const customerSection =
-    containerCustomer?.closest(".customer-wrapper") ||
+    containerCustomer?.closest("#customer-section") ||
     document.getElementById("customer-section");
   if (customerSection && !customerSection.classList.contains("active")) return;
   containerCustomer.innerHTML = "";
@@ -323,7 +323,7 @@ function renderPaginationControls(totalItems, page, pageSize) {
     // Ưu tiên pagination list bên trong customer section để tránh lấy nhầm section khác
     pageCustomerNavListEl =
       containerCustomer
-        ?.closest(".customer-wrapper")
+        ?.closest("#customer-section")
         ?.querySelector(".page-nav-list") ||
       document.querySelector(".page-nav-list");
   }
@@ -419,7 +419,7 @@ function refreshCustomers() {
 
   // cập nhật các control DOM nếu có (dùng cached select khi có sẵn)
   const customerSection =
-    containerCustomer?.closest(".customer-wrapper") ||
+    containerCustomer?.closest("#customer-section") ||
     document.getElementById("customer-section");
   if (customerSection) {
     const filterEl = customerSection.querySelector("#filter-user-status");
@@ -650,7 +650,7 @@ function initCustomerModule() {
 
   const customerSection =
     document.getElementById("customer-section") ||
-    document.querySelector(".customer-wrapper");
+    document.querySelector("#customer-section");
 
   containerCustomer = customerSection.querySelector("#show-customer-container");
   templateCustomerItem = customerSection.querySelector(
@@ -972,7 +972,7 @@ function renderOrders() {
   // chỉ render khi orders section đang visible/active
   const section =
     ordersSection ||
-    containerOrders?.closest(".orders-wrapper") ||
+    containerOrders?.closest("#orders-section") ||
     document.getElementById("orders-section");
   if (section && !section.classList.contains("active")) return;
   containerOrders.innerHTML = "";
@@ -1045,7 +1045,7 @@ function renderOrderPaginationControls(totalItems, page, pageSize) {
   if (!pageOrderNavListEl) {
     pageOrderNavListEl =
       containerOrders
-        ?.closest(".orders-wrapper")
+        ?.closest("#orders-section")
         ?.querySelector(".page-nav-list") || null;
   }
   if (!pageOrderNavListEl) return;
@@ -1608,7 +1608,7 @@ function initOrderModule() {
 
   ordersSection =
     document.getElementById("orders-section") ||
-    document.querySelector(".orders-wrapper");
+    document.querySelector("#orders-section");
   if (!ordersSection) return;
   containerOrders = ordersSection.querySelector("#show-order-container");
   templateOrderItem = ordersSection.querySelector("#order-item-template");
@@ -3064,7 +3064,7 @@ window.resetDateFilter = resetDateFilter;
 document.addEventListener("DOMContentLoaded", () => {
   const sidebarItems = Array.from(
     document.querySelectorAll(
-      ".sidebar .middle-sidebar .sidebar-list .sidebar-list-item.tab-content"
+      ".admin-sidebar .admin-sidebar__nav .admin-sidebar__list .admin-sidebar__item.tab-content"
     )
   );
 
@@ -3150,7 +3150,7 @@ document.addEventListener("DOMContentLoaded", () => {
   try {
     const sidebarItems = Array.from(
       document.querySelectorAll(
-        ".sidebar .middle-sidebar .sidebar-list .sidebar-list-item.tab-content"
+        ".admin-sidebar .admin-sidebar__nav .admin-sidebar__list .admin-sidebar__item.tab-content"
       )
     );
     const dashboardItem = sidebarItems[0]; // tab đầu tiên
