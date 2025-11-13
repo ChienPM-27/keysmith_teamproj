@@ -863,114 +863,7 @@ hr {
   gap: 25px;
 }
 
-@media (max-width: 1024px) {
-  .product-wrapper {
-    flex-direction: column;
-    align-items: center;
-    gap: 30px;
-  }
 
-  .product-images {
-    width: 100%;
-    max-width: 600px;
-    min-width: unset;
-  }
-
-  #product-detail .product-info {
-    width: 100%;
-    text-align: center;
-    padding: 0 20px;
-  }
-
-  #product-detail .product-info h2 {
-    font-size: 32px;
-    line-height: 1.2;
-  }
-
-  #product-detail .price,
-  #product-detail .share-like,
-  #product-detail .quantity-container,
-  #product-detail .buy-buttons {
-    justify-content: center;
-  }
-}
-
-/* Mobile dọc */
-@media (max-width: 600px) {
-  /* Header */
-  #header {
-    padding: 10px 20px;
-    background: rgba(0,0,0,0.8);
-  }
-  
-  #header .logo {
-    width: 100px !important;
-    height: auto !important;
-  }
-
-  #header .header-icons a {
-    font-size: 18px;
-  }
-
-  /* Nút Back */
-  #back-btn {
-    top: 85px;
-    left: 20px;
-    padding: 8px 15px;
-    font-size: 12px;
-    z-index: 90;
-  }
-
-  /* Detail container */
-  #product-detail {
-    padding: 100px 15px 40px 15px;
-    margin-top: 0;
-  }
-
-  .product-images {
-    max-width: 100%;
-  }
-
-  #product-detail .image-slider {
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-  }
-
-  /* Nội dung */
-  #product-detail .product-info h2 {
-    font-size: 24px;
-    margin-top: 10px;
-  }
-
-  #product-detail .price .current {
-    font-size: 28px;
-  }
-
-  #product-detail .short-desc {
-    font-size: 14px;
-    text-align: justify;
-  }
-
-  /* Nút bấm */
-  #product-detail .buy-buttons {
-    flex-direction: column;
-    width: 100%;
-    gap: 12px;
-  }
-
-  #product-detail .buy-buttons button {
-    width: 100%;
-    max-width: 100%;
-    padding: 12px;
-    font-size: 16px;
-  }
-
-  /* Extra */
-  #product-extra {
-    padding: 20px;
-    margin-top: 30px;
-  }
-}
 
 /* ========== CART VIEW ========== */
 #cart-view .title {
@@ -1388,4 +1281,251 @@ footer .form .input-group button:hover {
 
 #btn-top:active {
   transform: translateY(-1px);
+}
+
+#mobile {
+  display: none;
+  align-items: center;
+}
+
+#mobile i {
+  color: var(--color-text-dark); /* Hoặc #fff tùy nền header */
+  font-size: 24px;
+  cursor: pointer;
+  padding-left: 20px;
+}
+
+/* Nút đóng menu (dấu X) */
+#navbar #close {
+  display: none; /* Ẩn trên máy tính */
+  position: absolute;
+  top: 30px;
+  left: 30px;
+  color: #fff;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+:root {
+  --gap-mobile: 16px;
+  --header-height-mobile: 64px;
+}
+
+#header {
+  padding: 12px 28px;
+  align-items: center;
+  height: auto;
+}
+
+#mobile {
+  display: none;
+  gap: 12px;
+  align-items: center;
+}
+
+#header .logo img {
+  max-height: 56px;
+  height: auto;
+}
+
+#navbar {
+  transition: right 0.28s ease, opacity 0.28s ease;
+}
+
+#navbar.mobile-sidebar {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  position: fixed;
+  top: 0;
+  right: -100%;
+  height: 100vh;
+  width: 300px;
+  max-width: 86%;
+  background-color: rgba(10,10,10,0.98);
+  padding: 84px 18px 20px 18px;
+  z-index: 99999;
+  box-shadow: -8px 24px 48px rgba(0,0,0,0.45);
+  gap: 18px;
+}
+
+#navbar.mobile-sidebar.active {
+  right: 0;
+}
+
+#navbar.mobile-sidebar #close {
+  display: block;
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.header-icons {
+  gap: 10px;
+}
+
+#product-detail {
+  display: flex;
+}
+
+@media (max-width: 1024px) {
+  .product-wrapper {
+    flex-direction: column;
+    gap: 28px;
+    align-items: center;
+  }
+
+  .product-images {
+    min-width: 0;
+    max-width: 680px;
+    width: 100%;
+  }
+
+  #product-detail .image-slider {
+    max-width: 720px;
+    width: 92%;
+  }
+
+  #product-detail .product-info {
+    width: 92%;
+    text-align: center;
+    align-items: center;
+  }
+
+  #product-detail .product-info h2 {
+    font-size: 36px;
+    line-height: 1.05;
+  }
+
+  #product-detail .buy-buttons {
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 14px;
+  }
+
+  #product-detail .buy-buttons button {
+    max-width: 320px;
+    width: auto;
+  }
+}
+
+@media (max-width: 768px) {
+  #mobile {
+    display: flex;
+  }
+
+  #navbar:not(.mobile-sidebar) {
+    display: none !important;
+  }
+
+  .section-p1 {
+    padding: 24px 14px;
+  }
+
+  .section-m1 {
+    margin: 24px 0;
+  }
+
+  header, #header {
+    padding: 10px 14px;
+  }
+
+  .product-images {
+    width: 100%;
+    min-width: 0;
+    max-width: 640px;
+  }
+
+  #product-detail .image-slider {
+    width: 100%;
+    aspect-ratio: 4/3;
+    padding: 0;
+    border-radius: 8px;
+  }
+
+  #product-detail .product-info {
+    padding: 8px 6px;
+    gap: 12px;
+  }
+
+  #product-detail .product-info h2 {
+    font-size: 30px;
+  }
+
+  .quantity-container {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .quantity-box input {
+    width: 56px;
+  }
+
+  #product-detail .buy-buttons {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: stretch;
+  }
+
+  #product-detail .buy-buttons button {
+    width: 100%;
+    max-width: none;
+    padding: 12px 18px;
+  }
+
+  #back-btn {
+    left: 14px;
+    top: calc(var(--header-height-mobile, 64px) + 10px);
+    padding: 8px 18px;
+    font-size: 15px;
+  }
+
+  footer .footer-content {
+    flex-direction: column;
+    gap: 18px;
+    padding: 18px;
+  }
+}
+
+@media (max-width: 420px) {
+  #product-detail .product-info h2 {
+    font-size: 24px;
+  }
+
+  #product-detail .price .current {
+    font-size: 26px;
+  }
+
+  #product-detail .short-desc {
+    font-size: 14px;
+  }
+
+  .product-wrapper {
+    gap: 18px;
+    padding: 0 6px;
+  }
+}
+
+#product-detail .qty-btn,
+#store-search-bar button,
+#back-btn,
+.header-icons a,
+#cart-table .delete-icon,
+.checkout-visual {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(0,0,0,0.05);
+}
+
+#product-detail .image-slider img {
+  max-width: 100%;
+  height: auto;
+}
+
+html, body {
+  overflow-x: hidden;
 }
