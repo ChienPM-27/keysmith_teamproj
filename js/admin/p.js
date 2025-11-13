@@ -886,26 +886,23 @@ function cancelSearchProduct() {
 	renderProducts({ resetPage: true });
 }
 
+// Xóa sản phẩm vĩnh viễn
 function deleteProduct(id) {
-	const numericId = Number(id);
-	if (!Number.isFinite(numericId)) {
-		notify('error', 'Không xác định được sản phẩm cần xóa.');
-		return;
-	}
 	const products = loadProducts();
-	const index = products.findIndex(item => Number(item.id) === numericId);
+	const index = products.findIndex(item => Number(item.id) === Number(id));
 	if (index === -1) {
-		notify('error', 'Không tìm thấy sản phẩm.');
+		notify('error', 'Không tìm thấy sản phẩm để xóa.');
 		return;
 	}
-	if (!confirm('Bạn có chắc muốn ẩn sản phẩm này?')) {
+	if (!confirm('Bạn có chắc muốn xóa vĩnh viễn sản phẩm này?')) {
 		return;
 	}
-	products[index].status = 'inactive';
+	const [removed] = products.splice(index, 1);
 	saveProducts(products);
-	notify('success', 'Đã ẩn sản phẩm.');
+	notify('success', `Đã xóa sản phẩm #${removed?.id || ''} thành công.`);
 	updateProductCount();
-	renderProducts();
+	populateCategoryFilters();
+	renderProducts({ resetPage: true });
 }
 
 function changeStatusProduct(id) {
@@ -984,7 +981,7 @@ if (productListContainer) {
 		if (button.classList.contains('btn-edit-product')) {
 			openProductModal('edit', productId);
 		} else if (button.classList.contains('btn-delete-product')) {
-			toggleProductStatus(productId);
+			deleteProduct(productId);
 		} else if (button.classList.contains('btn-view-product')) {
 			view(productId);
 		}
@@ -1008,3 +1005,51 @@ if (typeof window !== 'undefined') {
 
 //product type section 
 
+function ProductType() {
+	let productTypes = localStorage.getItem('catagories') ? JSON.parse(localStorage.getItem('catagories')) : [];
+	if (productTypes.length === 0) {
+		productTypes = [
+			"Attack On Titan",
+		"LOTR",
+		"One Piece",
+		"YuGiOh",
+		"Cyberpunk Neon Series",
+		"Cosmic Odyssey",
+		"Mythic Creatures",
+		"Shadow Reaver Series",
+		"Zen Aesthetics",
+		"Elemental Frost",
+		"Aurora Dream",
+		];
+		localStorage.setItem('catagories', JSON.stringify(productTypes));
+	}
+	return productTypes;
+}
+
+function createNewProductType()
+{
+	const ptName = document.getElementById('pt-form-name').value;
+	if (!ptName) {
+		alert('Vui lòng nhập tên thể loại sản phẩm.');
+		return;
+	}
+	const ptDesc = document.getElementById('pt-form-description').value;
+	let productTypes = localStorage.getItem('catagories') ? JSON.parse(localStorage.getItem('catagories')) : [];
+	productTypes.push(ptName);
+	localStorage.setItem('catagories', JSON.stringify(productTypes));
+	alert('Thêm thể loại sản phẩm thành công!');
+	document.getElementById('pt-form-name').value = '';
+	document.getElementById('pt-form-description').value = '';
+}
+
+function showproductArr(arr)
+{
+	let producttypehtml = '';
+	if(arr.length === 0)
+	{
+		producttypehtml = '<div class="no-result">Không có thể loại sản phẩm để hiển thị</div>';
+	}
+	else {
+		
+	}
+}
