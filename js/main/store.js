@@ -27,6 +27,8 @@ const DEFAULT_FILTERS = {
   search: "",
 };
 
+const NON_DISPLAYABLE_STATUSES = new Set(["inactive", "deleted"]);
+
 /**
  * Formatter tiền tệ USD
  */
@@ -62,7 +64,14 @@ let currentFilters = { ...DEFAULT_FILTERS };
  * @returns {Array} Mảng sản phẩm
  */
 function getAllProducts() {
-  return dataManager.getAll("products") || [];
+  const products = dataManager.getAll("products") || [];
+  return products.filter(isProductDisplayable);
+}
+
+function isProductDisplayable(product) {
+  if (!product) return false;
+  const status = (product.status || "").toLowerCase();
+  return !NON_DISPLAYABLE_STATUSES.has(status);
 }
 
 /**
@@ -571,6 +580,14 @@ export function addToCart(productId, quantity = 1) {
     return;
   }
 
+  const status = (product.status || "").toLowerCase();
+  if (NON_DISPLAYABLE_STATUSES.has(status)) {
+    if (window.showToast) {
+      window.showToast("Sản phẩm không khả dụng.", "error");
+    }
+    return;
+  }
+
   // Kiểm tra quantity hợp lệ
   if (quantity <= 0) {
     if (window.showToast) {
@@ -634,6 +651,14 @@ export function updateCartQuantity(productId, newQuantity) {
     return;
   }
 
+  const status = (product.status || "").toLowerCase();
+  if (NON_DISPLAYABLE_STATUSES.has(status)) {
+    if (window.showToast) {
+      window.showToast("Sản phẩm không khả dụng.", "error");
+    }
+    return;
+  }
+
   // Kiểm tra quantity hợp lệ
   if (newQuantity <= 0) {
     if (window.showToast) {
@@ -688,7 +713,14 @@ function populateBrandsDropdown() {
   const brandsSelect = document.getElementById("brands");
   if (!brandsSelect) return;
 
-  const brands = dataManager.getAllBrands();
+  const products = getAllProducts();
+  const brands = Array.from(
+    new Set(
+      products
+        .map((product) => product.specs?.brand)
+        .filter((brand) => Boolean(brand))
+    )
+  );
   brands.forEach((brand) => {
     const option = document.createElement("option");
     option.value = brand;
@@ -704,7 +736,14 @@ function populateCategoryDropdown() {
   const categorySelect = document.getElementById("category");
   if (!categorySelect) return;
 
-  const categories = dataManager.getAllCategories();
+  const products = getAllProducts();
+  const categories = Array.from(
+    new Set(
+      products
+        .map((product) => product.specs?.category)
+        .filter((category) => Boolean(category))
+    )
+  );
   categories.forEach((category) => {
     const option = document.createElement("option");
     option.value = category;
@@ -720,7 +759,14 @@ function populateColorDropdown() {
   const colorSelect = document.getElementById("color");
   if (!colorSelect) return;
 
-  const colors = dataManager.getAllColors();
+  const products = getAllProducts();
+  const colors = Array.from(
+    new Set(
+      products
+        .map((product) => product.specs?.color)
+        .filter((color) => Boolean(color))
+    )
+  );
   colors.forEach((color) => {
     const option = document.createElement("option");
     option.value = color;
