@@ -399,19 +399,6 @@ export const sampleData = {
 			status: "active"
 		}
 	],
-	catagories: [
-		"Attack On Titan",
-		"LOTR",
-		"One Piece",
-		"YuGiOh",
-		"Cyberpunk Neon Series",
-		"Cosmic Odyssey",
-		"Mythic Creatures",
-		"Shadow Reaver Series",
-		"Zen Aesthetics",
-		"Elemental Frost",
-		"Aurora Dream",
-	],
 	orders: [
 		{
 			username: "cust01",
