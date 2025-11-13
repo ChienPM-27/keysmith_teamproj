@@ -308,5 +308,25 @@ function renderSpecsTable(specs) {
   }
 }
 
+const buyNowBtn = document.querySelector('#product-detail .buy-now');
+
+if (buyNowBtn) {
+    buyNowBtn.addEventListener('click', function() {
+
+        const addToCartBtn = document.querySelector('#product-detail .add-cart');
+        if (addToCartBtn) addToCartBtn.click(); 
+
+        document.getElementById('store-view').style.display = 'none';
+        document.getElementById('product-detail').style.display = 'none';
+        
+        // Hiện màn hình giỏ hàng
+        const cartView = document.getElementById('cart-view');
+        if (cartView) {
+            cartView.style.display = 'flex'; 
+            window.scrollTo(0, 0); 
+        }
+    });
+}
+
 // === KHỞI CHẠY MODULE ===
 document.addEventListener("DOMContentLoaded", initDetailModule);
