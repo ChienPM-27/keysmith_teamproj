@@ -25,6 +25,20 @@
       src="https://kit.fontawesome.com/da0c4cdc9f.js"
       crossorigin="anonymous"
     ></script>
+    <!-- ========== Chart.js ========== -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- Small CSS bổ sung cho canvas / cards -->
+<style>
+  /* đặt nơi chứa biểu đồ */
+  .analytics-row { display: flex; flex-wrap: wrap; gap: 20px; margin-top: 18px; }
+  .chart-card { background: #fff; border-radius: 12px; box-shadow: 0 4px 14px rgba(25,25,25,0.06); padding: 18px; flex: 1 1 480px; min-width: 320px; }
+  .chart-title { font-weight: 700; margin-bottom: 8px; color: #333; }
+  /* responsive fix */
+  @media (max-width: 800px) {
+    .analytics-row { flex-direction: column; }
+  }
+</style>
   </head>
 
 <body>
@@ -1242,6 +1256,26 @@
               </div>               -->
               </div>
             </div>
+<!-- ===== Analytics charts ===== -->
+<div class="analytics-row">
+  <div class="chart-card">
+    <div class="chart-title">Doanh thu theo ngày</div>
+    <canvas id="revenueChart" height="120"></canvas>
+  </div>
+
+  <div class="chart-card">
+    <div class="chart-title">Số đơn hàng theo ngày</div>
+    <canvas id="ordersChart" height="120"></canvas>
+  </div>
+</div>
+
+<div class="chart-card" style="flex: 1 1 100%; text-align:center;">
+  <div class="chart-title">Tỉ lệ trạng thái đơn hàng</div>
+  <div class="chart-wrapper">
+    <canvas id="statusChart"></canvas>
+  </div>
+</div>
+<!-- ===== hết phần thêm ===== -->
 
             <!-- Order Status Stats -->
             <div class="order-status-grid">
