@@ -4,21 +4,19 @@
 RESET & BASE STYLES
 ============================================ */
 .warehouse-wrapper {
-    max-width: 100%;
-    box-sizing: border-box;
-}
-
-.warehouse-wrapper {
     font-family: 'Poppins', sans-serif;
     background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
     color: #fff;
     min-height: 100vh;
     padding: 20px;
     width: 100% !important;
-    overflow-x: hidden;
+    overflow-x: hidden !important;
+    overflow-y: visible !important;
     position: relative !important;
     margin-left: 0 !important;
     left: auto !important;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .warehouse-wrapper .container {
@@ -29,6 +27,8 @@ RESET & BASE STYLES
     display: block;
     position: relative;
     box-sizing: border-box;
+    overflow: visible !important;
+    height: auto !important;
 }
 
 /* ============================================
@@ -251,6 +251,9 @@ RESET & BASE STYLES
    ============================================ */
 .warehouse-wrapper .tab-content {
     display: none;
+    overflow: visible !important;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .warehouse-wrapper .tab-content.active {
@@ -444,14 +447,18 @@ RESET & BASE STYLES
 .warehouse-wrapper .table-container {
     background: rgba(255, 255, 255, 0.05);
     border-radius: 12px;
-    overflow-x: auto;
+    overflow-x: auto !important;
+    overflow-y: visible !important;
     border: 1px solid rgba(255, 255, 255, 0.1);
+    max-width: 100%;
 }
 
 .warehouse-wrapper table {
     width: 100%;
     border-collapse: collapse;
     min-width: 900px;
+    max-width: 100%;
+    table-layout: auto;
 }
 
 .warehouse-wrapper thead {
@@ -1173,9 +1180,6 @@ RESET & BASE STYLES
 /* ============================================
    RESPONSIVE DESIGN
    ============================================ */
-
-
-
 
 @media (max-width: 1024px) {
     .warehouse-wrapper .header {
