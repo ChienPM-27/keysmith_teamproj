@@ -233,6 +233,8 @@ function createProductNode(p) {
  * Render toàn bộ danh sách sản phẩm với filter, sort, pagination
  */
 function renderProducts() {
+  if (!containerProducts) return;
+
   containerProducts.innerHTML = "";
 
   const allProducts = getAllProducts();
@@ -262,16 +264,6 @@ function renderProducts() {
 
   // Cập nhật tiêu đề số lượng sản phẩm
   updateProductCount(total);
-  
-/**
- * Đặt số sản phẩm mỗi trang và render lại
- */
-function setPerProductPage(n) {
-  const v = parseInt(n, 10) || 1;
-  perProductPage = Math.max(1, v);
-  currentProductPage = 1;
-  renderProducts();
-}
 }
 
 /**
@@ -807,10 +799,9 @@ window.showStoreView = showStoreView;
 // ===== Checkout modal logic =====
 (function () {
   const modal = document.getElementById('checkout-modal');
-  // Ngăn mọi click bên trong modal lan ra ngoài document
-modal?.addEventListener('click', (e) => {
-  e.stopPropagation();
-});
+  // Stop clicks *inside* the dialog card from bubbling to backdrop; allow backdrop click to close
+  document.querySelector('.checkout-card')?.addEventListener('click', (e) => e.stopPropagation());
+
 
   const backdrop = document.getElementById('checkout-backdrop');
   const closeBtn = document.getElementById('checkout-close');
@@ -820,15 +811,113 @@ modal?.addEventListener('click', (e) => {
   const totalQtyEl = document.getElementById('checkout-total-qty');
   const totalMoneyEl = document.getElementById('checkout-total-money');
 
-  // Address controls
-  const addrDisplay = document.getElementById('address-display');
-  const addrEdit = document.getElementById('address-edit');
-  const addrChangeBtn = document.getElementById('addr-change-btn');
-  const addrSaveBtn = document.getElementById('addr-save-btn');
-  const addrCancelBtn = document.getElementById('addr-cancel-btn');
-  const addrText = document.getElementById('addr-text');
+  // ----- Address helpers -----
+  function getAddrInputs() {
+    return {
+      nameEl: document.getElementById('chk-name'),
+      phoneEl: document.getElementById('chk-phone'),
+      lineEl: document.getElementById('chk-line'),
+      cityEl: document.getElementById('chk-city'),
+      postalEl: document.getElementById('chk-postal'),
+      addrTextEl: document.getElementById('addr-text'),
+      addrDisplayEl: document.getElementById('address-display'),
+      addrEditEl: document.getElementById('address-edit')
+    };
+  }
 
-  // helpers for storage
+  function renderAddressText() {
+    const { addrTextEl } = getAddrInputs();
+    if (!addrTextEl) return;
+    const a = (function(){
+      try { return JSON.parse(localStorage.getItem('shipping') || 'null'); } catch { return null; }
+    })();
+    if (!a || !a.name) {
+      addrTextEl.textContent = 'Bạn chưa có địa chỉ. Vui lòng thêm địa chỉ giao hàng.';
+    } else {
+      addrTextEl.textContent = `${a.name} — ${a.phone} — ${a.line}, ${a.city}${a.postal ? ' ('+a.postal+')' : ''}`;
+    }
+  }
+
+  function showAddressEdit() {
+    const { addrDisplayEl, addrEditEl, nameEl, phoneEl, lineEl, cityEl, postalEl } = getAddrInputs();
+    if (!addrDisplayEl || !addrEditEl) {
+      if (typeof showToast === 'function') showToast('Form địa chỉ không tìm thấy', 'error');
+      return;
+    }
+    const a = (function(){
+      try { return JSON.parse(localStorage.getItem('shipping') || 'null'); } catch { return null; }
+    })() || {};
+    if (nameEl) nameEl.value = a.name || '';
+    if (phoneEl) phoneEl.value = a.phone || '';
+    if (lineEl) lineEl.value = a.line || '';
+    if (cityEl) cityEl.value = a.city || '';
+    if (postalEl) postalEl.value = a.postal || '';
+    addrDisplayEl.style.display = 'none';
+    addrEditEl.style.display = 'block';
+  }
+
+  function hideAddressEdit() {
+    const { addrDisplayEl, addrEditEl } = getAddrInputs();
+    if (!addrDisplayEl || !addrEditEl) return;
+    addrDisplayEl.style.display = 'flex';
+    addrEditEl.style.display = 'none';
+  }
+
+  function saveShippingAddressFromInputs() {
+  const { nameEl, phoneEl, lineEl, cityEl, postalEl } = getAddrInputs();
+  // safe-read values (use ?.value? to avoid calling .trim() on undefined)
+  const name = (nameEl?.value ?? "").toString().trim();
+  const phone = (phoneEl?.value ?? "").toString().trim();
+  const line = (lineEl?.value ?? "").toString().trim();
+  const city = (cityEl?.value ?? "").toString().trim();
+  const postal = (postalEl?.value ?? "").toString().trim();
+
+  if (!name || !phone || !line || !city) {
+    if (typeof showToast === 'function') showToast('Vui lòng nhập đầy đủ thông tin địa chỉ', 'error');
+    else alert('Vui lòng nhập đầy đủ thông tin địa chỉ');
+    return false;
+  }
+
+  const obj = { name, phone, line, city, postal };
+  try {
+    localStorage.setItem('shipping', JSON.stringify(obj));
+  } catch (e) { console.error(e); return false; }
+
+  // update UI safely
+  try { renderAddressText(); } catch(e){ console.error('renderAddressText error', e); }
+  try { hideAddressEdit(); } catch(e){ /* ignore */ }
+
+  if (typeof showToast === 'function') showToast('Đã lưu địa chỉ giao hàng', 'success');
+  return true;
+}
+
+
+  // delegate clicks for address buttons inside modal (safer than direct element refs)
+  document.addEventListener('click', function (e) {
+    const el = e.target;
+    if (!el) return;
+    // Only act if inside checkout modal or relevant elements exist
+    // Change
+    if (el.closest && (el.closest('#addr-change-btn') || el.id === 'addr-change-btn')) {
+      e.preventDefault(); e.stopPropagation();
+      showAddressEdit();
+      return;
+    }
+    // Cancel
+    if (el.closest && (el.closest('#addr-cancel-btn') || el.id === 'addr-cancel-btn')) {
+      e.preventDefault(); e.stopPropagation();
+      hideAddressEdit();
+      return;
+    }
+    // Save
+    if (el.closest && (el.closest('#addr-save-btn') || el.id === 'addr-save-btn')) {
+      e.preventDefault(); e.stopPropagation();
+      saveShippingAddressFromInputs();
+      return;
+    }
+  });
+
+  // ----- Storage & format helpers -----
   function getCartFromStorage() {
     try { return JSON.parse(localStorage.getItem('cart') || '[]'); } catch { return []; }
   }
@@ -839,22 +928,14 @@ modal?.addEventListener('click', (e) => {
   function getShippingAddress() {
     try { return JSON.parse(localStorage.getItem('shipping') || 'null'); } catch { return null; }
   }
-  function saveShippingAddress(obj) {
-    localStorage.setItem('shipping', JSON.stringify(obj));
-  }
 
-  // format currency (reuse existing helper if available)
   function fmt(v) {
-    try {
-      if (typeof formatCurrency === 'function') return formatCurrency(Number(v)||0);
-    } catch {}
+    try { if (typeof formatCurrency === 'function') return formatCurrency(Number(v)||0); } catch {}
     return new Intl.NumberFormat('vi-VN', { style:'currency', currency:'VND' }).format(Number(v)||0);
   }
-
-  // escape helper
   function escapeHtml(s){ return String(s||'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;'); }
 
-  // --- NEW: lấy mã sản phẩm đang được chọn ở bảng cart ---
+  // Get selected ids in the cart table
   function getSelectedIdsFromCartTable() {
     try {
       const checkedBoxes = Array.from(document.querySelectorAll('#cart-table tbody input.choose-item:checked'));
@@ -867,57 +948,26 @@ modal?.addEventListener('click', (e) => {
     }
   }
 
-  // Render address text
-  function renderAddressText() {
-    const a = getShippingAddress();
-    if (!a || !a.name) {
-      addrText.textContent = 'Bạn chưa có địa chỉ. Vui lòng thêm địa chỉ giao hàng.';
-    } else {
-      addrText.textContent = `${a.name} — ${a.phone} — ${a.line}, ${a.city}${a.postal ? ' ('+a.postal+')' : ''}`;
-    }
-  }
-
-  // show edit form and populate
-  function showAddressEdit() {
-    const a = getShippingAddress() || {};
-    document.getElementById('chk-name').value = a.name || '';
-    document.getElementById('chk-phone').value = a.phone || '';
-    document.getElementById('chk-line').value = a.line || '';
-    document.getElementById('chk-city').value = a.city || '';
-    document.getElementById('chk-postal').value = a.postal || '';
-    addrDisplay.style.display = 'none';
-    addrEdit.style.display = 'block';
-  }
-  function hideAddressEdit() {
-    addrDisplay.style.display = 'flex';
-    addrEdit.style.display = 'none';
-  }
-
-  // --- NEW: render checkout items ONLY from selected items in cart table ---
+  // Render checkout items (only selected)
   function renderCheckoutItems() {
+    if (!checkoutItemsEl) return;
     const cart = getCartFromStorage();
     checkoutItemsEl.innerHTML = '';
 
-    // Lấy các id được chọn trong bảng cart
     const selectedIds = getSelectedIdsFromCartTable();
-
-    // Nếu không có item nào được chọn -> show message
-    if (!cart || cart.length === 0 || selectedIds.length === 0) {
-      if (!cart || cart.length === 0) {
-        checkoutItemsEl.innerHTML = '<div style="padding:14px;text-align:center;color:#777">Giỏ hàng trống</div>';
-      } else {
-        checkoutItemsEl.innerHTML = '<div style="padding:14px;text-align:center;color:#777">Bạn chưa chọn sản phẩm nào để thanh toán.</div>';
-      }
-      totalQtyEl.textContent = '0';
-      totalMoneyEl.textContent = fmt(0);
+    if (!cart.length || !selectedIds.length) {
+      if (!cart.length) checkoutItemsEl.innerHTML = '<div style="padding:14px;text-align:center;color:#777">Giỏ hàng trống</div>';
+      else checkoutItemsEl.innerHTML = '<div style="padding:14px;text-align:center;color:#777">Bạn chưa chọn sản phẩm nào để thanh toán.</div>';
+      if (totalQtyEl) totalQtyEl.textContent = '0';
+      if (totalMoneyEl) totalMoneyEl.textContent = fmt(0);
       return;
     }
 
     const itemsToShow = cart.filter(it => selectedIds.includes(Number(it.id)));
     if (!itemsToShow.length) {
       checkoutItemsEl.innerHTML = '<div style="padding:14px;text-align:center;color:#777">Bạn chưa chọn sản phẩm nào để thanh toán.</div>';
-      totalQtyEl.textContent = '0';
-      totalMoneyEl.textContent = fmt(0);
+      if (totalQtyEl) totalQtyEl.textContent = '0';
+      if (totalMoneyEl) totalMoneyEl.textContent = fmt(0);
       return;
     }
 
@@ -931,7 +981,6 @@ modal?.addEventListener('click', (e) => {
       totalQty += qty;
       totalMoney += qty * unit;
 
-      // try to get product info from dataManager if available
       let title = String(pid), thumb = '/img/blank-image.png';
       try {
         if (typeof dataManager !== 'undefined' && dataManager.getById) {
@@ -953,8 +1002,8 @@ modal?.addEventListener('click', (e) => {
       checkoutItemsEl.appendChild(row);
     });
 
-    totalQtyEl.textContent = totalQty;
-    totalMoneyEl.textContent = fmt(totalMoney);
+    if (totalQtyEl) totalQtyEl.textContent = totalQty;
+    if (totalMoneyEl) totalMoneyEl.textContent = fmt(totalMoney);
   }
 
   // open/close modal
@@ -962,104 +1011,139 @@ modal?.addEventListener('click', (e) => {
     renderCheckoutItems();
     renderAddressText();
     hideAddressEdit();
+    if (!modal) return;
     modal.classList.add('show');
     modal.setAttribute('aria-hidden','false');
-    // prevent page scroll under modal
     document.body.style.overflow = 'hidden';
   }
   function closeCheckout() {
+    if (!modal) return;
     modal.classList.remove('show');
     modal.setAttribute('aria-hidden','true');
     document.body.style.overflow = '';
   }
 
-  // --- NEW: placeOrder handles only selected items and removes them from cart ---
-  function placeOrder() {
-    // đảm bảo đã chọn item
-    const selectedIds = getSelectedIdsFromCartTable();
-    if (!selectedIds.length) {
-      if (typeof showToast === 'function') showToast('Vui lòng chọn ít nhất 1 sản phẩm trước khi thanh toán', 'error');
-      else alert('Vui lòng chọn ít nhất 1 sản phẩm trước khi thanh toán');
-      return;
-    }
-
-    // kiểm tra địa chỉ
-    const addr = getShippingAddress();
-    if (!addr || !addr.name || !addr.phone || !addr.line || !addr.city) {
-      if (typeof showToast === 'function') showToast('Vui lòng cung cấp địa chỉ giao hàng trước khi đặt', 'error');
-      else alert('Vui lòng cung cấp địa chỉ giao hàng.');
-      return;
-    }
-
-    // payment method
-    const payment = (document.querySelector('input[name="payment"]:checked') || {}).value || 'cod';
-
-    // Lấy cart, tách các item chọn ra và remove chúng từ cart gốc
-    const cart = getCartFromStorage();
-    const itemsToOrder = cart.filter(it => selectedIds.includes(Number(it.id)));
-    if (!itemsToOrder.length) {
-      if (typeof showToast === 'function') showToast('Không có sản phẩm hợp lệ để đặt', 'error');
-      return;
-    }
-
-    // --- Ở đây bạn có thể gọi API tạo order với itemsToOrder và address/payment ---
-    // Demo: chỉ xoá các item đã đặt khỏi cart, lưu lại cart mới
-    const remaining = cart.filter(it => !selectedIds.includes(Number(it.id)));
-    saveCartToStorage(remaining);
-
-    // cập nhật UI
-    renderCheckoutItems(); // sẽ hiển thị "không có sản phẩm được chọn"
-    if (typeof renderCartView === 'function') renderCartView();
-
-    closeCheckout();
-
-    if (typeof showToast === 'function') showToast('Đặt hàng thành công — phương thức: ' + payment, 'success');
-    else alert('Order placed: ' + payment);
-  }
-
-  // wire events
-  addrChangeBtn?.addEventListener('click', (e) => {
-  e.stopPropagation();    // ngăn event nổi lên document
-  e.preventDefault();     // ngăn hành vi mặc định (phòng hờ)
-  showAddressEdit();
-});
-
-  addrCancelBtn?.addEventListener('click', hideAddressEdit);
-  addrSaveBtn?.addEventListener('click', () => {
-    const name = document.getElementById('chk-name').value.trim();
-    const phone = document.getElementById('chk-phone').value.trim();
-    const line = document.getElementById('chk-line').value.trim();
-    const city = document.getElementById('chk-city').value.trim();
-    const postal = document.getElementById('chk-postal').value.trim();
-    if (!name || !phone || !line || !city) {
-      if (typeof showToast === 'function') showToast('Vui lòng nhập đầy đủ thông tin địa chỉ', 'error');
-      else alert('Vui lòng nhập đầy đủ thông tin địa chỉ');
-      return;
-    }
-    saveShippingAddress({ name, phone, line, city, postal });
-    renderAddressText();
-    hideAddressEdit();
-    if (typeof showToast === 'function') showToast('Đã lưu địa chỉ giao hàng', 'success');
-  });
-
+  // wire modal actions
   closeBtn?.addEventListener('click', closeCheckout);
   cancelBtn?.addEventListener('click', closeCheckout);
   backdrop?.addEventListener('click', closeCheckout);
-  placeBtn?.addEventListener('click', placeOrder);
+  placeBtn?.addEventListener('click', (e) => {
+  e.preventDefault();
+  // luôn ưu tiên gọi hàm global unified placeOrder (được bạn khai báo sau IIFE)
+  if (typeof window.placeOrder === 'function') {
+    try {
+      window.placeOrder();
+    } catch (err) {
+      console.error('[checkout] calling global placeOrder failed', err);
+      showToast?.('Lỗi khi đặt hàng', 'error');
+    }
+    return;
+  }
+  // nếu không có hàm global — báo lỗi rõ ràng (không gọi hàm nội bộ vì đã xóa)
+  console.error('[checkout] unified placeOrder not found');
+  showToast?.('Hệ thống chưa sẵn sàng để đặt hàng', 'error');
+});
 
-  // expose function to open modal globally
+
+
+
+  // expose open/close
   window.showCheckout = openCheckout;
   window.closeCheckout = closeCheckout;
 
   // hook checkout open from cart's checkout button (if exists)
   document.addEventListener('DOMContentLoaded', () => {
     const footerCheckout = document.querySelector('.checkout-visual');
-    if (footerCheckout) footerCheckout.addEventListener('click', openCheckout);
-
-    // also ensure address text renders when page loads (if you want)
+    if (footerCheckout) footerCheckout.addEventListener('click', (e) => {
+      // openCheckout will guard against no selection via attachCheckoutGuards in cart code
+      openCheckout();
+    });
     renderAddressText();
   });
 })();
+/* ==========================
+   Unified placeOrder (single canonical function)
+   - Replace duplicates with this. It reads selected items, validates address, creates an order,
+     saves to localStorage 'orders', removes selected items from 'cart', updates UI.
+   ========================== */
+function placeOrder() {
+  // helpers referenced in your checkout IIFE (ensure these exist or adapt)
+  function getCartFromStorage() { try { return JSON.parse(localStorage.getItem('cart') || '[]'); } catch { return []; } }
+  function saveCartToStorage(cart) { localStorage.setItem('cart', JSON.stringify(cart)); if (typeof updateCartCount === 'function') updateCartCount(); }
+  function getShippingAddress() { try { return JSON.parse(localStorage.getItem('shipping') || 'null'); } catch { return null; } }
+
+  // get selected ids from table
+  const checkedBoxes = Array.from(document.querySelectorAll('#cart-table tbody input.choose-item:checked'));
+  const selectedIds = checkedBoxes.map(cb => cb.closest('tr')?.dataset?.id).filter(Boolean).map(id => Number(id));
+  if (!selectedIds.length) {
+    showToast?.('Vui lòng chọn ít nhất 1 sản phẩm trước khi thanh toán', 'error');
+    return;
+  }
+
+  const addr = getShippingAddress();
+  if (!addr || !addr.name || !addr.phone || !addr.line || !addr.city) {
+    showToast?.('Vui lòng cung cấp địa chỉ giao hàng trước khi đặt', 'error');
+    return;
+  }
+
+  const payment = (document.querySelector('input[name="payment"]:checked') || {}).value || 'cod';
+  const cart = getCartFromStorage();
+  const itemsToOrder = cart.filter(it => selectedIds.includes(Number(it.id)));
+  if (!itemsToOrder.length) {
+    showToast?.('Không có sản phẩm hợp lệ để đặt', 'error');
+    return;
+  }
+
+  // create order
+  const orders = (function(){ try { return JSON.parse(localStorage.getItem('orders') || '[]'); } catch { return []; } })();
+  const orderId = 'ORD-' + Date.now();
+  const detailedItems = itemsToOrder.map(it => {
+    let title = `#${it.id}`; let thumb = '/img/blank-image.png';
+    try {
+      if (typeof dataManager !== 'undefined' && dataManager.getById) {
+        const p = dataManager.getById('products', Number(it.id));
+        if (p) { title = p.title || title; thumb = p.mainImage || p.image || thumb; }
+      }
+    } catch (e) {}
+    const qty = Number(it.quantity)||0;
+    const unit = Number(it.unitPrice)||0;
+    return {
+      id: Number(it.id),
+      title,
+      qty,
+      unitPrice: unit,
+      amount: qty * unit,
+      thumb
+    };
+  });
+  const totalAmount = detailedItems.reduce((s,i) => s + (i.amount||0), 0);
+  const orderObj = {
+    id: orderId,
+    createdAt: new Date().toISOString(),
+    items: detailedItems,
+    total: totalAmount,
+    shipping: addr,
+    paymentMethod: payment,
+    status: 'placed'
+  };
+  orders.unshift(orderObj);
+  try { localStorage.setItem('orders', JSON.stringify(orders)); } catch (e) { console.error('save orders error', e); }
+
+  // remove ordered items from cart
+  const remaining = cart.filter(it => !selectedIds.includes(Number(it.id)));
+  saveCartToStorage(remaining);
+
+  // refresh UI
+  try { if (typeof renderCheckoutItems === 'function') renderCheckoutItems(); } catch (e) {}
+  try { if (typeof renderCartView === 'function') renderCartView(); } catch (e) {}
+  try { if (typeof window.renderOrderHistory === 'function') window.renderOrderHistory(); } catch(e){}
+
+  // close modal if exists
+  try { if (typeof closeCheckout === 'function') closeCheckout(); } catch(e) {}
+  showToast?.('Đặt hàng thành công — phương thức: ' + payment, 'success');
+}
+// đảm bảo hàm placeOrder có trên global scope
+window.placeOrder = placeOrder;
 
 
 
@@ -1520,4 +1604,412 @@ modal?.addEventListener('click', (e) => {
     }
   });
 
+})();
+
+// ---------- DEBUG + HARD FIX FOR ADDRESS HANDLERS ----------
+(function(){
+  // safe helpers mirrored from your IIFE
+  function getAddrInputsSafe() {
+    return {
+      nameEl: document.getElementById('chk-name'),
+      phoneEl: document.getElementById('chk-phone'),
+      lineEl: document.getElementById('chk-line'),
+      cityEl: document.getElementById('chk-city'),
+      postalEl: document.getElementById('chk-postal'),
+      addrTextEl: document.getElementById('addr-text'),
+      addrDisplayEl: document.getElementById('address-display'),
+      addrEditEl: document.getElementById('address-edit'),
+      saveBtn: document.getElementById('addr-save-btn'),
+      changeBtn: document.getElementById('addr-change-btn'),
+      cancelBtn: document.getElementById('addr-cancel-btn')
+    };
+  }
+
+  function renderAddressTextSafe() {
+    const { addrTextEl } = getAddrInputsSafe();
+    console.log('[ADDR] renderAddressTextSafe called. addrTextEl=', addrTextEl);
+    if (!addrTextEl) return;
+    let a = null;
+    try { a = JSON.parse(localStorage.getItem('shipping') || 'null'); } catch (e) { console.error('[ADDR] parse shipping error', e); }
+    if (!a || !a.name) {
+      addrTextEl.textContent = 'Bạn chưa có địa chỉ. Vui lòng thêm địa chỉ giao hàng.';
+    } else {
+      addrTextEl.textContent = `${a.name} — ${a.phone} — ${a.line}, ${a.city}${a.postal ? ' ('+a.postal+')' : ''}`;
+    }
+  }
+
+  function hideAddressEditSafe() {
+    const { addrDisplayEl, addrEditEl } = getAddrInputsSafe();
+    if (!addrDisplayEl || !addrEditEl) return;
+    addrDisplayEl.style.display = 'flex';
+    addrEditEl.style.display = 'none';
+  }
+
+  function showAddressEditSafe() {
+    const { addrDisplayEl, addrEditEl, nameEl, phoneEl, lineEl, cityEl, postalEl } = getAddrInputsSafe();
+    if (!addrDisplayEl || !addrEditEl) {
+      console.warn('[ADDR] address display/edit elements not found');
+      return;
+    }
+    const a = (function(){ try { return JSON.parse(localStorage.getItem('shipping') || 'null'); } catch { return null; } })() || {};
+    if (nameEl) nameEl.value = a.name || '';
+    if (phoneEl) phoneEl.value = a.phone || '';
+    if (lineEl) lineEl.value = a.line || '';
+    if (cityEl) cityEl.value = a.city || '';
+    if (postalEl) postalEl.value = a.postal || '';
+    addrDisplayEl.style.display = 'none';
+    addrEditEl.style.display = 'block';
+  }
+
+  function saveShippingAddressFromInputsSafe() {
+    console.log('[ADDR] saveShippingAddressFromInputsSafe called');
+    const { nameEl, phoneEl, lineEl, cityEl, postalEl } = getAddrInputsSafe();
+    const name = (nameEl?.value ?? '').toString().trim();
+    const phone = (phoneEl?.value ?? '').toString().trim();
+    const line = (lineEl?.value ?? '').toString().trim();
+    const city = (cityEl?.value ?? '').toString().trim();
+    const postal = (postalEl?.value ?? '').toString().trim();
+
+    console.log('[ADDR] values read:', { name, phone, line, city, postal });
+
+    if (!name || !phone || !line || !city) {
+      if (typeof showToast === 'function') showToast('Vui lòng nhập đầy đủ thông tin địa chỉ', 'error');
+      else alert('Vui lòng nhập đầy đủ thông tin địa chỉ');
+      return false;
+    }
+
+    const obj = { name, phone, line, city, postal };
+    try {
+      localStorage.setItem('shipping', JSON.stringify(obj));
+      console.log('[ADDR] saved to localStorage:', obj);
+    } catch (e) { console.error('[ADDR] localStorage set error', e); return false; }
+
+    try { renderAddressTextSafe(); } catch(e){ console.error('[ADDR] renderAddressText error', e); }
+    try { hideAddressEditSafe(); } catch(e){ console.error('[ADDR] hideAddressEdit error', e); }
+
+    if (typeof showToast === 'function') showToast('Đã lưu địa chỉ giao hàng', 'success');
+    return true;
+  }
+
+  // Attach direct listeners on DOMContentLoaded as a robust backup
+  document.addEventListener('DOMContentLoaded', () => {
+    const els = getAddrInputsSafe();
+    console.log('[ADDR] attaching direct listeners', { found: !!els.saveBtn, els });
+
+    if (els.saveBtn) {
+      els.saveBtn.removeEventListener('click', saveShippingAddressFromInputsSafe);
+      els.saveBtn.addEventListener('click', (e) => {
+        e.preventDefault(); e.stopPropagation();
+        saveShippingAddressFromInputsSafe();
+      });
+    }
+    if (els.changeBtn) {
+      els.changeBtn.removeEventListener('click', showAddressEditSafe);
+      els.changeBtn.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); showAddressEditSafe(); });
+    }
+    if (els.cancelBtn) {
+      els.cancelBtn.removeEventListener('click', (e)=>{});
+      els.cancelBtn.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); hideAddressEditSafe(); });
+    }
+
+    // initial render
+    try { renderAddressTextSafe(); } catch(e){ console.error(e); }
+  });
+
+  // expose debug functions for console testing
+  window.__addr_debug = {
+    render: renderAddressTextSafe,
+    showEdit: showAddressEditSafe,
+    hideEdit: hideAddressEditSafe,
+    saveTest: function(){ // convenience: save a test address
+      localStorage.setItem('shipping', JSON.stringify({ name:'Test User', phone:'0123456789', line:'Test St', city:'HCM', postal:'70000' }));
+      renderAddressTextSafe();
+      console.log('[ADDR] saved test address to localStorage');
+    },
+    saveFromInputs: saveShippingAddressFromInputsSafe
+  };
+})();
+
+/* --- Delete selected footer button --- */
+(function () {
+  function deleteSelectedFromCart() {
+    try {
+      const tbody = document.querySelector('#cart-table tbody');
+      if (!tbody) return;
+      // lấy selected ids
+      const checked = Array.from(tbody.querySelectorAll('input.choose-item:checked'));
+      if (!checked.length) {
+        if (typeof showToast === 'function') showToast('Vui lòng chọn ít nhất 1 sản phẩm để xóa', 'error');
+        return;
+      }
+      const ids = checked.map(cb => {
+        const tr = cb.closest('tr');
+        return tr?.dataset?.id ? parseInt(tr.dataset.id, 10) : null;
+      }).filter(Boolean);
+      if (!ids.length) return;
+
+      // confirm
+      if (!confirm('Xóa các sản phẩm đã chọn?')) return;
+
+      // read/write cart
+      const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+      const remaining = cart.filter(it => !ids.includes(Number(it.id)));
+      localStorage.setItem('cart', JSON.stringify(remaining));
+      if (typeof renderCartView === 'function') renderCartView();
+      if (typeof showToast === 'function') showToast('Đã xóa các sản phẩm đã chọn', 'info');
+    } catch (e) {
+      console.error('deleteSelectedFromCart error', e);
+    }
+  }
+
+  // attach to current and future footer delete buttons
+  document.addEventListener('click', function (e) {
+    const delBtn = e.target.closest && e.target.closest('.delete-icon');
+    if (delBtn) {
+      e.preventDefault(); e.stopPropagation();
+      deleteSelectedFromCart();
+    }
+  });
+})();
+
+/* ========================
+   Order History as Modal (overlay) - replace previous order-history IIFE with this block
+   ======================== */
+(function () {
+  const MODAL_ID = 'order-history-modal';
+  const BACKDROP_ID = 'order-history-backdrop';
+  const BTN_ID = 'btn-order-history';
+  const ORDERS_KEY = 'orders';
+
+  function readOrders() {
+    try { return JSON.parse(localStorage.getItem(ORDERS_KEY) || '[]'); }
+    catch (e) { console.error('readOrders parse error', e); return []; }
+  }
+  function writeOrders(arr) {
+    try { localStorage.setItem(ORDERS_KEY, JSON.stringify(arr || [])); }
+    catch (e) { console.error('writeOrders error', e); }
+  }
+  function fmtMoney(v) {
+    try { if (typeof formatCurrency === 'function') return formatCurrency(Number(v)||0); } catch (e) {}
+    // fallback
+    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(Number(v)||0);
+  }
+  function escapeHtml(s){ return String(s||'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;'); }
+
+  // create modal DOM (idempotent)
+  function ensureModal() {
+    let modal = document.getElementById(MODAL_ID);
+    if (modal) return modal;
+    // backdrop
+    const backdrop = document.createElement('div');
+    backdrop.id = BACKDROP_ID;
+    backdrop.style.cssText = [
+      'position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:2147483646;display:none;align-items:center;justify-content:center;'
+    ].join('');
+    // modal card
+    modal = document.createElement('section');
+    modal.id = MODAL_ID;
+    modal.setAttribute('role','dialog');
+    modal.setAttribute('aria-modal','true');
+    modal.style.cssText = [
+      'position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);',
+      'width:min(1100px,95%);max-height:80vh;overflow:auto;border-radius:12px;',
+      'background:#fff;z-index:2147483647;box-shadow:0 20px 60px rgba(0,0,0,0.5);display:none;'
+    ].join('');
+    // header + close
+    const header = document.createElement('div');
+    header.style.cssText = 'display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid #eee;';
+    header.innerHTML = `<h3 style="margin:0;font-size:1.05rem;">Lịch sử mua hàng</h3>`;
+    const closeBtn = document.createElement('button');
+    closeBtn.type = 'button';
+    closeBtn.className = 'btn-ghost';
+    closeBtn.style.cssText = 'margin-left:12px;';
+    closeBtn.textContent = 'Close';
+    closeBtn.addEventListener('click', closeModal);
+    header.appendChild(closeBtn);
+
+    // body container for content
+    const body = document.createElement('div');
+    body.id = MODAL_ID + '-body';
+    body.style.cssText = 'padding:12px;overflow:auto;max-height:calc(80vh - 80px);';
+
+    modal.appendChild(header);
+    modal.appendChild(body);
+
+    // append to document
+    document.body.appendChild(backdrop);
+    document.body.appendChild(modal);
+
+    // close when clicking backdrop
+    backdrop.addEventListener('click', closeModal);
+
+    return modal;
+  }
+
+  function renderOrderHistory() {
+    const modal = ensureModal();
+    const body = document.getElementById(MODAL_ID + '-body');
+    const orders = readOrders();
+
+    const controlsHtml = `
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;">
+        <button id="oh-refresh-btn" class="btn-ghost">Refresh</button>
+        <button id="oh-clear-btn" class="btn-ghost">Xóa tất cả</button>
+      </div>
+    `;
+
+    if (!orders.length) {
+      body.innerHTML = controlsHtml + `<div style="padding:12px;color:#666">Chưa có đơn hàng nào.</div>`;
+      attachModalListeners();
+      return;
+    }
+
+    const rows = orders.map(o => {
+      const created = new Date(o.createdAt).toLocaleString();
+      const itemsSummary = (o.items || []).map(it => `${it.qty}× ${escapeHtml(it.title)}`).join(', ');
+      return `
+        <tr data-order-id="${escapeHtml(o.id)}">
+          <td style="padding:8px;border-bottom:1px solid #eee;">${escapeHtml(o.id)}</td>
+          <td style="padding:8px;border-bottom:1px solid #eee;">${created}</td>
+          <td style="padding:8px;border-bottom:1px solid #eee;">${escapeHtml(o.shipping?.name||'—')}<br/><small>${escapeHtml(o.shipping?.line||'')}</small></td>
+          <td style="padding:8px;border-bottom:1px solid #eee;">${itemsSummary}</td>
+          <td style="padding:8px;border-bottom:1px solid #eee;text-align:right;">${fmtMoney(o.total)}</td>
+          <td style="padding:8px;border-bottom:1px solid #eee;">
+            <button class="oh-view-btn btn-ghost" data-id="${escapeHtml(o.id)}">View</button>
+            <button class="oh-delete-btn btn-ghost" data-id="${escapeHtml(o.id)}" style="margin-left:6px;">Delete</button>
+          </td>
+        </tr>
+      `;
+    }).join('');
+
+    const tableHtml = `
+      ${controlsHtml}
+      <div style="overflow:auto;">
+        <table style="width:100%;border-collapse:collapse;">
+          <thead>
+            <tr>
+              <th style="text-align:left;padding:8px;border-bottom:2px solid #ddd;">Order ID</th>
+              <th style="text-align:left;padding:8px;border-bottom:2px solid #ddd;">Date</th>
+              <th style="text-align:left;padding:8px;border-bottom:2px solid #ddd;">Ship To</th>
+              <th style="text-align:left;padding:8px;border-bottom:2px solid #ddd;">Items</th>
+              <th style="text-align:right;padding:8px;border-bottom:2px solid #ddd;">Total</th>
+              <th style="padding:8px;border-bottom:2px solid #ddd;">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows}
+          </tbody>
+        </table>
+      </div>
+    `;
+    body.innerHTML = tableHtml;
+    attachModalListeners();
+    return modal;
+  }
+
+  function attachModalListeners() {
+    const modal = document.getElementById(MODAL_ID);
+    if (!modal) return;
+    // refresh & clear
+    modal.querySelector('#oh-refresh-btn')?.addEventListener('click', (e) => { e.preventDefault(); renderOrderHistory(); });
+    modal.querySelector('#oh-clear-btn')?.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (!confirm('Xóa tất cả lịch sử đơn hàng?')) return;
+      writeOrders([]);
+      renderOrderHistory();
+      showToast?.('Đã xóa lịch sử đơn hàng','info');
+    });
+    // view & delete
+    modal.querySelectorAll('.oh-view-btn').forEach(b => {
+      b.removeEventListener('click', onViewOrder);
+      b.addEventListener('click', onViewOrder);
+    });
+    modal.querySelectorAll('.oh-delete-btn').forEach(b => {
+      b.removeEventListener('click', onDeleteOrder);
+      b.addEventListener('click', onDeleteOrder);
+    });
+  }
+
+  function onViewOrder(e) {
+    e.preventDefault();
+    const id = e.currentTarget?.dataset?.id;
+    if (!id) return;
+    const ord = readOrders().find(o => String(o.id) === String(id));
+    if (!ord) { showToast?.('Order not found','error'); return; }
+    const detail = [
+      `Order: ${ord.id}`,
+      `Date: ${new Date(ord.createdAt).toLocaleString()}`,
+      `Payment: ${ord.paymentMethod || '—'}`,
+      `Status: ${ord.status || '—'}`,
+      `Shipping: ${ord.shipping?.name || '—'} — ${ord.shipping?.line || ''} (${ord.shipping?.phone || ''})`,
+      'Items:',
+      ...ord.items.map(it => ` - ${it.qty}× ${it.title} — ${fmtMoney(it.unitPrice)} each — ${fmtMoney(it.amount)}`)
+    ].join('\n');
+    alert(detail);
+  }
+
+  function onDeleteOrder(e) {
+    e.preventDefault();
+    const id = e.currentTarget?.dataset?.id;
+    if (!id) return;
+    if (!confirm('Xóa đơn hàng ' + id + '?')) return;
+    let orders = readOrders();
+    orders = orders.filter(o => String(o.id) !== String(id));
+    writeOrders(orders);
+    renderOrderHistory();
+    showToast?.('Đã xóa đơn ' + id,'info');
+  }
+
+  // open/close modal
+  function openModal() {
+    renderOrderHistory();
+    const backdrop = document.getElementById(BACKDROP_ID);
+    const modal = ensureModal();
+    backdrop.style.display = 'flex';
+    modal.style.display = 'block';
+    // prevent page scroll when modal open
+    document.body.style.overflow = 'hidden';
+  }
+  function closeModal() {
+    const backdrop = document.getElementById(BACKDROP_ID);
+    const modal = document.getElementById(MODAL_ID);
+    if (backdrop) backdrop.style.display = 'none';
+    if (modal) modal.style.display = 'none';
+    document.body.style.overflow = '';
+  }
+
+  // wire button
+  function ensureButton() {
+    const cartContainer = document.querySelector('#cart-view .cart-container');
+    if (!cartContainer) return;
+    let wrapper = cartContainer.querySelector('.cart-actions-row');
+    if (!wrapper) {
+      wrapper = document.createElement('div');
+      wrapper.className = 'cart-actions-row';
+      const hr = cartContainer.querySelector('hr');
+      if (hr) hr.insertAdjacentElement('afterend', wrapper);
+      else cartContainer.prepend(wrapper);
+    }
+    let btn = wrapper.querySelector(`#${BTN_ID}`);
+    if (!btn) {
+      btn = document.createElement('button');
+      btn.id = BTN_ID;
+      btn.className = 'btn-ghost';
+      btn.textContent = 'Lịch sử mua hàng';
+      wrapper.appendChild(btn);
+    }
+    btn.removeEventListener('click', onBtnClick);
+    btn.addEventListener('click', onBtnClick);
+  }
+  function onBtnClick(e) { e.preventDefault(); openModal(); }
+
+  // expose API
+  window.renderOrderHistory = renderOrderHistory;
+  window.openOrderHistoryModal = openModal;
+  window.closeOrderHistoryModal = closeModal;
+
+  document.addEventListener('DOMContentLoaded', () => {
+    ensureModal(); // create DOM nodes (hidden)
+    ensureButton(); // ensure button exists and is wired
+  });
 })();

@@ -981,10 +981,10 @@ hr {
   justify-content:
   space-between;
   align-items:center; 
-  margin-bottom: 12px; 
+  margin-bottom: 0;
 }
 .cart-hero .title { 
-  font-size:28px; color:#fff; 
+  font-size:28px; color:#000000; 
   margin:0; 
   text-align:center; 
   flex:1; 
@@ -994,15 +994,6 @@ hr {
   gap:8px; 
 }
 
-.btn-clear {
-  background:transparent; 
-  border:1px solid rgba(255,255,255,0.12); 
-  color:#fff; 
-  padding:8px 12px;
-  border-radius:8px; 
-  cursor:pointer;
-}
-.btn-clear:hover { background: rgba(255,255,255,0.04); }
 
 /* Table */
 #cart-table { 
@@ -1226,6 +1217,46 @@ hr {
     white-space: nowrap;
   }
 }
+
+/* Order history button row in cart */
+#cart-view .cart-actions-row {
+  width: 100%;
+  padding: 8px 2%;
+  box-sizing: border-box;
+  margin-top: -24px; /* kéo lên gần đường kẻ nếu cần */
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: flex-start; /* canh trái */
+  gap: 8px;
+}
+
+/* Button look */
+#btn-order-history.btn-ghost {
+  background: transparent;
+  border: 1px solid #ccc;
+  color: #111;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+}
+#btn-order-history.btn-ghost:hover {
+  background: rgba(0,0,0,0.04);
+}
+
+/* The moved order-history container (when displayed under cart) */
+#order-history-container.moved-under-cart {
+  width: 96%;
+  margin: 8px 2% 18px;
+  background: #fff;
+  border: 1px solid #e6e6e6;
+  border-radius: 6px;
+  padding: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+}
+
+
+
 
 /* finalization moved into table footer - legacy rules removed */
 

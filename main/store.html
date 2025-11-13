@@ -32,6 +32,7 @@
     </ul>
 
     <div class="header-icons">
+      
       <a href="#" class="cart" onclick="showCartView()"><i class="fa-solid fa-cart-shopping"></i></a>
 
       <a href="/index.html" class="profile"><i class="fa-solid fa-circle-user"></i></a>
@@ -219,9 +220,11 @@
   <div class="cart-container">
     <div class="cart-hero">
       <h1 class="title">Shopping Cart</h1>
-      <div class="cart-actions-top">
-        <button class="btn-clear" title="Clear cart">Clear cart</button>
-      </div>
+    </div>
+    <hr style="color: #000; width: 96%; margin-bottom: 40px;">
+
+    <div class="cart-actions-row">
+      <button id="btn-order-history" class="btn-ghost">Lịch sử mua hàng</button>
     </div>
 
     <table id="cart-table" aria-label="Shopping cart">
@@ -435,5 +438,6 @@
   </footer>
 
 </body>
+
 
 </html>
