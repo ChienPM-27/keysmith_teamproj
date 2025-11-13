@@ -23,7 +23,7 @@ window.addEventListener('DOMContentLoaded', () => {
 // Cập nhật hiển thị tên admin
 function updateAdminDisplay() {
     const loggedInUser = localStorage.getItem('loggedInUser');
-    const adminNameElement = document.querySelector('.bottom-sidebar .user-logout:nth-child(2) .sidebar-hidden');
+    const adminNameElement = document.querySelector('.admin-sidebar__actions .user-logout:nth-child(2) .admin-sidebar__label');
     
     if (adminNameElement && loggedInUser) {
         adminNameElement.textContent = loggedInUser;
@@ -32,19 +32,19 @@ function updateAdminDisplay() {
 
 // Xử lý sidebar toggle
 const burgerBtn = document.querySelector('.menu-icon-btn');
-const sidebar = document.querySelector('.sidebar');
+const sidebar = document.querySelector('.admin-sidebar');
 
 if (burgerBtn && sidebar) {
     burgerBtn.addEventListener('click', () => {
         sidebar.classList.toggle('open');
     });
 }
-const sidebars = document.querySelectorAll(".sidebar-list-item.tab-content");
+const sidebars = document.querySelectorAll(".admin-sidebar__item.tab-content");
 const sections = document.querySelectorAll(".section");
 
 for(let i = 0; i < sidebars.length; i++) {
     sidebars[i].onclick = function () {
-        document.querySelector(".sidebar-list-item.active").classList.remove("active");
+        document.querySelector(".admin-sidebar__item.active").classList.remove("active");
         document.querySelector(".section.active").classList.remove("active");
         sidebars[i].classList.add("active");
         sections[i].classList.add("active");
@@ -52,7 +52,6 @@ for(let i = 0; i < sidebars.length; i++) {
 }
 
 const closeBtn = document.querySelectorAll('.section');
-console.log(closeBtn[0])
 for(let i=0;i<closeBtn.length;i++){
     closeBtn[i].addEventListener('click',(e) => {
         sidebar.classList.add("open");
@@ -61,7 +60,7 @@ for(let i=0;i<closeBtn.length;i++){
 
 
 // Xử lý nút Home page
-const homeBtn = document.querySelector('.bottom-sidebar .user-logout:nth-child(1) a');
+const homeBtn = document.querySelector('.admin-sidebar__actions .user-logout:nth-child(1) a');
 if (homeBtn) {
     homeBtn.addEventListener('click', (e) => {
         e.preventDefault();
@@ -76,7 +75,7 @@ if (homeBtn) {
 }
 
 // Xử lý nút Log out
-const logoutBtn = document.querySelector('.bottom-sidebar .user-logout:nth-child(3) a');
+const logoutBtn = document.querySelector('.admin-sidebar__actions .user-logout:nth-child(3) a');
 if (logoutBtn) {
     logoutBtn.addEventListener('click', (e) => {
         e.preventDefault();

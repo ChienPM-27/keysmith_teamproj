@@ -7,128 +7,145 @@ import { dataManager } from "./DatabaseManager.js";
 // ❌️ KHÔNG ĐƯỢC SỬA ĐỔI (báo lên nhóm nếu cần thay đổi)
 // ===============================
 
-// Kiểm tra quyền truy cập admin
 document.addEventListener("DOMContentLoaded", () => {
   const user = localStorage.getItem("loggedInUser");
   const role = localStorage.getItem("userRole");
   if (!user || role !== "admin") {
-    alert(
-      "⚠️ Truy cập bị từ chối. Vui lòng đăng nhập bằng tài khoản quản trị."
-    );
+    alert("⚠️ Truy cập bị từ chối. Vui lòng đăng nhập bằng tài khoản quản trị.");
     localStorage.removeItem("loggedInUser");
     localStorage.removeItem("userRole");
     localStorage.removeItem("rememberedUser");
     window.location.href = "/index.html";
+    return;
   }
 
-  // Hiển thị/ẩn các section khi bấm vào sidebar (chỉ phần middle-sidebar)
-  try {
-    const sidebarItems = Array.from(
-      document.querySelectorAll(
-        ".sidebar .middle-sidebar .sidebar-list .sidebar-list-item.tab-content"
-      )
-    );
-    const sections = Array.from(document.querySelectorAll("main .section"));
-    if (sidebarItems.length && sections.length) {
-      sidebarItems.forEach((item, idx) => {
-        item.addEventListener("click", (e) => {
-          e.preventDefault();
-          // xóa active trước đó
-          sidebarItems.forEach((si) => si.classList.remove("active"));
-          sections.forEach((sec) => sec.classList.remove("active"));
+  // ===============================
+  // FIX: SIDEBAR SECTION SWITCHING
+  // ===============================
+  const sidebarItems = Array.from(
+    document.querySelectorAll('.admin-sidebar__nav .admin-sidebar__item.tab-content')
+  );
+  const sections = Array.from(document.querySelectorAll('main .section'));
 
-          // bật active cho item và section tương ứng (theo chỉ số)
-          item.classList.add("active");
-          if (sections[idx]) sections[idx].classList.add("active");
+  console.log('Found sidebar items:', sidebarItems.length);
+  console.log('Found sections:', sections.length);
 
-          // lazy-init modules when their section becomes active (idempotent)
-          const activated = sections[idx];
-          if (activated) {
-            // Customer section: đảm bảo init (một lần) rồi luôn render khi activated
-            if (
-              activated.id === "customer-section" ||
-              activated.classList.contains("customer-wrapper")
-            ) {
-              if (!window._customerModuleInited) initCustomerModule();
-              renderCustomers();
+  if (sidebarItems.length && sections.length) {
+    sidebarItems.forEach((item, idx) => {
+      item.addEventListener('click', (e) => {
+        e.preventDefault();
+        
+        console.log('Clicked sidebar item:', idx);
+        
+        // Remove active from all items
+        sidebarItems.forEach(si => si.classList.remove('active'));
+        sections.forEach(sec => sec.classList.remove('active'));
+        
+        // Add active to clicked item and corresponding section
+        item.classList.add('active');
+        if (sections[idx]) {
+          sections[idx].classList.add('active');
+          console.log('Activated section:', sections[idx].id);
+          
+          // Initialize module if needed
+          const sectionId = sections[idx].id;
+          
+          // Customer section
+          if (sectionId === 'customer-section' || sections[idx].classList.contains('customer-wrapper')) {
+            if (!window._customerModuleInited) {
+              console.log('Initializing customer module...');
+              initCustomerModule();
             }
-
-            // Orders section: đảm bảo init (một lần) rồi luôn render khi activated
-            if (
-              activated.id === "orders-section" ||
-              activated.classList.contains("orders-wrapper")
-            ) {
-              if (!window._orderModuleInited) initOrderModule();
-              renderOrders();
-            }
+            renderCustomers();
           }
-        });
+          
+          // Orders section
+          if (sectionId === 'orders-section' || sections[idx].classList.contains('orders-wrapper')) {
+            if (!window._orderModuleInited) {
+              console.log('Initializing order module...');
+              initOrderModule();
+            }
+            renderOrders();
+          }
+          
+          // Warehouse section
+          if (sectionId === 'warehouse-section' || sections[idx].classList.contains('warehouse-wrapper')) {
+            console.log('Initializing warehouse module...');
+            initWarehouseModule();
+            switchWarehouseTab('inventory');
+          }
+        }
+      });
+    });
+  } else {
+    console.error('Could not find sidebar items or sections');
+  }
+
+  // ===============================
+  // BOTTOM SIDEBAR (Home, Admin, Logout)
+  // ===============================
+  const bottomItems = Array.from(
+    document.querySelectorAll('.admin-sidebar__actions .admin-sidebar__item.user-logout')
+  );
+
+  if (bottomItems.length >= 3) {
+    // Home page button
+    if (bottomItems[0]) {
+      bottomItems[0].addEventListener('click', (e) => {
+        e.preventDefault();
+        if (confirm('Bạn có muốn quay về trang chủ? Bạn sẽ bị đăng xuất khỏi trang quản trị.')) {
+          localStorage.removeItem('loggedInUser');
+          localStorage.removeItem('userRole');
+          localStorage.removeItem('rememberedUser');
+          window.location.href = '/index.html';
+        }
       });
     }
-  } catch (err) {
-    // im lặng nếu DOM khác cấu trúc
-    console.warn("Sidebar show/hide init failed:", err);
+
+    // Admin info button
+    if (bottomItems[1]) {
+      bottomItems[1].addEventListener('click', (e) => {
+        e.preventDefault();
+        const current = localStorage.getItem('loggedInUser') || 'Admin';
+        alert('Người dùng hiện tại: ' + current);
+      });
+    }
+
+    // Logout button
+    if (bottomItems[2]) {
+      bottomItems[2].addEventListener('click', (e) => {
+        e.preventDefault();
+        if (confirm('Bạn có chắc muốn đăng xuất không?')) {
+          localStorage.removeItem('loggedInUser');
+          localStorage.removeItem('userRole');
+          localStorage.removeItem('rememberedUser');
+          alert('👋 Đăng xuất thành công!');
+          window.location.href = '/index.html';
+        }
+      });
+    }
   }
 
-  // Xử lý 3 nút phía dưới (Home, Admin, Log out)
-  try {
-    const bottomItems = Array.from(
-      document.querySelectorAll(
-        ".sidebar .bottom-sidebar .sidebar-list .sidebar-list-item.user-logout"
-      )
-    );
-    // bottomItems[0] = Trang chủ, [1] = Admin (hiển thị), [2] = Đăng xuất
-    if (bottomItems.length) {
-      const clearAuthAndRedirect = (msg) => {
-        if (msg && !confirm(msg)) return;
-        localStorage.removeItem("loggedInUser");
-        localStorage.removeItem("userRole");
-        localStorage.removeItem("rememberedUser");
-        window.location.href = "/index.html";
-      };
-
-      if (bottomItems[0]) {
-        bottomItems[0].addEventListener("click", (e) => {
-          e.preventDefault();
-          clearAuthAndRedirect(
-            "Bạn có muốn quay về trang chủ? Bạn sẽ bị đăng xuất khỏi trang quản trị."
-          );
-        });
-      }
-
-      if (bottomItems[1]) {
-        bottomItems[1].addEventListener("click", (e) => {
-          e.preventDefault();
-          const current = localStorage.getItem("loggedInUser") || "Admin";
-          alert("Người dùng hiện tại: " + current);
-        });
-      }
-
-      if (bottomItems[2]) {
-        bottomItems[2].addEventListener("click", (e) => {
-          e.preventDefault();
-          if (confirm("Bạn có chắc muốn đăng xuất không?")) {
-            localStorage.removeItem("loggedInUser");
-            localStorage.removeItem("userRole");
-            localStorage.removeItem("rememberedUser");
-            alert("👋 Đăng xuất thành công!");
-            window.location.href = "/index.html";
-          }
-        });
-      }
-    }
-  } catch (err) {
-    console.warn("Bottom sidebar handlers init failed:", err);
+  // ===============================
+  // MOBILE MENU TOGGLE
+  // ===============================
+  const menuIconBtn = document.querySelector('.menu-icon-btn');
+  const sidebar = document.getElementById('adminSidebar');
+  
+  if (menuIconBtn && sidebar) {
+    menuIconBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      sidebar.classList.toggle('open');
+    });
   }
 });
 
 // ===============================
-// ✔️ ĐƯỢC PHÉP SỬA ĐỔI
+// INITIALIZATION FLAGS
 // ===============================
-
-// lazy-init flags for modules (idempotence guards)
 window._customerModuleInited = window._customerModuleInited || false;
 window._orderModuleInited = window._orderModuleInited || false;
+window._warehouseModuleInited = window._warehouseModuleInited || false;
 
 // ===============================
 // SCRIPT HOẠT ĐÔNG CHUNG CHO ADMIN PAGE

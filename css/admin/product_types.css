@@ -1,0 +1,144 @@
+.product-types-wrapper {
+    padding: 20px 20px;
+}
+
+.product-types-body {
+    padding: 20px 0;
+    /* use consolidated admin animation */
+    animation: adminFadeIn 0.5s ease-in-out;
+}
+
+.pt-toolbar {
+    display: flex;
+    gap: 10px;
+}
+.pt-toolbar__search {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+        background-color: #F5F5F5;
+    /* border-collapse: collapse; */
+    border-radius: 5px;
+    border: none;
+}
+.show-product-types {
+    margin-top: 16px;
+    min-height: 100px;
+}
+.product-type-item {
+    display: flex;
+    align-items: center;
+    height: 120px;
+    border: 1px solid;
+    border-radius: 8px;
+    border-color: #ccc;
+    justify-content: space-between;
+    padding: 12px 16px;
+    margin: 16px 0;
+}
+
+.product-type-left .catagory {
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+.product-type-left .name {
+    font-size: 18px;
+    font-weight: 600;
+}
+.product-type-left .date {
+    color: #666;
+}
+
+.product-type-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: center;
+}
+
+.product-type-right .Description {
+    margin-bottom: 8px;
+    color: #333;
+}
+
+.product-type-right .status {
+    padding: 4px 8px;
+    border-radius: 12px;
+    background-color: #D4EDDA;
+    color: #155724;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+.product-type-right .status.status--inactive {
+	background-color: #f8d7da;
+	color: #721c24;
+}
+
+.product-type-item.overlay {
+    background-color: #f2f2f2;
+    opacity: 0.6;
+}
+
+.product-type-right .actions button {
+    margin-left: 8px;
+    padding: 8px 8px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+
+}
+.product-type-right .actions .edit-btn {
+    background-color: #00FF01;
+    color: white;
+}
+.product-type-right .actions .delete-btn {
+    background-color: #FF0000;
+    color: white;
+}
+
+.show-product-types .no-result {
+    margin: 24px 0;
+    text-align: center;
+    color: #666;
+}
+
+#pt-modal {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+}
+#pt-modal.modal.active {
+    display: flex;
+}
+
+#pt-modal.open {
+    display: flex;
+    animation: modalFadeIn 0.3s ease-in-out;
+}
+
+
+
+.pt-modal__container {
+    position: relative;
+    width: 50rem;
+    max-width: 90vw;
+}
+
+
+.pt-modal__container .form-control-description {
+    height: 50px;
+}
+
+
+.form-actions {
+    display: flex;
+    justify-content: center;
+}
