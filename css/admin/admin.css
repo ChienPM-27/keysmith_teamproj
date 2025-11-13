@@ -168,6 +168,12 @@ body {
   transition: background-color 0.25s ease-in;
 }
 
+.admin-sidebar__item.tab-content.active {
+  background-color: var(--color-primary);
+}
+.admin-sidebar__item.tab-content.active .admin-sidebar__link{
+  color: var(--color-text-dark);
+}
 .admin-sidebar__link {
   display: flex;
   width: 100%;
@@ -176,6 +182,8 @@ body {
   align-items: center;
   color: var(--color-text-white);
 }
+
+
 
 .admin-sidebar .admin-sidebar__icon {
   margin-left: 2em;
