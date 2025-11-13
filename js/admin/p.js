@@ -332,11 +332,32 @@ const PRODUCT_STATUS_LABELS = {
 	inactive: 'Inactive',
 	deleted: 'Deleted'
 };
+const PRODUCT_TYPE_STORAGE_KEY = 'catagories';
+const PRODUCT_TYPE_STATUS_LABELS = {
+	active: 'Active',
+	inactive: 'Inactive'
+};
+const DEFAULT_PRODUCT_TYPE_NAMES = [
+	'Attack On Titan',
+	'LOTR',
+	'One Piece',
+	'YuGiOh',
+	'Cyberpunk Neon Series',
+	'Cosmic Odyssey',
+	'Mythic Creatures',
+	'Shadow Reaver Series',
+	'Zen Aesthetics',
+	'Elemental Frost',
+	'Aurora Dream'
+];
 
 let perpage = 8;
 let currentpage = 1;
 let editingProductId = null;
+let editingProductTypeId = null;
 let currentImageBase64 = PRODUCT_IMAGE_FALLBACK;
+let productTypePerPage = 8;
+let productTypeCurrentPage = 1;
 
 const productsection = document.getElementById('products-section');
 const productListContainer = document.getElementById('show-product');
@@ -363,6 +384,18 @@ const producttypesection = document.getElementById('product-types-section');
 const addproducttypebtn = document.getElementById('pt-add-btn');
 const modalAddProductType = document.getElementById('pt-modal');
 const closeproducttypebtn = document.querySelector('#pt-modal-close');
+const productTypeListContainer = producttypesection ? producttypesection.querySelector('.show-product-types') : null;
+const productTypeSearchInput = document.getElementById('pt-category-filter');
+const productTypeRefreshBtn = document.getElementById('pt-refresh-btn');
+const productTypeForm = document.getElementById('pt-form');
+const productTypeFormNameInput = document.getElementById('pt-form-name');
+const productTypeFormDescriptionInput = document.getElementById('pt-form-description');
+const productTypeFormActiveCheckbox = document.getElementById('pt-form-active');
+const productTypeFormError = document.getElementById('pt-form-error');
+const productTypeModalTitle = producttypesection ? producttypesection.querySelector('.pt-modal__title') : null;
+const productTypeFormSubmitBtn = document.getElementById('pt-form-submit');
+const productTypePerPageSelect = producttypesection ? producttypesection.querySelector('#page-control #per-page') : null;
+const productTypePaginationList = producttypesection ? producttypesection.querySelector('.page-nav-list') : null;
 
 if (perPageSelect) {
 	const parsed = parseInt(perPageSelect.value, 10);
@@ -370,6 +403,15 @@ if (perPageSelect) {
 		perpage = parsed;
 	} else {
 		perPageSelect.value = String(perpage);
+	}
+}
+
+if (productTypePerPageSelect) {
+	const parsed = parseInt(productTypePerPageSelect.value, 10);
+	if (!Number.isNaN(parsed) && parsed > 0) {
+		productTypePerPage = parsed;
+	} else {
+		productTypePerPageSelect.value = String(productTypePerPage);
 	}
 }
 
@@ -400,6 +442,144 @@ function resolveImage(product) {
 function resolveStatusLabel(status) {
 	const normalized = (status || '').toLowerCase();
 	return PRODUCT_STATUS_LABELS[normalized] || normalized || 'Unknown';
+}
+
+function slugifyProductTypeId(value) {
+	if (value === undefined || value === null) {
+		return '';
+	}
+	return value
+		.toString()
+		.normalize('NFD')
+		.replace(/[\u0300-\u036f]/g, '')
+		.toLowerCase()
+		.trim()
+		.replace(/[^a-z0-9]+/g, '-')
+		.replace(/^-+|-+$/g, '');
+}
+
+function createProductTypeFromName(name) {
+	const trimmed = (name || '').toString().trim();
+	if (!trimmed) {
+		return null;
+	}
+	return {
+		id: slugifyProductTypeId(trimmed),
+		name: trimmed,
+		description: '',
+		status: 'active'
+	};
+}
+
+function normalizeProductType(raw) {
+	if (typeof raw === 'string') {
+		return createProductTypeFromName(raw);
+	}
+	if (!raw || typeof raw !== 'object') {
+		return null;
+	}
+	const nameSource = (raw.name || raw.title || raw.id || '').toString().trim();
+	if (!nameSource) {
+		return null;
+	}
+	const idSource = raw.id ? raw.id.toString() : nameSource;
+	const normalizedId = slugifyProductTypeId(idSource);
+	if (!normalizedId) {
+		return null;
+	}
+	return {
+		id: normalizedId,
+		name: nameSource,
+		description: raw.description != null ? raw.description.toString().trim() : '',
+		status: raw.status === 'inactive' ? 'inactive' : 'active'
+	};
+}
+
+function getDefaultProductTypes() {
+	return DEFAULT_PRODUCT_TYPE_NAMES.map(createProductTypeFromName).filter(Boolean);
+}
+
+function loadProductTypes() {
+	const raw = localStorage.getItem(PRODUCT_TYPE_STORAGE_KEY);
+	if (!raw) {
+		const defaults = getDefaultProductTypes();
+		saveProductTypes(defaults);
+		return defaults;
+	}
+	try {
+		const parsed = JSON.parse(raw);
+		if (Array.isArray(parsed)) {
+			const normalized = parsed.map(normalizeProductType).filter(Boolean);
+			if (normalized.length === 0) {
+				const defaults = getDefaultProductTypes();
+				saveProductTypes(defaults);
+				return defaults;
+			}
+			const allNormalized = parsed.every(item => item && typeof item === 'object' && item.id && item.name && item.status);
+			if (!allNormalized) {
+				saveProductTypes(normalized);
+			}
+			return normalized;
+		}
+	} catch (error) {
+		console.error('Không thể đọc danh sách loại sản phẩm.', error);
+	}
+	const defaults = getDefaultProductTypes();
+	saveProductTypes(defaults);
+	return defaults;
+}
+
+function saveProductTypes(productTypes) {
+	localStorage.setItem(PRODUCT_TYPE_STORAGE_KEY, JSON.stringify(productTypes));
+}
+
+function getProductTypeStatusLabel(status) {
+	const normalized = (status || '').toLowerCase();
+	return PRODUCT_TYPE_STATUS_LABELS[normalized] || 'Unknown';
+}
+
+function ensureProductTypesForProductCategories(productTypes = loadProductTypes()) {
+	const map = new Map();
+	productTypes.forEach(type => {
+		if (type && type.id) {
+			map.set(type.id, { ...type });
+		}
+	});
+	let changed = false;
+	const products = loadProducts();
+	products.forEach(product => {
+		const category = resolveCategory(product);
+		if (!category) {
+			return;
+		}
+		const id = slugifyProductTypeId(category);
+		if (!id) {
+			return;
+		}
+		if (!map.has(id)) {
+			map.set(id, {
+				id,
+				name: category,
+				description: '',
+				status: 'active'
+			});
+			changed = true;
+		} else {
+			const existing = map.get(id);
+			if (existing && existing.name !== category) {
+				map.set(id, {
+					...existing,
+					name: category
+				});
+				changed = true;
+			}
+		}
+	});
+	const list = Array.from(map.values()).sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }));
+	if (changed) {
+		saveProductTypes(list);
+	}
+	return { list, changed };
 }
 
 function notify(type, message) {
@@ -436,7 +616,14 @@ function updateProductCount() {
 
 function populateCategoryFilters() {
 	const products = loadProducts();
-	const categories = [...new Set(products.map(resolveCategory).filter(Boolean))].sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
+	const { list: productTypes, changed: productTypesChanged } = ensureProductTypesForProductCategories();
+	const productCategories = products.map(resolveCategory).filter(Boolean);
+	const activeTypeNames = productTypes
+		.filter(type => type.status !== 'inactive')
+		.map(type => type.name);
+	const categories = [...new Set([...activeTypeNames, ...productCategories])]
+		.filter(Boolean)
+		.sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
 
 	if (productFilterSelect) {
 		const current = productFilterSelect.value;
@@ -447,7 +634,13 @@ function populateCategoryFilters() {
 			option.textContent = category;
 			productFilterSelect.appendChild(option);
 		});
-		if (current && categories.includes(current)) {
+		if (current) {
+			if (!categories.includes(current)) {
+				const option = document.createElement('option');
+				option.value = current;
+				option.textContent = current;
+				productFilterSelect.appendChild(option);
+			}
 			productFilterSelect.value = current;
 		} else {
 			productFilterSelect.value = '';
@@ -465,7 +658,17 @@ function populateCategoryFilters() {
 		});
 		if (current && categories.includes(current)) {
 			productFormCategorySelect.value = current;
+		} else if (current && current !== '') {
+			const option = document.createElement('option');
+			option.value = current;
+			option.textContent = current;
+			productFormCategorySelect.appendChild(option);
+			productFormCategorySelect.value = current;
 		}
+	}
+
+	if (productTypesChanged) {
+		renderProductTypes({ list: productTypes, resetPage: true });
 	}
 }
 
@@ -944,17 +1147,61 @@ if (updateProductBtn) {
 }
 
 if (addproducttypebtn) {
-	addproducttypebtn.addEventListener('click', () => {
-		if (modalAddProductType) {
-			modalAddProductType.classList.add('active');
+	addproducttypebtn.addEventListener('click', () => openProductTypeModal('add'));
+}
+
+if (closeproducttypebtn) {
+	closeproducttypebtn.addEventListener('click', () => closeProductTypeModal());
+}
+
+if (modalAddProductType) {
+	modalAddProductType.addEventListener('click', event => {
+		if (event.target === modalAddProductType) {
+			closeProductTypeModal();
 		}
 	});
 }
 
-if (closeproducttypebtn) {
-	closeproducttypebtn.addEventListener('click', () => {
-		if (modalAddProductType) {
-			modalAddProductType.classList.remove('active');
+if (productTypeForm) {
+	productTypeForm.addEventListener('submit', handleProductTypeFormSubmit);
+}
+
+if (productTypeSearchInput) {
+	productTypeSearchInput.addEventListener('input', () => renderProductTypes({ resetPage: true }));
+}
+
+if (productTypeRefreshBtn) {
+	productTypeRefreshBtn.addEventListener('click', () => {
+		resetProductTypeFilters();
+		renderProductTypes({ resetPage: true });
+	});
+}
+
+if (productTypeListContainer) {
+	productTypeListContainer.addEventListener('click', event => {
+		const button = event.target.closest('button');
+		if (!button) return;
+		const { id } = button.dataset;
+		if (!id) return;
+		if (button.classList.contains('edit-btn')) {
+			openProductTypeModal('edit', id);
+		} else if (button.classList.contains('delete-btn')) {
+			handleDeleteProductType(id);
+		} else if (button.classList.contains('view-btn')) {
+			handleToggleProductTypeStatus(id);
+		}
+	});
+}
+
+if (productTypePerPageSelect) {
+	productTypePerPageSelect.addEventListener('change', event => {
+		const value = parseInt(event.target.value, 10);
+		if (!Number.isNaN(value) && value > 0) {
+			productTypePerPage = value;
+			productTypeCurrentPage = 1;
+			renderProductTypes({ resetPage: true });
+		} else {
+			event.target.value = String(productTypePerPage);
 		}
 	});
 }
@@ -990,6 +1237,7 @@ if (productListContainer) {
 
 window.addEventListener('load', () => {
 	createProduct();
+	initializeProductTypeManagement();
 	initializeProductManagement();
 });
 
@@ -1005,51 +1253,311 @@ if (typeof window !== 'undefined') {
 
 //product type section 
 
-function ProductType() {
-	let productTypes = localStorage.getItem('catagories') ? JSON.parse(localStorage.getItem('catagories')) : [];
-	if (productTypes.length === 0) {
-		productTypes = [
-			"Attack On Titan",
-		"LOTR",
-		"One Piece",
-		"YuGiOh",
-		"Cyberpunk Neon Series",
-		"Cosmic Odyssey",
-		"Mythic Creatures",
-		"Shadow Reaver Series",
-		"Zen Aesthetics",
-		"Elemental Frost",
-		"Aurora Dream",
-		];
-		localStorage.setItem('catagories', JSON.stringify(productTypes));
-	}
-	return productTypes;
+function setProductTypeFormError(message) {
+	if (!productTypeFormError) return;
+	productTypeFormError.textContent = message || '';
 }
 
-function createNewProductType()
-{
-	const ptName = document.getElementById('pt-form-name').value;
-	if (!ptName) {
-		alert('Vui lòng nhập tên thể loại sản phẩm.');
+function resetProductTypeForm() {
+	if (productTypeForm) {
+		productTypeForm.reset();
+	}
+	if (productTypeFormNameInput) {
+		productTypeFormNameInput.value = '';
+	}
+	if (productTypeFormDescriptionInput) {
+		productTypeFormDescriptionInput.value = '';
+	}
+	if (productTypeFormActiveCheckbox) {
+		productTypeFormActiveCheckbox.checked = true;
+	}
+	setProductTypeFormError('');
+}
+
+function fillProductTypeForm(productType) {
+	if (productTypeFormNameInput) {
+		productTypeFormNameInput.value = productType.name || '';
+	}
+	if (productTypeFormDescriptionInput) {
+		productTypeFormDescriptionInput.value = productType.description || '';
+	}
+	if (productTypeFormActiveCheckbox) {
+		productTypeFormActiveCheckbox.checked = productType.status !== 'inactive';
+	}
+}
+
+function openProductTypeModal(mode, productTypeId) {
+	if (!modalAddProductType) return;
+	setProductTypeFormError('');
+	if (mode === 'edit') {
+		const productTypes = loadProductTypes();
+		const target = productTypes.find(type => type.id === productTypeId);
+		if (!target) {
+			notify('error', 'Không tìm thấy loại sản phẩm.');
+			return;
+		}
+		fillProductTypeForm(target);
+		editingProductTypeId = target.id;
+		if (productTypeModalTitle) {
+			productTypeModalTitle.textContent = 'Chỉnh sửa loại sản phẩm';
+		}
+		if (productTypeFormSubmitBtn) {
+			productTypeFormSubmitBtn.textContent = 'Cập nhật';
+		}
+	} else {
+		resetProductTypeForm();
+		editingProductTypeId = null;
+		if (productTypeModalTitle) {
+			productTypeModalTitle.textContent = 'Thêm loại sản phẩm';
+		}
+		if (productTypeFormSubmitBtn) {
+			productTypeFormSubmitBtn.textContent = 'Lưu';
+		}
+	}
+	modalAddProductType.classList.add('active');
+	if (productTypeFormNameInput) {
+		productTypeFormNameInput.focus();
+	}
+}
+
+function closeProductTypeModal() {
+	if (!modalAddProductType) return;
+	modalAddProductType.classList.remove('active');
+	editingProductTypeId = null;
+	resetProductTypeForm();
+	if (productTypeModalTitle) {
+		productTypeModalTitle.textContent = 'Thêm loại sản phẩm';
+	}
+	if (productTypeFormSubmitBtn) {
+		productTypeFormSubmitBtn.textContent = 'Lưu';
+	}
+}
+
+function readProductTypeFormData() {
+	if (!productTypeFormNameInput) {
+		return null;
+	}
+	const name = productTypeFormNameInput.value.trim();
+	if (!name) {
+		setProductTypeFormError('Vui lòng nhập tên loại sản phẩm.');
+		return null;
+	}
+	const id = slugifyProductTypeId(name);
+	if (!id) {
+		setProductTypeFormError('Tên loại sản phẩm không hợp lệ.');
+		return null;
+	}
+	const description = productTypeFormDescriptionInput ? productTypeFormDescriptionInput.value.trim() : '';
+	const status = productTypeFormActiveCheckbox && !productTypeFormActiveCheckbox.checked ? 'inactive' : 'active';
+	return { id, name, description, status };
+}
+
+function computeFilteredProductTypes(baseList) {
+	const keyword = (productTypeSearchInput?.value || '').trim().toLowerCase();
+	return baseList
+		.filter(type => {
+			if (!keyword) {
+				return true;
+			}
+			const nameMatches = type.name.toLowerCase().includes(keyword);
+			const idMatches = type.id.toLowerCase().includes(keyword);
+			const descMatches = (type.description || '').toLowerCase().includes(keyword);
+			return nameMatches || idMatches || descMatches;
+		})
+		.sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }));
+}
+
+function renderProductTypePagination(totalItems, totalPages) {
+	if (!productTypePaginationList) return;
+	productTypePaginationList.innerHTML = '';
+	if (totalItems === 0 || totalPages <= 1) {
 		return;
 	}
-	const ptDesc = document.getElementById('pt-form-description').value;
-	let productTypes = localStorage.getItem('catagories') ? JSON.parse(localStorage.getItem('catagories')) : [];
-	productTypes.push(ptName);
-	localStorage.setItem('catagories', JSON.stringify(productTypes));
-	alert('Thêm thể loại sản phẩm thành công!');
-	document.getElementById('pt-form-name').value = '';
-	document.getElementById('pt-form-description').value = '';
+	for (let page = 1; page <= totalPages; page++) {
+		const listItem = document.createElement('li');
+		listItem.className = 'page-nav-item';
+		if (page === productTypeCurrentPage) {
+			listItem.classList.add('active');
+		}
+		const anchor = document.createElement('a');
+		anchor.href = '#';
+		anchor.textContent = String(page);
+		anchor.addEventListener('click', event => {
+			event.preventDefault();
+			if (productTypeCurrentPage !== page) {
+				productTypeCurrentPage = page;
+				renderProductTypes();
+			}
+		});
+		listItem.appendChild(anchor);
+		productTypePaginationList.appendChild(listItem);
+	}
 }
 
-function showproductArr(arr)
-{
-	let producttypehtml = '';
-	if(arr.length === 0)
-	{
-		producttypehtml = '<div class="no-result">Không có thể loại sản phẩm để hiển thị</div>';
+function renderProductTypes(options = {}) {
+	if (!productTypeListContainer) return;
+	const { list: providedList, resetPage = false } = options;
+	const baseList = Array.isArray(providedList)
+		? providedList
+		: ensureProductTypesForProductCategories().list;
+	const filtered = computeFilteredProductTypes(baseList);
+	if (resetPage) {
+		productTypeCurrentPage = 1;
 	}
-	else {
-		
+	const totalItems = filtered.length;
+	const totalPages = Math.ceil(totalItems / productTypePerPage) || 1;
+	if (totalItems === 0) {
+		productTypeCurrentPage = 1;
+		productTypeListContainer.innerHTML = '<div class="no-result">Không có loại sản phẩm để hiển thị</div>';
+		renderProductTypePagination(0, 0);
+		return;
 	}
+	if (productTypeCurrentPage > totalPages) {
+		productTypeCurrentPage = totalPages;
+	}
+	const start = (productTypeCurrentPage - 1) * productTypePerPage;
+	const pagedProductTypes = filtered.slice(start, start + productTypePerPage);
+	const markup = pagedProductTypes.map(type => {
+		const status = type.status === 'inactive' ? 'inactive' : 'active';
+		const statusLabel = getProductTypeStatusLabel(status);
+		const overlayClass = status === 'inactive' ? ' overlay' : '';
+		const descriptionMarkup = type.description ? `<div class="Description">${type.description}</div>` : '';
+		return `
+			<div class="product-type-item${overlayClass}" data-id="${type.id}">
+				<div class="product-type-left">
+					<div class="catagory">#${type.id}</div>
+					<div class="name">${type.name}</div>
+				</div>
+				<div class="product-type-right">
+					${descriptionMarkup}
+					<div class="status status--${status}">${statusLabel}</div>
+					<div class="actions">
+						<button type="button" class="edit-btn" data-id="${type.id}">
+							<i class="fa-solid fa-pen-to-square"></i>
+						</button>
+						<button type="button" class="view-btn" data-id="${type.id}">
+							<i class="fa-solid fa-eye"></i>
+						</button>
+						<button type="button" class="delete-btn" data-id="${type.id}">
+							<i class="fa-solid fa-trash"></i>
+						</button>
+					</div>
+				</div>
+			</div>
+		`;
+	}).join('');
+	productTypeListContainer.innerHTML = markup;
+	renderProductTypePagination(totalItems, totalPages);
+}
+
+function handleProductTypeFormSubmit(event) {
+	if (event) {
+		event.preventDefault();
+	}
+	const formData = readProductTypeFormData();
+	if (!formData) {
+		return;
+	}
+	const existingTypes = loadProductTypes();
+	const updatedTypes = [...existingTypes];
+	if (editingProductTypeId) {
+		const index = updatedTypes.findIndex(type => type.id === editingProductTypeId);
+		if (index === -1) {
+			notify('error', 'Không tìm thấy loại sản phẩm để cập nhật.');
+			return;
+		}
+		const duplicateIndex = updatedTypes.findIndex(type => type.id === formData.id);
+		if (duplicateIndex !== -1 && duplicateIndex !== index) {
+			setProductTypeFormError('Tên loại sản phẩm đã tồn tại.');
+			return;
+		}
+		updatedTypes[index] = {
+			...updatedTypes[index],
+			id: formData.id,
+			name: formData.name,
+			description: formData.description,
+			status: formData.status
+		};
+		saveProductTypes(updatedTypes);
+		notify('success', 'Đã cập nhật loại sản phẩm.');
+	} else {
+		const exists = updatedTypes.some(type => type.id === formData.id);
+		if (exists) {
+			setProductTypeFormError('Tên loại sản phẩm đã tồn tại.');
+			return;
+		}
+		updatedTypes.push({
+			id: formData.id,
+			name: formData.name,
+			description: formData.description,
+			status: formData.status
+		});
+		saveProductTypes(updatedTypes);
+		notify('success', 'Thêm loại sản phẩm thành công!');
+	}
+	populateCategoryFilters();
+	renderProductTypes({ resetPage: !editingProductTypeId });
+	closeProductTypeModal();
+}
+
+function handleDeleteProductType(id) {
+	const existingTypes = loadProductTypes();
+	const index = existingTypes.findIndex(type => type.id === id);
+	if (index === -1) {
+		notify('error', 'Không tìm thấy loại sản phẩm để xóa.');
+		return;
+	}
+	if (!confirm('Bạn có chắc muốn xóa loại sản phẩm này?')) {
+		return;
+	}
+	const updatedTypes = [...existingTypes];
+	const [removed] = updatedTypes.splice(index, 1);
+	saveProductTypes(updatedTypes);
+	if (editingProductTypeId === id) {
+		closeProductTypeModal();
+	}
+	notify('success', `Đã xóa loại sản phẩm "${removed.name}".`);
+	populateCategoryFilters();
+	renderProductTypes({ resetPage: true });
+}
+
+function handleToggleProductTypeStatus(id) {
+	const existingTypes = loadProductTypes();
+	const index = existingTypes.findIndex(type => type.id === id);
+	if (index === -1) {
+		notify('error', 'Không tìm thấy loại sản phẩm.');
+		return;
+	}
+	const currentStatus = existingTypes[index].status === 'inactive' ? 'inactive' : 'active';
+	const nextStatus = currentStatus === 'active' ? 'inactive' : 'active';
+	const confirmMessage = nextStatus === 'inactive'
+		? 'Bạn có chắc muốn ẩn loại sản phẩm này?'
+		: 'Bạn có muốn hiển thị lại loại sản phẩm này?';
+	if (!confirm(confirmMessage)) {
+		return;
+	}
+	const updatedTypes = [...existingTypes];
+	updatedTypes[index] = {
+		...updatedTypes[index],
+		status: nextStatus
+	};
+	saveProductTypes(updatedTypes);
+	const message = nextStatus === 'inactive' ? 'Đã ẩn loại sản phẩm.' : 'Đã hiển thị loại sản phẩm.';
+	notify('success', message);
+	populateCategoryFilters();
+	renderProductTypes();
+}
+
+function resetProductTypeFilters() {
+	if (productTypeSearchInput) {
+		productTypeSearchInput.value = '';
+	}
+	productTypeCurrentPage = 1;
+}
+
+function initializeProductTypeManagement() {
+	const { list: ensuredTypes } = ensureProductTypesForProductCategories();
+	resetProductTypeFilters();
+	resetProductTypeForm();
+	renderProductTypes({ list: ensuredTypes, resetPage: true });
 }
