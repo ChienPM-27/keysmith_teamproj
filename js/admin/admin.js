@@ -1810,14 +1810,6 @@ document.addEventListener("DOMContentLoaded", initOrderModule);
 // ANALYTICS SCRIPT
 // ===============================
 
-/*
-  Analytics module for admin dashboard
-  - idempotent: uses window._analyticsModuleInited guard
-  - reads orders/products from dataManager via dmGetAll/dmGetById helpers already defined
-  - expects Chart.js to be loaded on page
-  - uses HTML ids/classes from your admin.html (salesDateFrom, salesDateTo, .btn-primary inside #analytics-section)
-*/
-
 window._analyticsModuleInited = window._analyticsModuleInited || false;
 
 (function () {
@@ -1831,25 +1823,31 @@ window._analyticsModuleInited = window._analyticsModuleInited || false;
     return;
   }
 
-  // Local helpers (safe names to avoid collisions)
+  // ===== SỬ DỤNG CHUNG dataManager GLOBAL GIỐNG CÁC MODULE KHÁC =====
+  const dmAll = (col) => {
+    try {
+      return window.dataManager?.getAll?.(col) || [];
+    } catch (e) {
+      console.error(`Error getting ${col}:`, e);
+      return [];
+    }
+  };
+
+  const dmById = (col, id) => {
+    try {
+      return window.dataManager?.getById?.(col, id) || null;
+    } catch (e) {
+      console.error(`Error getting ${col} by id ${id}:`, e);
+      return null;
+    }
+  };
+
+  // Local helpers
   const $ = (sel) => sectionEl.querySelector(sel);
   const $$ = (sel) => Array.from(sectionEl.querySelectorAll(sel));
-  const dmAll = (col) =>
-    typeof dmGetAll === "function"
-      ? dmGetAll(col)
-      : window.dataManager?.getAll
-      ? window.dataManager.getAll(col)
-      : window.dataManager?.data?.[col] || [];
-  const dmById = (col, id) =>
-    typeof dmGetById === "function"
-      ? dmGetById(col, id)
-      : window.dataManager?.getById
-      ? window.dataManager.getById(col, id)
-      : (window.dataManager?.data?.[col] || []).find((x) => x.id == id) || null;
 
   const parseDateOnly = (isoOrYmd) => {
     if (!isoOrYmd) return null;
-    // Accept YYYY-MM-DD or ISO strings
     try {
       const d = new Date(isoOrYmd);
       d.setHours(0, 0, 0, 0);
@@ -1859,9 +1857,9 @@ window._analyticsModuleInited = window._analyticsModuleInited || false;
     }
   };
 
-  const fmtCurrency = new Intl.NumberFormat("vi-VN", {
+  const fmtCurrency = new Intl.NumberFormat("en-US", {
     style: "currency",
-    currency: "VND",
+    currency: "USD",
   }).format;
 
   // Chart refs
@@ -1871,8 +1869,7 @@ window._analyticsModuleInited = window._analyticsModuleInited || false;
 
   // Aggregate raw orders into daily buckets and status totals
   function aggregateAnalytics(orders) {
-    // orders: array of order objects; uses order.date (ISO) and order.totalPrice / order.idOrder / order.items / order.status
-    const byDate = {}; // yyyy-mm-dd => { revenue, orders, products: { name: { sold, revenue } }, statusCounts }
+    const byDate = {};
     const ensureDay = (dStr) => {
       if (!byDate[dStr])
         byDate[dStr] = {
@@ -1899,32 +1896,21 @@ window._analyticsModuleInited = window._analyticsModuleInited || false;
       if (day.status[status] !== undefined) day.status[status] += 1;
       else day.status[status] = (day.status[status] || 0) + 1;
 
-      // Aggregate product-level counts (try to read o.items or o.itemsOrdered)
+      // Aggregate product-level counts
       const items = o.items || o.orderItems || o.products || [];
       items.forEach((it) => {
-        // try to get product name from item or from product db
-        const prodId = it.id || it.productId || it.productId || it.pid;
-        const name =
-          it.name ||
-          it.title ||
-          dmById("products", prodId)?.title ||
-          dmById("products", prodId)?.name ||
-          `#${prodId}`;
+        const prodId = it.id || it.productId || it.pid;
+        const prod = dmById("products", prodId);
+        const name = it.name || it.title || prod?.title || prod?.name || `#${prodId}`;
         const qty = Number(it.quantity || it.qty || it.amount || 0);
         const lineRevenue = Number(
-          it.amountPrice ||
-            it.unitPrice ||
-            it.price ||
-            qty * (it.unitPrice || it.price || 0) ||
-            0
+          it.amountPrice || it.unitPrice || it.price || qty * (it.unitPrice || it.price || 0) || 0
         );
 
         if (!day.products[name]) day.products[name] = { sold: 0, revenue: 0 };
         day.products[name].sold += qty;
         day.products[name].revenue += lineRevenue;
       });
-
-      // If no items array (some orders may not include items), try to count by products stored elsewhere; skip
     });
 
     // produce arrays sorted by date asc
@@ -1955,16 +1941,14 @@ window._analyticsModuleInited = window._analyticsModuleInited || false;
     return { list, globalStatus, productMap };
   }
 
-  // Render charts using Chart.js; expects canvas elements with ids revenueChart, ordersChart, statusChart inside analytics section
+  // Render charts using Chart.js
   function renderChartsFromAggregated(agg) {
     const labels = agg.list.map((x) => x.date);
     const revenueData = agg.list.map((x) => x.revenue);
     const ordersData = agg.list.map((x) => x.orders);
 
     // revenue line
-    const revenueCtx = sectionEl
-      .querySelector("#revenueChart")
-      ?.getContext?.("2d");
+    const revenueCtx = sectionEl.querySelector("#revenueChart")?.getContext?.("2d");
     if (revenueCtx) {
       if (revenueChart) revenueChart.destroy();
       revenueChart = new Chart(revenueCtx, {
@@ -1978,6 +1962,8 @@ window._analyticsModuleInited = window._analyticsModuleInited || false;
               fill: true,
               tension: 0.25,
               pointRadius: 3,
+              backgroundColor: "rgba(255, 133, 25, 0.1)",
+              borderColor: "rgba(255, 133, 25, 1)",
             },
           ],
         },
@@ -1990,16 +1976,21 @@ window._analyticsModuleInited = window._analyticsModuleInited || false;
     }
 
     // orders bar
-    const ordersCtx = sectionEl
-      .querySelector("#ordersChart")
-      ?.getContext?.("2d");
+    const ordersCtx = sectionEl.querySelector("#ordersChart")?.getContext?.("2d");
     if (ordersCtx) {
       if (ordersChart) ordersChart.destroy();
       ordersChart = new Chart(ordersCtx, {
         type: "bar",
         data: {
           labels,
-          datasets: [{ label: "Đơn hàng", data: ordersData, barThickness: 20 }],
+          datasets: [
+            { 
+              label: "Đơn hàng", 
+              data: ordersData, 
+              barThickness: 20,
+              backgroundColor: "rgba(255, 133, 25, 0.8)",
+            }
+          ],
         },
         options: {
           responsive: true,
@@ -2010,9 +2001,7 @@ window._analyticsModuleInited = window._analyticsModuleInited || false;
     }
 
     // status doughnut
-    const statusCtx = sectionEl
-      .querySelector("#statusChart")
-      ?.getContext?.("2d");
+    const statusCtx = sectionEl.querySelector("#statusChart")?.getContext?.("2d");
     if (statusCtx) {
       if (statusChart) statusChart.destroy();
       const ds = agg.globalStatus || {
@@ -2033,6 +2022,12 @@ window._analyticsModuleInited = window._analyticsModuleInited || false;
                 ds.delivered || 0,
                 ds.cancelled || 0,
               ],
+              backgroundColor: [
+                "rgba(255, 193, 7, 0.8)",
+                "rgba(33, 150, 243, 0.8)",
+                "rgba(76, 175, 80, 0.8)",
+                "rgba(244, 67, 54, 0.8)",
+              ],
             },
           ],
         },
@@ -2046,40 +2041,20 @@ window._analyticsModuleInited = window._analyticsModuleInited || false;
 
   // Update stat cards and product lists
   function updateStatsAndLists(agg) {
-    // stat cards: .stats-grid .stat-card .stat-value (order preserved in HTML)
-    const statValueEls = sectionEl.querySelectorAll(
-      ".stats-grid .stat-card .stat-value"
-    );
+    const statValueEls = sectionEl.querySelectorAll(".stats-grid .stat-card .stat-value");
     const totalRevenue = agg.list.reduce((s, d) => s + (d.revenue || 0), 0);
     const totalOrders = agg.list.reduce((s, d) => s + (d.orders || 0), 0);
-    const avgPerOrder = totalOrders
-      ? Math.round(totalRevenue / totalOrders)
-      : 0;
-    const profit = Math.round(totalRevenue * 0.1); // simplistic profit calc
+    const avgPerOrder = totalOrders ? Math.round(totalRevenue / totalOrders) : 0;
+    const profit = Math.round(totalRevenue * 0.1);
 
     if (statValueEls && statValueEls.length >= 4) {
       statValueEls[0].innerText = fmtCurrency(totalRevenue);
       statValueEls[1].innerText = String(totalOrders);
       statValueEls[2].innerText = fmtCurrency(avgPerOrder);
       statValueEls[3].innerText = fmtCurrency(profit);
-    } else {
-      // fallback: find by heading text
-      sectionEl.querySelectorAll(".stat-card").forEach((card) => {
-        const title = (card.querySelector("h3")?.innerText || "").toLowerCase();
-        if (title.includes("doanh thu"))
-          card.querySelector(".stat-value").innerText =
-            fmtCurrency(totalRevenue);
-        if (title.includes("đơn hàng"))
-          card.querySelector(".stat-value").innerText = String(totalOrders);
-        if (title.includes("tb/đơn") || title.includes("tb"))
-          card.querySelector(".stat-value").innerText =
-            fmtCurrency(avgPerOrder);
-        if (title.includes("lợi nhuận"))
-          card.querySelector(".stat-value").innerText = fmtCurrency(profit);
-      });
     }
 
-    // Top products: aggregate productMap -> sorted top 5
+    // Top products
     const productMap = agg.productMap || {};
     const productsArr = Object.entries(productMap).map(([name, v]) => ({
       name,
@@ -2093,8 +2068,7 @@ window._analyticsModuleInited = window._analyticsModuleInited || false;
     if (productListEl) {
       productListEl.innerHTML = "";
       if (top5.length === 0) {
-        productListEl.innerHTML =
-          '<p style="color:#666">Không có dữ liệu sản phẩm.</p>';
+        productListEl.innerHTML = '<p style="color:#666">Không có dữ liệu sản phẩm.</p>';
       } else {
         top5.forEach((p, idx) => {
           const item = document.createElement("div");
@@ -2102,18 +2076,12 @@ window._analyticsModuleInited = window._analyticsModuleInited || false;
           item.style =
             "display:flex; align-items:center; gap:12px; padding:12px; border-radius:10px; box-shadow: 0 4px 12px rgba(0,0,0,0.04); margin-bottom:10px;";
           item.innerHTML = `
-            <div class="product-rank" style="font-weight:700; width:32px; text-align:center;">${
-              idx + 1
-            }</div>
+            <div class="product-rank" style="font-weight:700; width:32px; text-align:center;">${idx + 1}</div>
             <div class="product-details" style="flex:1">
               <h4 style="margin:0">${p.name}</h4>
-              <p style="margin:0; font-size:13px; color:#666">Đã bán: <strong>${
-                p.sold
-              }</strong></p>
+              <p style="margin:0; font-size:13px; color:#666">Đã bán: <strong>${p.sold}</strong></p>
             </div>
-            <div class="product-revenue" style="font-weight:700">${fmtCurrency(
-              p.revenue
-            )}</div>
+            <div class="product-revenue" style="font-weight:700">${fmtCurrency(p.revenue)}</div>
           `;
           productListEl.appendChild(item);
         });
@@ -2128,9 +2096,7 @@ window._analyticsModuleInited = window._analyticsModuleInited || false;
       cancelled: 0,
     };
     const setCount = (cls, val) => {
-      const el = sectionEl.querySelector(
-        `.order-status-grid .status-card.${cls} .status-count`
-      );
+      const el = sectionEl.querySelector(`.order-status-grid .status-card.${cls} .status-count`);
       if (el) el.innerText = String(val || 0);
     };
     setCount("new", counts.new);
@@ -2141,9 +2107,9 @@ window._analyticsModuleInited = window._analyticsModuleInited || false;
 
   // Build aggregated data from real dataManager orders
   function buildAndRender(from, to) {
-    // Read all orders from dmGetAll('orders')
+    // ===== LẤY DỮ LIỆU TỪ dataManager GIỐNG CÁC MODULE KHÁC =====
     const rawOrders = dmAll("orders") || [];
-    // optionally filter by date range (from/to are strings 'YYYY-MM-DD' or empty)
+    
     let filtered = rawOrders.slice();
     const fromD = parseDateOnly(from);
     const toD = parseDateOnly(to);
@@ -2153,7 +2119,6 @@ window._analyticsModuleInited = window._analyticsModuleInited || false;
         if (!d) return false;
         if (fromD && d < fromD) return false;
         if (toD) {
-          // include end day fully
           const toMax = new Date(toD);
           toMax.setHours(23, 59, 59, 999);
           if (d > toMax) return false;
@@ -2170,18 +2135,15 @@ window._analyticsModuleInited = window._analyticsModuleInited || false;
   // Wire UI: date inputs and search button
   const inputFrom = sectionEl.querySelector("#salesDateFrom");
   const inputTo = sectionEl.querySelector("#salesDateTo");
-  // choose analytics search button (scoped to analytics section)
   const btnSearch = sectionEl.querySelector(".btn-primary");
 
   // initial render: last 7 days if possible else all
   (function initialRender() {
     const orders = dmAll("orders") || [];
     if (orders.length === 0) {
-      // no orders: still render empty charts using sample point from today
       buildAndRender("", "");
       return;
     }
-    // compute last 7 days range from orders dates
     const dates = orders
       .map((o) => parseDateOnly(o.date))
       .filter(Boolean)
@@ -2190,7 +2152,6 @@ window._analyticsModuleInited = window._analyticsModuleInited || false;
     const first = dates[Math.max(0, dates.length - 7)] || dates[0];
     const fromStr = first ? first.toISOString().slice(0, 10) : "";
     const toStr = last ? last.toISOString().slice(0, 10) : "";
-    // set inputs if exist
     if (inputFrom) inputFrom.value = fromStr;
     if (inputTo) inputTo.value = toStr;
     buildAndRender(fromStr, toStr);
@@ -2212,41 +2173,31 @@ window._analyticsModuleInited = window._analyticsModuleInited || false;
     if (inputTo) inputTo.addEventListener("change", applyFilterAndRender);
   }
 
-  // expose function for debugging or external calls
   window.adminAnalytics = {
     refresh: applyFilterAndRender,
     renderChartsFromAggregated,
     aggregateAnalytics,
   };
-  // --- begin: analytics tab switching + simple customer-stats renderer ---
+
+  // Analytics tab switching + customer-stats renderer
   (function wireAnalyticsTabs() {
     if (!sectionEl) return;
-    const tabButtons = Array.from(
-      sectionEl.querySelectorAll(".analytics-tab-btn")
-    );
-    const tabContents = Array.from(
-      sectionEl.querySelectorAll(".analytics-tab-content")
-    );
+    const tabButtons = Array.from(sectionEl.querySelectorAll(".analytics-tab-btn"));
+    const tabContents = Array.from(sectionEl.querySelectorAll(".analytics-tab-content"));
 
     function activateTab(name) {
-      // buttons
       tabButtons.forEach((b) => {
-        if ((b.dataset.tab || "").toString() === name)
-          b.classList.add("active");
+        if ((b.dataset.tab || "").toString() === name) b.classList.add("active");
         else b.classList.remove("active");
       });
-      // contents
       tabContents.forEach((c) => {
         if (c.id === name) c.classList.add("active");
         else c.classList.remove("active");
       });
 
-      // optional: when entering a tab, refresh renderers
       if (name === "sales-report") {
-        // keep analytics refreshed with current date filters
         buildAndRender(inputFrom?.value || "", inputTo?.value || "");
       } else if (name === "customer-stats") {
-        // render simple customer stats UI (function below)
         renderCustomerStats();
       }
     }
@@ -2260,68 +2211,55 @@ window._analyticsModuleInited = window._analyticsModuleInited || false;
       });
     });
 
-    // ensure initial active tab on load (respect existing active btn or default to sales-report)
     const initial =
-      tabButtons.find((b) => b.classList.contains("active"))?.dataset.tab ||
-      "sales-report";
+      tabButtons.find((b) => b.classList.contains("active"))?.dataset.tab || "sales-report";
     activateTab(initial);
   })();
 
-  // minimal renderer for "customer-stats" tab
+  // Customer stats renderer
   function renderCustomerStats() {
     try {
       const section = document.querySelector("#analytics-section");
       if (!section) return;
+      
       const dmAllOrders = dmAll("orders") || [];
       const dmAllCustomers = dmAll("customers") || [];
 
-      // Top customers by total spent (aggregate from orders)
+      // Top customers by total spent
       const spendMap = {};
       dmAllOrders.forEach((o) => {
         const u = o.username || "(unknown)";
         const t = Number(o.totalPrice || 0);
         spendMap[u] = (spendMap[u] || 0) + t;
       });
-      const arr = Object.entries(spendMap).map(([u, s]) => ({
-        username: u,
-        spent: s,
-      }));
+      const arr = Object.entries(spendMap).map(([u, s]) => ({ username: u, spent: s }));
       arr.sort((a, b) => b.spent - a.spent);
       const top5 = arr.slice(0, 5);
 
       const topListEl = section.querySelector(".top-customer-list");
       if (topListEl) {
-        // if your HTML expects specific rank elements, try to fill them; fallback to building items
-        // Clear simple fallback area:
         topListEl.innerHTML = "";
         if (top5.length === 0) {
-          topListEl.innerHTML =
-            '<p style="color:#666">Không có dữ liệu khách hàng.</p>';
+          topListEl.innerHTML = '<p style="color:#666">Không có dữ liệu khách hàng.</p>';
         } else {
           top5.forEach((p, idx) => {
             const item = document.createElement("div");
             item.className = "customer-rank-item";
+            const badge = idx < 3 ? ["🥇", "🥈", "🥉"][idx] : idx + 1;
             item.innerHTML = `
-            <div class="rank-badge">${
-              idx + 1 <= 3 ? ["🥇", "🥈", "🥉"][idx] || idx + 1 : idx + 1
-            }</div>
-            <div class="customer-info"><h4 style="margin:0">${
-              p.username
-            }</h4><p style="margin:0;color:#666">Tổng chi: ${new Intl.NumberFormat(
-              "vi-VN",
-              { style: "currency", currency: "VND" }
-            ).format(p.spent)}</p></div>
-            <div class="customer-spending" style="font-weight:700;color:var(--color-primary)">${new Intl.NumberFormat(
-              "vi-VN",
-              { style: "currency", currency: "VND" }
-            ).format(p.spent)}</div>
-          `;
+              <div class="rank-badge">${badge}</div>
+              <div class="customer-info">
+                <h4 style="margin:0">${p.username}</h4>
+                <p style="margin:0;color:#666">Tổng chi: ${fmtCurrency(p.spent)}</p>
+              </div>
+              <div class="customer-spending" style="font-weight:700;color:var(--color-primary)">${fmtCurrency(p.spent)}</div>
+            `;
             topListEl.appendChild(item);
           });
         }
       }
 
-      // Growth stats: simple counts
+      // Growth stats
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       const weekAgo = new Date(today);
@@ -2354,28 +2292,17 @@ window._analyticsModuleInited = window._analyticsModuleInited || false;
         return d && d >= monthAgo && d <= today;
       }).length;
 
-      const growthItems = section.querySelectorAll(
-        ".growth-item .growth-number"
-      );
+      const growthItems = section.querySelectorAll(".growth-item .growth-number");
       if (growthItems && growthItems.length >= 3) {
         growthItems[0].textContent = `${newToday}`;
         growthItems[1].textContent = `${newWeek}`;
         growthItems[2].textContent = `${newMonth}`;
-      } else {
-        // try to fill generic selectors
-        const gi = section.querySelector(".growth-stats");
-        if (gi)
-          gi.querySelectorAll(".growth-number").forEach((el, i) => {
-            if (i === 0) el.textContent = newToday;
-            if (i === 1) el.textContent = newWeek;
-            if (i === 2) el.textContent = newMonth;
-          });
       }
     } catch (err) {
       console.warn("renderCustomerStats error", err);
     }
   }
-  // --- end: analytics tab switching + renderer ---
+
   window._analyticsModuleInited = true;
 })();
 
@@ -3441,6 +3368,7 @@ window.resetDateFilter = resetDateFilter;
 
 // Hook into sidebar tab switching
 document.addEventListener("DOMContentLoaded", () => {
+  
   const sidebarItems = Array.from(
     document.querySelectorAll(
       ".admin-sidebar .admin-sidebar__nav .admin-sidebar__list .admin-sidebar__item.tab-content"
@@ -3468,4 +3396,31 @@ document.addEventListener("DOMContentLoaded", () => {
   } else {
     initWarehouseModule();
   }
+  // === Dashboard counters ===
+function updateDashboardCounters() {
+  try {
+    const elUser = document.getElementById("userCount");
+    const elProduct = document.getElementById("productCount");
+    const elRevenue = document.getElementById("revenueTotal");
+    const elStock = document.getElementById("stockTotal");
+
+    const allCustomers = window.dataManager.getAll("customers") || [];
+    const allProducts = window.dataManager.getAll("products") || [];
+    const allOrders = window.dataManager.getAll("orders") || [];
+
+    if (elUser) elUser.textContent = allCustomers.length;
+    if (elProduct) elProduct.textContent = allProducts.length;
+
+    const revenue = allOrders.reduce((s, o) => s + (Number(o.totalPrice) || 0), 0);
+    if (elRevenue) elRevenue.textContent = revenue + "₫";
+
+    const stockTotal = allProducts.reduce((s, p) => s + (Number(p.stock) || 0), 0);
+    if (elStock) elStock.textContent = stockTotal;
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+updateDashboardCounters();
 });
+

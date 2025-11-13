@@ -19,9 +19,13 @@
     <!-- JavaScript Libraries -->
     <!-- Đã khai báo defer nên script sẽ được tải song song với HTML
       và chỉ chạy sau khi HTML được phân tích xong -->
-  <script type="module" src="/js/admin/admin.js" defer></script>
-  <script type="module" src="/js/admin/products.js" defer></script>
-  <script type="module" src="/js/admin/p.js" defer></script>
+    <!-- DatabaseManager phải load đầu tiên -->
+    <script type="module" src="/js/admin/DatabaseManager.js" defer></script>
+    <!-- Sau đó mới đến admin.js -->
+    <script type="module" src="/js/admin/admin.js" defer></script>
+    <!-- Các script khác -->
+    <script type="module" src="/js/admin/products.js" defer></script>
+    <script type="module" src="/js/admin/p.js" defer></script>
 
     <script
       src="https://kit.fontawesome.com/da0c4cdc9f.js"
