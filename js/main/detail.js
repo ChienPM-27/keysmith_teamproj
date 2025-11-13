@@ -198,7 +198,7 @@ function renderImageSlider(product) {
     dotsContainer.appendChild(dot);
   });
 
-  slidesContainer.style.width = `${images.length * 100}%`;
+  // SỬA: Đã xóa dòng set width thủ công. CSS sẽ lo việc đó.
   showSlide(0); 
 }
 
@@ -208,11 +208,14 @@ function renderImageSlider(product) {
  */
 function showSlide(index) {
   const totalSlides = slidesContainer.children.length;
+  if (totalSlides === 0) return;
+
   if (index >= totalSlides) index = 0;
   if (index < 0) index = totalSlides - 1;
 
-  // Di chuyển .slides container
-  slidesContainer.style.transform = `translateX(-${index * (100 / totalSlides)}%)`;
+  // SỬA: Công thức dịch chuyển mới (-100% cho mỗi ảnh)
+  // Vì mỗi ảnh trong CSS chiếm 100% khung nhìn
+  slidesContainer.style.transform = `translateX(-${index * 100}%)`;
 
   // Cập nhật dot active
   const dots = dotsContainer.children;
