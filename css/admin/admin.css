@@ -74,6 +74,8 @@ body {
 .container {
   display: flex;
   height: 100vh;
+    align-items: stretch;
+
 }
 
 .header {
@@ -105,7 +107,6 @@ body {
 .admin-sidebar {
   flex-shrink: 0;
   width: 100px;
-  height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: stretch;
