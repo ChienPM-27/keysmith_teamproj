@@ -251,77 +251,80 @@ KeySmith.login = {
 
     // ======= handleLogin =======
     handleLogin: function(e) {
-        e.preventDefault();
-        const input = KeySmith.utils.getById('loginUsername').value.trim();
-        const password = KeySmith.utils.getById('loginPassword').value.trim();
-        const rememberMe = KeySmith.utils.getById('rememberMe').checked;
+    console.log('DEBUG handleLogin input=', KeySmith.utils.getById('loginUsername')?.value, 'password=', KeySmith.utils.getById('loginPassword')?.value);
 
-        if (!input || !password) {
-            alert('❌ Please enter all fields!');
+    e.preventDefault();
+    const rawInput = KeySmith.utils.getById('loginUsername').value || '';
+    const rawPassword = KeySmith.utils.getById('loginPassword').value || '';
+    const input = rawInput.toString().trim();
+    const password = rawPassword.toString().trim();
+    const rememberMe = KeySmith.utils.getById('rememberMe').checked;
+
+    if (!input || !password) {
+        alert('❌ Please enter all fields!');
+        return;
+    }
+
+    // Admin check (admin usernames are lowercase in ADMIN_ACCOUNTS, compare case-insensitive)
+    const isAdmin = this.ADMIN_ACCOUNTS.find(admin =>
+        admin.username.toLowerCase() === input.toLowerCase() && admin.password === password
+    );
+
+    if (isAdmin) {
+        localStorage.setItem('loggedInUser', isAdmin.username);
+        localStorage.setItem('userRole', 'admin');
+        if (rememberMe) localStorage.setItem('rememberedUser', isAdmin.username);
+        alert('✅ Admin login successful! Redirecting to admin page...');
+        const modalOverlay = KeySmith.utils.getById('modalOverlay');
+        if (modalOverlay) {
+            modalOverlay.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+        setTimeout(() => window.location.href = './admin/admin.html', 800);
+        return;
+    }
+
+    // User check
+    const customers = JSON.parse(localStorage.getItem('customers')) || [];
+    const inputLower = input.toLowerCase();
+
+    const user = customers.find(u => {
+        const uname = (u.username || '').toString().trim().toLowerCase();
+        const email = (u.email || '').toString().trim().toLowerCase();
+        return (uname === inputLower || email === inputLower);
+    });
+
+    if (user && (user.password || '').toString().trim() === password) {
+        if (user.status && user.status.toString().trim().toLowerCase() === 'inactive') {
+            alert('❌ Your account has been deactivated. Please contact support.');
             return;
         }
 
-        // Admin check
-        const isAdmin = this.ADMIN_ACCOUNTS.find(admin =>
-            admin.username === input && admin.password === password
-        );
+        localStorage.setItem('loggedInUser', user.username);
+        localStorage.setItem('userRole', 'user');
+        if (rememberMe) localStorage.setItem('rememberedUser', user.username);
 
-        if (isAdmin) {
-            localStorage.setItem('loggedInUser', input);
-            localStorage.setItem('userRole', 'admin');
-            if (rememberMe) localStorage.setItem('rememberedUser', input);
+        KeySmith.profile.currentUser = user.username;
 
-            alert('✅ Admin login successful! Redirecting to admin page...');
-            const modalOverlay = KeySmith.utils.getById('modalOverlay');
-            if (modalOverlay) {
-                modalOverlay.classList.remove('active');
-                document.body.style.overflow = 'auto';
-            }
-            setTimeout(() => window.location.href = './admin/admin.html', 800);
-            return;
+        alert('✅ Login successful!');
+        const modalOverlay = KeySmith.utils.getById('modalOverlay');
+        if (modalOverlay) {
+            modalOverlay.classList.remove('active');
+            document.body.style.overflow = 'auto';
         }
 
-        // User check - từ localStorage (đã bao gồm cả sample data)
-        const customers = JSON.parse(localStorage.getItem('customers')) || [];
-        
-        // Cho phép đăng nhập bằng username hoặc email
-        const user = customers.find(u => {
-            const uname = (u.username || '').trim().toLowerCase();
-            const email = (u.email || '').trim().toLowerCase();
-            const inputLower = input.toLowerCase();
-            return (uname === inputLower || email === inputLower);
-        });
+        KeySmith.utils.getById('loginUsername').value = '';
+        KeySmith.utils.getById('loginPassword').value = '';
 
-        if (user && user.password === password) {
-            // Kiểm tra status
-            if (user.status === 'inactive') {
-                alert('❌ Your account has been deactivated. Please contact support.');
-                return;
-            }
-
-            localStorage.setItem('loggedInUser', user.username);
-            localStorage.setItem('userRole', 'user');
-            if (rememberMe) localStorage.setItem('rememberedUser', user.username);
-
-            alert('✅ Login successful!');
-            const modalOverlay = KeySmith.utils.getById('modalOverlay');
-            if (modalOverlay) {
-                modalOverlay.classList.remove('active');
-                document.body.style.overflow = 'auto';
-            }
-            
-            // Clear form
-            KeySmith.utils.getById('loginUsername').value = '';
-            KeySmith.utils.getById('loginPassword').value = '';
-            
-            KeySmith.login.updateProfileDisplay();
-            if (KeySmith.profile.initProfileModal) {
-                KeySmith.profile.initProfileModal();
-            }
-        } else {
-            alert('❌ Invalid username/email or password!');
+        KeySmith.login.updateProfileDisplay();
+        if (KeySmith.profile.initProfileModal) {
+            KeySmith.profile.initProfileModal();
         }
-    },
+    } else {
+        alert('❌ Invalid username/email or password!');
+    }
+},
+
 
     updateProfileDisplay: function() {
         const loggedUser = localStorage.getItem('loggedInUser');
@@ -343,21 +346,39 @@ KeySmith.login = {
 // ==================== PROFILE MODULE ====================
 KeySmith.profile = {
     currentUser: null,           
-    currentCustomerDetail: null, 
+    currentCustomerDetail: null,
+    isInitialized: false,
 
     init: function() {
-        // Initialize only if user is logged in
+        console.log('🔧 Profile.init() called');
+        
         const loggedUser = localStorage.getItem('loggedInUser');
         const userRole = localStorage.getItem('userRole');
         
+        console.log('👤 Logged user:', loggedUser, '| Role:', userRole);
+        
         if (loggedUser && userRole === 'user') {
             this.currentUser = loggedUser;
-            this.initProfileModal();
+            
+            // Kiểm tra customer có tồn tại không
+            const customers = JSON.parse(localStorage.getItem('customers')) || [];
+            const customer = customers.find(c => c.username === loggedUser);
+            
+            console.log('📋 Found customer:', customer);
+            
+            if (customer) {
+                this.initProfileModal();
+                this.isInitialized = true;
+                console.log('✅ Profile initialized successfully');
+            } else {
+                console.error('❌ Customer not found in localStorage');
+            }
+        } else {
+            console.log('ℹ️ No user logged in or not a user role');
         }
     },
 
     populateBirthdaySelects: function() {
-        // Populate Day (1-31)
         const daySelect = KeySmith.utils.getById('profile-birth-day');
         if (daySelect && daySelect.options.length === 1) {
             for (let i = 1; i <= 31; i++) {
@@ -368,7 +389,6 @@ KeySmith.profile = {
             }
         }
 
-        // Populate Month (1-12)
         const monthSelect = KeySmith.utils.getById('profile-birth-month');
         if (monthSelect && monthSelect.options.length === 1) {
             const months = [
@@ -383,7 +403,6 @@ KeySmith.profile = {
             });
         }
 
-        // Populate Year (1950 - current year)
         const yearSelect = KeySmith.utils.getById('profile-birth-year');
         if (yearSelect && yearSelect.options.length === 1) {
             const currentYear = new Date().getFullYear();
@@ -396,314 +415,360 @@ KeySmith.profile = {
         }
     },
 
-    // get customer profile - lay profile thoi
-    getCustomerProfile: function() {
-        try {
-            const users = JSON.parse(localStorage.getItem('users')) || [];
-            const user = users.find(u => u.username === this.currentUser);
-
-            if (!user) {
-                console.warn('User not found');
-                return null;
-            }
-
-            // Trả về chỉ profile
-            return user.profile || {
-                firstName: '',
-                lastName: '',
-                email: '',
-                phone: '',
-                address: '',
-                birthDate: null
-            };
-        } catch (error) {
-            console.error('Error getting customer profile:', error);
-            return null;
-        }
-    },
-
-    // get customer detail - lay toan bo detail
     getCustomerDetail: function() {
-        try {
-            const users = JSON.parse(localStorage.getItem('users')) || [];
-            const user = users.find(u => u.username === this.currentUser);
+    try {
+        console.log('🔍 Getting customer detail for:', this.currentUser);
 
-            if (!user) {
-                console.warn('User not found');
-                return null;
-            }
-            this.currentCustomerDetail = {
-                username: user.username,
-                userId: user.userId || this.generateUserId(),
-                role: user.role || 'user',
-                password: user.password,
-                
-                profile: user.profile || {
-                    firstName: '',
-                    lastName: '',
-                    email: '',
-                    phone: '',
-                    address: '',
-                    birthDate: null
-                },
+        const customers = JSON.parse(localStorage.getItem('customers')) || [];
+        console.log('📦 Total customers in storage:', customers.length);
 
-                orders: user.orders || [],
-                payments: user.payments || [],
-                status: user.status || 'active',
-                
-                preferences: user.preferences || {
-                    newsletter: true,
-                    notifications: true,
-                    language: 'en'
-                },
-
-                createdAt: user.createdAt || new Date().toISOString(),
-                updatedAt: user.updatedAt || new Date().toISOString(),
-                lastLogin: user.lastLogin || new Date().toISOString()
-            };
-            return this.currentCustomerDetail;
-        } catch (error) {
-            console.error('Error getting customer detail:', error);
+        if (!this.currentUser) {
+            console.warn('⚠ currentUser is null/undefined');
             return null;
         }
-    },
 
-    //set customer de luu lai
-    setCustomerDetail: function(updatedDetail) {
+        const curLower = String(this.currentUser).trim().toLowerCase();
+
+        // tìm theo username (case-insensitive) hoặc email
+        const customer = customers.find(c => {
+            if (!c) return false;
+            const uname = (c.username || '').toString().trim().toLowerCase();
+            const email = (c.email || '').toString().trim().toLowerCase();
+            return uname === curLower || email === curLower;
+        });
+
+        if (!customer) {
+            console.error('❌ Customer not found:', this.currentUser);
+            console.log('Available usernames:', customers.map(c => c.username));
+            return null;
+        }
+
+        console.log('✅ Customer found:', customer);
+        this.currentCustomerDetail = customer;
+        return customer;
+    } catch (error) {
+        console.error('❌ Error getting customer detail:', error);
+        return null;
+    }
+},
+
+
+    setCustomerDetail: function(updatedCustomer) {
         try {
-            const users = JSON.parse(localStorage.getItem('users')) || [];
-            const userIndex = users.findIndex(u => u.username === this.currentUser);
-
-            if (userIndex === -1) {
-                this.showNotification('User not found', 'error');
+            console.log('💾 Saving customer detail:', updatedCustomer);
+            
+            let customers = JSON.parse(localStorage.getItem('customers')) || [];
+            const index = customers.findIndex(c => c.username === this.currentUser);
+            
+            if (index === -1) {
+                console.error('❌ Customer not found for update');
                 return false;
             }
-            users[userIndex] = {
-                ...users[userIndex],
-                ...updatedDetail,
+
+            customers[index] = {
+                ...customers[index],
+                ...updatedCustomer,
                 updatedAt: new Date().toISOString()
             };
 
-            localStorage.setItem('users', JSON.stringify(users));
-            this.currentCustomerDetail = updatedDetail;
+            localStorage.setItem('customers', JSON.stringify(customers));
+            this.currentCustomerDetail = customers[index];
+            
+            console.log('✅ Customer saved successfully');
             return true;
         } catch (error) {
-            console.error('Error setting customer detail:', error);
+            console.error('❌ Error setting customer detail:', error);
             return false;
         }
     },
-    //kho tao khi mo modal
+
+    loadProfileToForm: function() {
+        console.log('📝 Loading profile to form...');
+        
+        this.populateBirthdaySelects();
+
+        const customer = this.getCustomerDetail();
+        if (!customer) {
+            console.error('❌ Cannot load profile - no customer data');
+            return;
+        }
+
+        console.log('📋 Customer data to load:', {
+            firstName: customer.firstName,
+            lastName: customer.lastName,
+            email: customer.email,
+            phone: customer.phone,
+            address: customer.address,
+            dateOfBirth: customer.dateOfBirth
+        });
+
+        // Update username in sidebar
+        const profileUsername = KeySmith.utils.getById('profileUsername');
+        if (profileUsername) {
+            profileUsername.textContent = customer.username || 'User';
+            console.log('✅ Set username display:', customer.username);
+        }
+
+        // Fill form fields
+        const fields = [
+            { id: 'profile-first-name', key: 'firstName' },
+            { id: 'profile-last-name', key: 'lastName' },
+            { id: 'profile-email', key: 'email' },
+            { id: 'profile-phone', key: 'phone' },
+            { id: 'profile-address', key: 'address' }
+        ];
+
+        fields.forEach(field => {
+            const element = KeySmith.utils.getById(field.id);
+            if (element) {
+                const value = customer[field.key] || '';
+                element.value = value;
+                console.log(`✅ Set ${field.id} = "${value}"`);
+            } else {
+                console.warn(`⚠️ Field not found: ${field.id}`);
+            }
+        });
+
+        // Fill birthday
+        if (customer.dateOfBirth) {
+            try {
+                const date = new Date(customer.dateOfBirth);
+                const day = KeySmith.utils.getById('profile-birth-day');
+                const month = KeySmith.utils.getById('profile-birth-month');
+                const year = KeySmith.utils.getById('profile-birth-year');
+                
+                if (day) {
+                    day.value = date.getDate();
+                    console.log('✅ Set day:', date.getDate());
+                }
+                if (month) {
+                    month.value = date.getMonth() + 1;
+                    console.log('✅ Set month:', date.getMonth() + 1);
+                }
+                if (year) {
+                    year.value = date.getFullYear();
+                    console.log('✅ Set year:', date.getFullYear());
+                }
+            } catch (e) {
+                console.error('❌ Error parsing date:', e);
+            }
+        }
+
+        console.log('✅ Profile loaded to form successfully');
+    },
+
     initProfileModal: function() {
+        console.log('🎭 Initializing profile modal...');
+        
         const profileModal = KeySmith.utils.getById('profileModalOverlay');
-        if (!profileModal) return;
+        if (!profileModal) {
+            console.error('❌ Profile modal not found in DOM');
+            return;
+        }
 
-        this.getCustomerDetail();
-
-        this.loadProfileToForm();
-
+        // Close button
         const closeBtn = KeySmith.utils.getById('closeProfileModal');
         if (closeBtn) {
-            closeBtn.addEventListener('click', () => {
+            closeBtn.onclick = () => {
                 profileModal.style.display = 'none';
                 document.body.style.overflow = 'auto';
-            });
+                console.log('🚪 Profile modal closed');
+            };
         }
 
         // Section navigation
         const sidebarLinks = profileModal.querySelectorAll('.profile-sidebar a[data-section]');
         sidebarLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
+            link.onclick = (e) => {
                 e.preventDefault();
                 const targetSection = link.getAttribute('data-section');
                 
-                // Update active states
                 sidebarLinks.forEach(l => l.classList.remove('active'));
                 link.classList.add('active');
                 
-                // Show target section
                 const sections = profileModal.querySelectorAll('.profile-section');
                 sections.forEach(section => {
                     section.classList.toggle('active', 
                         section.getAttribute('data-section-name') === targetSection);
                 });
-            });
+                
+                console.log('📑 Switched to section:', targetSection);
+            };
         });
 
         // Logout
         const logoutBtn = KeySmith.utils.getById('profileLogout');
         if (logoutBtn) {
-            logoutBtn.addEventListener('click', (e) => {
+            logoutBtn.onclick = (e) => {
                 e.preventDefault();
+                console.log('👋 Logging out...');
                 localStorage.removeItem('loggedInUser');
                 localStorage.removeItem('userRole');
                 localStorage.removeItem('rememberedUser');
                 window.location.reload();
-            });
+            };
         }
 
         // Forms
         this.initProfileForms();
-    },
-    // điền dữ liệu vào form vì khi mở modal nó hiện dữ liệu cũ
-    loadProfileToForm: function() {
-        this.populateBirthdaySelects();
-
-        const profile = this.getCustomerProfile();
-        if (!profile) return;
-
-        const fields = {
-            'profile-first-name': 'firstName',
-            'profile-last-name': 'lastName',
-            'profile-email': 'email',
-            'profile-phone': 'phone',
-            'profile-address': 'address'
-        };
-
-        Object.keys(fields).forEach(fieldId => {
-            const element = KeySmith.utils.getById(fieldId);
-            if (element && profile[fields[fieldId]]) {
-                element.value = profile[fields[fieldId]];
-            }
-        });
-
-        if (profile.birthDate) {
-            const date = new Date(profile.birthDate);
-            KeySmith.utils.getById('profile-birth-day').value = date.getDate();
-            KeySmith.utils.getById('profile-birth-month').value = date.getMonth() + 1;
-            KeySmith.utils.getById('profile-birth-year').value = date.getFullYear();
-        }
+        
+        console.log('✅ Profile modal initialized');
     },
 
     initProfileForms: function() {
         const profileForm = KeySmith.utils.getById('profileInfoForm');
         if (profileForm) {
-            profileForm.addEventListener('submit', (e) => this.handleProfileUpdate(e)); 
+            profileForm.onsubmit = (e) => this.handleProfileUpdate(e);
+            console.log('✅ Profile form handler attached');
         }
 
         const passwordForm = KeySmith.utils.getById('changePasswordForm');
         if (passwordForm) {
-            passwordForm.addEventListener('submit', (e) => this.handlePasswordChange(e));
+            passwordForm.onsubmit = (e) => this.handlePasswordChange(e);
+            console.log('✅ Password form handler attached');
         }
     },
-
-    // dung ham hai hàm handle là vì alert nó chỉ hiện thông báo nó không lưu
 
     handleProfileUpdate: function(e) {
-        e.preventDefault();
+    e.preventDefault();
 
-        try {
-            const firstName = KeySmith.utils.getById('profile-first-name').value.trim();
-            const lastName = KeySmith.utils.getById('profile-last-name').value.trim();
-            const email = KeySmith.utils.getById('profile-email').value.trim();
-            const phone = KeySmith.utils.getById('profile-phone').value.trim();
-            const address = KeySmith.utils.getById('profile-address').value.trim();
-            const day = KeySmith.utils.getById('profile-birth-day').value;
-            const month = KeySmith.utils.getById('profile-birth-month').value;
-            const year = KeySmith.utils.getById('profile-birth-year').value;
+    try {
+        const firstName = KeySmith.utils.getById('profile-first-name').value.trim();
+        const lastName = KeySmith.utils.getById('profile-last-name').value.trim();
+        const email = KeySmith.utils.getById('profile-email').value.trim();
+        const phone = KeySmith.utils.getById('profile-phone').value.trim();
+        const address = KeySmith.utils.getById('profile-address').value.trim();
+        const day = KeySmith.utils.getById('profile-birth-day').value;
+        const month = KeySmith.utils.getById('profile-birth-month').value;
+        const year = KeySmith.utils.getById('profile-birth-year').value;
 
-            // Validation
-            if (!firstName || !lastName) {
-                this.showNotification('Please enter both first and last name', 'error');
-                return;
+        // Validation
+        if (!firstName || !lastName) {
+            this.showNotification('Please enter both first and last name', 'error');
+            return;
+        }
+
+        if (email && !this.isValidEmail(email)) {
+            this.showNotification('Please enter a valid email', 'error');
+            return;
+        }
+
+        if (phone && !this.isValidPhone(phone)) {
+            this.showNotification('Please enter a valid phone number', 'error');
+            return;
+        }
+
+        let dateOfBirth = '';
+        if (day && month && year) {
+            // Save as YYYY-MM-DD (ISO date string base)
+            const d = new Date(year, month - 1, day);
+            if (!isNaN(d.getTime())) {
+                dateOfBirth = d.toISOString().slice(0,10);
             }
+        }
 
-            if (email && !this.isValidEmail(email)) {
-                this.showNotification('Please enter a valid email', 'error');
-                return;
-            }
+        // get detail
+        const detail = this.getCustomerDetail();
+        if (!detail) {
+            this.showNotification('Error loading customer data', 'error');
+            return;
+        }
 
-            if (phone && !this.isValidPhone(phone)) {
-                this.showNotification('Please enter a valid phone number', 'error');
-                return;
-            }
+        // build updated customer object (top-level)
+        const updatedCustomer = {
+            ...detail,
+            firstName,
+            lastName,
+            email,
+            phone,
+            address,
+            dateOfBirth
+        };
 
-            let birthDate = null;
-            if (day && month && year) {
-                birthDate = new Date(year, month - 1, day).toISOString();
-            }
-
-            // get detail
-            const detail = this.getCustomerDetail();
-            if (!detail) return;
-
-            // update profile
-            detail.profile = {
-                firstName,
-                lastName,
-                email,
-                phone,
-                address,
-                birthDate
-            };
-
-            // set detail
-            if (this.setCustomerDetail(detail)) {
-                this.showNotification('✅ Profile updated successfully!', 'success');
-            } else {
-                this.showNotification('Error updating profile', 'error');
-            }
-        } catch (error) {
-            console.error('Error updating profile:', error);
+        // set detail
+        if (this.setCustomerDetail(updatedCustomer)) {
+            this.showNotification('✅ Profile updated successfully!', 'success');
+            // reload internal detail
+            this.currentCustomerDetail = updatedCustomer;
+        } else {
             this.showNotification('Error updating profile', 'error');
         }
-    },
+    } catch (error) {
+        console.error('Error updating profile:', error);
+        this.showNotification('Error updating profile', 'error');
+    }
+},
+
 
     handlePasswordChange: function(e) {
-        e.preventDefault();
+    e.preventDefault();
 
-        try {
-            const currentPass = KeySmith.utils.getById('current-password').value;
-            const newPass = KeySmith.utils.getById('new-password').value;
-            const confirmPass = KeySmith.utils.getById('confirm-password').value;
+    try {
+        const currentPass = KeySmith.utils.getById('current-password').value;
+        const newPass = KeySmith.utils.getById('new-password').value;
+        const confirmPass = KeySmith.utils.getById('confirm-password').value;
 
-            // Validation
-            if (!currentPass || !newPass || !confirmPass) {
-                this.showNotification('Please fill all password fields', 'error');
-                return;
-            }
-
-            if (newPass.length < 6) {
-                this.showNotification('New password must be at least 6 characters', 'error');
-                return;
-            }
-
-            if (newPass !== confirmPass) {
-                this.showNotification('Passwords do not match', 'error');
-                return;
-            }
-
-            // GET users
-            const users = JSON.parse(localStorage.getItem('users')) || [];
-            const user = users.find(u => u.username === this.currentUser);
-
-            if (!user || user.password !== currentPass) {
-                this.showNotification('Current password is incorrect', 'error');
-                return;
-            }
-
-            if (currentPass === newPass) {
-                this.showNotification('New password must be different from current password', 'warning');
-                return;
-            }
-
-            // GET detail
-            const detail = this.getCustomerDetail();
-
-            // UPDATE password
-            detail.password = newPass;
-
-            // SET detail
-            if (this.setCustomerDetail(detail)) {
-                this.showNotification('✅ Password changed successfully!', 'success');
-                KeySmith.utils.getById('changePasswordForm').reset();
-            } else {
-                this.showNotification('Error changing password', 'error');
-            }
-        } catch (error) {
-            console.error('Error changing password:', error);
-            this.showNotification('Error changing password', 'error');
+        // Validation
+        if (!currentPass || !newPass || !confirmPass) {
+            this.showNotification('Please fill all password fields', 'error');
+            return;
         }
-    },
+
+        if (newPass.length < 6) {
+            this.showNotification('New password must be at least 6 characters', 'error');
+            return;
+        }
+
+        if (newPass !== confirmPass) {
+            this.showNotification('Passwords do not match', 'error');
+            return;
+        }
+
+        // GET customers
+        const customers = JSON.parse(localStorage.getItem('customers')) || [];
+        const cur = (this.currentUser || '').toString().trim().toLowerCase();
+        const index = customers.findIndex(c => {
+            if (!c) return false;
+            return ((c.username || '').toString().trim().toLowerCase() === cur) ||
+                   ((c.email || '').toString().trim().toLowerCase() === cur);
+        });
+
+        if (index === -1) {
+            this.showNotification('User not found', 'error');
+            return;
+        }
+
+        const user = customers[index];
+
+        if ((user.password || '').toString().trim() !== currentPass) {
+            this.showNotification('Current password is incorrect', 'error');
+            return;
+        }
+
+        if (currentPass === newPass) {
+            this.showNotification('New password must be different from current password', 'warning');
+            return;
+        }
+
+        // Update password
+        customers[index] = {
+            ...user,
+            password: newPass,
+            updatedAt: new Date().toISOString()
+        };
+
+        localStorage.setItem('customers', JSON.stringify(customers));
+        this.currentCustomerDetail = customers[index];
+
+        this.showNotification('✅ Password changed successfully!', 'success');
+        const form = KeySmith.utils.getById('changePasswordForm');
+        if (form) form.reset();
+    } catch (error) {
+        console.error('Error changing password:', error);
+        this.showNotification('Error changing password', 'error');
+    }
+},
+
 
     showProfileModal: function() {
         const profileModal = KeySmith.utils.getById('profileModalOverlay');
@@ -714,35 +779,42 @@ KeySmith.profile = {
         }
     },
 
-    // hien thị thong bao
     showNotification: function(message, type = 'success') {
         const notification = document.createElement('div');
         notification.className = `profile-notification ${type}`;
         notification.textContent = message;
-        document.body.appendChild(notification);
-
-        setTimeout(() => notification.classList.add('show'), 10);
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            background: ${type === 'success' ? '#4caf50' : type === 'error' ? '#f44336' : '#ff9800'};
+            color: white;
+            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            z-index: 10000;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 16px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        `;
         
+        document.body.appendChild(notification);
+        setTimeout(() => notification.style.opacity = '1', 10);
         setTimeout(() => {
-            notification.classList.remove('show');
+            notification.style.opacity = '0';
             setTimeout(() => notification.remove(), 300);
         }, 3000);
     },
 
     isValidEmail: function(email) {
-        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return regex.test(email);
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     },
 
     isValidPhone: function(phone) {
-        const regex = /^[0-9+\-\s()]+$/;
-        return regex.test(phone) && phone.replace(/\D/g, '').length >= 9;
-    },
-
-    generateUserId: function() {
-        return 'USR_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        return /^[0-9+\-\s()]+$/.test(phone) && phone.replace(/\D/g, '').length >= 9;
     }
-};  
+};
 
 // ==================== CONTACT MODULE ====================
 KeySmith.contact = {
@@ -1054,117 +1126,446 @@ KeySmith.admin = {
 
 // ==================== DATA SYNC MODULE ====================
 KeySmith.dataSync = {
-    init: function() {
-        // Kiểm tra nếu chưa có dữ liệu trong localStorage
-        if (!localStorage.getItem('dataInitialized')) {
-            this.loadSampleData();
-        }
-    },
+  init: function() {
+  // nếu dataInitialized true nhưng customers/products/etc bị thiếu -> vẫn load lại
+  const initialized = localStorage.getItem('dataInitialized');
+  const hasCustomers = !!localStorage.getItem('customers');
+  const hasProducts = !!localStorage.getItem('products');
 
-    // Replace existing loadSampleData with this robust version
-// ---------- REPLACE EXISTING loadSampleData WITH THIS ----------
-loadSampleData: async function() {
-  try {
-    // Try dynamic import using the path you said
-    try {
-      const module = await import('./sampledata/sampleData.js');
-      const sampleData = module && module.sampleData ? module.sampleData : null;
-      if (sampleData) {
-        if (!localStorage.getItem('customers') && sampleData.customers) {
-          localStorage.setItem('customers', JSON.stringify(sampleData.customers));
-          console.log('✅ Loaded customers via import (./sampledata/sampleData.js).');
-        }
-        if (!localStorage.getItem('products') && sampleData.products) {
-          localStorage.setItem('products', JSON.stringify(sampleData.products));
-          console.log('✅ Loaded products via import.');
-        }
-        if (!localStorage.getItem('orders') && sampleData.orders) {
-          localStorage.setItem('orders', JSON.stringify(sampleData.orders));
-          console.log('✅ Loaded orders via import.');
-        }
-        if (!localStorage.getItem('importOrders') && sampleData.importOrders) {
-          localStorage.setItem('importOrders', JSON.stringify(sampleData.importOrders));
-          console.log('✅ Loaded importOrders via import.');
-        }
-        localStorage.setItem('dataInitialized', 'true');
-        return;
-      }
-    } catch (impErr) {
-      console.warn('Dynamic import failed (path ./sampledata/sampleData.js). Will try fetch fallback.', impErr);
-    }
-
-    // Fetch fallback - try several paths
-    const paths = ['./sampledata/sampleData.js', './sampleData.js','/js/sampleData.js','/sampleData.js'];
-    let text = null;
-    for (const p of paths) {
-      try {
-        const r = await fetch(p, {cache:'no-store'});
-        if (r.ok) {
-          text = await r.text();
-          console.log('Fetched sampleData from', p);
-          break;
-        }
-      } catch (e) { /* try next */ }
-    }
-    if (!text) {
-      console.error('❌ Could not fetch sampleData.js from any path.');
-      return;
-    }
-
-    // Extract object literal (assumes "export const sampleData = { ... }")
-    let start = text.indexOf('export const sampleData');
-    if (start !== -1) {
-      start = text.indexOf('=', start);
-      if (start !== -1) start = start + 1;
-      else start = text.indexOf('{', start);
-    } else {
-      start = text.indexOf('{');
-    }
-    const objText = text.slice(start);
-    let sampleDataObj = null;
-    try {
-      sampleDataObj = Function('"use strict"; return (' + objText + ')')();
-    } catch (e) {
-      console.error('Failed to eval sampleData.js content:', e);
-      return;
-    }
-    if (!sampleDataObj) {
-      console.error('No sampleData object found after eval.');
-      return;
-    }
-
-    if (!localStorage.getItem('customers') && sampleDataObj.customers) {
-      localStorage.setItem('customers', JSON.stringify(sampleDataObj.customers));
-      console.log('✅ Loaded customers via fetch fallback.');
-    }
-    if (!localStorage.getItem('products') && sampleDataObj.products) {
-      localStorage.setItem('products', JSON.stringify(sampleDataObj.products));
-      console.log('✅ Loaded products via fetch fallback.');
-    }
-    if (!localStorage.getItem('orders') && sampleDataObj.orders) {
-      localStorage.setItem('orders', JSON.stringify(sampleDataObj.orders));
-      console.log('✅ Loaded orders via fetch fallback.');
-    }
-    if (!localStorage.getItem('importOrders') && sampleDataObj.importOrders) {
-      localStorage.setItem('importOrders', JSON.stringify(sampleDataObj.importOrders));
-      console.log('✅ Loaded importOrders via fetch fallback.');
-    }
-
-    localStorage.setItem('dataInitialized','true');
-    console.log('✅ Sample data loaded (fallback).');
-  } catch (finalErr) {
-    console.error('Error loading sample data (final):', finalErr);
+  if (initialized && hasCustomers && hasProducts) {
+    return Promise.resolve();
   }
-},
+  // otherwise try to load (even nếu dataInitialized=true nhưng thiếu bảng)
+  return this.loadSampleData();
+  },
+
+loadSampleData: async function () {
+  const trySet = (obj) => {
+  try {
+    // if we have sample object, write missing tables OR if dataInitialized !== 'true' write them
+    const initialized = localStorage.getItem('dataInitialized') === 'true';
+    const hasCustomers = !!localStorage.getItem('customers');
+    const hasProducts = !!localStorage.getItem('products');
+
+    // Write customers/products/orders/importOrders if provided by sample data
+    // We write customers if missing OR if dataInitialized is false (to refresh on first load)
+    if (obj.customers && (!hasCustomers || !initialized)) {
+      localStorage.setItem("customers", JSON.stringify(obj.customers));
+      console.log("✅ customers saved (from sample data)");
+    }
+    if (obj.products && (!hasProducts || !initialized)) {
+      localStorage.setItem("products", JSON.stringify(obj.products));
+      console.log("✅ products saved (from sample data)");
+    }
+    if (obj.orders && (!localStorage.getItem("orders") || !initialized)) {
+      localStorage.setItem("orders", JSON.stringify(obj.orders));
+      console.log("✅ orders saved (from sample data)");
+    }
+    if (obj.importOrders && (!localStorage.getItem("importOrders") || !initialized)) {
+      localStorage.setItem("importOrders", JSON.stringify(obj.importOrders));
+      console.log("✅ importOrders saved (from sample data)");
+    }
+
+    // mark initialized
+    localStorage.setItem("dataInitialized", "true");
+    console.log("✅ dataInitialized set true");
+
+    return true;
+  } catch (e) {
+    console.error("Error saving sample data to localStorage", e);
+    return false;
+  }
+};
+
+
+  console.log("🔍 app.js import.meta.url =", import.meta.url);
+
+  // ============================================================
+  // 1) Dynamic IMPORT (resolve path bằng import.meta.url)
+  // ============================================================
+  const importPaths = [
+    "./sampledata/sampleData.js",
+    "../sampledata/sampleData.js",
+    "/js/main/sampledata/sampleData.js",
+    "/sampledata/sampleData.js",
+    "/sampleData.js",
+  ];
+
+  for (const p of importPaths) {
+    try {
+      const resolved = new URL(p, import.meta.url).href;
+      console.log("Trying import():", resolved);
+
+      const mod = await import(resolved);
+      let sample = mod.sampleData || mod.default || mod;
+
+      // Normalize: nếu sample là array => customers; nếu là single user object => bọc vào customers
+      const normalize = (s) => {
+        if (!s) return null;
+        if (Array.isArray(s)) return { customers: s };
+        if (typeof s === 'object') {
+          // nếu object có key customers/products/orders thì giữ nguyên
+          if (s.customers || s.products || s.orders || s.importOrders) return s;
+          // nếu object có vẻ như là một customer (username/password) -> wrap
+          if (s.username && s.password) return { customers: [s] };
+        }
+        return null;
+      };
+
+      const norm = normalize(sample);
+      if (norm) {
+        console.log("🍀 Import OK from", resolved, "| normalized shape:", Object.keys(norm));
+        if (trySet(norm)) return;
+      } else {
+        console.warn("⚠ Imported module didn't match expected shapes:", sample);
+      }
+    } catch (e) {
+      console.warn("import failed:", e.message);
+    } 
+    }  
+
+  // ============================================================
+  // 2) FETCH fallback
+  // ============================================================
+  const fetchPaths = [
+    "./sampledata/sampleData.js",
+    "../sampledata/sampleData.js",
+    "/js/main/sampledata/sampleData.js",
+    "/sampledata/sampleData.js",
+    "/sampleData.js",
+  ];
+
+  let text = null;
+
+  for (const p of fetchPaths) {
+    try {
+      const resolved = new URL(p, import.meta.url).href;
+      console.log("Trying fetch():", resolved);
+
+      const r = await fetch(resolved, { cache: "no-store" });
+      if (!r.ok) {
+        console.warn("fetch returned", r.status, "for", resolved);
+        continue;
+      }
+
+      text = await r.text();
+      console.log("📄 Fetch OK from", resolved);
+      break;
+    } catch (e) {
+      console.warn("fetch failed:", e.message);
+    }
+  }
+
+  if (!text) {
+    console.error("❌ Could NOT load sampleData via import or fetch.");
+    return;
+  }
+
+  // ============================================================
+  // 3) Try to EXTRACT Object Literal (export const sampleData = {...})
+  // ============================================================
+  try {
+    let objText = null;
+
+    const exportIdx = text.indexOf("export const sampleData");
+    if (exportIdx !== -1) {
+        let start = text.indexOf("=", exportIdx) + 1;
+        objText = text.slice(start);
+    } else {
+        const idx = text.indexOf("sampleData");
+        if (idx !== -1) {
+            const eq = text.indexOf("=", idx);
+            if (eq !== -1) objText = text.slice(eq + 1);
+        }
+    }
+
+    if (objText) {
+        const firstBrace = objText.indexOf("{");
+        if (firstBrace !== -1) {
+            let i = firstBrace,
+                depth = 0;
+            for (; i < objText.length; i++) {
+                if (objText[i] === "{") depth++;
+                else if (objText[i] === "}") {
+                    depth--;
+                    if (depth === 0) {
+                        objText = objText.slice(firstBrace, i + 1);
+                        break;
+                    }
+                }
+            }
+        }
+
+        const sampleObj = Function('"use strict"; return (' + objText + ")")();
+        if (sampleObj && typeof sampleObj === "object") {
+            const normObj = (function (s) {
+                if (Array.isArray(s)) return { customers: s };
+                if (s.customers || s.products || s.orders || s.importOrders) return s;
+                if (s.username && s.password) return { customers: [s] };
+                return null;
+            })(sampleObj);
+
+            if (normObj) {
+                console.log("✨ Eval OK — loaded sampleData (normalized)");
+                if (trySet(normObj)) return;
+            } else {
+                console.warn("⚠ Eval produced object but not recognized shape:", sampleObj);
+            }
+        }
+    }
+} catch (e) {
+    console.warn("Eval failed:", e.message);
+}
+
+  // ============================================================
+  // 4) Last Fallback — Inject script -> window.sampleData
+  // ============================================================
+  try {
+    console.log("Injecting script fallback...");
+
+    const script = document.createElement("script");
+    script.text = text;
+    document.head.appendChild(script);
+
+    await new Promise((res) => setTimeout(res, 50));
+
+    if (window.sampleData && trySet(window.sampleData)) {
+      console.log("🌟 Loaded from window.sampleData");
+      return;
+    }
+  } catch (e) {
+    console.warn("Script injection failed", e.message);
+  }
+
+  console.error("❌ ALL METHODS FAILED — sampleData NOT LOADED.");
+}
+
 // ---------- end replacement ----------
 
 };
 
+// ==================== AUTH SESSION VALIDATOR ====================
+KeySmith.auth = {
+  /**
+   * Validate session keys in localStorage:
+   * - If userRole === 'user' then ensure customers exists and contains that username (case-insensitive).
+   * - If validation fails, clear login-related keys (loggedInUser, userRole, rememberedUser).
+   * - Returns true if session is valid (userRole==='user' and customer exists OR admin session left intact),
+   *   false if session was cleared.
+   */
+  validateSession: function() {
+    try {
+      const loggedUser = localStorage.getItem('loggedInUser');
+      const userRole = localStorage.getItem('userRole');
+
+      // nothing to validate
+      if (!loggedUser || !userRole) return false;
+
+      // if it's a 'user' role, ensure customers list contains the username (case-insensitive) or email
+      if (userRole === 'user') {
+        const customers = JSON.parse(localStorage.getItem('customers') || '[]');
+        const curLower = String(loggedUser).trim().toLowerCase();
+
+        const found = customers.some(c => {
+          if (!c) return false;
+          const uname = (c.username || '').toString().trim().toLowerCase();
+          const email = (c.email || '').toString().trim().toLowerCase();
+          return uname === curLower || email === curLower;
+        });
+
+        if (!found) {
+          // invalid session: clear keys
+          console.warn('KeySmith.auth: invalid user session detected — clearing login keys');
+          localStorage.removeItem('loggedInUser');
+          localStorage.removeItem('userRole');
+          localStorage.removeItem('rememberedUser');
+          return false;
+        }
+
+        return true; // valid user session
+      }
+
+      // For admin role: optionally validate against ADMIN_ACCOUNTS; if not found, clear as well.
+      if (userRole === 'admin') {
+        const accounts = KeySmith.login && KeySmith.login.ADMIN_ACCOUNTS ? KeySmith.login.ADMIN_ACCOUNTS : [];
+        const isAdminValid = accounts.some(a => a.username === loggedUser);
+        if (!isAdminValid) {
+          console.warn('KeySmith.auth: invalid admin session detected — clearing login keys');
+          localStorage.removeItem('loggedInUser');
+          localStorage.removeItem('userRole');
+          localStorage.removeItem('rememberedUser');
+          return false;
+        }
+        return true;
+      }
+
+      // other roles: clear by default
+      localStorage.removeItem('loggedInUser');
+      localStorage.removeItem('userRole');
+      localStorage.removeItem('rememberedUser');
+      return false;
+    } catch (e) {
+      console.error('KeySmith.auth.validateSession error', e);
+      return false;
+    }
+  }
+};
+
+(function ensureSampleData() {
+  try {
+    const already = !!localStorage.getItem('customers');
+    // nếu muốn luôn ghi đè khi dev, đổi điều kiện bên dưới
+    if (!already) {
+      const sampleCustomers = [
+        {
+          username: "cust01",
+      password: "pass123",
+      img: "/img/blank-image.png",
+      firstName: "An",
+      lastName: "Nguyen",
+      email: "an.nguyen@example.com",
+      phone: "0901000001",
+      address: "Hanoi, Vietnam",
+      dateOfBirth: "1990-04-15",
+      status: "active",
+    },
+    {
+      username: "cust02",
+      password: "pass123",
+      img: "/img/blank-image.png",
+      firstName: "Binh",
+      lastName: "Tran",
+      email: "binh.tran@example.com",
+      phone: "0901000002",
+      address: "Ho Chi Minh City, Vietnam",
+      dateOfBirth: "1988-09-02",
+      status: "active",
+    },
+    {
+      username: "cust03",
+      password: "pass123",
+      img: "/img/blank-image.png",
+      firstName: "Chi",
+      lastName: "Le",
+      email: "chi.le@example.com",
+      phone: "0901000003",
+      address: "Da Nang, Vietnam",
+      dateOfBirth: "1995-06-30",
+      status: "active",
+    },
+    {
+      username: "cust04",
+      password: "pass123",
+      img: "/img/blank-image.png",
+      firstName: "Dung",
+      lastName: "Pham",
+      email: "dung.pham@example.com",
+      phone: "0901000004",
+      address: "Hai Phong, Vietnam",
+      dateOfBirth: "1985-12-11",
+      status: "active",
+    },
+    {
+      username: "cust05",
+      password: "pass123",
+      img: "/img/blank-image.png",
+      firstName: "Em",
+      lastName: "Ho",
+      email: "em.ho@example.com",
+      phone: "0901000005",
+      address: "Can Tho, Vietnam",
+      dateOfBirth: "1992-03-21",
+      status: "active",
+    },
+    {
+      username: "cust06",
+      password: "pass123",
+      img: "/img/blank-image.png",
+      firstName: "Minh",
+      lastName: "Vo",
+      email: "minh.vo@example.com",
+      phone: "0901000006",
+      address: "Nha Trang, Vietnam",
+      dateOfBirth: "1991-07-08",
+      status: "active",
+    },
+    {
+      username: "cust07",
+      password: "pass123",
+      img: "/img/blank-image.png",
+      firstName: "Hoa",
+      lastName: "Pham",
+      email: "hoa.pham@example.com",
+      phone: "0901000007",
+      address: "Hue, Vietnam",
+      dateOfBirth: "1998-11-19",
+      status: "active",
+    },
+    {
+      username: "cust08",
+      password: "pass123",
+      img: "/img/blank-image.png",
+      firstName: "Khanh",
+      lastName: "Do",
+      email: "khanh.do@example.com",
+      phone: "0901000008",
+      address: "Vung Tau, Vietnam",
+      dateOfBirth: "1987-02-03",
+      status: "inactive",
+    },
+    {
+      username: "cust09",
+      password: "pass123",
+      img: "/img/blank-image.png",
+      firstName: "Lan",
+      lastName: "Nguyen",
+      email: "lan.nguyen@example.com",
+      phone: "0901000009",
+      address: "Da Lat, Vietnam",
+      dateOfBirth: "1993-08-27",
+      status: "active",
+    },
+    {
+      username: "cust10",
+      password: "pass123",
+      img: "/img/blank-image.png",
+      firstName: "Quynh",
+      lastName: "Pham",
+      email: "quynh.pham@example.com",
+      phone: "0901000010",
+      address: "Bien Hoa, Vietnam",
+      dateOfBirth: "1996-01-05",
+      status: "active",
+    },
+      ];
+
+      localStorage.setItem('customers', JSON.stringify(sampleCustomers));
+      // nếu bạn muốn cho dataSync biết đã nạp dữ liệu:
+      localStorage.setItem('dataInitialized', 'true');
+      console.log('✅ Sample customers injected into localStorage');
+    } else {
+      console.log('ℹ️ customers already present — skip injecting sample data');
+    }
+  } catch (e) {
+    console.error('Could not inject sample data', e);
+  }
+})();
+
 // ==================== INITIALIZE ====================
 // Initialize everything when DOM is ready
-document.addEventListener('DOMContentLoaded', () => {
-    KeySmith.dataSync.init();
+document.addEventListener('DOMContentLoaded', async () => {
+    // Validate session first (so stale keys get removed before modules init)
+    try {
+      KeySmith.auth && KeySmith.auth.validateSession();
+    } catch (e) {
+      console.warn('Session validation failed', e);
+    }
+
+    // make dataSync.init return a promise that resolves when loadSampleData finishes
+    if (KeySmith.dataSync && KeySmith.dataSync.init) {
+        await KeySmith.dataSync.init();
+    }
     KeySmith.init();
 });
 
-
+window.KeySmith = KeySmith;

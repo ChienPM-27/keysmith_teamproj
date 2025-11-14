@@ -308,37 +308,6 @@
     box-shadow: 0 5px 20px rgba(255, 133, 25, 0.4);
 }
 
-/* Order Table */
-.order-table {
-    background: rgba(0, 0, 0, 0.4);
-    border-radius: 8px;
-    overflow: hidden;
-    margin-top: 20px;
-}
-
-.order-header-row {
-    display: flex;
-    background: var(--color-primary);
-    padding: 15px;
-    font-weight: 600;
-    font-size: 14px;
-    text-transform: uppercase;
-    color: white;
-}
-
-.order-col {
-    flex: 1;
-    text-align: center;
-    padding: 0 10px;
-}
-
-.order-empty-row {
-    padding: 40px;
-    text-align: center;
-    color: rgba(255, 255, 255, 0.6);
-    font-size: 16px;
-}
-
 /* Password Form */
 .password-form {
     max-width: 600px;

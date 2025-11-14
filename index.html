@@ -11,7 +11,6 @@
     <link rel="stylesheet" href="/css/main/util/contact.css" />
     <link rel="stylesheet" href="/css/main/util/404.css" />
     <link rel="stylesheet" href="/css/main/util/profile.css" />
-    <link rel="stylesheet" href="/css/main/admin_login.css">
 
     <link
       rel="icon"
@@ -35,8 +34,10 @@
     />
 
     <!-- JavaScript Libraries -->
-    <script src="/js/main/app.js"></script>
+    <script  src="/js/sampledata/sampleData.js"></script>
 
+    <script type = "module" src="/js/main/app.js"></script>
+    
     <script
       src="https://kit.fontawesome.com/da0c4cdc9f.js"
       crossorigin="anonymous"
@@ -511,27 +512,6 @@
         </div>
       </footer>
     </div>
-        <!-- ADMIN LOGIN SECTION -->
-    <section id="adminLogin" style="display:none;">
-    <div class="admin-login-wrapper">
-        <div class="admin-login-card">
-        <h2>Admin Sign In</h2>
-        <form id="adminLoginForm">
-            <div class="input-box">
-            <input id="adminUsername" name="username" type="text" placeholder="Username" required />
-            </div>
-            <div class="input-box">
-            <input id="adminPassword" name="password" type="password" placeholder="Password" required />
-            </div>
-            <div class="admin-actions">
-            <button type="submit" class="btn-admin">Sign in</button>
-            <button type="button" id="adminBack" class="btn-admin-secondary">Back</button>
-            </div>
-            <div id="adminMessage" aria-live="polite" style="margin-top:8px;"></div>
-        </form>
-        </div>
-    </div>
-    </section>
 
     <!-- LOGIN MODAL -->
     <div class="modal-overlay" id="modalOverlay">
@@ -674,28 +654,6 @@
       </div>
     </div>
 
-        <!-- ADMIN LOGIN SECTION -->
-    <section id="adminLogin" style="display:none;">
-    <div class="admin-login-wrapper">
-        <div class="admin-login-card">
-        <h2>Admin Sign In</h2>
-        <form id="adminLoginForm">
-            <div class="input-box">
-            <input id="adminUsername" name="username" type="text" placeholder="Username" required />
-            </div>
-            <div class="input-box">
-            <input id="adminPassword" name="password" type="password" placeholder="Password" required />
-            </div>
-            <div class="admin-actions">
-            <button type="submit" class="btn-admin">Sign in</button>
-            <button type="button" id="adminBack" class="btn-admin-secondary">Back</button>
-            </div>
-            <div id="adminMessage" aria-live="polite" style="margin-top:8px;"></div>
-        </form>
-        </div>
-    </div>
-    </section>
-
     <!-- PROFILE MODAL -->
     <div
       class="profile-modal-overlay"
@@ -722,12 +680,6 @@
                 <a href="#" class="active" data-section="profile-info">
                   <i class="fa-solid fa-user"></i>
                   <span>Account Settings</span>
-                </a>
-              </li>
-              <li>
-                <a href="#" data-section="profile-orders">
-                  <i class="fa-solid fa-box"></i>
-                  <span>My Orders</span>
                 </a>
               </li>
               <li>
@@ -820,23 +772,6 @@
                   Update Profile
                 </button>
               </form>
-            </div>
-
-            <!-- ORDERS SECTION -->
-            <div class="profile-section" data-section-name="profile-orders">
-              <h2>YOUR ORDERS</h2>
-              <div class="order-table">
-                <div class="order-header-row">
-                  <div class="order-col">Order ID</div>
-                  <div class="order-col">Date</div>
-                  <div class="order-col">Address</div>
-                  <div class="order-col">Value</div>
-                  <div class="order-col">Status</div>
-                </div>
-                <div class="order-empty-row">
-                  <p>You have no orders yet.</p>
-                </div>
-              </div>
             </div>
 
             <!-- PASSWORD SECTION -->
