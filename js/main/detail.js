@@ -1,8 +1,23 @@
 // Đây là nội dung file detail.js
 import { dataManager } from "../admin/DatabaseManager.js";
 // Import các hàm tiện ích chúng ta vừa export từ store.js
-import { addToCart } from "./store.js";
-import { updateCartCount, formatCurrency}  from "./utils.js";
+import { addToCart, showCartView, updateCartQuantity } from "./store.js";
+import { formatCurrency}  from "./utils.js";
+
+/**
+ * Lấy số lượng sản phẩm hiện tại trong giỏ hàng
+ * @param {number} productId - ID sản phẩm
+ * @returns {number} Số lượng trong giỏ
+ */
+function getCurrentQuantityInCart(productId) {
+  try {
+    const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+    const item = cart.find(item => item.id === productId);
+    return item ? (item.quantity || 0) : 0;
+  } catch (e) {
+    return 0;
+  }
+}
 
 // === KHAI BÁO BIẾN TOÀN CỤC ===
 let currentProduct = null; 
@@ -74,6 +89,13 @@ function initDetailModule() {
   if (increaseQtyBtn) {
     increaseQtyBtn.addEventListener("click", () => updateQuantity(1));
   }
+  if (quantityInput) {
+    quantityInput.addEventListener("input", validateQuantityInput);
+    quantityInput.addEventListener("blur", validateQuantityInput);
+  }
+  if (detailBuyNowBtn) {
+    detailBuyNowBtn.addEventListener("click", handleBuyNow);
+  }
   if (detailAddToCartBtn) {
     detailAddToCartBtn.addEventListener("click", handleAddToCart);
   }
@@ -126,6 +148,11 @@ export function showProductDetailById(productId) {
   // Reset số lượng về 1
   quantityInput.value = 1;
 
+  // Refresh quantity controls dựa trên giỏ hàng hiện tại
+  refreshQuantityControls();
+
+  // --- 3. Render Slider Ảnh và Bảng Specs ---
+
   // --- 3. Render Slider Ảnh và Bảng Specs ---
   renderImageSlider(currentProduct);
   renderSpecsTable(currentProduct.specs);
@@ -149,27 +176,167 @@ function showStoreView() {
 
 /**
  * Cập nhật ô số lượng
- * @param {number} change 
+ * @param {number} change
  */
 function updateQuantity(change) {
   let currentQty = parseInt(quantityInput.value, 10);
   currentQty = isNaN(currentQty) ? 1 : currentQty;
   currentQty += change;
-  
+
+  // Tính max quantity có thể thêm: stock - số lượng đã có trong giỏ
+  const stock = currentProduct ? (currentProduct.stock || 0) : 0;
+  const currentInCart = currentProduct ? getCurrentQuantityInCart(currentProduct.id) : 0;
+  const maxAvailable = Math.max(0, stock - currentInCart);
+
+  // Giới hạn trong khoảng 1 đến max available
   if (currentQty < 1) {
     currentQty = 1;
+  } else if (currentQty > maxAvailable) {
+    currentQty = maxAvailable;
   }
-  
+
+  // Nếu max available = 0, disable input và buttons
+  if (maxAvailable === 0) {
+    currentQty = 0;
+  }
+
   quantityInput.value = currentQty;
+
+  // Cập nhật trạng thái buttons
+  updateQuantityButtons();
+}
+
+/**
+ * Refresh quantity controls dựa trên stock và giỏ hàng hiện tại
+ */
+function refreshQuantityControls() {
+  if (!quantityInput || !currentProduct) return;
+
+  // Tính max quantity có thể thêm: stock - số lượng đã có trong giỏ
+  const stock = currentProduct.stock || 0;
+  const currentInCart = getCurrentQuantityInCart(currentProduct.id);
+  const maxAvailable = Math.max(0, stock - currentInCart);
+
+  // Set max attribute
+  quantityInput.max = maxAvailable;
+
+  // Set value
+  let currentValue = parseInt(quantityInput.value, 10) || 1;
+  if (maxAvailable === 0) {
+    currentValue = 0;
+  } else if (currentValue > maxAvailable) {
+    currentValue = maxAvailable;
+  } else if (currentValue < 1) {
+    currentValue = 1;
+  }
+
+  quantityInput.value = currentValue;
+
+  // Update buttons
+  updateQuantityButtons();
+}
+
+/**
+ * Cập nhật trạng thái disable/enable của các nút quantity
+ */
+function updateQuantityButtons() {
+  if (!decreaseQtyBtn || !increaseQtyBtn || !quantityInput) return;
+
+  const currentQty = parseInt(quantityInput.value, 10) || 0;
+
+  // Tính max quantity có thể thêm: stock - số lượng đã có trong giỏ
+  const stock = currentProduct ? (currentProduct.stock || 0) : 0;
+  const currentInCart = currentProduct ? getCurrentQuantityInCart(currentProduct.id) : 0;
+  const maxAvailable = Math.max(0, stock - currentInCart);
+
+  // Disable decrease nếu quantity <= 1 hoặc maxAvailable = 0
+  decreaseQtyBtn.disabled = currentQty <= 1 || maxAvailable === 0;
+
+  // Disable increase nếu đã đạt max available hoặc maxAvailable = 0
+  increaseQtyBtn.disabled = currentQty >= maxAvailable || maxAvailable === 0;
+
+  // Disable add to cart button nếu không thể thêm
+  if (detailAddToCartBtn) {
+    detailAddToCartBtn.disabled = maxAvailable === 0 || currentQty === 0;
+  }
+
+  // Disable buy now button nếu sản phẩm hết hàng hoặc out of stock
+  if (detailBuyNowBtn) {
+    detailBuyNowBtn.disabled = currentProduct.status === "outofstock";
+  }
+}
+
+/**
+ * Validate input số lượng khi user nhập trực tiếp
+ */
+function validateQuantityInput() {
+  let currentQty = parseInt(quantityInput.value, 10);
+
+  // Tính max quantity có thể thêm: stock - số lượng đã có trong giỏ
+  const stock = currentProduct ? (currentProduct.stock || 0) : 0;
+  const currentInCart = currentProduct ? getCurrentQuantityInCart(currentProduct.id) : 0;
+  const maxAvailable = Math.max(0, stock - currentInCart);
+
+  // Nếu không phải số hợp lệ, set về 1 (hoặc 0 nếu hết hàng)
+  if (isNaN(currentQty) || currentQty < 1) {
+    quantityInput.value = maxAvailable > 0 ? 1 : 0;
+  } else {
+    // Giới hạn không vượt quá max available
+    if (currentQty > maxAvailable) {
+      quantityInput.value = maxAvailable;
+    }
+  }
+
+  // Update max attribute
+  quantityInput.max = maxAvailable;
+
+  // Cập nhật trạng thái buttons
+  updateQuantityButtons();
 }
 
 function handleAddToCart() {
   if (!currentProduct) return;
-  
+
   const quantity = parseInt(quantityInput.value, 10) || 1;
-  
+
+  // Check nếu không còn sản phẩm để thêm
+  const stock = currentProduct ? (currentProduct.stock || 0) : 0;
+  const currentInCartBefore = getCurrentQuantityInCart(currentProduct.id);
+  const maxAvailableBefore = Math.max(0, stock - currentInCartBefore);
+
   // Gọi hàm addToCart đã import từ store.js
   addToCart(currentProduct.id, quantity);
+
+  // Update lại max quantity sau khi thêm vào giỏ
+  const currentInCartAfter = getCurrentQuantityInCart(currentProduct.id);
+  const maxAvailableAfter = Math.max(0, stock - currentInCartAfter);
+
+  // Update input max và value nếu cần
+  quantityInput.max = maxAvailableAfter;
+  if (parseInt(quantityInput.value, 10) > maxAvailableAfter) {
+    quantityInput.value = maxAvailableAfter;
+  }
+
+  // Update buttons
+  updateQuantityButtons();
+}
+
+/**
+ * Xử lý sự kiện nhấn nút Buy Now
+ */
+function handleBuyNow() {
+  if (!currentProduct) return;
+
+  // Tính tổng số lượng: số lượng nhập vào + số lượng đã có trong giỏ
+  const inputQuantity = parseInt(quantityInput.value, 10) || 0;
+  const currentInCart = getCurrentQuantityInCart(currentProduct.id);
+  const totalQuantity = inputQuantity + currentInCart;
+
+  // Sử dụng hàm updateCartQuantity từ store.js để cập nhật giỏ hàng
+  updateCartQuantity(currentProduct.id, totalQuantity);
+
+  // Chuyển sang trang giỏ hàng
+  showCartView();
 }
 
 function renderImageSlider(product) {
