@@ -209,7 +209,7 @@ KeySmith.login = {
         if (customers.find(u => u.username === username)) {
             alert('❌ Username already exists!');
             return;
-        }
+        } 
 
         // Check email trùng
         const email = username.includes('@') ? username : '';
