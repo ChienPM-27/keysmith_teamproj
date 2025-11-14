@@ -960,25 +960,26 @@ hr {
 
 #product-detail .buy-buttons .add-cart,
 #product-detail .buy-buttons .add-cart {
-  background-color: #e0f2f7;
-  color: #007bff;
-  border: 2px solid #007bff;
+  background-color: #fff;
+  color: var(--color-primary);
+  border: 2px solid var(--color-primary);
 }
 
 #product-detail .buy-buttons .add-cart:hover,
 #product-detail .buy-buttons .add-cart:hover {
-  background-color: #b3e0ed;
+  border-color: var(--color-primary-hover);
+  color: var(--color-primary-hover);
 }
 
 #product-detail .buy-buttons .buy-now,
 #product-detail .buy-buttons .buy-now {
-  background-color: #007bff;
+  background-color: var(--color-primary);
   color: #fff;
 }
 
 #product-detail .buy-buttons .buy-now:hover,
 #product-detail .buy-buttons .buy-now:hover {
-  background-color: #0056b3;
+  background-color: var(--color-primary-hover);
 }
 
 #product-detail .quantity-container,
