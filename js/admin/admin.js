@@ -2043,7 +2043,7 @@ window._analyticsModuleInited = window._analyticsModuleInited || false;
   function updateStatsAndLists(agg) {
     const statValueEls = sectionEl.querySelectorAll(".stats-grid .stat-card .stat-value");
     const totalRevenue = agg.list.reduce((s, d) => s + (d.revenue || 0), 0);
-    const totalOrders = agg.list.reduce((s, d) => s + (d.orders || 0), 0);
+    const totalOrders = dataManager.getAll("orders").length - dataManager.getAll("orders").filter(o => o.status === 'cancelled').length;
     const avgPerOrder = totalOrders ? Math.round(totalRevenue / totalOrders) : 0;
     const profit = Math.round(totalRevenue * 0.1);
 
