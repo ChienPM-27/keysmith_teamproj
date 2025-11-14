@@ -213,7 +213,7 @@ p {
    4. HERO SECTION / BANNER CHÍNH
 ========================================================== */
 #hero {
-    background-image: url(/img/hero/header_bg.png);
+    background-image: url(/img/hero/space_bg.jpg);
     height: 100vh;
     width: 100%;
     background-size: cover;
