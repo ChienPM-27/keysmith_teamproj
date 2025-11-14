@@ -130,7 +130,7 @@ const { dataManager } = require("../admin/DatabaseManager");
       try {
         console.log('💾 Saving customer detail:', updatedCustomer);
 
-        let customers = JSON.parse(localStorage.getItem('customers')) || [];
+        let customers = dataManager.getAll("customers") || [];
         const cur = (this.currentUser || '').toString().trim().toLowerCase();
         const index = customers.findIndex(c => {
           if (!c) return false;
@@ -149,7 +149,7 @@ const { dataManager } = require("../admin/DatabaseManager");
           updatedAt: new Date().toISOString()
         };
 
-        localStorage.setItem('customers', JSON.stringify(customers));
+        dataManager.saveAll("customers", customers);
         this.currentCustomerDetail = customers[index];
 
         console.log('✅ Customer saved successfully');
