@@ -27,6 +27,8 @@ const DEFAULT_FILTERS = {
   search: "",
 };
 
+const NON_DISPLAYABLE_STATUSES = new Set(["inactive", "deleted"]);
+
 /**
  * Formatter tiền tệ USD
  */
@@ -62,7 +64,14 @@ let currentFilters = { ...DEFAULT_FILTERS };
  * @returns {Array} Mảng sản phẩm
  */
 function getAllProducts() {
-  return dataManager.getAll("products") || [];
+  const products = dataManager.getAll("products") || [];
+  return products.filter(isProductDisplayable);
+}
+
+function isProductDisplayable(product) {
+  if (!product) return false;
+  const status = (product.status || "").toLowerCase();
+  return !NON_DISPLAYABLE_STATUSES.has(status);
 }
 
 /**
@@ -571,6 +580,14 @@ export function addToCart(productId, quantity = 1) {
     return;
   }
 
+  const status = (product.status || "").toLowerCase();
+  if (NON_DISPLAYABLE_STATUSES.has(status)) {
+    if (window.showToast) {
+      window.showToast("Sản phẩm không khả dụng.", "error");
+    }
+    return;
+  }
+
   // Kiểm tra quantity hợp lệ
   if (quantity <= 0) {
     if (window.showToast) {
@@ -634,6 +651,14 @@ export function updateCartQuantity(productId, newQuantity) {
     return;
   }
 
+  const status = (product.status || "").toLowerCase();
+  if (NON_DISPLAYABLE_STATUSES.has(status)) {
+    if (window.showToast) {
+      window.showToast("Sản phẩm không khả dụng.", "error");
+    }
+    return;
+  }
+
   // Kiểm tra quantity hợp lệ
   if (newQuantity <= 0) {
     if (window.showToast) {
@@ -688,7 +713,14 @@ function populateBrandsDropdown() {
   const brandsSelect = document.getElementById("brands");
   if (!brandsSelect) return;
 
-  const brands = dataManager.getAllBrands();
+  const products = getAllProducts();
+  const brands = Array.from(
+    new Set(
+      products
+        .map((product) => product.specs?.brand)
+        .filter((brand) => Boolean(brand))
+    )
+  );
   brands.forEach((brand) => {
     const option = document.createElement("option");
     option.value = brand;
@@ -704,7 +736,14 @@ function populateCategoryDropdown() {
   const categorySelect = document.getElementById("category");
   if (!categorySelect) return;
 
-  const categories = dataManager.getAllCategories();
+  const products = getAllProducts();
+  const categories = Array.from(
+    new Set(
+      products
+        .map((product) => product.specs?.category)
+        .filter((category) => Boolean(category))
+    )
+  );
   categories.forEach((category) => {
     const option = document.createElement("option");
     option.value = category;
@@ -720,7 +759,14 @@ function populateColorDropdown() {
   const colorSelect = document.getElementById("color");
   if (!colorSelect) return;
 
-  const colors = dataManager.getAllColors();
+  const products = getAllProducts();
+  const colors = Array.from(
+    new Set(
+      products
+        .map((product) => product.specs?.color)
+        .filter((color) => Boolean(color))
+    )
+  );
   colors.forEach((color) => {
     const option = document.createElement("option");
     option.value = color;
@@ -1075,14 +1121,14 @@ function renderCartView() {
     // Lấy thông tin sản phẩm
     let title = `#${id}`;
     let meta = "";
-    let thumb = "/img/blank-image.png";
+    let thumb = "";
     try {
       if (dataManager) {
         const p = dataManager.getById("products", id);
         if (p) {
           title = p.title || title;
           meta = (p.specs && p.specs.color) ? `• ${p.specs.color}` : (p.sku ? `• ${p.sku}` : "");
-          thumb = p.mainImage || p.image || thumb;
+          thumb = p.mainImage || p.image;
         }
       }
     } catch (e) {
@@ -1217,6 +1263,7 @@ function wireCartEvents() {
     const del = e.target.closest(".delete-one");
     const clear = e.target.closest(".btn-clear");
     const checkoutBtn = e.target.closest(".checkout-visual");
+    const orderHistoryBtn = e.target.closest("#btn-order-history");
 
     if (inc || dec) {
       const wrapper = (inc || dec).closest(".qty-controls");
@@ -1257,6 +1304,10 @@ function wireCartEvents() {
 
     if (checkoutBtn) {
       showCheckout();
+    }
+
+    if (orderHistoryBtn) {
+      showOrderHistory();
     }
   });
 
@@ -1361,13 +1412,13 @@ function renderCheckoutItems() {
     totalMoney += qty * unit;
 
     let title = String(pid);
-    let thumb = "/img/blank-image.png";
+    let thumb = "";
     try {
       if (dataManager) {
         const p = dataManager.getById("products", pid);
         if (p) {
           title = p.title || title;
-          thumb = p.mainImage || p.image || thumb;
+          thumb = p.mainImage || p.image;
         }
       }
     } catch (e) {}
@@ -1441,46 +1492,81 @@ function placeOrder() {
     return;
   }
 
-  // Tạo đơn hàng
-  const orders = JSON.parse(localStorage.getItem("orders") || "[]");
-  const orderId = 'ORD-' + Date.now();
+  // Tạo đơn hàng và lưu vào dataManager (chuẩn hóa schema theo DatabaseManager)
   const detailedItems = itemsToOrder.map(it => {
     let title = `#${it.id}`;
-    let thumb = "/img/blank-image.png";
+    let thumb = it.mainImage;
     try {
-      if (dataManager) {
+      if (typeof dataManager !== 'undefined' && dataManager) {
         const p = dataManager.getById("products", Number(it.id));
+        console.log(`${p.title}`);
         if (p) {
           title = p.title || title;
           thumb = p.mainImage || p.image || thumb;
         }
       }
     } catch (e) {}
-    const qty = Number(it.quantity) || 0;
+    const qty = Number(it.quantity) || Number(it.qty) || 0;
     const unit = Number(it.unitPrice) || 0;
     return {
       id: Number(it.id),
-      title,
-      qty,
+      quantity: qty,
       unitPrice: unit,
-      amount: qty * unit,
+      amountPrice: qty * unit,
+      title,
       thumb
     };
   });
 
-  const totalAmount = detailedItems.reduce((s, i) => s + (i.amount || 0), 0);
-  const orderObj = {
-    id: orderId,
-    createdAt: new Date().toISOString(),
-    items: detailedItems,
-    total: totalAmount,
-    shipping: addr,
-    paymentMethod: payment,
-    status: 'placed'
+  const totalAmount = detailedItems.reduce((s, i) => s + (i.amountPrice || 0), 0);
+
+  // include username if logged in
+  const currentUser = (function(){
+    try { return localStorage.getItem('loggedInUser') || null; } catch(e) { return null; }
+  })();
+
+  const orderForDb = {
+    // leave idOrder undefined so dataManager can auto-assign
+    username: currentUser || undefined,
+    items: detailedItems.map(it => ({ 
+      id: it.id, 
+      quantity: it.quantity, 
+      unitPrice: it.unitPrice, 
+      amountPrice: it.amountPrice,
+      title: it.title,
+      thumb: it.thumb
+    })),
+    totalPrice: totalAmount,
+    date: new Date().toISOString(),
+    status: 'new',
+    userDeliveryPhone: addr.phone || '',
+    userDeliveryAdress: addr.line || ''
   };
 
-  orders.unshift(orderObj);
-  localStorage.setItem("orders", JSON.stringify(orders));
+  try {
+    if (typeof dataManager !== 'undefined' && dataManager && typeof dataManager.add === 'function') {
+      dataManager.add('orders', orderForDb);
+    } else {
+      // fallback to legacy storage
+      const orders = JSON.parse(localStorage.getItem("orders") || "[]");
+      // assign an id if not present - keep detailedItems which already has title and thumb
+      const fallbackOrder = { 
+        id: 'ORD-' + Date.now(), 
+        createdAt: orderForDb.date, 
+        items: detailedItems, 
+        total: totalAmount, 
+        paymentMethod: payment, 
+        status: 'new',
+        username: currentUser || undefined,
+        userDeliveryPhone: addr.phone || '',
+        userDeliveryAdress: addr.line || ''
+      };
+      orders.unshift(fallbackOrder);
+      localStorage.setItem("orders", JSON.stringify(orders));
+    }
+  } catch (e) {
+    console.error('Failed to save order to dataManager:', e);
+  }
 
   // Xóa sản phẩm đã đặt khỏi giỏ hàng
   const remaining = cart.filter(it => !selectedIds.includes(Number(it.id)));
@@ -1638,6 +1724,9 @@ function initCartModule() {
     }
   });
 
+  // Toggle order history button based on login status
+  toggleOrderHistoryButton();
+
   // Render cart lần đầu nếu cần
   if (document.getElementById("cart-view") && getComputedStyle(document.getElementById("cart-view")).display !== "none") {
     renderCartView();
@@ -1704,6 +1793,12 @@ function saveShippingAddressFromInputs() {
     return false;
   }
 
+  const phoneRe = /^0\d{9}$/;
+  if (!phoneRe.test(phone)) {
+    showToast("Số điện thoại không hợp lệ", "error");
+    return false;
+  }
+
   const obj = { name, phone, line, city, postal };
   localStorage.setItem("shipping", JSON.stringify(obj));
 
@@ -1713,6 +1808,295 @@ function saveShippingAddressFromInputs() {
   showToast("Đã lưu địa chỉ giao hàng", "success");
   return true;
 }
+
+// ========== ORDER HISTORY MODULE ==========
+/**
+ * Kiểm tra trạng thái đăng nhập của user
+ * @returns {Object|null} Thông tin user nếu đã đăng nhập, null nếu chưa
+ */
+function getCurrentUser() {
+  try {
+    const loggedUser = localStorage.getItem('loggedInUser');
+    const userRole = localStorage.getItem('userRole');
+
+    if (loggedUser && userRole === 'user') {
+      return { username: loggedUser, role: userRole };
+    }
+    return null;
+  } catch (error) {
+    console.error('Error checking login status:', error);
+    return null;
+  }
+}
+
+/**
+ * Hiển thị hoặc ẩn nút order history dựa trên trạng thái đăng nhập
+ */
+function toggleOrderHistoryButton() {
+  const orderHistoryBtn = document.getElementById('btn-order-history');
+  if (!orderHistoryBtn) return;
+
+  const currentUser = getCurrentUser();
+  if (currentUser) {
+    orderHistoryBtn.style.display = 'inline-block';
+  } else {
+    orderHistoryBtn.style.display = 'none';
+  }
+}
+
+/**
+ * Lấy danh sách đơn hàng của user hiện tại
+ * @returns {Array} Mảng các đơn hàng
+ */
+function getUserOrders() {
+  try {
+    const currentUser = getCurrentUser();
+    if (!currentUser) return [];
+
+    // Prefer dataManager (central DB). If not available, fall back to legacy localStorage 'orders'
+    if (typeof dataManager !== 'undefined' && dataManager && typeof dataManager.getOrdersByUsername === 'function') {
+      return dataManager.getOrdersByUsername(currentUser.username) || [];
+    }
+
+    // Legacy fallback
+    const orders = JSON.parse(dataManager.getAll('orders') || '[]');
+    // Try to filter by username if present
+    return orders.filter(o => !o.username || o.username === currentUser.username);
+  } catch (error) {
+    console.error('Error getting user orders:', error);
+    return [];
+  }
+}
+
+/**
+ * Hiển thị modal lịch sử đơn hàng
+ */
+function showOrderHistory() {
+  const currentUser = getCurrentUser();
+  if (!currentUser) {
+    if (window.showToast) {
+      window.showToast('Vui lòng đăng nhập để xem lịch sử đơn hàng', 'error');
+    }
+    return;
+  }
+
+  // Tạo modal HTML nếu chưa tồn tại
+  let modal = document.getElementById('order-history-modal');
+  if (!modal) {
+    modal = createOrderHistoryModal();
+    document.body.appendChild(modal);
+  }
+
+  // Render orders
+  renderOrderHistory(modal);
+
+  // Hiển thị modal
+  modal.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+/**
+ * Tạo modal HTML cho order history
+ * @returns {HTMLElement} Modal element
+ */
+function createOrderHistoryModal() {
+  const modal = document.createElement('div');
+  modal.id = 'order-history-modal';
+  modal.className = 'order-history-modal';
+  modal.innerHTML = `
+    <div class="order-history-backdrop" id="order-history-backdrop"></div>
+    <div class="order-history-card" role="dialog" aria-modal="true" aria-labelledby="order-history-title">
+      <header class="order-history-header">
+        <h3 id="order-history-title">Lịch sử đơn hàng</h3>
+        <button class="order-history-close" id="order-history-close" title="Đóng">&times;</button>
+      </header>
+      <div class="order-history-body" id="order-history-body">
+        <!-- Orders will be rendered here -->
+      </div>
+    </div>
+  `;
+
+  // Add event listeners
+  const backdrop = modal.querySelector('#order-history-backdrop');
+  const closeBtn = modal.querySelector('#order-history-close');
+
+  const closeModal = () => {
+    modal.style.display = 'none';
+    document.body.style.overflow = '';
+  };
+
+  backdrop.addEventListener('click', closeModal);
+  closeBtn.addEventListener('click', closeModal);
+
+  return modal;
+}
+
+/**
+ * Render danh sách đơn hàng vào modal
+ * @param {HTMLElement} modal - Modal element
+ */
+function renderOrderHistory(modal) {
+  const body = modal.querySelector('#order-history-body');
+  if (!body) return;
+
+  const orders = getUserOrders();
+
+  if (!orders.length) {
+    body.innerHTML = '<div class="no-orders">Bạn chưa có đơn hàng nào.</div>';
+    return;
+  }
+
+  body.innerHTML = '';
+
+  orders.forEach(order => {
+    const orderElement = createOrderElement(order);
+    body.appendChild(orderElement);
+  });
+}
+
+/**
+ * Tạo element HTML cho một đơn hàng
+ * @param {Object} order - Thông tin đơn hàng
+ * @returns {HTMLElement} Order element
+ */
+function createOrderElement(order) {
+  const orderDiv = document.createElement('div');
+  orderDiv.className = 'order-item';
+  // normalize created date and status
+  const createdDateRaw = order.createdAt || order.date || order.createdAtISO || order.dateCreated;
+  const createdDate = createdDateRaw ? new Date(createdDateRaw).toLocaleDateString('vi-VN') : '';
+  const statusText = getOrderStatusText(order.status || order.state);
+  const statusClass = getOrderStatusClass(order.status || order.state);
+
+  // normalize items (support legacy and DB shapes)
+  const items = Array.isArray(order.items) ? order.items : (order.itemsList || []);
+
+  orderDiv.innerHTML = `
+    <div class="order-header">
+      <div class="order-id">Đơn hàng: ${escapeHtml(order.idOrder || order.id || order.idOrder || '')}</div>
+      <div class="order-date">${createdDate}</div>
+      <div class="order-status ${statusClass}">${statusText}</div>
+    </div>
+    <div class="order-items">
+      ${items.map(item => {
+        const qty = item.qty || item.quantity || 0;
+        const unit = item.unitPrice || item.price || 0;
+        const amount = item.amount || item.amountPrice || (qty * unit);
+        const thumb = item.thumb || item.image || '/img/blank-image.png';
+        const title = item.title || item.name || `#${item.id}`;
+        return `
+        <div class="order-item-row">
+          <img src="${thumb}" alt="${escapeHtml(title)}" />
+          <div class="item-info">
+            <div class="item-title">${escapeHtml(title)}</div>
+            <div class="item-details">SL: ${qty} × ${formatCurrency(unit)}</div>
+          </div>
+          <div class="item-total">${formatCurrency(amount)}</div>
+        </div>`;
+      }).join('')}
+    </div>
+    <div class="order-footer">
+      <div class="order-total">
+        <strong>Tổng cộng: ${formatCurrency(order.total || order.totalPrice || order.totalAmount || 0)}</strong>
+      </div>
+      <div class="order-payment">Thanh toán: ${getPaymentMethodText(order.paymentMethod || order.payment)}</div>
+    </div>
+  `;
+
+  return orderDiv;
+}
+
+/**
+ * Lấy text hiển thị cho trạng thái đơn hàng
+ * @param {string} status - Mã trạng thái
+ * @returns {string} Text hiển thị
+ */
+function getOrderStatusText(status) {
+  const statusMap = {
+    'placed': 'Đã đặt',
+    'confirmed': 'Đã xác nhận',
+    'shipped': 'Đang giao',
+    'delivered': 'Đã giao',
+    'cancelled': 'Đã hủy'
+  };
+  return statusMap[status] || status;
+}
+
+/**
+ * Lấy class CSS cho trạng thái đơn hàng
+ * @param {string} status - Mã trạng thái
+ * @returns {string} Class CSS
+ */
+function getOrderStatusClass(status) {
+  const classMap = {
+    'placed': 'status-placed',
+    'confirmed': 'status-confirmed',
+    'shipped': 'status-shipped',
+    'delivered': 'status-delivered',
+    'cancelled': 'status-cancelled'
+  };
+  return classMap[status] || '';
+}
+
+/**
+ * Lấy text hiển thị cho phương thức thanh toán
+ * @param {string} method - Mã phương thức
+ * @returns {string} Text hiển thị
+ */
+function getPaymentMethodText(method) {
+  const methodMap = {
+    'cod': 'Tiền mặt khi nhận hàng',
+    'bank': 'Chuyển khoản',
+    'online': 'Thanh toán online'
+  };
+  return methodMap[method] || method;
+}
+
+// ========== KHỞI TẠO ==========
+document.addEventListener("DOMContentLoaded", () => {
+  initProductModule();
+  initCartModule();
+  // Initialize store-page header & mobile nav
+  if (typeof initStorePageHeader === "function") initStorePageHeader();
+});
+
+// Migration helper: move legacy localStorage 'orders' into dataManager.database if needed
+function migrateLegacyOrdersIntoDataManager() {
+  try {
+    if (typeof dataManager === 'undefined' || !dataManager) return;
+
+    const legacy = JSON.parse(localStorage.getItem('orders') || '[]');
+    if (!Array.isArray(legacy) || legacy.length === 0) return;
+
+    // Check whether database already has orders
+    const existing = dataManager.getAll('orders') || [];
+    // If DB already contains orders, skip migration
+    if (existing.length > 0) return;
+
+    legacy.reverse().forEach(o => {
+      // Normalize each legacy order to DB schema
+      const items = (o.items || []).map(it => ({ id: it.id, quantity: it.quantity || it.qty || 0, unitPrice: it.unitPrice || it.price || 0, amountPrice: it.amountPrice || it.amount || 0 }));
+      const orderForDb = {
+        username: o.username || o.user || undefined,
+        items,
+        totalPrice: o.total || o.totalPrice || o.amount || 0,
+        date: o.createdAt || o.date || new Date().toISOString(),
+        status: o.status || 'placed',
+        userDeliveryPhone: (o.shipping && o.shipping.phone) || o.userDeliveryPhone || '' ,
+        userDeliveryAdress: (o.shipping && o.shipping.line) || o.userDeliveryAdress || ''
+      };
+      dataManager.add('orders', orderForDb);
+    });
+
+    // Optionally remove legacy orders key
+    // localStorage.removeItem('orders');
+  } catch (e) {
+    console.warn('Migration of legacy orders failed:', e);
+  }
+}
+
+// Run migration once on load (if dataManager exists)
+try { migrateLegacyOrdersIntoDataManager(); } catch(e) {}
 
 // ========== EXPORTS ==========
 /**
@@ -1725,11 +2109,4 @@ window.showCheckout = showCheckout;
 window.closeCheckout = closeCheckout;
 window.placeOrder = placeOrder;
 window.addToCart = addToCart;
-
-// ========== KHỞI TẠO ==========
-document.addEventListener("DOMContentLoaded", () => {
-  initProductModule();
-  initCartModule();
-  // Initialize store-page header & mobile nav
-  if (typeof initStorePageHeader === "function") initStorePageHeader();
-});
+window.showOrderHistory = showOrderHistory;

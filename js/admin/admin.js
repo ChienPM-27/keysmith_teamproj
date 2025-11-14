@@ -2,144 +2,169 @@
 
 import { dataManager } from "./DatabaseManager.js";
 
+
 // ===============================
 // ❌️ KHÔNG ĐƯỢC SỬA ĐỔI (báo lên nhóm nếu cần thay đổi)
 // ===============================
 
-// Kiểm tra quyền truy cập admin
 document.addEventListener("DOMContentLoaded", () => {
   const user = localStorage.getItem("loggedInUser");
   const role = localStorage.getItem("userRole");
   if (!user || role !== "admin") {
-    alert(
-      "⚠️ Truy cập bị từ chối. Vui lòng đăng nhập bằng tài khoản quản trị."
-    );
+    alert("⚠️ Truy cập bị từ chối. Vui lòng đăng nhập bằng tài khoản quản trị.");
     localStorage.removeItem("loggedInUser");
     localStorage.removeItem("userRole");
     localStorage.removeItem("rememberedUser");
     window.location.href = "/index.html";
+    return;
   }
 
-  // Hiển thị/ẩn các section khi bấm vào sidebar (chỉ phần điều hướng)
+  // ===============================
+  // FIX: SIDEBAR SECTION SWITCHING
+  // ===============================
+  //responsive
+const menuIconBtnn = document.querySelector('.menu-icon-btn');
+const adminSidebarLabels = Array.from(document.querySelectorAll('.admin-sidebar__label'));
+const adminSideBar = document.querySelector('#adminSidebar');
+function toggleSidebar() {
+    if (!menuIconBtnn || !adminSideBar) {
+        return;
+    }
+
+    menuIconBtnn.addEventListener('click', () => {
+        adminSideBar.classList.toggle('open');
+        if (adminSidebarLabels.length) {
+            adminSidebarLabels.forEach(label => label.classList.toggle('hide-label'));
+        }
+    });
+}
+
+toggleSidebar();
+
   const sidebarItems = Array.from(
-    document.querySelectorAll(
-      ".admin-sidebar .admin-sidebar__nav .admin-sidebar__list .admin-sidebar__item.tab-content"
-    )
+    document.querySelectorAll('.admin-sidebar__nav .admin-sidebar__item.tab-content')
   );
-  const sections = Array.from(document.querySelectorAll("main .section"));
+  const sections = Array.from(document.querySelectorAll('main .section'));
+
+  console.log('Found sidebar items:', sidebarItems.length);
+  console.log('Found sections:', sections.length);
+
   if (sidebarItems.length && sections.length) {
     sidebarItems.forEach((item, idx) => {
-      item.addEventListener("click", (e) => {
+      item.addEventListener('click', (e) => {
         e.preventDefault();
-        // xóa active trước đó
-        sidebarItems.forEach((si) => si.classList.remove("active"));
-        sections.forEach((sec) => sec.classList.remove("active"));
-
-        // bật active cho item và section tương ứng (theo chỉ số)
-        item.classList.add("active");
-        if (sections[idx]) sections[idx].classList.add("active");
-
-        // lazy-init modules when their section becomes active (idempotent)
-        const activated = sections[idx];
-        if (activated) {
-          // Customer section: đảm bảo init (một lần) rồi luôn render khi activated
-          if (
-            activated.id === "customer-section" ||
-            activated.classList.contains("customer-section")
-          ) {
-            if (!window._customerModuleInited) initCustomerModule();
+        
+        console.log('Clicked sidebar item:', idx);
+        
+        // Remove active from all items
+        sidebarItems.forEach(si => si.classList.remove('active'));
+        sections.forEach(sec => sec.classList.remove('active'));
+        
+        // Add active to clicked item and corresponding section
+        item.classList.add('active');
+        if (sections[idx]) {
+          sections[idx].classList.add('active');
+          console.log('Activated section:', sections[idx].id);
+          
+          // Initialize module if needed
+          const sectionId = sections[idx].id;
+          
+          // Customer section
+          if (sectionId === 'customer-section' || sections[idx].classList.contains('customer-wrapper')) {
+            if (!window._customerModuleInited) {
+              console.log('Initializing customer module...');
+              initCustomerModule();
+            }
             renderCustomers();
           }
-
-          // Orders section: đảm bảo init (một lần) rồi luôn render khi activated
-          if (
-            activated.id === "orders-section" ||
-            activated.classList.contains("#orders-section")
-          ) {
-            if (!window._orderModuleInited) initOrderModule();
+          
+          // Orders section
+          if (sectionId === 'orders-section' || sections[idx].classList.contains('orders-wrapper')) {
+            if (!window._orderModuleInited) {
+              console.log('Initializing order module...');
+              initOrderModule();
+            }
             renderOrders();
+          }
+          
+          // Warehouse section
+          if (sectionId === 'warehouse-section' || sections[idx].classList.contains('warehouse-wrapper')) {
+            console.log('Initializing warehouse module...');
+            initWarehouseModule();
+            switchWarehouseTab('inventory');
           }
         }
       });
     });
+  } else {
+    console.error('Could not find sidebar items or sections');
   }
 
-  // Xử lý 3 nút phía dưới (Home, Admin, Log out)
+  // ===============================
+  // BOTTOM SIDEBAR (Home, Admin, Logout)
+  // ===============================
   const bottomItems = Array.from(
-    document.querySelectorAll(
-      ".admin-sidebar .admin-sidebar__actions .admin-sidebar__list .admin-sidebar__item.user-logout"
-    )
+    document.querySelectorAll('.admin-sidebar__actions .admin-sidebar__item.user-logout')
   );
-  // bottomItems[0] = Home page, [1] = Admin (display), [2] = Log out
-  if (bottomItems.length) {
-    const clearAuthAndRedirect = (msg) => {
-      if (msg && !confirm(msg)) return;
-      localStorage.removeItem("loggedInUser");
-      localStorage.removeItem("userRole");
-      localStorage.removeItem("rememberedUser");
-      window.location.href = "/index.html";
-    };
 
+  if (bottomItems.length >= 3) {
+    // Home page button
     if (bottomItems[0]) {
-      bottomItems[0].addEventListener("click", (e) => {
+      bottomItems[0].addEventListener('click', (e) => {
         e.preventDefault();
-        clearAuthAndRedirect(
-          "Bạn có muốn quay về trang chủ? Bạn sẽ bị đăng xuất khỏi trang quản trị."
-        );
+        if (confirm('Bạn có muốn quay về trang chủ? Bạn sẽ bị đăng xuất khỏi trang quản trị.')) {
+          localStorage.removeItem('loggedInUser');
+          localStorage.removeItem('userRole');
+          localStorage.removeItem('rememberedUser');
+          window.location.href = '/index.html';
+        }
       });
     }
 
+    // Admin info button
     if (bottomItems[1]) {
-      bottomItems[1].addEventListener("click", (e) => {
+      bottomItems[1].addEventListener('click', (e) => {
         e.preventDefault();
-        const current = localStorage.getItem("loggedInUser") || "Admin";
-        alert("Người dùng hiện tại: " + current);
+        const current = localStorage.getItem('loggedInUser') || 'Admin';
+        alert('Người dùng hiện tại: ' + current);
       });
     }
 
+    // Logout button
     if (bottomItems[2]) {
-      bottomItems[2].addEventListener("click", (e) => {
+      bottomItems[2].addEventListener('click', (e) => {
         e.preventDefault();
-        if (confirm("Bạn có chắc muốn đăng xuất không?")) {
-          localStorage.removeItem("loggedInUser");
-          localStorage.removeItem("userRole");
-          localStorage.removeItem("rememberedUser");
-          alert("👋 Đăng xuất thành công!");
-          window.location.href = "/index.html";
+        if (confirm('Bạn có chắc muốn đăng xuất không?')) {
+          localStorage.removeItem('loggedInUser');
+          localStorage.removeItem('userRole');
+          localStorage.removeItem('rememberedUser');
+          alert('👋 Đăng xuất thành công!');
+          window.location.href = '/index.html';
         }
       });
     }
   }
 
-  // Xử lý responsive sidebar toggle
-  const menuIconBtn = document.querySelector(".menu-icon-btn");
-  const adminSidebar = document.querySelector(".admin-sidebar");
-
-  if (menuIconBtn && adminSidebar) {
-    menuIconBtn.addEventListener("click", (e) => {
+  // ===============================
+  // MOBILE MENU TOGGLE
+  // ===============================
+  const menuIconBtn = document.querySelector('.menu-icon-btn');
+  const sidebar = document.getElementById('adminSidebar');
+  
+  if (menuIconBtn && sidebar) {
+    menuIconBtn.addEventListener('click', (e) => {
       e.preventDefault();
-      // Toggle mobile-open class cho responsive
-      adminSidebar.classList.toggle("mobile-open");
-    });
-
-    // Đóng sidebar khi click overlay trên mobile
-    adminSidebar.addEventListener("click", (e) => {
-      if (
-        e.target === adminSidebar &&
-        adminSidebar.classList.contains("mobile-open")
-      ) {
-        adminSidebar.classList.remove("mobile-open");
-      }
+      sidebar.classList.toggle('open');
     });
   }
 });
-// ===============================
-// ✔️ ĐƯỢC PHÉP SỬA ĐỔI
-// ===============================
 
-// lazy-init flags for modules (idempotence guards)
+// ===============================
+// INITIALIZATION FLAGS
+// ===============================
 window._customerModuleInited = window._customerModuleInited || false;
 window._orderModuleInited = window._orderModuleInited || false;
+window._warehouseModuleInited = window._warehouseModuleInited || false;
 
 // ===============================
 // SCRIPT HOẠT ĐÔNG CHUNG CHO ADMIN PAGE
@@ -147,10 +172,6 @@ window._orderModuleInited = window._orderModuleInited || false;
 
 // ===============================
 // PRODUCTS SCRIPT
-// ===============================
-
-// ===============================
-// PRODUCT-TYPES SCRIPT
 // ===============================
 
 // ===============================
@@ -934,7 +955,7 @@ function paginateOrders(list, page, pageSize) {
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
   const p = Math.min(Math.max(1, page || 1), totalPages);
   const start = (p - 1) * pageSize;
-  const items = (list || []).slice(start, start + pageSize);
+  const items = (list || []).reverse().slice(start, start + pageSize);
   return { items, total, totalPages, page: p };
 }
 
@@ -1789,14 +1810,6 @@ document.addEventListener("DOMContentLoaded", initOrderModule);
 // ANALYTICS SCRIPT
 // ===============================
 
-/*
-  Analytics module for admin dashboard
-  - idempotent: uses window._analyticsModuleInited guard
-  - reads orders/products from dataManager via dmGetAll/dmGetById helpers already defined
-  - expects Chart.js to be loaded on page
-  - uses HTML ids/classes from your admin.html (salesDateFrom, salesDateTo, .btn-primary inside #analytics-section)
-*/
-
 window._analyticsModuleInited = window._analyticsModuleInited || false;
 
 (function () {
@@ -1810,25 +1823,31 @@ window._analyticsModuleInited = window._analyticsModuleInited || false;
     return;
   }
 
-  // Local helpers (safe names to avoid collisions)
+  // ===== SỬ DỤNG CHUNG dataManager GLOBAL GIỐNG CÁC MODULE KHÁC =====
+  const dmAll = (col) => {
+    try {
+      return window.dataManager?.getAll?.(col) || [];
+    } catch (e) {
+      console.error(`Error getting ${col}:`, e);
+      return [];
+    }
+  };
+
+  const dmById = (col, id) => {
+    try {
+      return window.dataManager?.getById?.(col, id) || null;
+    } catch (e) {
+      console.error(`Error getting ${col} by id ${id}:`, e);
+      return null;
+    }
+  };
+
+  // Local helpers
   const $ = (sel) => sectionEl.querySelector(sel);
   const $$ = (sel) => Array.from(sectionEl.querySelectorAll(sel));
-  const dmAll = (col) =>
-    typeof dmGetAll === "function"
-      ? dmGetAll(col)
-      : window.dataManager?.getAll
-      ? window.dataManager.getAll(col)
-      : window.dataManager?.data?.[col] || [];
-  const dmById = (col, id) =>
-    typeof dmGetById === "function"
-      ? dmGetById(col, id)
-      : window.dataManager?.getById
-      ? window.dataManager.getById(col, id)
-      : (window.dataManager?.data?.[col] || []).find((x) => x.id == id) || null;
 
   const parseDateOnly = (isoOrYmd) => {
     if (!isoOrYmd) return null;
-    // Accept YYYY-MM-DD or ISO strings
     try {
       const d = new Date(isoOrYmd);
       d.setHours(0, 0, 0, 0);
@@ -1838,9 +1857,9 @@ window._analyticsModuleInited = window._analyticsModuleInited || false;
     }
   };
 
-  const fmtCurrency = new Intl.NumberFormat("vi-VN", {
+  const fmtCurrency = new Intl.NumberFormat("es-ES", {
     style: "currency",
-    currency: "VND",
+    currency: "USD",
   }).format;
 
   // Chart refs
@@ -1850,8 +1869,7 @@ window._analyticsModuleInited = window._analyticsModuleInited || false;
 
   // Aggregate raw orders into daily buckets and status totals
   function aggregateAnalytics(orders) {
-    // orders: array of order objects; uses order.date (ISO) and order.totalPrice / order.idOrder / order.items / order.status
-    const byDate = {}; // yyyy-mm-dd => { revenue, orders, products: { name: { sold, revenue } }, statusCounts }
+    const byDate = {};
     const ensureDay = (dStr) => {
       if (!byDate[dStr])
         byDate[dStr] = {
@@ -1878,32 +1896,21 @@ window._analyticsModuleInited = window._analyticsModuleInited || false;
       if (day.status[status] !== undefined) day.status[status] += 1;
       else day.status[status] = (day.status[status] || 0) + 1;
 
-      // Aggregate product-level counts (try to read o.items or o.itemsOrdered)
+      // Aggregate product-level counts
       const items = o.items || o.orderItems || o.products || [];
       items.forEach((it) => {
-        // try to get product name from item or from product db
-        const prodId = it.id || it.productId || it.productId || it.pid;
-        const name =
-          it.name ||
-          it.title ||
-          dmById("products", prodId)?.title ||
-          dmById("products", prodId)?.name ||
-          `#${prodId}`;
+        const prodId = it.id || it.productId || it.pid;
+        const prod = dmById("products", prodId);
+        const name = it.name || it.title || prod?.title || prod?.name || `#${prodId}`;
         const qty = Number(it.quantity || it.qty || it.amount || 0);
         const lineRevenue = Number(
-          it.amountPrice ||
-            it.unitPrice ||
-            it.price ||
-            qty * (it.unitPrice || it.price || 0) ||
-            0
+          it.amountPrice || it.unitPrice || it.price || qty * (it.unitPrice || it.price || 0) || 0
         );
 
         if (!day.products[name]) day.products[name] = { sold: 0, revenue: 0 };
         day.products[name].sold += qty;
         day.products[name].revenue += lineRevenue;
       });
-
-      // If no items array (some orders may not include items), try to count by products stored elsewhere; skip
     });
 
     // produce arrays sorted by date asc
@@ -1934,16 +1941,14 @@ window._analyticsModuleInited = window._analyticsModuleInited || false;
     return { list, globalStatus, productMap };
   }
 
-  // Render charts using Chart.js; expects canvas elements with ids revenueChart, ordersChart, statusChart inside analytics section
+  // Render charts using Chart.js
   function renderChartsFromAggregated(agg) {
     const labels = agg.list.map((x) => x.date);
     const revenueData = agg.list.map((x) => x.revenue);
     const ordersData = agg.list.map((x) => x.orders);
 
     // revenue line
-    const revenueCtx = sectionEl
-      .querySelector("#revenueChart")
-      ?.getContext?.("2d");
+    const revenueCtx = sectionEl.querySelector("#revenueChart")?.getContext?.("2d");
     if (revenueCtx) {
       if (revenueChart) revenueChart.destroy();
       revenueChart = new Chart(revenueCtx, {
@@ -1957,6 +1962,8 @@ window._analyticsModuleInited = window._analyticsModuleInited || false;
               fill: true,
               tension: 0.25,
               pointRadius: 3,
+              backgroundColor: "rgba(255, 133, 25, 0.1)",
+              borderColor: "rgba(255, 133, 25, 1)",
             },
           ],
         },
@@ -1969,16 +1976,21 @@ window._analyticsModuleInited = window._analyticsModuleInited || false;
     }
 
     // orders bar
-    const ordersCtx = sectionEl
-      .querySelector("#ordersChart")
-      ?.getContext?.("2d");
+    const ordersCtx = sectionEl.querySelector("#ordersChart")?.getContext?.("2d");
     if (ordersCtx) {
       if (ordersChart) ordersChart.destroy();
       ordersChart = new Chart(ordersCtx, {
         type: "bar",
         data: {
           labels,
-          datasets: [{ label: "Đơn hàng", data: ordersData, barThickness: 20 }],
+          datasets: [
+            { 
+              label: "Đơn hàng", 
+              data: ordersData, 
+              barThickness: 20,
+              backgroundColor: "rgba(255, 133, 25, 0.8)",
+            }
+          ],
         },
         options: {
           responsive: true,
@@ -1989,9 +2001,7 @@ window._analyticsModuleInited = window._analyticsModuleInited || false;
     }
 
     // status doughnut
-    const statusCtx = sectionEl
-      .querySelector("#statusChart")
-      ?.getContext?.("2d");
+    const statusCtx = sectionEl.querySelector("#statusChart")?.getContext?.("2d");
     if (statusCtx) {
       if (statusChart) statusChart.destroy();
       const ds = agg.globalStatus || {
@@ -2012,6 +2022,12 @@ window._analyticsModuleInited = window._analyticsModuleInited || false;
                 ds.delivered || 0,
                 ds.cancelled || 0,
               ],
+              backgroundColor: [
+                "rgba(255, 193, 7, 0.8)",
+                "rgba(33, 150, 243, 0.8)",
+                "rgba(76, 175, 80, 0.8)",
+                "rgba(244, 67, 54, 0.8)",
+              ],
             },
           ],
         },
@@ -2025,40 +2041,20 @@ window._analyticsModuleInited = window._analyticsModuleInited || false;
 
   // Update stat cards and product lists
   function updateStatsAndLists(agg) {
-    // stat cards: .stats-grid .stat-card .stat-value (order preserved in HTML)
-    const statValueEls = sectionEl.querySelectorAll(
-      ".stats-grid .stat-card .stat-value"
-    );
+    const statValueEls = sectionEl.querySelectorAll(".stats-grid .stat-card .stat-value");
     const totalRevenue = agg.list.reduce((s, d) => s + (d.revenue || 0), 0);
-    const totalOrders = agg.list.reduce((s, d) => s + (d.orders || 0), 0);
-    const avgPerOrder = totalOrders
-      ? Math.round(totalRevenue / totalOrders)
-      : 0;
-    const profit = Math.round(totalRevenue * 0.1); // simplistic profit calc
+    const totalOrders = dataManager.getAll("orders").length - dataManager.getAll("orders").filter(o => o.status === 'cancelled').length;
+    const avgPerOrder = totalOrders ? Math.round(totalRevenue / totalOrders) : 0;
+    const profit = Math.round(totalRevenue * 0.1);
 
     if (statValueEls && statValueEls.length >= 4) {
       statValueEls[0].innerText = fmtCurrency(totalRevenue);
       statValueEls[1].innerText = String(totalOrders);
       statValueEls[2].innerText = fmtCurrency(avgPerOrder);
       statValueEls[3].innerText = fmtCurrency(profit);
-    } else {
-      // fallback: find by heading text
-      sectionEl.querySelectorAll(".stat-card").forEach((card) => {
-        const title = (card.querySelector("h3")?.innerText || "").toLowerCase();
-        if (title.includes("doanh thu"))
-          card.querySelector(".stat-value").innerText =
-            fmtCurrency(totalRevenue);
-        if (title.includes("đơn hàng"))
-          card.querySelector(".stat-value").innerText = String(totalOrders);
-        if (title.includes("tb/đơn") || title.includes("tb"))
-          card.querySelector(".stat-value").innerText =
-            fmtCurrency(avgPerOrder);
-        if (title.includes("lợi nhuận"))
-          card.querySelector(".stat-value").innerText = fmtCurrency(profit);
-      });
     }
 
-    // Top products: aggregate productMap -> sorted top 5
+    // Top products
     const productMap = agg.productMap || {};
     const productsArr = Object.entries(productMap).map(([name, v]) => ({
       name,
@@ -2072,8 +2068,7 @@ window._analyticsModuleInited = window._analyticsModuleInited || false;
     if (productListEl) {
       productListEl.innerHTML = "";
       if (top5.length === 0) {
-        productListEl.innerHTML =
-          '<p style="color:#666">Không có dữ liệu sản phẩm.</p>';
+        productListEl.innerHTML = '<p style="color:#666">Không có dữ liệu sản phẩm.</p>';
       } else {
         top5.forEach((p, idx) => {
           const item = document.createElement("div");
@@ -2081,18 +2076,12 @@ window._analyticsModuleInited = window._analyticsModuleInited || false;
           item.style =
             "display:flex; align-items:center; gap:12px; padding:12px; border-radius:10px; box-shadow: 0 4px 12px rgba(0,0,0,0.04); margin-bottom:10px;";
           item.innerHTML = `
-            <div class="product-rank" style="font-weight:700; width:32px; text-align:center;">${
-              idx + 1
-            }</div>
+            <div class="product-rank" style="font-weight:700; width:32px; text-align:center;">${idx + 1}</div>
             <div class="product-details" style="flex:1">
               <h4 style="margin:0">${p.name}</h4>
-              <p style="margin:0; font-size:13px; color:#666">Đã bán: <strong>${
-                p.sold
-              }</strong></p>
+              <p style="margin:0; font-size:13px; color:#666">Đã bán: <strong>${p.sold}</strong></p>
             </div>
-            <div class="product-revenue" style="font-weight:700">${fmtCurrency(
-              p.revenue
-            )}</div>
+            <div class="product-revenue" style="font-weight:700">${fmtCurrency(p.revenue)}</div>
           `;
           productListEl.appendChild(item);
         });
@@ -2107,9 +2096,7 @@ window._analyticsModuleInited = window._analyticsModuleInited || false;
       cancelled: 0,
     };
     const setCount = (cls, val) => {
-      const el = sectionEl.querySelector(
-        `.order-status-grid .status-card.${cls} .status-count`
-      );
+      const el = sectionEl.querySelector(`.order-status-grid .status-card.${cls} .status-count`);
       if (el) el.innerText = String(val || 0);
     };
     setCount("new", counts.new);
@@ -2120,9 +2107,9 @@ window._analyticsModuleInited = window._analyticsModuleInited || false;
 
   // Build aggregated data from real dataManager orders
   function buildAndRender(from, to) {
-    // Read all orders from dmGetAll('orders')
+    // ===== LẤY DỮ LIỆU TỪ dataManager GIỐNG CÁC MODULE KHÁC =====
     const rawOrders = dmAll("orders") || [];
-    // optionally filter by date range (from/to are strings 'YYYY-MM-DD' or empty)
+    
     let filtered = rawOrders.slice();
     const fromD = parseDateOnly(from);
     const toD = parseDateOnly(to);
@@ -2132,7 +2119,6 @@ window._analyticsModuleInited = window._analyticsModuleInited || false;
         if (!d) return false;
         if (fromD && d < fromD) return false;
         if (toD) {
-          // include end day fully
           const toMax = new Date(toD);
           toMax.setHours(23, 59, 59, 999);
           if (d > toMax) return false;
@@ -2149,18 +2135,15 @@ window._analyticsModuleInited = window._analyticsModuleInited || false;
   // Wire UI: date inputs and search button
   const inputFrom = sectionEl.querySelector("#salesDateFrom");
   const inputTo = sectionEl.querySelector("#salesDateTo");
-  // choose analytics search button (scoped to analytics section)
   const btnSearch = sectionEl.querySelector(".btn-primary");
 
   // initial render: last 7 days if possible else all
   (function initialRender() {
     const orders = dmAll("orders") || [];
     if (orders.length === 0) {
-      // no orders: still render empty charts using sample point from today
       buildAndRender("", "");
       return;
     }
-    // compute last 7 days range from orders dates
     const dates = orders
       .map((o) => parseDateOnly(o.date))
       .filter(Boolean)
@@ -2169,7 +2152,6 @@ window._analyticsModuleInited = window._analyticsModuleInited || false;
     const first = dates[Math.max(0, dates.length - 7)] || dates[0];
     const fromStr = first ? first.toISOString().slice(0, 10) : "";
     const toStr = last ? last.toISOString().slice(0, 10) : "";
-    // set inputs if exist
     if (inputFrom) inputFrom.value = fromStr;
     if (inputTo) inputTo.value = toStr;
     buildAndRender(fromStr, toStr);
@@ -2191,41 +2173,31 @@ window._analyticsModuleInited = window._analyticsModuleInited || false;
     if (inputTo) inputTo.addEventListener("change", applyFilterAndRender);
   }
 
-  // expose function for debugging or external calls
   window.adminAnalytics = {
     refresh: applyFilterAndRender,
     renderChartsFromAggregated,
     aggregateAnalytics,
   };
-  // --- begin: analytics tab switching + simple customer-stats renderer ---
+
+  // Analytics tab switching + customer-stats renderer
   (function wireAnalyticsTabs() {
     if (!sectionEl) return;
-    const tabButtons = Array.from(
-      sectionEl.querySelectorAll(".analytics-tab-btn")
-    );
-    const tabContents = Array.from(
-      sectionEl.querySelectorAll(".analytics-tab-content")
-    );
+    const tabButtons = Array.from(sectionEl.querySelectorAll(".analytics-tab-btn"));
+    const tabContents = Array.from(sectionEl.querySelectorAll(".analytics-tab-content"));
 
     function activateTab(name) {
-      // buttons
       tabButtons.forEach((b) => {
-        if ((b.dataset.tab || "").toString() === name)
-          b.classList.add("active");
+        if ((b.dataset.tab || "").toString() === name) b.classList.add("active");
         else b.classList.remove("active");
       });
-      // contents
       tabContents.forEach((c) => {
         if (c.id === name) c.classList.add("active");
         else c.classList.remove("active");
       });
 
-      // optional: when entering a tab, refresh renderers
       if (name === "sales-report") {
-        // keep analytics refreshed with current date filters
         buildAndRender(inputFrom?.value || "", inputTo?.value || "");
       } else if (name === "customer-stats") {
-        // render simple customer stats UI (function below)
         renderCustomerStats();
       }
     }
@@ -2239,68 +2211,55 @@ window._analyticsModuleInited = window._analyticsModuleInited || false;
       });
     });
 
-    // ensure initial active tab on load (respect existing active btn or default to sales-report)
     const initial =
-      tabButtons.find((b) => b.classList.contains("active"))?.dataset.tab ||
-      "sales-report";
+      tabButtons.find((b) => b.classList.contains("active"))?.dataset.tab || "sales-report";
     activateTab(initial);
   })();
 
-  // minimal renderer for "customer-stats" tab
+// Customer stats renderer
   function renderCustomerStats() {
     try {
       const section = document.querySelector("#analytics-section");
       if (!section) return;
+      
       const dmAllOrders = dmAll("orders") || [];
       const dmAllCustomers = dmAll("customers") || [];
 
-      // Top customers by total spent (aggregate from orders)
+      // Top customers by total spent
       const spendMap = {};
       dmAllOrders.forEach((o) => {
         const u = o.username || "(unknown)";
         const t = Number(o.totalPrice || 0);
         spendMap[u] = (spendMap[u] || 0) + t;
       });
-      const arr = Object.entries(spendMap).map(([u, s]) => ({
-        username: u,
-        spent: s,
-      }));
+      const arr = Object.entries(spendMap).map(([u, s]) => ({ username: u, spent: s }));
       arr.sort((a, b) => b.spent - a.spent);
       const top5 = arr.slice(0, 5);
 
       const topListEl = section.querySelector(".top-customer-list");
       if (topListEl) {
-        // if your HTML expects specific rank elements, try to fill them; fallback to building items
-        // Clear simple fallback area:
         topListEl.innerHTML = "";
         if (top5.length === 0) {
-          topListEl.innerHTML =
-            '<p style="color:#666">Không có dữ liệu khách hàng.</p>';
+          topListEl.innerHTML = '<p style="color:#666">Không có dữ liệu khách hàng.</p>';
         } else {
           top5.forEach((p, idx) => {
             const item = document.createElement("div");
             item.className = "customer-rank-item";
+            const badge = idx < 3 ? ["🥇", "🥈", "🥉"][idx] : idx + 1;
             item.innerHTML = `
-            <div class="rank-badge">${
-              idx + 1 <= 3 ? ["🥇", "🥈", "🥉"][idx] || idx + 1 : idx + 1
-            }</div>
-            <div class="customer-info"><h4 style="margin:0">${
-              p.username
-            }</h4><p style="margin:0;color:#666">Tổng chi: ${new Intl.NumberFormat(
-              "vi-VN",
-              { style: "currency", currency: "VND" }
-            ).format(p.spent)}</p></div>
-            <div class="customer-spending" style="font-weight:700;color:var(--color-primary)">${new Intl.NumberFormat(
-              "vi-VN",
-              { style: "currency", currency: "VND" }
-            ).format(p.spent)}</div>
-          `;
+              <div class="rank-badge">${badge}</div>
+              <div class="customer-info">
+                <h4 style="margin:0">${p.username}</h4>
+                <p style="margin:0;color:#666">Tổng chi: ${fmtCurrency(p.spent)}</p>
+              </div>
+              <div class="customer-spending" style="font-weight:700;color:var(--color-primary)">${fmtCurrency(p.spent)}</div>
+            `;
             topListEl.appendChild(item);
           });
         }
       }
 
-      // Growth stats: simple counts
+      // Growth stats - Sử dụng ngày đặt hàng đầu tiên để xác định khách hàng mới
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       const weekAgo = new Date(today);
@@ -2308,53 +2267,41 @@ window._analyticsModuleInited = window._analyticsModuleInited || false;
       const monthAgo = new Date(today);
       monthAgo.setMonth(today.getMonth() - 1);
 
-      const byJoinDate = (c) => {
-        const d = c.dateOfBirth || c.createdAt || c.registered || null;
-        if (!d) return null;
-        try {
-          const dd = new Date(d);
-          dd.setHours(0, 0, 0, 0);
-          return dd;
-        } catch (e) {
-          return null;
+      // Tạo map để lưu ngày đặt hàng đầu tiên của mỗi khách hàng
+      const firstOrderDate = {};
+      dmAllOrders.forEach((o) => {
+        const u = o.username;
+        const orderDate = parseDateOnly(o.date);
+        if (u && orderDate) {
+          if (!firstOrderDate[u] || orderDate < firstOrderDate[u]) {
+            firstOrderDate[u] = orderDate;
+          }
         }
-      };
+      });
 
-      const newToday = dmAllCustomers.filter((c) => {
-        const d = byJoinDate(c);
+      // Đếm khách hàng mới dựa trên ngày đặt hàng đầu tiên
+      const newToday = Object.values(firstOrderDate).filter((d) => {
         return d && d.getTime() === today.getTime();
       }).length;
-      const newWeek = dmAllCustomers.filter((c) => {
-        const d = byJoinDate(c);
+      
+      const newWeek = Object.values(firstOrderDate).filter((d) => {
         return d && d >= weekAgo && d <= today;
       }).length;
-      const newMonth = dmAllCustomers.filter((c) => {
-        const d = byJoinDate(c);
+      
+      const newMonth = Object.values(firstOrderDate).filter((d) => {
         return d && d >= monthAgo && d <= today;
       }).length;
 
-      const growthItems = section.querySelectorAll(
-        ".growth-item .growth-number"
-      );
+      const growthItems = section.querySelectorAll(".growth-item .growth-number");
       if (growthItems && growthItems.length >= 3) {
         growthItems[0].textContent = `${newToday}`;
         growthItems[1].textContent = `${newWeek}`;
         growthItems[2].textContent = `${newMonth}`;
-      } else {
-        // try to fill generic selectors
-        const gi = section.querySelector(".growth-stats");
-        if (gi)
-          gi.querySelectorAll(".growth-number").forEach((el, i) => {
-            if (i === 0) el.textContent = newToday;
-            if (i === 1) el.textContent = newWeek;
-            if (i === 2) el.textContent = newMonth;
-          });
       }
     } catch (err) {
       console.warn("renderCustomerStats error", err);
     }
   }
-  // --- end: analytics tab switching + renderer ---
   window._analyticsModuleInited = true;
 })();
 
@@ -2407,6 +2354,8 @@ function getAllProducts() {
     return [];
   }
 }
+
+
 
 // ===============================
 // TAB SWITCHING
@@ -2835,7 +2784,6 @@ function addProductLine() {
   container.appendChild(newRow);
 }
 
-// Replace existing saveImportOrder(...) with this implementation
 function saveImportOrder(isDraft) {
   const modal = warehouseSection?.querySelector("#importModal");
   if (!modal) return;
@@ -2851,7 +2799,6 @@ function saveImportOrder(isDraft) {
 
   const date = dateInput?.value || new Date().toISOString();
 
-  // get next numeric id for importOrders
   const existing = getAllImportOrders() || [];
   const maxId = existing.reduce((m, x) => {
     const v = Number(x.idImportOrders ?? x.id ?? 0) || 0;
@@ -2877,7 +2824,6 @@ function saveImportOrder(isDraft) {
     const idForThisImport = nextId++;
 
     const newImport = {
-      // set both idImportOrders and id so other code can find it
       idImportOrders: idForThisImport,
       id: idForThisImport,
       productId: productId,
@@ -2920,7 +2866,6 @@ function viewImportOrder(id) {
 
   const product = dmGetById("products", order.productId || order.id);
 
-  // Populate modal fields
   const setField = (selector, value) => {
     const el = modal.querySelector(selector);
     if (el) el.textContent = value ?? "";
@@ -2957,7 +2902,6 @@ function viewImportOrder(id) {
     };
   });
 
-  // Close on outside click
   modal.onclick = (e) => {
     if (e.target === modal) {
       modal.style.display = "none";
@@ -2976,7 +2920,6 @@ function deleteImportOrder(id) {
     "#confirmDeleteImportModal"
   );
 
-  // helper thực hiện xóa
   const doDelete = () => {
     try {
       const existing = dmGetById("importOrders", id);
@@ -3007,9 +2950,7 @@ function deleteImportOrder(id) {
         }
       }
 
-      // update UI: render lại tab import
-      switchWarehouseTab("import");
-      // nếu có confirm modal đang mở, đóng nó
+      switchWarehouseTab('import');
       if (confirmModal) {
         confirmModal.style.display = "none";
         confirmModal.setAttribute("aria-hidden", "true");
@@ -3022,15 +2963,13 @@ function deleteImportOrder(id) {
   };
 
   if (!confirmModal) {
-    // fallback: dùng confirm
-    if (confirm("Are you sure you want to delete this import order?")) {
+    if (confirm('Are you sure you want to delete this import order?')) {
       doDelete();
     }
     return;
   }
 
-  // Nếu có modal confirm: populate và show
-  const confirmTextEl = confirmModal.querySelector(".confirm-text");
+  const confirmTextEl = confirmModal.querySelector('.confirm-text');
   if (confirmTextEl) {
     confirmTextEl.textContent = `Are you sure you want to delete import order #${id}?`;
   }
@@ -3038,7 +2977,6 @@ function deleteImportOrder(id) {
   const yesBtn = confirmModal.querySelector(".btn-confirm-yes");
   const noBtn = confirmModal.querySelector(".btn-confirm-no");
 
-  // remove previous handlers (idempotent) and wire
   if (yesBtn) {
     yesBtn.onclick = (e) => {
       e?.preventDefault?.();
@@ -3053,98 +2991,154 @@ function deleteImportOrder(id) {
     };
   }
 
-  // show modal
-  confirmModal.style.display = "flex";
-  confirmModal.setAttribute("aria-hidden", "false");
+  confirmModal.style.display = 'flex';
+  confirmModal.setAttribute('aria-hidden', 'false');
 }
 
 function editWarehouseProduct(id) {
   const product = dmGetById("products", id);
   if (!product) {
-    console.error("Product not found:", id);
+    alert('Product not found');
     return;
   }
 
-  const modal = document.querySelector(".modal.add-product");
+  const modal = warehouseSection?.querySelector('#warehouseProductModal');
   if (!modal) {
-    console.error("Product modal not found");
+    console.error('Warehouse product modal not found');
     return;
   }
 
-  // Show edit mode, hide add mode
-  const addTitle = modal.querySelector(".add-product-e");
-  const editTitle = modal.querySelector(".edit-product-e");
-  if (addTitle) addTitle.style.display = "none";
-  if (editTitle) editTitle.style.display = "block";
+  const productIdInput = modal.querySelector('#warehouse-product-id');
+  const productNameInput = modal.querySelector('#warehouse-product-name');
+  const categorySelect = modal.querySelector('#warehouse-product-category');
+  const importPriceInput = modal.querySelector('#warehouse-import-price');
+  const profitMarginInput = modal.querySelector('#warehouse-profit-margin');
+  const sellPriceInput = modal.querySelector('#warehouse-sell-price');
 
-  // Show edit button, hide add button
-  const addBtn = modal.querySelector(".btn-add-product-form");
-  const editBtn = modal.querySelector(".btn-update-product-form");
-  if (addBtn) addBtn.style.display = "none";
-  if (editBtn) editBtn.style.display = "inline-block";
+  if (productIdInput) productIdInput.value = product.id;
+  if (productNameInput) productNameInput.value = product.title || '';
+  if (categorySelect) categorySelect.value = product.specs?.category || '';
+  if (importPriceInput) importPriceInput.value = product.importPrice || 0;
+  
+  const currentMargin = product.price > 0 ? 
+    (((product.price - (product.importPrice || 0)) / product.price) * 100).toFixed(1) : 0;
+  if (profitMarginInput) profitMarginInput.value = currentMargin;
+  if (sellPriceInput) sellPriceInput.value = product.price || 0;
 
-  const form = modal.querySelector(".add-product-form");
-  if (form) {
-    // Set product ID (create hidden input if not exists)
-    let idInput = form.querySelector('input[name="product-id"]');
-    if (!idInput) {
-      idInput = document.createElement("input");
-      idInput.type = "hidden";
-      idInput.name = "product-id";
-      form.appendChild(idInput);
+  const calculatePrice = () => {
+    const importPrice = parseFloat(importPriceInput?.value || 0);
+    const margin = parseFloat(profitMarginInput?.value || 0);
+    
+    if (margin >= 0 && margin < 100 && importPrice > 0) {
+      const sellPrice = importPrice / (1 - margin / 100);
+      if (sellPriceInput) sellPriceInput.value = sellPrice.toFixed(2);
     }
-    idInput.value = product.id;
+  };
 
-    // Set title
-    const titleInput = form.querySelector("#ten-mon");
-    if (titleInput) titleInput.value = product.title || "";
-
-    // Set price
-    const priceInput = form.querySelector("#gia-moi");
-    if (priceInput) priceInput.value = product.price || 0;
-
-    // Set description
-    const descInput = form.querySelector("#mo-ta");
-    if (descInput) descInput.value = product.shortDesc || "";
-
-    // Set category
-    const categorySelect = form.querySelector("#chon-the-loai");
-    if (categorySelect && product.specs?.category) {
-      categorySelect.value = product.specs.category;
-    }
+  if (profitMarginInput) {
+    profitMarginInput.oninput = calculatePrice;
+  }
+  if (importPriceInput) {
+    importPriceInput.oninput = calculatePrice;
   }
 
-  // Set image preview
-  const imgPreview = modal.querySelector(".upload-image-preview");
-  if (imgPreview) {
-    imgPreview.src =
-      product.image || product.mainImage || "/img/blank-image.png";
-  }
+  const closeButtons = modal.querySelectorAll('.modal-close, .btn-cancel-warehouse-product');
+  closeButtons.forEach(btn => {
+    btn.onclick = (e) => {
+      e?.preventDefault?.();
+      modal.style.display = 'none';
+      modal.setAttribute('aria-hidden', 'true');
+    };
+  });
 
-  // Show modal
-  modal.style.display = "flex";
-  modal.setAttribute("aria-hidden", "false");
-
-  // Wire close button
-  const closeBtn = modal.querySelector(".modal-close.product-form");
-  if (closeBtn) {
-    closeBtn.onclick = () => {
-      modal.style.display = "none";
-      modal.setAttribute("aria-hidden", "true");
-      // Reset to add mode
-      if (addTitle) addTitle.style.display = "block";
-      if (editTitle) editTitle.style.display = "none";
-      if (addBtn) addBtn.style.display = "inline-block";
-      if (editBtn) editBtn.style.display = "none";
+  const saveBtn = modal.querySelector('.btn-save-warehouse-product');
+  if (saveBtn) {
+    saveBtn.onclick = (e) => {
+      e?.preventDefault?.();
+      saveWarehouseProduct();
     };
   }
 
-  // Close on outside click
   modal.onclick = (e) => {
     if (e.target === modal) {
-      closeBtn?.click();
+      modal.style.display = 'none';
+      modal.setAttribute('aria-hidden', 'true');
     }
   };
+
+  modal.style.display = 'flex';
+  modal.setAttribute('aria-hidden', 'false');
+}
+
+function saveWarehouseProduct() {
+  const modal = warehouseSection?.querySelector('#warehouseProductModal');
+  if (!modal) return;
+
+  const productIdInput = modal.querySelector('#warehouse-product-id');
+  const productNameInput = modal.querySelector('#warehouse-product-name');
+  const categorySelect = modal.querySelector('#warehouse-product-category');
+  const importPriceInput = modal.querySelector('#warehouse-import-price');
+  const sellPriceInput = modal.querySelector('#warehouse-sell-price');
+
+  const productId = parseInt(productIdInput?.value);
+  const newName = productNameInput?.value?.trim();
+  const newCategory = categorySelect?.value?.trim();
+  const newImportPrice = parseFloat(importPriceInput?.value);
+  const newSellPrice = parseFloat(sellPriceInput?.value);
+
+  if (!productId || !newName || !newCategory) {
+    alert('Please fill in all required fields');
+    return;
+  }
+
+  if (isNaN(newImportPrice) || newImportPrice < 0) {
+    alert('Invalid import price');
+    return;
+  }
+
+  if (isNaN(newSellPrice) || newSellPrice < 0) {
+    alert('Invalid sell price');
+    return;
+  }
+
+  if (newSellPrice < newImportPrice) {
+    if (!confirm('Sell price is lower than import price. Continue?')) {
+      return;
+    }
+  }
+
+  try {
+    const product = dmGetById('products', productId);
+    if (!product) {
+      alert('Product not found');
+      return;
+    }
+
+    product.title = newName;
+    if (!product.specs) product.specs = {};
+    product.specs.category = newCategory;
+    product.importPrice = newImportPrice;
+    product.price = newSellPrice;
+
+    dmSave();
+
+    modal.style.display = 'none';
+    modal.setAttribute('aria-hidden', 'true');
+
+    switch(currentWarehouseTab) {
+      case 'inventory':
+        renderInventoryTab();
+        break;
+      case 'margins':
+        renderMarginsTab();
+        break;
+    }
+
+    alert('Product updated successfully!');
+  } catch (e) {
+    console.error('Error saving product:', e);
+    alert('Failed to save product');
+  }
 }
 
 function editMargin(id) {
@@ -3229,11 +3223,10 @@ function initWarehouseModule() {
     console.error("Warehouse section not found");
     return;
   }
-
-  console.log("Initializing warehouse module...");
-
-  // Populate category filter
-  const categoryFilter = warehouseSection.querySelector("#categoryFilter");
+  
+  console.log('Initializing warehouse module...');
+  
+  const categoryFilter = warehouseSection.querySelector('#categoryFilter');
   if (categoryFilter) {
     const categories = window.dataManager?.getAllCategories() || [];
     categories.forEach((cat) => {
@@ -3244,10 +3237,24 @@ function initWarehouseModule() {
     });
   }
 
-  // Wire up tab buttons
-  const tabs = warehouseSection.querySelectorAll(".tab");
-  tabs.forEach((tab) => {
-    tab.addEventListener("click", (e) => {
+  const warehouseProductModal = warehouseSection.querySelector('#warehouseProductModal');
+  if (warehouseProductModal) {
+    const categorySelect = warehouseProductModal.querySelector('#warehouse-product-category');
+    if (categorySelect) {
+      categorySelect.innerHTML = '<option value="">Select Category</option>';
+      const categories = window.dataManager?.getAllCategories() || [];
+      categories.forEach(cat => {
+        const option = document.createElement('option');
+        option.value = cat;
+        option.textContent = cat;
+        categorySelect.appendChild(option);
+      });
+    }
+  }
+  
+  const tabs = warehouseSection.querySelectorAll('.tab');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', (e) => {
       e.preventDefault();
       const tabText = tab.textContent.toLowerCase();
       if (tabText.includes("inventory")) switchWarehouseTab("inventory");
@@ -3257,45 +3264,39 @@ function initWarehouseModule() {
       else if (tabText.includes("margin")) switchWarehouseTab("margins");
     });
   });
-
-  // Wire up "New Import Order" button
-  const addImportBtn = warehouseSection.querySelector(".header-actions button");
+  
+  const addImportBtn = warehouseSection.querySelector('.header-actions button');
   if (addImportBtn) {
     addImportBtn.addEventListener("click", (e) => {
       e.preventDefault();
       openImportModal();
     });
   }
-
-  // Wire up modal events
-  const importModal = warehouseSection.querySelector("#importModal");
-
+  
+  const importModal = warehouseSection.querySelector('#importModal');
+  
   if (importModal) {
-    // Close button
-    const closeBtn = importModal.querySelector(".close");
+    const closeBtn = importModal.querySelector('.close');
     if (closeBtn) {
       closeBtn.onclick = (e) => {
         e.preventDefault();
         closeImportModal();
       };
     }
-
-    // Close on outside click
-    importModal.addEventListener("click", (e) => {
+    
+    importModal.addEventListener('click', (e) => {
       if (e.target === importModal) closeImportModal();
     });
-
-    // Save draft button
-    const draftBtn = importModal.querySelector("#saveDraftBtn");
+    
+    const draftBtn = importModal.querySelector('#saveDraftBtn');
     if (draftBtn) {
       draftBtn.onclick = (e) => {
         e.preventDefault();
         saveImportOrder(true);
       };
     }
-
-    // Form submit
-    const importForm = importModal.querySelector("#importForm");
+    
+    const importForm = importModal.querySelector('#importForm');
     if (importForm) {
       importForm.addEventListener("submit", (e) => {
         e.preventDefault();
@@ -3303,23 +3304,23 @@ function initWarehouseModule() {
       });
     }
   }
-
-  // Wire up table actions (delegated events)
-  const inventoryTable = warehouseSection.querySelector("#inventoryTableBody");
+  
+  const inventoryTable = warehouseSection.querySelector('#inventoryTableBody');
   if (inventoryTable) {
-    inventoryTable.addEventListener("click", (e) => {
-      console.log("Click detected:", e.target); // DEBUG
-
-      const editBtn = e.target.closest(".action-btn-edit");
+    inventoryTable.addEventListener('click', (e) => {
+      const editBtn = e.target.closest('.action-btn-edit');
       if (editBtn) {
+        e.preventDefault();
+        e.stopPropagation();
         const productId = parseInt(editBtn.dataset.productId);
-        console.log("Edit button clicked, product ID:", productId); // DEBUG
-        if (productId) editWarehouseProduct(productId);
+        if (productId) {
+          editWarehouseProduct(productId);
+        }
       }
-    });
+    }); 
   }
-
-  const importTable = warehouseSection.querySelector("#importTableBody");
+  
+  const importTable = warehouseSection.querySelector('#importTableBody');
   if (importTable) {
     importTable.addEventListener("click", (e) => {
       const viewBtn = e.target.closest(".btn-view-import");
@@ -3347,10 +3348,9 @@ function initWarehouseModule() {
       }
     });
   }
-
-  // Render initial tab
-  switchWarehouseTab("inventory");
-
+  
+  switchWarehouseTab('inventory');
+  
   window._warehouseModuleInited = true;
   console.log("Warehouse module initialized successfully");
 }
@@ -3365,15 +3365,15 @@ window.filterInventory = filterInventory;
 window.filterTransactions = filterTransactions;
 window.resetDateFilter = resetDateFilter;
 
-// Hook into sidebar tab switching (robust: find by text, fallback to init)
+// Hook into sidebar tab switching
 document.addEventListener("DOMContentLoaded", () => {
+  
   const sidebarItems = Array.from(
     document.querySelectorAll(
       ".admin-sidebar .admin-sidebar__nav .admin-sidebar__list .admin-sidebar__item.tab-content"
     )
   );
 
-  // Try to find warehouse tab by text (more robust than fixed index)
   const warehouseTab =
     sidebarItems.find((si) => {
       const txt = (si.textContent || "").toLowerCase();
@@ -3386,114 +3386,40 @@ document.addEventListener("DOMContentLoaded", () => {
     }) || null;
 
   if (warehouseTab) {
-    warehouseTab.addEventListener("click", () => {
-      // Đợi một chút để section active
-      setTimeout(() => {
-        if (!window._warehouseModuleInited) {
-          initWarehouseModule();
-          window._warehouseModuleInited = true;
-        } else {
-          // Nếu đã init, chỉ cần render lại tab hiện tại
-          switchWarehouseTab(currentWarehouseTab);
-        }
-      }, 50);
+    warehouseTab.addEventListener('click', (e) => {
+      e.preventDefault();
+      initWarehouseModule();
+      sidebarItems.forEach(si => si.classList.remove('active'));
+      warehouseTab.classList.add('active');
     });
+  } else {
+    initWarehouseModule();
   }
+  // === Dashboard counters ===
+function updateDashboardCounters() {
+  try {
+    const elUser = document.getElementById("userCount");
+    const elProduct = document.getElementById("productCount");
+    const elRevenue = document.getElementById("revenueTotal");
+    const elStock = document.getElementById("stockTotal");
+
+    const allCustomers = window.dataManager.getAll("customers") || [];
+    const allProducts = window.dataManager.getAll("products") || [];
+    const allOrders = window.dataManager.getAll("orders") || [];
+
+    if (elUser) elUser.textContent = allCustomers.length;
+    if (elProduct) elProduct.textContent = allProducts.length;
+
+    const revenue = allOrders.reduce((s, o) => s + (Number(o.totalPrice) || 0), 0);
+    if (elRevenue) elRevenue.textContent = revenue + "₫";
+
+    const stockTotal = allProducts.reduce((s, p) => s + (Number(p.stock) || 0), 0);
+    if (elStock) elStock.textContent = stockTotal;
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+updateDashboardCounters();
 });
 
-// Add to your existing initSidebarAndTabs function or equivalent
-// Make sure to call initWarehouseModule() when the warehouse tab is clicked
-// -----------------------------
-// DASHBOARD RENDER (simple)
-// -----------------------------
-(function () {
-  // guard
-  if (window._dashboardModuleInited) return;
-  window._dashboardModuleInited = true;
-
-  const fmtVND = (v) =>
-    new Intl.NumberFormat("vi-VN", {
-      style: "currency",
-      currency: "VND",
-    }).format(Number(v || 0));
-
-  // helper lấy data (dùng dmGetAll đã có trong file)
-  const getCustomers = () =>
-    typeof dmGetAll === "function"
-      ? dmGetAll("customers")
-      : window.dataManager?.getAll
-      ? window.dataManager.getAll("customers")
-      : window.dataManager?.data?.customers || [];
-  const getProducts = () =>
-    typeof dmGetAll === "function"
-      ? dmGetAll("products")
-      : window.dataManager?.getAll
-      ? window.dataManager.getAll("products")
-      : window.dataManager?.data?.products || [];
-  const getOrders = () =>
-    typeof dmGetAll === "function"
-      ? dmGetAll("orders")
-      : window.dataManager?.getAll
-      ? window.dataManager.getAll("orders")
-      : window.dataManager?.data?.orders || [];
-
-  function renderDashboard() {
-    try {
-      const userCountEl = document.getElementById("userCount");
-      const productCountEl = document.getElementById("productCount");
-      const revenueTotalEl = document.getElementById("revenueTotal");
-      const stockTotalEl = document.getElementById("stockTotal");
-
-      const customers = getCustomers() || [];
-      const products = getProducts() || [];
-      const orders = getOrders() || [];
-
-      // số lượng
-      if (userCountEl) userCountEl.textContent = String(customers.length);
-      if (productCountEl) productCountEl.textContent = String(products.length);
-
-      // tổng doanh thu (tính tổng totalPrice hoặc amountPrice)
-      const totalRevenue = orders.reduce((s, o) => {
-        const v = Number(o.totalPrice ?? o.amountPrice ?? 0);
-        return s + (isNaN(v) ? 0 : v);
-      }, 0);
-      if (revenueTotalEl) revenueTotalEl.textContent = fmtVND(totalRevenue);
-
-      // tổng tồn kho (sum stock nếu có)
-      const totalStock = products.reduce(
-        (s, p) => s + (Number(p.stock || 0) || 0),
-        0
-      );
-      if (stockTotalEl) stockTotalEl.textContent = String(totalStock);
-    } catch (err) {
-      console.warn("renderDashboard error:", err);
-    }
-  }
-
-  // Gọi render khi DOM sẵn sàng
-  document.addEventListener("DOMContentLoaded", () => {
-    renderDashboard();
-  });
-
-  // Gọi render khi click vào Sidebar -> Dashboard (tab index 0)
-  // tìm sidebar items (same selector như file)
-  try {
-    const sidebarItems = Array.from(
-      document.querySelectorAll(
-        ".admin-sidebar .admin-sidebar__nav .admin-sidebar__list .admin-sidebar__item.tab-content"
-      )
-    );
-    const dashboardItem = sidebarItems[0]; // tab đầu tiên
-    if (dashboardItem) {
-      dashboardItem.addEventListener("click", (e) => {
-        // nhỏ delay để DOM class active được gán (như logic hiện tại)
-        setTimeout(renderDashboard, 50);
-      });
-    }
-  } catch (e) {
-    // im lặng nếu DOM khác
-  }
-
-  // Expose function for manual refresh if needed
-  window.renderAdminDashboard = renderDashboard;
-})();

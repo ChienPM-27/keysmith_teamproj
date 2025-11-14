@@ -382,7 +382,7 @@ function showSlide(index) {
 
   // SỬA: Công thức dịch chuyển mới (-100% cho mỗi ảnh)
   // Vì mỗi ảnh trong CSS chiếm 100% khung nhìn
-  slidesContainer.style.transform = `translateX(-${index * 100}%)`;
+  slidesContainer.style.transform = `translateX(calc(-${index * 100}% - 4 * ${index}rem))`;
 
   // Cập nhật dot active
   const dots = dotsContainer.children;

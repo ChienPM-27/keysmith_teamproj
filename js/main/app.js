@@ -3,7 +3,14 @@
  * Version: 1.0.0
  * Description: Combined JS file for all main website functionality
  */
-
+ 
+// ==================== UTILITIES ====================
+/*
+ * KeySmith - Main Application JavaScript
+ * Version: 1.0.0
+ * Description: Combined JS file for all main website functionality
+ */
+import { dataManager } from "../admin/DatabaseManager.js";
 // ==================== UTILITIES ====================
 const KeySmith = {
     // Utility functions
@@ -196,74 +203,122 @@ KeySmith.login = {
             return;
         }
 
-        let users = JSON.parse(localStorage.getItem('users')) || [];
-        if (users.find(u => u.username === username)) {
-            alert('Username already exists!');
+        // Lấy customers từ localStorage
+        // let customers = JSON.parse(localStorage.getItem('customers')) || [];
+        let customers = dataManager.getAll("customers") || [];
+        if (customers.find(u => u.username === username)) {
+            alert('❌ Username already exists!');
+            return;
+        } 
+
+        // Check email trùng
+        const email = username.includes('@') ? username : '';
+        if (email && customers.find(u => u.email === email)) {
+            alert('❌ Email already exists!');
             return;
         }
 
-        users.push({ username, password, role: 'user' });
-        localStorage.setItem('users', JSON.stringify(users));
+        // Tạo object customer mới
+        const newCustomer = {
+            username,
+            password,
+            img: "/img/blank-image.png",
+            firstName: "",
+            lastName: "",
+            email: "",
+            phone: "",
+            address: "",
+            dateOfBirth: "",
+            status: "active"
+        };
+
+        customers.push(newCustomer);
+        localStorage.setItem('customers', JSON.stringify(customers));
+        dataManager.add("customers", newCustomer);
+
         alert('✅ Account created successfully!');
 
         const registerOverlay = KeySmith.utils.getById('registerOverlay');
         const modalOverlay = KeySmith.utils.getById('modalOverlay');
         
-        registerOverlay.classList.remove('active');
-        modalOverlay.classList.add('active');
+        if (registerOverlay) registerOverlay.classList.remove('active');
+        if (modalOverlay) modalOverlay.classList.add('active');
+
+        // Clear form
+        KeySmith.utils.getById('registerUsername').value = '';
+        KeySmith.utils.getById('registerPassword').value = '';
     },
 
     handleLogin: function(e) {
         e.preventDefault();
-        const username = KeySmith.utils.getById('loginUsername').value.trim();
+        const input = KeySmith.utils.getById('loginUsername').value.trim();
         const password = KeySmith.utils.getById('loginPassword').value.trim();
         const rememberMe = KeySmith.utils.getById('rememberMe').checked;
 
-        // Check admin login
-        const isAdmin = this.ADMIN_ACCOUNTS.find(admin => 
-            admin.username === username && admin.password === password
-        );
-
-        if (isAdmin) {
-            localStorage.setItem('loggedInUser', username);
-            localStorage.setItem('userRole', 'admin');
-            if (rememberMe) localStorage.setItem('rememberedUser', username);
-            
-            alert('✅ Admin login successful! Redirecting to admin page...');
-            
-            const modalOverlay = KeySmith.utils.getById('modalOverlay');
-            if (modalOverlay) {
-                modalOverlay.classList.remove('active');
-                document.body.style.overflow = 'auto';
-            }
-            
-            setTimeout(() => {
-                window.location.href = '../admin.html';
-            }, 1000);
+        if (!input || !password) {
+            alert('❌ Please enter all fields!');
             return;
         }
 
-        // Check regular user login
-        const users = JSON.parse(localStorage.getItem('users')) || [];
-        const user = users.find(u => u.username === username && u.password === password);
+        // Admin check
+        const isAdmin = this.ADMIN_ACCOUNTS.find(admin =>
+            admin.username === input && admin.password === password
+        );
 
-        if (user) {
-            localStorage.setItem('loggedInUser', username);
+        if (isAdmin) {
+            localStorage.setItem('loggedInUser', input);
+            localStorage.setItem('userRole', 'admin');
+            if (rememberMe) localStorage.setItem('rememberedUser', input);
+
+            alert('✅ Admin login successful! Redirecting to admin page...');
+            const modalOverlay = KeySmith.utils.getById('modalOverlay');
+            if (modalOverlay) {
+                modalOverlay.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+            setTimeout(() => window.location.href = '../../admin.html', 800);
+            return;
+        }
+
+        // User check - từ localStorage (đã bao gồm cả sample data)
+        // const customers = JSON.parse(localStorage.getItem('customers')) || [];
+        const customers = dataManager.getAll("customers") || [];
+        // Cho phép đăng nhập bằng username hoặc email
+        const user = customers.find(u => {
+            const uname = (u.username || '').trim().toLowerCase();
+            const email = (u.email || '').trim().toLowerCase();
+            const inputLower = input.toLowerCase();
+            return (uname === inputLower || email === inputLower);
+        });
+
+        if (user && user.password === password) {
+            // Kiểm tra status
+            if (user.status === 'inactive' || user.status === 'locked') {
+                alert('❌ Your account has been deactivated. Please contact support.');
+                return;
+            }
+
+            localStorage.setItem('loggedInUser', user.username);
             localStorage.setItem('userRole', 'user');
-            if (rememberMe) localStorage.setItem('rememberedUser', username);
-            
+            if (rememberMe) localStorage.setItem('rememberedUser', user.username);
+
             alert('✅ Login successful!');
-            
             const modalOverlay = KeySmith.utils.getById('modalOverlay');
             if (modalOverlay) {
                 modalOverlay.classList.remove('active');
                 document.body.style.overflow = 'auto';
             }
             
-            this.updateProfileDisplay();
-            KeySmith.profile.initProfileModal();
+            // Clear form
+            KeySmith.utils.getById('loginUsername').value = '';
+            KeySmith.utils.getById('loginPassword').value = '';
+            
+            KeySmith.login.updateProfileDisplay();
+            if (KeySmith.profile.initProfileModal) {
+                KeySmith.profile.initProfileModal();
+            }
         } else {
-            alert('❌ Invalid username or password!');
+            alert('❌ Invalid username/email or password!');
         }
     },
 
@@ -343,7 +398,7 @@ KeySmith.profile = {
     // get customer profile - lay profile thoi
     getCustomerProfile: function() {
         try {
-            const users = JSON.parse(localStorage.getItem('users')) || [];
+            const users = dataManager.getAll("customers") || [];
             const user = users.find(u => u.username === this.currentUser);
 
             if (!user) {
@@ -352,13 +407,13 @@ KeySmith.profile = {
             }
 
             // Trả về chỉ profile
-            return user.profile || {
-                firstName: '',
-                lastName: '',
-                email: '',
-                phone: '',
-                address: '',
-                birthDate: null
+            return {
+                firstName: user.firstName || '',
+                lastName: user.lastName || '',
+                email: user.email || '',
+                phone: user.phone || '',
+                address: user.address || '',
+                birthDate: user.birthDate || null
             };
         } catch (error) {
             console.error('Error getting customer profile:', error);
@@ -369,7 +424,7 @@ KeySmith.profile = {
     // get customer detail - lay toan bo detail
     getCustomerDetail: function() {
         try {
-            const users = JSON.parse(localStorage.getItem('users')) || [];
+            const users = dataManager.getAll("customers") || [];
             const user = users.find(u => u.username === this.currentUser);
 
             if (!user) {
@@ -436,6 +491,82 @@ KeySmith.profile = {
             return false;
         }
     },
+
+        loadProfileToForm: function() {
+        console.log('📝 Loading profile to form...');
+        
+        this.populateBirthdaySelects();
+
+        const customer = this.getCustomerDetail();
+        if (!customer) {
+            console.error('❌ Cannot load profile - no customer data');
+            return;
+        }
+
+        console.log('📋 Customer data to load:', {
+            firstName: customer.firstName,
+            lastName: customer.lastName,
+            email: customer.email,
+            phone: customer.phone,
+            address: customer.address,
+            dateOfBirth: customer.dateOfBirth
+        });
+
+        // Update username in sidebar
+        const profileUsername = KeySmith.utils.getById('profileUsername');
+        if (profileUsername) {
+            profileUsername.textContent = customer.username || 'User';
+            console.log('✅ Set username display:', customer.username);
+        }
+
+        // Fill form fields
+        const fields = [
+            { id: 'profile-first-name', key: 'firstName' },
+            { id: 'profile-last-name', key: 'lastName' },
+            { id: 'profile-email', key: 'email' },
+            { id: 'profile-phone', key: 'phone' },
+            { id: 'profile-address', key: 'address' }
+        ];
+
+        fields.forEach(field => {
+            const element = KeySmith.utils.getById(field.id);
+            if (element) {
+                const value = customer[field.key] || '';
+                element.value = value;
+                console.log(`✅ Set ${field.id} = "${value}"`);
+            } else {
+                console.warn(`⚠️ Field not found: ${field.id}`);
+            }
+        });
+
+        // Fill birthday
+        if (customer.dateOfBirth) {
+            try {
+                const date = new Date(customer.dateOfBirth);
+                const day = KeySmith.utils.getById('profile-birth-day');
+                const month = KeySmith.utils.getById('profile-birth-month');
+                const year = KeySmith.utils.getById('profile-birth-year');
+                
+                if (day) {
+                    day.value = date.getDate();
+                    console.log('✅ Set day:', date.getDate());
+                }
+                if (month) {
+                    month.value = date.getMonth() + 1;
+                    console.log('✅ Set month:', date.getMonth() + 1);
+                }
+                if (year) {
+                    year.value = date.getFullYear();
+                    console.log('✅ Set year:', date.getFullYear());
+                }
+            } catch (e) {
+                console.error('❌ Error parsing date:', e);
+            }
+        }
+
+        console.log('✅ Profile loaded to form successfully');
+    },
+
     //kho tao khi mo modal
     initProfileModal: function() {
         const profileModal = KeySmith.utils.getById('profileModalOverlay');
@@ -739,7 +870,7 @@ KeySmith.store = {
                         document.body.style.overflow = 'hidden';
                     }
                 } else {
-                    window.location.href = './main/store/Store.html?cart=1';
+                    window.location.href = '../../main/store.html?cart=1';
                 }
             });
         }
@@ -750,7 +881,7 @@ KeySmith.store = {
             proContainer.addEventListener('click', (e) => {
                 const productCard = e.target.closest('.pro');
                 if (productCard) {
-                    window.location.href = './main/store/store.html';
+                    window.location.href = '../../main/store.html';
                 }
             });
             
@@ -996,10 +1127,127 @@ KeySmith.admin = {
     }
 };
 
+// ==================== DATA SYNC MODULE ====================
+KeySmith.dataSync = {
+    init: function() {
+        // Kiểm tra nếu chưa có dữ liệu trong localStorage
+        if (!localStorage.getItem('dataInitialized')) {
+            this.loadSampleData();
+        }
+    },
+
+    // Replace existing loadSampleData with this robust version
+// ---------- REPLACE EXISTING loadSampleData WITH THIS ----------
+loadSampleData: async function() {
+  try {
+    // Try dynamic import using the path you said
+    try {
+      const module = await import('../sampledata/sampleData.js');
+      const sampleData = module && module.sampleData ? module.sampleData : null;
+      if (sampleData) {
+        if (!localStorage.getItem('customers') && sampleData.customers) {
+          localStorage.setItem('customers', JSON.stringify(sampleData.customers));
+          console.log('✅ Loaded customers via import (../sampledata/sampleData.js).');
+        }
+        if (!localStorage.getItem('products') && sampleData.products) {
+          localStorage.setItem('products', JSON.stringify(sampleData.products));
+          console.log('✅ Loaded products via import.');
+        }
+        if (!localStorage.getItem('orders') && sampleData.orders) {
+          localStorage.setItem('orders', JSON.stringify(sampleData.orders));
+          console.log('✅ Loaded orders via import.');
+        }
+        if (!localStorage.getItem('importOrders') && sampleData.importOrders) {
+          localStorage.setItem('importOrders', JSON.stringify(sampleData.importOrders));
+          console.log('✅ Loaded importOrders via import.');
+        }
+        localStorage.setItem('dataInitialized', 'true');
+        return;
+      }
+    } catch (impErr) {
+      console.warn('Dynamic import failed (path ./sampledata/sampleData.js). Will try fetch fallback.', impErr);
+    }
+
+    // Fetch fallback - try several paths
+    const paths = ['../sampledata/sampleData.js'];
+    let text = null;
+    for (const p of paths) {
+      try {
+        const r = await fetch(p, {cache:'no-store'});
+        if (r.ok) {
+          text = await r.text();
+          console.log('Fetched sampleData from', p);
+          break;
+        }
+      } catch (e) { /* try next */ }
+    }
+    if (!text) {
+      console.error('❌ Could not fetch sampleData.js from any path.');
+      return;
+    }
+
+    // Extract object literal (assumes "export const sampleData = { ... }")
+    let start = text.indexOf('export const sampleData');
+    if (start !== -1) {
+      start = text.indexOf('=', start);
+      if (start !== -1) start = start + 1;
+      else start = text.indexOf('{', start);
+    } else {
+      start = text.indexOf('{');
+    }
+    const objText = text.slice(start);
+    let sampleDataObj = null;
+    try {
+      sampleDataObj = Function('"use strict"; return (' + objText + ')')();
+    } catch (e) {
+      console.error('Failed to eval sampleData.js content:', e);
+      return;
+    }
+    if (!sampleDataObj) {
+      console.error('No sampleData object found after eval.');
+      return;
+    }
+
+    if (!localStorage.getItem('customers') && sampleDataObj.customers) {
+      localStorage.setItem('customers', JSON.stringify(sampleDataObj.customers));
+      console.log('✅ Loaded customers via fetch fallback.');
+    }
+    if (!localStorage.getItem('products') && sampleDataObj.products) {
+      localStorage.setItem('products', JSON.stringify(sampleDataObj.products));
+      console.log('✅ Loaded products via fetch fallback.');
+    }
+    if (!localStorage.getItem('orders') && sampleDataObj.orders) {
+      localStorage.setItem('orders', JSON.stringify(sampleDataObj.orders));
+      console.log('✅ Loaded orders via fetch fallback.');
+    }
+    if (!localStorage.getItem('importOrders') && sampleDataObj.importOrders) {
+      localStorage.setItem('importOrders', JSON.stringify(sampleDataObj.importOrders));
+      console.log('✅ Loaded importOrders via fetch fallback.');
+    }
+
+    localStorage.setItem('dataInitialized','true');
+    console.log('✅ Sample data loaded (fallback).');
+  } catch (finalErr) {
+    console.error('Error loading sample data (final):', finalErr);
+  }
+},
+// ---------- end replacement ----------
+
+};
+
 // ==================== INITIALIZE ====================
 // Initialize everything when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
+    KeySmith.dataSync.init();
     KeySmith.init();
 });
+
+// Expose KeySmith globally for legacy scripts that don't import it
+try {
+    window.KeySmith = KeySmith;
+} catch (e) {
+    // If window isn't available (unlikely in browser), ignore
+    console.warn('Unable to attach KeySmith to window:', e);
+}
 
 

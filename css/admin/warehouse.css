@@ -14,11 +14,9 @@ RESET & BASE STYLES
     color: #fff;
     min-height: 100vh;
     padding: 20px;
-    width: 100% !important;
+    width: 100%;
     overflow-x: hidden;
-    position: relative !important;
-    margin-left: 0 !important;
-    left: auto !important;
+    margin: 0;
 }
 
 .warehouse-wrapper .container {
@@ -27,7 +25,6 @@ RESET & BASE STYLES
     margin: 0 auto;
     padding: 0 10px;
     display: block;
-    position: relative;
     box-sizing: border-box;
 }
 
@@ -446,6 +443,7 @@ RESET & BASE STYLES
     border-radius: 12px;
     overflow-x: auto;
     border: 1px solid rgba(255, 255, 255, 0.1);
+    -webkit-overflow-scrolling: touch;
 }
 
 .warehouse-wrapper table {
@@ -456,7 +454,6 @@ RESET & BASE STYLES
 
 .warehouse-wrapper thead {
     background: rgba(255, 133, 25, 0.2);
-    position: sticky;
     top: 0;
     z-index: 10;
 }
@@ -970,13 +967,215 @@ RESET & BASE STYLES
 }
 
 /* ============================================
+   WAREHOUSE MODALS STYLING
+   ============================================ */
+
+/* Import Detail Modal, Confirm Delete Modal, and Warehouse Product Modal */
+.warehouse-wrapper .import-detail-modal .modal-container,
+.warehouse-wrapper .confirm-delete-modal .modal-container,
+.warehouse-wrapper .warehouse-product-modal .modal-container {
+    background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
+    border-radius: 15px;
+    width: 90%;
+    max-width: 500px;
+    padding: 30px;
+    position: relative;
+    animation: warehouseSlideDown 0.4s ease;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 10px 50px rgba(0, 0, 0, 0.5);
+}
+
+.warehouse-wrapper .import-detail-modal h3,
+.warehouse-wrapper .confirm-delete-modal h3,
+.warehouse-wrapper .warehouse-product-modal h3 {
+    color: #ff8519;
+    font-size: 24px;
+    margin: 0 0 20px 0;
+    font-weight: 600;
+    padding-right: 30px;
+}
+
+.warehouse-wrapper .import-detail-modal .modal-container > div,
+.warehouse-wrapper .confirm-delete-modal .modal-container > div,
+.warehouse-wrapper .warehouse-product-modal .modal-container > div {
+    margin-bottom: 15px;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.warehouse-wrapper .import-detail-modal strong,
+.warehouse-wrapper .confirm-delete-modal strong,
+.warehouse-wrapper .warehouse-product-modal strong {
+    color: rgba(255, 255, 255, 0.7);
+    font-weight: 500;
+    display: inline-block;
+    min-width: 120px;
+}
+
+.warehouse-wrapper .import-detail-modal .modal-close,
+.warehouse-wrapper .confirm-delete-modal .modal-close,
+.warehouse-wrapper .warehouse-product-modal .modal-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    line-height: 1;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: transparent;
+    padding: 0;
+}
+
+.warehouse-wrapper .import-detail-modal .modal-close:hover,
+.warehouse-wrapper .confirm-delete-modal .modal-close:hover,
+.warehouse-wrapper .warehouse-product-modal .modal-close:hover {
+    color: #ff6b35;
+    transform: rotate(90deg);
+}
+
+/* Modal Buttons */
+.warehouse-wrapper .btn-close-import-detail,
+.warehouse-wrapper .btn-confirm-yes,
+.warehouse-wrapper .btn-confirm-no,
+.warehouse-wrapper .btn-cancel-warehouse-product,
+.warehouse-wrapper .btn-save-warehouse-product {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 14px;
+    font-family: 'Poppins', sans-serif;
+    margin-right: 10px;
+}
+
+.warehouse-wrapper .btn-close-import-detail,
+.warehouse-wrapper .btn-cancel-warehouse-product {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.warehouse-wrapper .btn-close-import-detail:hover,
+.warehouse-wrapper .btn-cancel-warehouse-product:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.warehouse-wrapper .btn-confirm-yes,
+.warehouse-wrapper .btn-save-warehouse-product {
+    background: linear-gradient(135deg, #ff8519 0%, #ff6b35 100%);
+    color: white;
+    box-shadow: 0 4px 15px rgba(255, 133, 25, 0.3);
+}
+
+.warehouse-wrapper .btn-confirm-yes:hover,
+.warehouse-wrapper .btn-save-warehouse-product:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 25px rgba(255, 133, 25, 0.4);
+}
+
+/* Override for delete confirmation (red button) */
+.warehouse-wrapper .confirm-delete-modal .btn-confirm-yes {
+    background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
+    box-shadow: 0 4px 15px rgba(244, 67, 54, 0.3);
+}
+
+.warehouse-wrapper .confirm-delete-modal .btn-confirm-yes:hover {
+    box-shadow: 0 6px 25px rgba(244, 67, 54, 0.4);
+}
+
+.warehouse-wrapper .btn-confirm-no {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.warehouse-wrapper .btn-confirm-no:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.warehouse-wrapper .confirm-delete-modal .confirm-text {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 16px;
+    margin: 20px 0 30px 0;
+}
+
+/* Warehouse Product Modal Specific Styles */
+.warehouse-wrapper .warehouse-product-modal input[type="text"],
+.warehouse-wrapper .warehouse-product-modal input[type="number"],
+.warehouse-wrapper .warehouse-product-modal select {
+    width: 100%;
+    margin-top: 5px;
+    padding: 10px 12px;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    font-size: 14px;
+    font-family: 'Poppins', sans-serif;
+    transition: all 0.3s ease;
+}
+
+.warehouse-wrapper .warehouse-product-modal input[type="text"]:focus,
+.warehouse-wrapper .warehouse-product-modal input[type="number"]:focus,
+.warehouse-wrapper .warehouse-product-modal select:focus {
+    outline: none;
+    border-color: #ff8519;
+    background: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 0 0 3px rgba(255, 133, 25, 0.1);
+}
+
+.warehouse-wrapper .warehouse-product-modal input[readonly] {
+    background: rgba(76, 175, 80, 0.1);
+    border-color: rgba(76, 175, 80, 0.3);
+    color: #4caf50;
+    font-weight: 600;
+    cursor: not-allowed;
+}
+
+.warehouse-wrapper .warehouse-product-modal select option {
+    background: #2d2d2d;
+    color: white;
+    padding: 10px;
+}
+
+.warehouse-wrapper .warehouse-product-modal small {
+    color: rgba(255, 255, 255, 0.6);
+    display: block;
+    margin-top: 5px;
+    font-size: 12px;
+}
+
+/* Button hover effects for warehouse product modal */
+.warehouse-wrapper .btn-cancel-warehouse-product:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.warehouse-wrapper .btn-save-warehouse-product:active {
+    transform: translateY(0);
+}
+
+/* ============================================
    RESPONSIVE DESIGN
    ============================================ */
 
-
-
-
 @media (max-width: 1024px) {
+    .warehouse-wrapper {
+        padding: 15px;
+    }
+
     .warehouse-wrapper .header {
         flex-direction: column;
         gap: 15px;
