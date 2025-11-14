@@ -817,6 +817,7 @@ hr {
   display: flex;
   transition: transform 0.5s ease-in-out;
   height: 100%;
+  gap: 4rem;
 }
 
 #product-detail .image-slider img {
