@@ -1263,6 +1263,7 @@ function wireCartEvents() {
     const del = e.target.closest(".delete-one");
     const clear = e.target.closest(".btn-clear");
     const checkoutBtn = e.target.closest(".checkout-visual");
+    const orderHistoryBtn = e.target.closest("#btn-order-history");
 
     if (inc || dec) {
       const wrapper = (inc || dec).closest(".qty-controls");
@@ -1303,6 +1304,10 @@ function wireCartEvents() {
 
     if (checkoutBtn) {
       showCheckout();
+    }
+
+    if (orderHistoryBtn) {
+      showOrderHistory();
     }
   });
 
@@ -1684,6 +1689,9 @@ function initCartModule() {
     }
   });
 
+  // Toggle order history button based on login status
+  toggleOrderHistoryButton();
+
   // Render cart lần đầu nếu cần
   if (document.getElementById("cart-view") && getComputedStyle(document.getElementById("cart-view")).display !== "none") {
     renderCartView();
@@ -1760,6 +1768,244 @@ function saveShippingAddressFromInputs() {
   return true;
 }
 
+// ========== ORDER HISTORY MODULE ==========
+/**
+ * Kiểm tra trạng thái đăng nhập của user
+ * @returns {Object|null} Thông tin user nếu đã đăng nhập, null nếu chưa
+ */
+function getCurrentUser() {
+  try {
+    const loggedUser = localStorage.getItem('loggedInUser');
+    const userRole = localStorage.getItem('userRole');
+
+    if (loggedUser && userRole === 'user') {
+      return { username: loggedUser, role: userRole };
+    }
+    return null;
+  } catch (error) {
+    console.error('Error checking login status:', error);
+    return null;
+  }
+}
+
+/**
+ * Hiển thị hoặc ẩn nút order history dựa trên trạng thái đăng nhập
+ */
+function toggleOrderHistoryButton() {
+  const orderHistoryBtn = document.getElementById('btn-order-history');
+  if (!orderHistoryBtn) return;
+
+  const currentUser = getCurrentUser();
+  if (currentUser) {
+    orderHistoryBtn.style.display = 'inline-block';
+  } else {
+    orderHistoryBtn.style.display = 'none';
+  }
+}
+
+/**
+ * Lấy danh sách đơn hàng của user hiện tại
+ * @returns {Array} Mảng các đơn hàng
+ */
+function getUserOrders() {
+  try {
+    const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+    const currentUser = getCurrentUser();
+
+    if (!currentUser) return [];
+
+    // Filter orders by current user (assuming orders have user info)
+    // For now, return all orders since current implementation doesn't store user per order
+    // TODO: Update order structure to include username
+    return orders;
+  } catch (error) {
+    console.error('Error getting user orders:', error);
+    return [];
+  }
+}
+
+/**
+ * Hiển thị modal lịch sử đơn hàng
+ */
+function showOrderHistory() {
+  const currentUser = getCurrentUser();
+  if (!currentUser) {
+    if (window.showToast) {
+      window.showToast('Vui lòng đăng nhập để xem lịch sử đơn hàng', 'error');
+    }
+    return;
+  }
+
+  // Tạo modal HTML nếu chưa tồn tại
+  let modal = document.getElementById('order-history-modal');
+  if (!modal) {
+    modal = createOrderHistoryModal();
+    document.body.appendChild(modal);
+  }
+
+  // Render orders
+  renderOrderHistory(modal);
+
+  // Hiển thị modal
+  modal.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+/**
+ * Tạo modal HTML cho order history
+ * @returns {HTMLElement} Modal element
+ */
+function createOrderHistoryModal() {
+  const modal = document.createElement('div');
+  modal.id = 'order-history-modal';
+  modal.className = 'order-history-modal';
+  modal.innerHTML = `
+    <div class="order-history-backdrop" id="order-history-backdrop"></div>
+    <div class="order-history-card" role="dialog" aria-modal="true" aria-labelledby="order-history-title">
+      <header class="order-history-header">
+        <h3 id="order-history-title">Lịch sử đơn hàng</h3>
+        <button class="order-history-close" id="order-history-close" title="Đóng">&times;</button>
+      </header>
+      <div class="order-history-body" id="order-history-body">
+        <!-- Orders will be rendered here -->
+      </div>
+    </div>
+  `;
+
+  // Add event listeners
+  const backdrop = modal.querySelector('#order-history-backdrop');
+  const closeBtn = modal.querySelector('#order-history-close');
+
+  const closeModal = () => {
+    modal.style.display = 'none';
+    document.body.style.overflow = '';
+  };
+
+  backdrop.addEventListener('click', closeModal);
+  closeBtn.addEventListener('click', closeModal);
+
+  return modal;
+}
+
+/**
+ * Render danh sách đơn hàng vào modal
+ * @param {HTMLElement} modal - Modal element
+ */
+function renderOrderHistory(modal) {
+  const body = modal.querySelector('#order-history-body');
+  if (!body) return;
+
+  const orders = getUserOrders();
+
+  if (!orders.length) {
+    body.innerHTML = '<div class="no-orders">Bạn chưa có đơn hàng nào.</div>';
+    return;
+  }
+
+  body.innerHTML = '';
+
+  orders.forEach(order => {
+    const orderElement = createOrderElement(order);
+    body.appendChild(orderElement);
+  });
+}
+
+/**
+ * Tạo element HTML cho một đơn hàng
+ * @param {Object} order - Thông tin đơn hàng
+ * @returns {HTMLElement} Order element
+ */
+function createOrderElement(order) {
+  const orderDiv = document.createElement('div');
+  orderDiv.className = 'order-item';
+
+  const createdDate = new Date(order.createdAt).toLocaleDateString('vi-VN');
+  const statusText = getOrderStatusText(order.status);
+  const statusClass = getOrderStatusClass(order.status);
+
+  orderDiv.innerHTML = `
+    <div class="order-header">
+      <div class="order-id">Đơn hàng: ${order.id}</div>
+      <div class="order-date">${createdDate}</div>
+      <div class="order-status ${statusClass}">${statusText}</div>
+    </div>
+    <div class="order-items">
+      ${order.items.map(item => `
+        <div class="order-item-row">
+          <img src="${item.thumb || '/img/blank-image.png'}" alt="${escapeHtml(item.title)}" />
+          <div class="item-info">
+            <div class="item-title">${escapeHtml(item.title)}</div>
+            <div class="item-details">SL: ${item.qty} × ${formatCurrency(item.unitPrice)}</div>
+          </div>
+          <div class="item-total">${formatCurrency(item.amount)}</div>
+        </div>
+      `).join('')}
+    </div>
+    <div class="order-footer">
+      <div class="order-total">
+        <strong>Tổng cộng: ${formatCurrency(order.total)}</strong>
+      </div>
+      <div class="order-payment">Thanh toán: ${getPaymentMethodText(order.paymentMethod)}</div>
+    </div>
+  `;
+
+  return orderDiv;
+}
+
+/**
+ * Lấy text hiển thị cho trạng thái đơn hàng
+ * @param {string} status - Mã trạng thái
+ * @returns {string} Text hiển thị
+ */
+function getOrderStatusText(status) {
+  const statusMap = {
+    'placed': 'Đã đặt',
+    'confirmed': 'Đã xác nhận',
+    'shipped': 'Đang giao',
+    'delivered': 'Đã giao',
+    'cancelled': 'Đã hủy'
+  };
+  return statusMap[status] || status;
+}
+
+/**
+ * Lấy class CSS cho trạng thái đơn hàng
+ * @param {string} status - Mã trạng thái
+ * @returns {string} Class CSS
+ */
+function getOrderStatusClass(status) {
+  const classMap = {
+    'placed': 'status-placed',
+    'confirmed': 'status-confirmed',
+    'shipped': 'status-shipped',
+    'delivered': 'status-delivered',
+    'cancelled': 'status-cancelled'
+  };
+  return classMap[status] || '';
+}
+
+/**
+ * Lấy text hiển thị cho phương thức thanh toán
+ * @param {string} method - Mã phương thức
+ * @returns {string} Text hiển thị
+ */
+function getPaymentMethodText(method) {
+  const methodMap = {
+    'cod': 'Tiền mặt khi nhận hàng',
+    'bank': 'Chuyển khoản',
+    'online': 'Thanh toán online'
+  };
+  return methodMap[method] || method;
+}
+
+// ========== KHỞI TẠO ==========
+document.addEventListener("DOMContentLoaded", () => {
+  initProductModule();
+  initCartModule();
+  // Initialize store-page header & mobile nav
+  if (typeof initStorePageHeader === "function") initStorePageHeader();
+});
+
 // ========== EXPORTS ==========
 /**
  * Export các hàm cần thiết ra global scope
@@ -1771,11 +2017,4 @@ window.showCheckout = showCheckout;
 window.closeCheckout = closeCheckout;
 window.placeOrder = placeOrder;
 window.addToCart = addToCart;
-
-// ========== KHỞI TẠO ==========
-document.addEventListener("DOMContentLoaded", () => {
-  initProductModule();
-  initCartModule();
-  // Initialize store-page header & mobile nav
-  if (typeof initStorePageHeader === "function") initStorePageHeader();
-});
+window.showOrderHistory = showOrderHistory;

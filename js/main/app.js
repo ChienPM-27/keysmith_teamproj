@@ -275,7 +275,7 @@ KeySmith.login = {
                 modalOverlay.classList.remove('active');
                 document.body.style.overflow = 'auto';
             }
-            setTimeout(() => window.location.href = './admin/admin.html', 800);
+            setTimeout(() => window.location.href = '../../admin.html', 800);
             return;
         }
 
@@ -793,7 +793,7 @@ KeySmith.store = {
                         document.body.style.overflow = 'hidden';
                     }
                 } else {
-                    window.location.href = './main/store/Store.html?cart=1';
+                    window.location.href = '../../main/store.html?cart=1';
                 }
             });
         }
@@ -804,7 +804,7 @@ KeySmith.store = {
             proContainer.addEventListener('click', (e) => {
                 const productCard = e.target.closest('.pro');
                 if (productCard) {
-                    window.location.href = './main/store/store.html';
+                    window.location.href = '../../main/store.html';
                 }
             });
             
