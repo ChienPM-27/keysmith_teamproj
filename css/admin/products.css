@@ -10,7 +10,7 @@
 
 .product-control {
     display: flex;
-    align-items: center;
+    align-items: cmoenter;
 }
 
 .product-control-left {
@@ -183,6 +183,7 @@
     border-radius: 12px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
     background: #fff;
+    z-index: 9999;
 }
 
 .modal.add-product .modal-container-title {

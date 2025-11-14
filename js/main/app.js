@@ -293,7 +293,7 @@ KeySmith.login = {
 
         if (user && user.password === password) {
             // Kiểm tra status
-            if (user.status === 'inactive') {
+            if (user.status === 'inactive' || user.status === 'locked') {
                 alert('❌ Your account has been deactivated. Please contact support.');
                 return;
             }

@@ -1121,14 +1121,14 @@ function renderCartView() {
     // Lấy thông tin sản phẩm
     let title = `#${id}`;
     let meta = "";
-    let thumb = "/img/blank-image.png";
+    let thumb = "";
     try {
       if (dataManager) {
         const p = dataManager.getById("products", id);
         if (p) {
           title = p.title || title;
           meta = (p.specs && p.specs.color) ? `• ${p.specs.color}` : (p.sku ? `• ${p.sku}` : "");
-          thumb = p.mainImage || p.image || thumb;
+          thumb = p.mainImage || p.image;
         }
       }
     } catch (e) {
@@ -1412,13 +1412,13 @@ function renderCheckoutItems() {
     totalMoney += qty * unit;
 
     let title = String(pid);
-    let thumb = "/img/blank-image.png";
+    let thumb = "";
     try {
       if (dataManager) {
         const p = dataManager.getById("products", pid);
         if (p) {
           title = p.title || title;
-          thumb = p.mainImage || p.image || thumb;
+          thumb = p.mainImage || p.image;
         }
       }
     } catch (e) {}
@@ -1495,10 +1495,11 @@ function placeOrder() {
   // Tạo đơn hàng và lưu vào dataManager (chuẩn hóa schema theo DatabaseManager)
   const detailedItems = itemsToOrder.map(it => {
     let title = `#${it.id}`;
-    let thumb = "/img/blank-image.png";
+    let thumb = it.mainImage;
     try {
       if (typeof dataManager !== 'undefined' && dataManager) {
         const p = dataManager.getById("products", Number(it.id));
+        console.log(`${p.title}`);
         if (p) {
           title = p.title || title;
           thumb = p.mainImage || p.image || thumb;
@@ -1792,6 +1793,12 @@ function saveShippingAddressFromInputs() {
     return false;
   }
 
+  const phoneRe = /^0\d{9}$/;
+  if (!phoneRe.test(phone)) {
+    showToast("Số điện thoại không hợp lệ", "error");
+    return false;
+  }
+
   const obj = { name, phone, line, city, postal };
   localStorage.setItem("shipping", JSON.stringify(obj));
 
@@ -1852,7 +1859,7 @@ function getUserOrders() {
     }
 
     // Legacy fallback
-    const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+    const orders = JSON.parse(dataManager.getAll('orders') || '[]');
     // Try to filter by username if present
     return orders.filter(o => !o.username || o.username === currentUser.username);
   } catch (error) {
