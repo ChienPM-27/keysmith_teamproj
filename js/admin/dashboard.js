@@ -29,30 +29,33 @@ const el = {
 
 function populateDashboard() {
   try {
-    const products = getData("products");
-    const customers = getData("customers");
-    const orders = getData("orders");
-    const importOrders = getData("importOrders");
+    const products = dataManager.getAll("products") || [];
+    const customers = dataManager.getAll("customers") || [];
+    const orders = dataManager.getAll("orders") || [];
+    const importOrders = dataManager.getAll("importOrders") || [];
 
     // 1. Customers & Products Count
-    if (el.userCount()) el.userCount().textContent = customers.length;
-    if (el.productCount()) el.productCount().textContent = products.length;
+    const userCount = customers.length || 0;
+    const productCount = products.length || 0;
+    if (el.userCount()) el.userCount().textContent = userCount;
+    if (el.productCount()) el.productCount().textContent = productCount;
 
     // --- 2. REVENUE CALCULATION ---
     let revenue = 0;
     orders.forEach(o => {
       const status = (o.status || "").toLowerCase();
       
-      if (status !== 'cancelled') {
+      // Chỉ tính revenue cho các đơn không bị hủy
+      if (status !== 'cancelled' && status !== 'canceled') {
         // Lấy giá trị an toàn (totalPrice, total, hoặc amountPrice)
-        const val = o.totalPrice || o.total || o.amountPrice || 0;
-        revenue += Number(val);
+        const val = Number(o.totalPrice) || Number(o.total) || Number(o.amountPrice) || 0;
+        revenue += val;
       }
     });
     if (el.revenueTotal()) el.revenueTotal().textContent = formatCurrency(revenue);
 
-    // 3. Stock Total
-    const totalStock = products.reduce((s, p) => s + (Number(p.stock || 0)), 0);
+    // 3. Stock Total - tổng số lượng tồn kho
+    const totalStock = products.reduce((s, p) => s + (Number(p.stock) || 0), 0);
     if (el.stockTotal()) el.stockTotal().textContent = totalStock;
 
     // 4. Top Products

@@ -21,7 +21,7 @@
     <!-- Đã khai báo defer nên script sẽ được tải song song với HTML
       và chỉ chạy sau khi HTML được phân tích xong -->
   <script type="module" src="/js/admin/admin.js" defer></script>
-  <script type="module" src="/js/admin/products.js" defer></script>
+  <script type="module" src="/js/admin/dashboard.js"></script>
   <script type="module" src="/js/admin/p.js" defer></script>
 
     <script
@@ -321,44 +321,7 @@
 
           <!-- JavaScript tự động hiển thị sản phẩm -->
           <div id="show-product">
-            <div class="product-item">
-              <div class="product-info">
-                <div class="product-img">
-                  <img src="/img/blank-image.png" alt="Product Image" />
-                </div>
-                <div class="info">
-                  <h3 class="product-name">#001</h3>
-                  <p class="product-category">one piece</p>
-                  <div class="product-description">Description of the product goes here.</div>
-                </div>
-                <div class="product-price">$100</div>
-              </div>
-
-              <div class="product-control-center">
-                <form action="" class="form-search">
-                  <input
-                    type="text"
-                    id="form-search-product"
-                    placeholder="Tìm kiếm sản phẩm"
-                    oninput="showProduct()"
-                  />
-                  <div class="search-btn">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                  </div>
-                </form>
-              </div>
-
-              <div class="product-control-right">
-                <button class="btn-control" id="btn-add-product">
-                  <i class="fa-solid fa-plus"></i>
-                  Add
-                </button>
-                <button class="btn-control" id="btn-refresh-product">
-                  <i class="fa-solid fa-arrows-rotate"></i>
-                  Refresh
-                </button>
-              </div>
-            </div>
+            
 
             <!-- JavaScript tự động hiển thị sản phẩm -->
             <div class="show-product">
