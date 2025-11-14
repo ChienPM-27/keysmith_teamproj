@@ -10,7 +10,7 @@
  * Version: 1.0.0
  * Description: Combined JS file for all main website functionality
  */
-
+import { dataManager } from "../admin/DatabaseManager.js";
 // ==================== UTILITIES ====================
 const KeySmith = {
     // Utility functions
@@ -204,8 +204,8 @@ KeySmith.login = {
         }
 
         // Lấy customers từ localStorage
-        let customers = JSON.parse(localStorage.getItem('customers')) || [];
-
+        // let customers = JSON.parse(localStorage.getItem('customers')) || [];
+        let customers = dataManager.getAll("customers") || [];
         if (customers.find(u => u.username === username)) {
             alert('❌ Username already exists!');
             return;
@@ -234,6 +234,7 @@ KeySmith.login = {
 
         customers.push(newCustomer);
         localStorage.setItem('customers', JSON.stringify(customers));
+        dataManager.add("customers", newCustomer);
 
         alert('✅ Account created successfully!');
 
@@ -280,8 +281,8 @@ KeySmith.login = {
         }
 
         // User check - từ localStorage (đã bao gồm cả sample data)
-        const customers = JSON.parse(localStorage.getItem('customers')) || [];
-        
+        // const customers = JSON.parse(localStorage.getItem('customers')) || [];
+        const customers = dataManager.getAll("customers") || [];
         // Cho phép đăng nhập bằng username hoặc email
         const user = customers.find(u => {
             const uname = (u.username || '').trim().toLowerCase();
@@ -1065,12 +1066,12 @@ loadSampleData: async function() {
   try {
     // Try dynamic import using the path you said
     try {
-      const module = await import('./sampledata/sampleData.js');
+      const module = await import('../sampledata/sampleData.js');
       const sampleData = module && module.sampleData ? module.sampleData : null;
       if (sampleData) {
         if (!localStorage.getItem('customers') && sampleData.customers) {
           localStorage.setItem('customers', JSON.stringify(sampleData.customers));
-          console.log('✅ Loaded customers via import (./sampledata/sampleData.js).');
+          console.log('✅ Loaded customers via import (../sampledata/sampleData.js).');
         }
         if (!localStorage.getItem('products') && sampleData.products) {
           localStorage.setItem('products', JSON.stringify(sampleData.products));
@@ -1092,7 +1093,7 @@ loadSampleData: async function() {
     }
 
     // Fetch fallback - try several paths
-    const paths = ['./sampledata/sampleData.js', './sampleData.js','/js/sampleData.js','/sampleData.js'];
+    const paths = ['../sampledata/sampleData.js'];
     let text = null;
     for (const p of paths) {
       try {

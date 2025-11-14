@@ -1492,14 +1492,12 @@ function placeOrder() {
     return;
   }
 
-  // Tạo đơn hàng
-  const orders = JSON.parse(localStorage.getItem("orders") || "[]");
-  const orderId = 'ORD-' + Date.now();
+  // Tạo đơn hàng và lưu vào dataManager (chuẩn hóa schema theo DatabaseManager)
   const detailedItems = itemsToOrder.map(it => {
     let title = `#${it.id}`;
     let thumb = "/img/blank-image.png";
     try {
-      if (dataManager) {
+      if (typeof dataManager !== 'undefined' && dataManager) {
         const p = dataManager.getById("products", Number(it.id));
         if (p) {
           title = p.title || title;
@@ -1507,31 +1505,67 @@ function placeOrder() {
         }
       }
     } catch (e) {}
-    const qty = Number(it.quantity) || 0;
+    const qty = Number(it.quantity) || Number(it.qty) || 0;
     const unit = Number(it.unitPrice) || 0;
     return {
       id: Number(it.id),
-      title,
-      qty,
+      quantity: qty,
       unitPrice: unit,
-      amount: qty * unit,
+      amountPrice: qty * unit,
+      title,
       thumb
     };
   });
 
-  const totalAmount = detailedItems.reduce((s, i) => s + (i.amount || 0), 0);
-  const orderObj = {
-    id: orderId,
-    createdAt: new Date().toISOString(),
-    items: detailedItems,
-    total: totalAmount,
-    shipping: addr,
-    paymentMethod: payment,
-    status: 'placed'
+  const totalAmount = detailedItems.reduce((s, i) => s + (i.amountPrice || 0), 0);
+
+  // include username if logged in
+  const currentUser = (function(){
+    try { return localStorage.getItem('loggedInUser') || null; } catch(e) { return null; }
+  })();
+
+  const orderForDb = {
+    // leave idOrder undefined so dataManager can auto-assign
+    username: currentUser || undefined,
+    items: detailedItems.map(it => ({ 
+      id: it.id, 
+      quantity: it.quantity, 
+      unitPrice: it.unitPrice, 
+      amountPrice: it.amountPrice,
+      title: it.title,
+      thumb: it.thumb
+    })),
+    totalPrice: totalAmount,
+    date: new Date().toISOString(),
+    status: 'new',
+    userDeliveryPhone: addr.phone || '',
+    userDeliveryAdress: addr.line || ''
   };
 
-  orders.unshift(orderObj);
-  localStorage.setItem("orders", JSON.stringify(orders));
+  try {
+    if (typeof dataManager !== 'undefined' && dataManager && typeof dataManager.add === 'function') {
+      dataManager.add('orders', orderForDb);
+    } else {
+      // fallback to legacy storage
+      const orders = JSON.parse(localStorage.getItem("orders") || "[]");
+      // assign an id if not present - keep detailedItems which already has title and thumb
+      const fallbackOrder = { 
+        id: 'ORD-' + Date.now(), 
+        createdAt: orderForDb.date, 
+        items: detailedItems, 
+        total: totalAmount, 
+        paymentMethod: payment, 
+        status: 'new',
+        username: currentUser || undefined,
+        userDeliveryPhone: addr.phone || '',
+        userDeliveryAdress: addr.line || ''
+      };
+      orders.unshift(fallbackOrder);
+      localStorage.setItem("orders", JSON.stringify(orders));
+    }
+  } catch (e) {
+    console.error('Failed to save order to dataManager:', e);
+  }
 
   // Xóa sản phẩm đã đặt khỏi giỏ hàng
   const remaining = cart.filter(it => !selectedIds.includes(Number(it.id)));
@@ -1809,15 +1843,18 @@ function toggleOrderHistoryButton() {
  */
 function getUserOrders() {
   try {
-    const orders = JSON.parse(localStorage.getItem('orders') || '[]');
     const currentUser = getCurrentUser();
-
     if (!currentUser) return [];
 
-    // Filter orders by current user (assuming orders have user info)
-    // For now, return all orders since current implementation doesn't store user per order
-    // TODO: Update order structure to include username
-    return orders;
+    // Prefer dataManager (central DB). If not available, fall back to legacy localStorage 'orders'
+    if (typeof dataManager !== 'undefined' && dataManager && typeof dataManager.getOrdersByUsername === 'function') {
+      return dataManager.getOrdersByUsername(currentUser.username) || [];
+    }
+
+    // Legacy fallback
+    const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+    // Try to filter by username if present
+    return orders.filter(o => !o.username || o.username === currentUser.username);
   } catch (error) {
     console.error('Error getting user orders:', error);
     return [];
@@ -1918,34 +1955,44 @@ function renderOrderHistory(modal) {
 function createOrderElement(order) {
   const orderDiv = document.createElement('div');
   orderDiv.className = 'order-item';
+  // normalize created date and status
+  const createdDateRaw = order.createdAt || order.date || order.createdAtISO || order.dateCreated;
+  const createdDate = createdDateRaw ? new Date(createdDateRaw).toLocaleDateString('vi-VN') : '';
+  const statusText = getOrderStatusText(order.status || order.state);
+  const statusClass = getOrderStatusClass(order.status || order.state);
 
-  const createdDate = new Date(order.createdAt).toLocaleDateString('vi-VN');
-  const statusText = getOrderStatusText(order.status);
-  const statusClass = getOrderStatusClass(order.status);
+  // normalize items (support legacy and DB shapes)
+  const items = Array.isArray(order.items) ? order.items : (order.itemsList || []);
 
   orderDiv.innerHTML = `
     <div class="order-header">
-      <div class="order-id">Đơn hàng: ${order.id}</div>
+      <div class="order-id">Đơn hàng: ${escapeHtml(order.idOrder || order.id || order.idOrder || '')}</div>
       <div class="order-date">${createdDate}</div>
       <div class="order-status ${statusClass}">${statusText}</div>
     </div>
     <div class="order-items">
-      ${order.items.map(item => `
+      ${items.map(item => {
+        const qty = item.qty || item.quantity || 0;
+        const unit = item.unitPrice || item.price || 0;
+        const amount = item.amount || item.amountPrice || (qty * unit);
+        const thumb = item.thumb || item.image || '/img/blank-image.png';
+        const title = item.title || item.name || `#${item.id}`;
+        return `
         <div class="order-item-row">
-          <img src="${item.thumb || '/img/blank-image.png'}" alt="${escapeHtml(item.title)}" />
+          <img src="${thumb}" alt="${escapeHtml(title)}" />
           <div class="item-info">
-            <div class="item-title">${escapeHtml(item.title)}</div>
-            <div class="item-details">SL: ${item.qty} × ${formatCurrency(item.unitPrice)}</div>
+            <div class="item-title">${escapeHtml(title)}</div>
+            <div class="item-details">SL: ${qty} × ${formatCurrency(unit)}</div>
           </div>
-          <div class="item-total">${formatCurrency(item.amount)}</div>
-        </div>
-      `).join('')}
+          <div class="item-total">${formatCurrency(amount)}</div>
+        </div>`;
+      }).join('')}
     </div>
     <div class="order-footer">
       <div class="order-total">
-        <strong>Tổng cộng: ${formatCurrency(order.total)}</strong>
+        <strong>Tổng cộng: ${formatCurrency(order.total || order.totalPrice || order.totalAmount || 0)}</strong>
       </div>
-      <div class="order-payment">Thanh toán: ${getPaymentMethodText(order.paymentMethod)}</div>
+      <div class="order-payment">Thanh toán: ${getPaymentMethodText(order.paymentMethod || order.payment)}</div>
     </div>
   `;
 
@@ -2005,6 +2052,44 @@ document.addEventListener("DOMContentLoaded", () => {
   // Initialize store-page header & mobile nav
   if (typeof initStorePageHeader === "function") initStorePageHeader();
 });
+
+// Migration helper: move legacy localStorage 'orders' into dataManager.database if needed
+function migrateLegacyOrdersIntoDataManager() {
+  try {
+    if (typeof dataManager === 'undefined' || !dataManager) return;
+
+    const legacy = JSON.parse(localStorage.getItem('orders') || '[]');
+    if (!Array.isArray(legacy) || legacy.length === 0) return;
+
+    // Check whether database already has orders
+    const existing = dataManager.getAll('orders') || [];
+    // If DB already contains orders, skip migration
+    if (existing.length > 0) return;
+
+    legacy.reverse().forEach(o => {
+      // Normalize each legacy order to DB schema
+      const items = (o.items || []).map(it => ({ id: it.id, quantity: it.quantity || it.qty || 0, unitPrice: it.unitPrice || it.price || 0, amountPrice: it.amountPrice || it.amount || 0 }));
+      const orderForDb = {
+        username: o.username || o.user || undefined,
+        items,
+        totalPrice: o.total || o.totalPrice || o.amount || 0,
+        date: o.createdAt || o.date || new Date().toISOString(),
+        status: o.status || 'placed',
+        userDeliveryPhone: (o.shipping && o.shipping.phone) || o.userDeliveryPhone || '' ,
+        userDeliveryAdress: (o.shipping && o.shipping.line) || o.userDeliveryAdress || ''
+      };
+      dataManager.add('orders', orderForDb);
+    });
+
+    // Optionally remove legacy orders key
+    // localStorage.removeItem('orders');
+  } catch (e) {
+    console.warn('Migration of legacy orders failed:', e);
+  }
+}
+
+// Run migration once on load (if dataManager exists)
+try { migrateLegacyOrdersIntoDataManager(); } catch(e) {}
 
 // ========== EXPORTS ==========
 /**

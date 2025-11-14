@@ -1859,9 +1859,9 @@ window._analyticsModuleInited = window._analyticsModuleInited || false;
     }
   };
 
-  const fmtCurrency = new Intl.NumberFormat("vi-VN", {
+  const fmtCurrency = new Intl.NumberFormat("es-ES", {
     style: "currency",
-    currency: "VND",
+    currency: "USD",
   }).format;
 
   // Chart refs

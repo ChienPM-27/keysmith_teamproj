@@ -33,9 +33,10 @@
       referrerpolicy="no-referrer"
     />
 
-    <!-- JavaScript Libraries -->
-    <script src="/js/main/app.js"></script>
-    <script src="/js/main/profileUser.js"></script>
+  <!-- JavaScript Libraries -->
+  <script type="module" src="/js/main/app.js"></script>
+  <!-- Load profileUser as a module (deferred) so app.js defines KeySmith first -->
+  <script type="module" src="/js/main/profileUser.js"></script>
 
     <script
       src="https://kit.fontawesome.com/da0c4cdc9f.js"
@@ -136,7 +137,7 @@
         </ul>
 
         <div class="header-icons">
-          <a href="#" class="cart"><i class="fa-solid fa-cart-shopping"></i></a>
+          <!-- <a href="#" class="cart"><i class="fa-solid fa-cart-shopping"></i></a> -->
           <a href="#" class="profile"
             ><i class="fa-solid fa-circle-user"></i
           ></a>

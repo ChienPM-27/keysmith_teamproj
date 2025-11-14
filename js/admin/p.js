@@ -6,22 +6,22 @@ function createProduct() {
 	let shouldSeed = false;
 	const stored = localStorage.getItem(PRODUCT_STORAGE_KEY);
 
-	if (!stored) {
-		shouldSeed = true;
-	} else {
-		try {
-			const parsed = JSON.parse(stored);
-			if (!Array.isArray(parsed) || parsed.length === 0) {
-				shouldSeed = true;
-			} else {
-				syncProductsToDatabase(parsed);
-				return;
-			}
-		} catch (error) {
-			console.warn('Invalid products data found in localStorage, resetting sample data.', error);
-			shouldSeed = true;
-		}
-	}
+	// if (!stored) {
+	// 	shouldSeed = true;
+	// } else {
+	// 	try {
+	// 		const parsed = JSON.parse(stored);
+	// 		if (!Array.isArray(parsed) || parsed.length === 0) {
+	// 			shouldSeed = true;
+	// 		} else {
+	// 			syncProductsToDatabase(parsed);
+	// 			return;
+	// 		}
+	// 	} catch (error) {
+	// 		console.warn('Invalid products data found in localStorage, resetting sample data.', error);
+	// 		shouldSeed = true;
+	// 	}
+	// }
 
 	const databaseProducts = getDatabaseProductsSnapshot();
 	if (Array.isArray(databaseProducts) && databaseProducts.length > 0) {
@@ -29,10 +29,10 @@ function createProduct() {
 		return;
 	}
 
-	if (shouldSeed) {
-		const fallbackProducts = cloneProductsList(FALLBACK_PRODUCTS);
-		saveProducts(fallbackProducts);
-	}
+	// if (shouldSeed) {
+	// 	const fallbackProducts = cloneProductsList(FALLBACK_PRODUCTS);
+	// 	saveProducts(fallbackProducts);
+	// }
 }
 
 function cloneProductsList(source) {
