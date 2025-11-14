@@ -894,15 +894,24 @@ KeySmith.store = {
 };
 
 // ==================== SUBSCRIPTION FORM ====================
+// ==================== SUBSCRIPTION FORM (SIMPLE) ====================
 KeySmith.subscriptionForm = {
     init: function() {
         const form = KeySmith.utils.getById('subscribeForm');
-        const message = KeySmith.utils.getById('formMessage');
+        const messageDiv = KeySmith.utils.getById('formMessage');
 
         if (form) {
+            const submitBtn = form.querySelector('button[type="submit"]');
+
             form.addEventListener('submit', async (e) => {
                 e.preventDefault();
                 const formData = new FormData(form);
+
+                // Show loading
+                if (submitBtn) {
+                    submitBtn.textContent = 'SENDING...';
+                    submitBtn.disabled = true;
+                }
 
                 try {
                     const response = await fetch(form.action, {
@@ -911,23 +920,42 @@ KeySmith.subscriptionForm = {
                     });
 
                     if (response.ok) {
-                        message.textContent = '✅ Thank you for subscribing!';
-                        message.style.color = 'green';
+                        this.showMessage(messageDiv, '✅ Thank you for subscribing!', 'success');
                         form.reset();
                     } else {
-                        throw new Error('Subscription failed');
+                        throw new Error('Failed');
                     }
                 } catch (error) {
-                    message.textContent = '❌ Something went wrong. Please try again.';
-                    message.style.color = 'red';
+                    this.showMessage(messageDiv, '❌ Something went wrong. Please try again.', 'error');
                 }
 
-                message.style.display = 'block';
-                setTimeout(() => {
-                    message.style.display = 'none';
-                }, 3000);
+                // Reset button
+                if (submitBtn) {
+                    submitBtn.textContent = 'SIGN UP';
+                    submitBtn.disabled = false;
+                }
             });
         }
+    },
+
+    showMessage: function(messageDiv, text, type) {
+        if (!messageDiv) return;
+
+        messageDiv.textContent = text;
+        messageDiv.style.color = type === 'success' ? '#4caf50' : '#f44336';
+        messageDiv.style.display = 'block';
+        messageDiv.style.marginTop = '10px';
+        messageDiv.style.fontWeight = '500';
+        messageDiv.style.transition = 'opacity 0.3s';
+        messageDiv.style.opacity = '0';
+        
+        setTimeout(() => messageDiv.style.opacity = '1', 10);
+
+        // Auto hide after 3 seconds
+        setTimeout(() => {
+            messageDiv.style.opacity = '0';
+            setTimeout(() => messageDiv.style.display = 'none', 300);
+        }, 3000);
     }
 };
 
