@@ -955,7 +955,7 @@ function paginateOrders(list, page, pageSize) {
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
   const p = Math.min(Math.max(1, page || 1), totalPages);
   const start = (p - 1) * pageSize;
-  const items = (list || []).slice(start, start + pageSize);
+  const items = (list || []).reverse().slice(start, start + pageSize);
   return { items, total, totalPages, page: p };
 }
 
