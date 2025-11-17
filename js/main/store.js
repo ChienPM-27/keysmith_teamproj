@@ -1042,6 +1042,41 @@ function getShippingAddress() {
   }
 }
 
+/**
+ * Lấy địa chỉ mặc định từ profile customer trong dataManager (nếu có)
+ * Trả về object { name, phone, line, city, postal } hoặc null
+ */
+function getCustomerAddressFromDataManager() {
+  try {
+    const logged = localStorage.getItem('loggedInUser');
+    const role = localStorage.getItem('userRole');
+    if (!logged || role !== 'user') return null;
+
+    if (typeof dataManager !== 'undefined' && dataManager && typeof dataManager.getAll === 'function') {
+      const customers = dataManager.getAll('customers') || [];
+      const cust = customers.find(c => (c.username || '').toString().trim().toLowerCase() === logged.toString().trim().toLowerCase() || (c.email || '').toString().trim().toLowerCase() === logged.toString().trim().toLowerCase());
+      if (!cust) return null;
+
+      // Normalize fields: support different shapes (profile, address, firstName/lastName)
+      const profile = cust.profile || {};
+      const name = (profile.firstName && profile.lastName) ? `${profile.firstName} ${profile.lastName}` : (cust.firstName && cust.lastName ? `${cust.firstName} ${cust.lastName}` : (cust.username || ''));
+      const phone = profile.phone || cust.phone || '';
+      const line = profile.address || cust.address || '';
+      const city = profile.city || cust.city || '';
+      const postal = profile.postal || cust.postal || '';
+
+      // If nothing useful, return null
+      if (!name && !phone && !line) return null;
+
+      return { name, phone, line, city, postal };
+    }
+    return null;
+  } catch (e) {
+    console.warn('Error reading customer address from dataManager', e);
+    return null;
+  }
+}
+
 // ========== HIỂN THỊ GIỎ HÀNG ==========
 /**
  * Hiển thị view giỏ hàng
@@ -1460,10 +1495,46 @@ function renderAddressText() {
   if (!addrTextEl) return;
 
   const a = getShippingAddress();
-  if (!a || !a.name) {
-    addrTextEl.textContent = "Bạn chưa có địa chỉ. Vui lòng thêm địa chỉ giao hàng.";
+  // Also check if customer has saved address in dataManager
+  const saved = getCustomerAddressFromDataManager();
+
+  // Build display area: if there's an explicit shipping selection, show it
+  if (a && a.name) {
+    addrTextEl.textContent = `${a.name} — ${a.phone} — ${a.line}${a.city ? ', ' + a.city : ''}${a.postal ? ' (' + a.postal + ')' : ''}`;
+  } else if (saved && (saved.name || saved.line || saved.phone)) {
+    // If no explicit shipping chosen but customer has saved address, show a prompt and a button to use it
+    addrTextEl.textContent = `${saved.name} — ${saved.phone} — ${saved.line}${saved.city ? ', ' + saved.city : ''}${saved.postal ? ' (' + saved.postal + ')' : ''}`;
+    // Also store it visually as suggestion; user can Accept (use) or Change
   } else {
-    addrTextEl.textContent = `${a.name} — ${a.phone} — ${a.line}, ${a.city}${a.postal ? ' (' + a.postal + ')' : ''}`;
+    addrTextEl.textContent = "Bạn chưa có địa chỉ. Vui lòng thêm địa chỉ giao hàng.";
+  }
+
+  // Ensure the controls (change / use saved) are present
+  const container = addrTextEl.parentElement;
+  if (container) {
+    // remove existing 'use-saved' if any
+    const existingUse = container.querySelector('#addr-use-saved-btn');
+    if (existingUse) existingUse.remove();
+
+    const changeWrapper = container.querySelector('div');
+    // create a 'Use saved address' button if saved exists and is different from selected
+    if (saved && (!a || a.line !== saved.line || a.phone !== saved.phone)) {
+      const useBtn = document.createElement('button');
+      useBtn.type = 'button';
+      useBtn.id = 'addr-use-saved-btn';
+      useBtn.className = 'btn-ghost';
+      useBtn.textContent = 'Sử dụng địa chỉ đã lưu';
+      useBtn.style.marginRight = '8px';
+      useBtn.addEventListener('click', () => {
+        // persist saved address into shipping and update UI
+        localStorage.setItem('shipping', JSON.stringify(saved));
+        renderAddressText();
+        showToast('Đã chọn địa chỉ đã lưu', 'success');
+      });
+
+      // insert before change button area if present
+      if (changeWrapper) changeWrapper.insertBefore(useBtn, changeWrapper.firstChild);
+    }
   }
 }
 
