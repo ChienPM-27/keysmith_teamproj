@@ -1727,6 +1727,9 @@ function initCartModule() {
   // Toggle order history button based on login status
   toggleOrderHistoryButton();
 
+  // Toggle cart icon visibility based on login status
+  try { toggleCartIcon(); } catch(e) { /* ignore */ }
+
   // Render cart lần đầu nếu cần
   if (document.getElementById("cart-view") && getComputedStyle(document.getElementById("cart-view")).display !== "none") {
     renderCartView();
@@ -1841,6 +1844,22 @@ function toggleOrderHistoryButton() {
     orderHistoryBtn.style.display = 'inline-block';
   } else {
     orderHistoryBtn.style.display = 'none';
+  }
+}
+
+/**
+ * Hiển thị hoặc ẩn icon giỏ hàng ở header dựa trên trạng thái đăng nhập
+ */
+function toggleCartIcon() {
+  const cartIcon = document.querySelector('.header-icons .cart');
+  if (!cartIcon) return;
+
+  const currentUser = getCurrentUser();
+  if (currentUser) {
+    cartIcon.style.display = 'inline-block';
+  } else {
+    // hide by default for anonymous users
+    cartIcon.style.display = 'none';
   }
 }
 
