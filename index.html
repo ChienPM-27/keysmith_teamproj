@@ -11,7 +11,8 @@
     <link rel="stylesheet" href="/css/main/util/contact.css" />
     <link rel="stylesheet" href="/css/main/util/404.css" />
     <link rel="stylesheet" href="/css/main/util/profile.css" />
-    <link rel="stylesheet" href="/css/main/admin_login.css">
+    <link rel="stylesheet" href="/css/main/admin_login.css"/>
+    <link rel="stylesheet" href="/css/toast.css" />
     <link
       rel="icon"
       type="image/png"
@@ -482,6 +483,7 @@
                 action="https://api.web3forms.com/submit"
                 class="input-group"
                 method="POST"
+                novalidate
               >
                 <input
                   type="hidden"
@@ -500,10 +502,13 @@
                 />
                 <input
                   type="email"
+                  id="subscribeEmail"
                   name="email"
                   pattern="^[A-Za-z0-9._%+-]+@(?:gmail\.com|sgu\.edu\.vn)$"
                   placeholder="YOUR E-MAIL:"
                   required
+                  autocomplete="email"
+                  aria-label="Email address for newsletter subscription"
                 />
                 <button type="submit">SIGN UP</button>
               </form>

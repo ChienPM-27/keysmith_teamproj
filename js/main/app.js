@@ -893,71 +893,172 @@ KeySmith.store = {
     }
 };
 
-// ==================== SUBSCRIPTION FORM ====================
-// ==================== SUBSCRIPTION FORM (SIMPLE) ====================
-KeySmith.subscriptionForm = {
-    init: function() {
-        const form = KeySmith.utils.getById('subscribeForm');
-        const messageDiv = KeySmith.utils.getById('formMessage');
+// ==================== SUBSCRIPTION FORM (ENHANCED) ====================
+  KeySmith.subscriptionForm = {
+      init: function() {
+          const form = KeySmith.utils.getById('subscribeForm');
+          const messageDiv = KeySmith.utils.getById('formMessage');
+          const emailInput = KeySmith.utils.getById('subscribeEmail');
+          const submitBtn = form?.querySelector('button[type="submit"]');
 
-        if (form) {
-            const submitBtn = form.querySelector('button[type="submit"]');
+          if (!form || !emailInput || !submitBtn) return;
 
-            form.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                const formData = new FormData(form);
+          // Hide submit button initially
+          submitBtn.style.display = 'none';
 
-                // Show loading
-                if (submitBtn) {
-                    submitBtn.textContent = 'SENDING...';
-                    submitBtn.disabled = true;
-                }
+          // Validate email and update UI
+          const validateEmail = () => {
+              const value = emailInput.value.trim();
+              const isEmpty = value === '';
+              const pattern = /^[A-Za-z0-9._%+-]+@(?:gmail\.com|sgu\.edu\.vn)$/;
+              const matchesPattern = pattern.test(value);
 
-                try {
-                    const response = await fetch(form.action, {
-                        method: 'POST',
-                        body: formData
-                    });
+              // Set custom validation message
+              if (isEmpty) {
+                  emailInput.setCustomValidity('Please enter your email');
+              } else if (!matchesPattern) {
+                  emailInput.setCustomValidity('Please enter a valid Gmail or SGU email address');
+              } else {
+                  emailInput.setCustomValidity('');
+              }
 
-                    if (response.ok) {
-                        this.showMessage(messageDiv, '✅ Thank you for subscribing!', 'success');
-                        form.reset();
-                    } else {
-                        throw new Error('Failed');
-                    }
-                } catch (error) {
-                    this.showMessage(messageDiv, '❌ Something went wrong. Please try again.', 'error');
-                }
+              // Apply visual styling
+              if (isEmpty || !matchesPattern) {
+                  emailInput.classList.remove('valid');
+                  emailInput.classList.add('invalid');
+                  submitBtn.style.display = 'none';
+              } else {
+                  emailInput.classList.remove('invalid');
+                  emailInput.classList.add('valid');
+                  submitBtn.style.display = '';
+              }
+          };
 
-                // Reset button
-                if (submitBtn) {
-                    submitBtn.textContent = 'SIGN UP';
-                    submitBtn.disabled = false;
-                }
-            });
-        }
-    },
+          // Event listeners for validation
+          emailInput.addEventListener('input', validateEmail);
+          emailInput.addEventListener('blur', validateEmail);
+          emailInput.addEventListener('focus', validateEmail);
 
-    showMessage: function(messageDiv, text, type) {
-        if (!messageDiv) return;
+          // Form submission
+          form.addEventListener('submit', async (e) => {
+              e.preventDefault();
 
-        messageDiv.textContent = text;
-        messageDiv.style.color = type === 'success' ? '#4caf50' : '#f44336';
-        messageDiv.style.display = 'block';
-        messageDiv.style.marginTop = '10px';
-        messageDiv.style.fontWeight = '500';
-        messageDiv.style.transition = 'opacity 0.3s';
-        messageDiv.style.opacity = '0';
-        
-        setTimeout(() => messageDiv.style.opacity = '1', 10);
+              // Final validation check
+              const value = emailInput.value.trim();
+              const pattern = /^[A-Za-z0-9._%+-]+@(?:gmail\.com|sgu\.edu\.vn)$/;
 
-        // Auto hide after 3 seconds
-        setTimeout(() => {
-            messageDiv.style.opacity = '0';
-            setTimeout(() => messageDiv.style.display = 'none', 300);
-        }, 3000);
-    }
-};
+              if (value === '' || !pattern.test(value)) {
+                  emailInput.reportValidity();
+                  return;
+              }
+
+              const formData = new FormData(form);
+
+              // Show loading
+              const originalText = submitBtn.textContent;
+              submitBtn.textContent = 'Sending...';
+              submitBtn.disabled = true;
+
+              try {
+                  const response = await fetch(form.action, {
+                      method: 'POST',
+                      body: formData
+                  });
+
+                  if (response.ok) {
+                      submitBtn.textContent = 'Sent!';
+                      form.reset();
+                      validateEmail();
+                      this.showKSToast('Thank you for subscribing!', 'success');
+                  } else {
+                      throw new Error('Failed');
+                  }
+              } catch (error) {
+                  this.showKSToast('Something went wrong. Please try again.', 'error');
+                  submitBtn.disabled = false;
+              } finally {
+                  setTimeout(() => {
+                      submitBtn.textContent = originalText;
+                      submitBtn.disabled = false;
+                  }, 2000);
+              }
+          });
+
+          // Initial validation
+          validateEmail();
+      },
+
+      showKSToast: function(message, type) {
+          let container = document.getElementById('ks-toast-container');
+          if (!container) {
+              container = document.createElement('div');
+              container.id = 'ks-toast-container';
+              document.body.appendChild(container);
+          }
+
+          const toast = document.createElement('div');
+          toast.className = `ks-toast ks-toast-${type}`;
+
+          const messageEl = document.createElement('div');
+          messageEl.className = 'ks-toast-message';
+          messageEl.textContent = message;
+
+          const progress = document.createElement('div');
+          progress.className = 'ks-toast-progress';
+
+          const progressBar = document.createElement('div');
+          progressBar.className = 'ks-toast-progress-bar';
+          progressBar.style.transition = 'transform 3000ms linear';
+          progressBar.style.background = 'rgba(255,255,255,0.6)';
+
+          progress.appendChild(progressBar);
+          toast.appendChild(messageEl);
+          toast.appendChild(progress);
+
+          const closeBtn = document.createElement('button');
+          closeBtn.className = 'ks-toast-close';
+          closeBtn.innerHTML = '&times;';
+          closeBtn.onclick = () => {
+              toast.style.opacity = '0';
+              toast.style.transform = 'translateY(12px)';
+              setTimeout(() => toast.remove(), 250);
+          };
+          toast.appendChild(closeBtn);
+
+          container.appendChild(toast);
+
+          requestAnimationFrame(() => {
+              progressBar.style.transform = 'translateX(-100%)';
+          });
+
+          setTimeout(() => {
+              toast.style.opacity = '0';
+              toast.style.transform = 'translateY(12px)';
+              setTimeout(() => toast.remove(), 250);
+          }, 3000);
+      },
+
+      showMessage: function(messageDiv, text, type) {
+          if (!messageDiv) return;
+
+          messageDiv.textContent = text;
+          messageDiv.style.color = type === 'success' ? '#4caf50' : '#f44336';
+          messageDiv.style.display = 'block';
+          messageDiv.style.marginTop = '10px';
+          messageDiv.style.fontWeight = '500';
+          messageDiv.style.fontSize = '14px';
+          messageDiv.style.textAlign = 'center';
+          messageDiv.style.transition = 'opacity 0.3s';
+          messageDiv.style.opacity = '0';
+
+          setTimeout(() => messageDiv.style.opacity = '1', 10);
+
+          setTimeout(() => {
+              messageDiv.style.opacity = '0';
+              setTimeout(() => messageDiv.style.display = 'none', 300);
+          }, 3000);
+      }
+  };
 
 // ==================== 404 ERROR MODULE ====================
 KeySmith.error404 = {
