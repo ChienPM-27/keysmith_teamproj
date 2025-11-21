@@ -2440,11 +2440,12 @@ function renderInventoryTab() {
 
       let statusClass = "status-ok";
       let statusText = "In Stock";
+
       if (stock === 0) {
-        statusClass = "status-out";
+        statusClass = "badge-low";
         statusText = "Out of Stock";
       } else if (stock < 5) {
-        statusClass = "status-low";
+        statusClass = "badge-low"; 
         statusText = "Low Stock";
       }
 
