@@ -958,7 +958,6 @@ KeySmith.store = {
               const originalText = submitBtn.textContent;
               submitBtn.textContent = 'Sending...';
               submitBtn.disabled = true;
-
               try {
                   const response = await fetch(form.action, {
                       method: 'POST',
