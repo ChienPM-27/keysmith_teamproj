@@ -134,7 +134,8 @@ const ProductManager = {
             add: document.getElementById('add-product-button'),
             update: document.getElementById('update-product-button')
         },
-        countLabel: document.getElementById('productCount')
+        countLabel: document.getElementById('productCount'),
+        errorProductMsg: document.getElementById('p-form-error')
     },
 
     init() {
@@ -317,13 +318,35 @@ const ProductManager = {
 
     handleSave(isUpdate = false) {
         const { name, category, price, desc } = this.elements.inputs;
-        if (!name.value.trim() || !category.value || !price.value) {
+        const title = name.value.trim(); // Lấy tên sản phẩm đã nhập
+
+        if (!title || !category.value || !price.value) {
             return Utils.notify('error', 'Vui lòng nhập đủ thông tin (Tên, Loại, Giá)');
         }
 
         const products = this.load();
+
+        // --- MỚI: Kiểm tra trùng tên sản phẩm ---
+        const isDuplicate = products.some(p => {
+            // So sánh tên (không phân biệt hoa thường)
+            const isSameName = p.title.toLowerCase() === title.toLowerCase();
+            
+            // Nếu đang ở chế độ Sửa (Update), bỏ qua chính sản phẩm đang sửa
+            if (isUpdate && AppState.products.editingId !== null) {
+                return isSameName && Number(p.id) !== Number(AppState.products.editingId);
+            }
+            
+            // Nếu đang ở chế độ Thêm mới (Add), chỉ cần trùng tên là báo lỗi
+            return isSameName;
+        });
+
+        if (isDuplicate) {
+            return this.elements.errorProductMsg.textContent = 'Sản phẩm đã tồn tại';
+        }
+        // ----------------------------------------
+
         const newProductData = {
-            title: name.value.trim(),
+            title: title,
             category: category.value,
             specs: { category: category.value, brand: 'KeySmith' },
             price: Number(price.value),
@@ -471,7 +494,8 @@ const ProductTypeManager = {
         },
         submitBtn: document.getElementById('pt-form-submit'),
         modalTitle: document.querySelector('.pt-modal__title'),
-        errorMsg: document.getElementById('pt-form-error')
+        errorMsg: document.getElementById('pt-form-error'),
+       
     },
 
     init() {
