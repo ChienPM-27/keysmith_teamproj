@@ -1110,17 +1110,6 @@ function renderOrderDetailItems(container, items) {
       </div>
     `;
 
-    // Nếu có product thực tế, thêm nút Edit an toàn
-    if (product && product.id != null) {
-      const editBtn = document.createElement("button");
-      editBtn.className = "btn-icon action-btn-edit";
-      editBtn.dataset.productId = String(product.id);
-      editBtn.title = "Edit Product";
-      editBtn.innerHTML = '<i class="fa-solid fa-edit"></i>';
-      editBtn.style.marginLeft = "auto";
-      row.appendChild(editBtn);
-    }
-
     container.appendChild(row);
   });
   return total;
